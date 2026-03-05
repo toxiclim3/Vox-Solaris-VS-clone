@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://bhdy6eeu3jxpv" path="res://Player/player.gd" id="1_37q80"]
 [ext_resource type="Texture2D" uid="uid://doa3scrwgj2oq" path="res://Textures/Player/player_sprite.png" id="1_jefax"]
 [ext_resource type="PackedScene" uid="uid://xy3cvpwdy828" path="res://Utility/hurt_box.tscn" id="3_gs51i"]
+[ext_resource type="Script" uid="uid://cixj7hojfeitd" path="res://Player/gui.gd" id="4_gu6f8"]
 [ext_resource type="Texture2D" uid="uid://dx7xx6vfahxlq" path="res://Textures/GUI/exp_background.png" id="4_pbpj5"]
 [ext_resource type="Texture2D" uid="uid://2e6c0h52rqvc" path="res://Textures/GUI/exp_progress_alt2.png" id="5_p5o4e"]
 [ext_resource type="FontFile" uid="uid://d0avhtg6twdo2" path="res://Font/ArchivoBlack-Regular.ttf" id="6_gu6f8"]
@@ -14,9 +15,7 @@
 [ext_resource type="PackedScene" uid="uid://b7c7gsdx2rkjm" path="res://Utility/basic_button.tscn" id="12_i8esf"]
 [ext_resource type="AudioStream" uid="uid://dt01f8kjva8hs" path="res://Audio/SoundEffect/magic_crumple2.ogg" id="12_p5o4e"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nffdp"]
-radius = 4.0
-height = 16.0
+[sub_resource type="CircleShape2D" id="CircleShape2D_dkpta"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yfi4i"]
 size = Vector2(12, 20)
@@ -28,6 +27,24 @@ radius = 370.951
 radius = 50.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6vwp8"]
+
+[sub_resource type="GDScript" id="GDScript_dkpta"]
+script/source = "extends Node
+
+@export var pause_menu: Control
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed(\"menu\"): 
+		toggle_menu()
+
+func toggle_menu() -> void:
+	if not pause_menu:
+		return
+		
+	pause_menu.visible = !pause_menu.visible
+	
+	get_tree().paused = pause_menu.visible
+"
 
 [node name="Player" type="CharacterBody2D" unique_id=1361429612 groups=["player"]]
 motion_mode = 1
@@ -43,7 +60,7 @@ hframes = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1193105904]
 position = Vector2(2, 3)
-shape = SubResource("CapsuleShape2D_nffdp")
+shape = SubResource("CircleShape2D_dkpta")
 
 [node name="regenTimer" type="Timer" parent="." unique_id=796021553]
 unique_name_in_owner = true
@@ -55,6 +72,7 @@ wait_time = 0.2
 one_shot = true
 
 [node name="HurtBox" parent="." unique_id=41722889 instance=ExtResource("3_gs51i")]
+collision_layer = 2
 collision_mask = 2
 HurtBoxType = 2
 
@@ -104,15 +122,20 @@ collision_layer = 0
 collision_mask = 8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollectArea" unique_id=371049362]
+position = Vector2(0, 2)
 shape = SubResource("CircleShape2D_6vwp8")
 
 [node name="GUILayer" type="CanvasLayer" parent="." unique_id=1336760669]
+process_mode = 3
+script = SubResource("GDScript_dkpta")
 
-[node name="GUI" type="Control" parent="GUILayer" unique_id=783179294]
+[node name="GUI" type="Control" parent="GUILayer" unique_id=783179294 node_paths=PackedStringArray("pause_menu")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 640.0
 offset_bottom = 360.0
+script = ExtResource("4_gu6f8")
+pause_menu = NodePath("PauseMenu")
 
 [node name="ExperienceBar" type="TextureProgressBar" parent="GUILayer/GUI" unique_id=2083831736]
 unique_name_in_owner = true
@@ -134,6 +157,9 @@ offset_top = 2.0
 offset_right = 50.0
 offset_bottom = 18.0
 grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
 theme_override_fonts/font = ExtResource("6_gu6f8")
 theme_override_font_sizes/font_size = 14
 text = "Level: 1"
@@ -145,7 +171,7 @@ unique_name_in_owner = true
 self_modulate = Color(1, 1, 1, 0.392157)
 z_index = -1
 z_as_relative = false
-texture_filter = 4
+texture_filter = 2
 layout_mode = 0
 offset_left = 300.0
 offset_top = 160.0
@@ -257,6 +283,71 @@ offset_right = 208.0
 offset_bottom = 56.0
 columns = 10
 
+[node name="PauseMenu" type="Panel" parent="GUILayer/GUI" unique_id=1413489099]
+visible = false
+modulate = Color(0.574219, 0.155833, 0.185848, 1)
+show_behind_parent = true
+z_index = 10
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.344
+anchor_top = 0.18333334
+anchor_right = 0.656
+anchor_bottom = 0.822
+offset_left = -0.16000366
+offset_right = 0.15997314
+offset_bottom = 0.07998657
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="GUILayer/GUI/PauseMenu" unique_id=96015178]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.4
+anchor_top = 0.08695652
+anchor_right = 0.6
+anchor_bottom = 0.18695652
+offset_left = -8.5
+offset_right = 8.499992
+grow_horizontal = 2
+text = "Paused"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="btn_end_run" parent="GUILayer/GUI/PauseMenu" unique_id=1741874230 instance=ExtResource("12_i8esf")]
+z_index = 1
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -40.25
+offset_top = -88.0
+offset_right = 39.75
+offset_bottom = -58.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "End run"
+
+[node name="btn_exit_game" parent="GUILayer/GUI/PauseMenu" unique_id=604014048 instance=ExtResource("12_i8esf")]
+z_index = 1
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -40.25
+offset_top = -48.0
+offset_right = 39.75
+offset_bottom = -18.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Exit game"
+
 [connection signal="timeout" from="regenTimer" to="." method="_on_regen_timer_timeout"]
 [connection signal="hurt" from="HurtBox" to="." method="_on_hurt_box_hurt"]
 [connection signal="timeout" from="Attack/IceSpearTimer" to="." method="_on_ice_spear_timer_timeout"]
@@ -268,5 +359,7 @@ columns = 10
 [connection signal="area_entered" from="GrabArea" to="." method="_on_grab_area_area_entered"]
 [connection signal="area_entered" from="CollectArea" to="." method="_on_collect_area_area_entered"]
 [connection signal="click_end" from="GUILayer/GUI/DeathPanel/btn_menu" to="." method="_on_btn_menu_click_end"]
+[connection signal="click_end" from="GUILayer/GUI/PauseMenu/btn_end_run" to="." method="_on_btn_menu_click_end"]
+[connection signal="click_end" from="GUILayer/GUI/PauseMenu/btn_exit_game" to="." method="_on_btn_exit_game_click_end"]
 
 [editable path="HurtBox"]

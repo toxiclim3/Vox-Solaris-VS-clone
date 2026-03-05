@@ -1,3 +1,5 @@
+res://Enemy/
+res://Themes/
 res://
 res://Audio/Music/
 res://TitleScreen/
@@ -6,5 +8,4 @@ res://World/
 res://Player/GUI/
 res://Objects/
 res://Player/Attack/
-res://Enemy/
 res://Player/

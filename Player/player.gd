@@ -4,7 +4,7 @@ extends CharacterBody2D
 @export var movement_speed = 50.0
 var hp = 80
 var maxhp = 80
-var regenPerSecond = 0.005
+var regenPerSecond = 0.5 / 100 #regen percent of max hp, by default 0.5%
 var last_movement = Vector2.UP
 var time = 0
 
@@ -84,7 +84,6 @@ func _ready():
 	attack()
 	set_expbar(experience, calculate_experiencecap())
 	_on_hurt_box_hurt(0,0,0)
-	regen_timer.timeout.connect(_on_regen_timer_timeout)
 
 func _physics_process(_delta):
 	movement()
@@ -383,3 +382,6 @@ func death():
 func _on_btn_menu_click_end():
 	get_tree().paused = false
 	var _level = get_tree().change_scene_to_file("res://TitleScreen/menu.tscn")
+	
+func _on_btn_exit_game_click_end() -> void:
+	get_tree().quit()

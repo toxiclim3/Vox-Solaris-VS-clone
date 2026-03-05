@@ -14,16 +14,29 @@ grow_vertical = 2
 script = ExtResource("1_oi0p3")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=459374643]
-layout_mode = 0
-offset_right = 673.0
-offset_bottom = 382.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -336.5
+offset_top = -191.0
+offset_right = 336.5
+offset_bottom = 191.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0.572549, 0.207843, 0.168627, 1)
 
 [node name="Label" type="Label" parent="." unique_id=1550563422]
-layout_mode = 0
-offset_top = 15.0
-offset_right = 673.0
-offset_bottom = 115.0
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -336.5
+offset_right = 336.5
+offset_bottom = 100.0
+grow_horizontal = 2
 theme_override_fonts/font = ExtResource("2_t4alp")
 theme_override_font_sizes/font_size = 44
 text = "Survivors Clone #7809243"
