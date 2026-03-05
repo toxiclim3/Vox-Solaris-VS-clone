@@ -1,9 +1,10 @@
 extends CharacterBody2D
 
 
-var movement_speed = 40.0
+@export var movement_speed = 50.0
 var hp = 80
 var maxhp = 80
+var regenPerSecond = 0.005
 var last_movement = Vector2.UP
 var time = 0
 
@@ -55,6 +56,7 @@ var enemy_close = []
 
 @onready var sprite = $Sprite2D
 @onready var walkTimer = get_node("%walkTimer")
+@onready var regen_timer = get_node("%regenTimer")
 
 #GUI
 @onready var expBar = get_node("%ExperienceBar")
@@ -82,8 +84,9 @@ func _ready():
 	attack()
 	set_expbar(experience, calculate_experiencecap())
 	_on_hurt_box_hurt(0,0,0)
+	regen_timer.timeout.connect(_on_regen_timer_timeout)
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	movement()
 
 func movement():
@@ -118,6 +121,12 @@ func attack():
 			tornadoTimer.start()
 	if javelin_level > 0:
 		spawn_javelin()
+
+func _on_regen_timer_timeout(): #regens regenPerSecond percent of maxHp every regenTimer timeout
+	if hp < maxhp:
+		hp = clamp(hp + regenPerSecond*maxhp, 0, maxhp)	
+		healthBar.max_value = maxhp
+		healthBar.value = hp
 
 func _on_hurt_box_hurt(damage, _angle, _knockback):
 	hp -= clamp(damage-armor, 1.0, 999.0)

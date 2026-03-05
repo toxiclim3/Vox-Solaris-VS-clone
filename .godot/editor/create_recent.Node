@@ -1,3 +1,5 @@
+CanvasLayer
+Timer
 AudioStreamPlayer
 Label
 ColorRect
@@ -9,14 +11,4 @@ Node
 VBoxContainer
 Panel
 Control
-CanvasLayer
 CollisionShape2D
-Area2D
-Node2D
-Sprite2D
-AudioStreamPlayer2D
-Timer
-AnimationPlayer
-AnimatedSprite2D
-Camera2D
-CharacterBody2D
