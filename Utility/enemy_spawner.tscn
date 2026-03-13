@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://ba2claihwes2y"]
+
+[ext_resource type="Script" uid="uid://cplcsp07at7gt" path="res://Utility/enemy_spawner.gd" id="1_pkvpv"]
+
+[node name="EnemySpawner" type="Node2D" unique_id=2017221073]
+script = ExtResource("1_pkvpv")
+
+[node name="Timer" type="Timer" parent="." unique_id=1823482267]
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

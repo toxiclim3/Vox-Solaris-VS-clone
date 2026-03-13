@@ -1,0 +1,134 @@
+[gd_scene format=3 uid="uid://du6qbgqucaqov"]
+
+[ext_resource type="Script" uid="uid://df444ip3tw6x3" path="res://World/world.gd" id="1_awrha"]
+[ext_resource type="PackedScene" uid="uid://b8xi15cvq56om" path="res://World/background.tscn" id="1_lo5ox"]
+[ext_resource type="PackedScene" uid="uid://dncgepmkc4jf4" path="res://Player/player.tscn" id="2_40uwv"]
+[ext_resource type="PackedScene" uid="uid://ba2claihwes2y" path="res://Utility/enemy_spawner.tscn" id="3_p01g4"]
+[ext_resource type="PackedScene" uid="uid://p4n2byek3hf6" path="res://Enemy/enemy_kobold_weak.tscn" id="4_ee8bm"]
+[ext_resource type="Script" uid="uid://b88gb022b3qno" path="res://Utility/spawn_info.gd" id="5_jj7s8"]
+[ext_resource type="PackedScene" uid="uid://f27gfkx355ha" path="res://Enemy/enemy_kobold_strong.tscn" id="6_rumbx"]
+[ext_resource type="Script" uid="uid://c1m16auiseqlg" path="res://Enemy/enemy.gd" id="7_0wqet"]
+[ext_resource type="PackedScene" uid="uid://ndk3tlufsxr8" path="res://Enemy/EnemyBase.tscn" id="8_awrha"]
+[ext_resource type="PackedScene" uid="uid://hcjnrdsb563h" path="res://Enemy/enemy_juggernaut.tscn" id="8_ltymd"]
+[ext_resource type="Texture2D" uid="uid://b4tu8mxdnvsy1" path="res://Textures/Enemy/cyclops.png" id="9_f23eu"]
+[ext_resource type="PackedScene" uid="uid://btf7clk4jja87" path="res://Enemy/enemy_super.tscn" id="9_xs42h"]
+[ext_resource type="AudioStream" uid="uid://dn37bgrjxgs6j" path="res://Audio/Music/Normal/Disdrometer.mp3" id="10_lo5ox"]
+[ext_resource type="Script" uid="uid://bkwemuaxmlxl2" path="res://Audio/Music/snd_Music.gd" id="11_ovtx6"]
+
+[sub_resource type="Resource" id="Resource_03m25"]
+script = ExtResource("5_jj7s8")
+time_end = 30
+enemy = ExtResource("4_ee8bm")
+enemy_num = 1
+
+[sub_resource type="Resource" id="Resource_ij20a"]
+script = ExtResource("5_jj7s8")
+time_start = 30
+time_end = 210
+enemy = ExtResource("4_ee8bm")
+enemy_num = 2
+
+[sub_resource type="Resource" id="Resource_68oxv"]
+script = ExtResource("5_jj7s8")
+time_start = 60
+time_end = 180
+enemy = ExtResource("6_rumbx")
+enemy_num = 1
+enemy_spawn_delay = 1
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_24u87"]
+radius = 4.0
+height = 14.0
+
+[sub_resource type="Animation" id="Animation_xfnyu"]
+length = 0.001
+
+[sub_resource type="Animation" id="Animation_w8hns"]
+resource_name = "walk"
+length = 0.6
+loop_mode = 1
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_regpg"]
+_data = {
+&"RESET": SubResource("Animation_xfnyu"),
+&"walk": SubResource("Animation_w8hns")
+}
+
+[sub_resource type="PackedScene" id="PackedScene_oeat8"]
+_bundled = {
+"conn_count": 0,
+"conns": PackedInt32Array(),
+"editable_instances": [NodePath("EnemyBase"), NodePath("EnemyBase/HurtBox"), NodePath("EnemyBase/HitBox")],
+"id_paths": [PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array()],
+"names": PackedStringArray("enemy_cyclops", "CharacterBody2D", "collision_layer", "collision_mask", "motion_mode", "script", "movement_speed", "hp", "knockback_recovery", "experience", "enemy_damage", "EnemyBase", "Sprite2D", "texture", "CollisionShape2D", "CollisionShape2D", "shape", "AnimationPlayer", "AnimationPlayer", "libraries/"),
+"node_count": 5,
+"node_ids": PackedInt32Array(70363022, 978387467, 1348046775, 2020963889, 1250673040),
+"node_paths": [NodePath("."), NodePath("./EnemyBase"), NodePath("."), NodePath(".")],
+"nodes": PackedInt32Array(-1, -1, 1, 0, -1, 9, 2, 0, 3, 1, 4, 2, 5, 3, 6, 4, 7, 5, 8, 6, 9, 7, 10, 8, 0, 1073741824, 0, 2147483647, 11, 9, 0, 0, 1073741825, -1, 2147483647, 262156, -1, 1, 13, 10, 0, 1073741826, 0, 15, 14, -1, 1, 16, 11, 0, 1073741827, 0, 18, 17, -1, 1, 19, 12, 0),
+"variants": [5, 5, 1, ExtResource("7_0wqet"), 26.0, 100, 10.0, 5, 5, ExtResource("8_awrha"), ExtResource("9_f23eu"), SubResource("CapsuleShape2D_24u87"), SubResource("AnimationLibrary_regpg")],
+"version": 3
+}
+
+[sub_resource type="Resource" id="Resource_l8y0x"]
+script = ExtResource("5_jj7s8")
+time_start = 180
+time_end = 210
+enemy = SubResource("PackedScene_oeat8")
+enemy_num = 1
+enemy_spawn_delay = 2
+
+[sub_resource type="Resource" id="Resource_daq1w"]
+script = ExtResource("5_jj7s8")
+time_start = 210
+time_end = 240
+enemy = ExtResource("6_rumbx")
+enemy_num = 2
+
+[sub_resource type="Resource" id="Resource_0gpiy"]
+script = ExtResource("5_jj7s8")
+time_start = 240
+time_end = 270
+enemy = SubResource("PackedScene_oeat8")
+enemy_num = 1
+
+[sub_resource type="Resource" id="Resource_4teun"]
+script = ExtResource("5_jj7s8")
+time_start = 240
+time_end = 240
+enemy = ExtResource("8_ltymd")
+enemy_num = 1
+
+[sub_resource type="Resource" id="Resource_rx6id"]
+script = ExtResource("5_jj7s8")
+time_start = 270
+time_end = 300
+enemy = ExtResource("6_rumbx")
+enemy_num = 4
+
+[sub_resource type="Resource" id="Resource_t2np8"]
+script = ExtResource("5_jj7s8")
+time_start = 300
+time_end = 300
+enemy = ExtResource("9_xs42h")
+enemy_num = 1
+
+[node name="World" type="Node2D" unique_id=73796557]
+script = ExtResource("1_awrha")
+
+[node name="Background" parent="." unique_id=953020722 instance=ExtResource("1_lo5ox")]
+z_index = -2
+
+[node name="Player" parent="." unique_id=1447765296 instance=ExtResource("2_40uwv")]
+
+[node name="EnemySpawner" parent="." unique_id=1218110681 instance=ExtResource("3_p01g4")]
+spawns = Array[ExtResource("5_jj7s8")]([SubResource("Resource_03m25"), SubResource("Resource_ij20a"), SubResource("Resource_68oxv"), SubResource("Resource_l8y0x"), SubResource("Resource_daq1w"), SubResource("Resource_0gpiy"), SubResource("Resource_4teun"), SubResource("Resource_rx6id"), SubResource("Resource_t2np8")])
+
+[node name="Loot" type="Node2D" parent="." unique_id=2025092302 groups=["loot"]]
+
+[node name="snd_Music" type="AudioStreamPlayer" parent="." unique_id=1155585204]
+process_mode = 3
+stream = ExtResource("10_lo5ox")
+volume_db = -5.0
+script = ExtResource("11_ovtx6")
+
+[connection signal="playerdeath" from="Player" to="snd_Music" method="_on_player_playerdeath"]

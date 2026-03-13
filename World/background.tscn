@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://b8xi15cvq56om"]
+
+[ext_resource type="Script" uid="uid://chhd3dnggdb3u" path="res://World/background.gd" id="1_t3iaj"]
+
+[node name="BackgroundManager" type="Parallax2D" unique_id=867284508]
+script = ExtResource("1_t3iaj")
+
+[node name="CurrentBackground" type="Sprite2D" parent="." unique_id=152348070]
+texture_filter = 2
+texture_repeat = 2
+
+[node name="FadeBackground" type="Sprite2D" parent="." unique_id=210337995]
+modulate = Color(1, 1, 1, 0)
+texture_filter = 2
+texture_repeat = 2
