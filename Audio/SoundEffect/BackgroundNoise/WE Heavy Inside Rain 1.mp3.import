@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://xbxkydm11sii"
+path="res://.godot/imported/WE Heavy Inside Rain 1.mp3-7df45ed2758523c5caf969603b0b6d30.mp3str"
+
+[deps]
+
+source_file="res://Audio/SoundEffect/BackgroundNoise/WE Heavy Inside Rain 1.mp3"
+dest_files=["res://.godot/imported/WE Heavy Inside Rain 1.mp3-7df45ed2758523c5caf969603b0b6d30.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

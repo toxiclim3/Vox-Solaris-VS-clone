@@ -15,6 +15,7 @@ enum MusicType { NORMAL, BOSS, EXTRA}
 @export var maxVolumeDb: float = 0.0
 @export var minVolumeDb: float = -60.0 # Порог тишины
 @export var backgroundVolumeDb: float = -10.0 # Громкость музыки "на фоне" (в меню)
+@export var polyphony: int = 1
 
 var normalTracks: Array[AudioStream] = []
 var bossTracks: Array[AudioStream] = []
@@ -28,6 +29,7 @@ var playerB: AudioStreamPlayer
 var activePlayer: AudioStreamPlayer
 var fadeTween: Tween
 
+var restartable = true
 # Состояние паузы музыки (не путать с get_tree().paused)
 var isMusicMuted: bool = false
 
@@ -38,6 +40,9 @@ func _ready() -> void:
 	loadTracksFromDir(normalMusicDir, normalTracks)
 	loadTracksFromDir(bossMusicDir, bossTracks)
 	loadTracksFromDir(extraMusicDir, extraTracks)
+	
+	playerA.finished.connect(_on_track_finished)
+	playerB.finished.connect(_on_track_finished)
 
 
 var winMusic = "res://Audio/Music/Extra/i finally found my voice as an artist [FsTc4TCRHy8].mp3"
@@ -101,6 +106,9 @@ func _initPlayers() -> void:
 	# Назначаем на аудиошину Music (создай её в настройках Audio)
 	playerA.bus = &"Music"
 	playerB.bus = &"Music"
+	
+	playerA.max_polyphony = polyphony
+	playerB.max_polyphony = polyphony
 	
 	add_child(playerA)
 	add_child(playerB)
@@ -205,3 +213,10 @@ func resetPlaylists() -> void:
 	currentBossIndex = -1
 	# Если нужно, чтобы музыка сразу выключилась при сбросе:
 	# activePlayer.stop()
+
+func setLooping(willLoop: bool):
+	restartable = willLoop
+
+func _on_track_finished():
+	if restartable:
+		activePlayer.play()

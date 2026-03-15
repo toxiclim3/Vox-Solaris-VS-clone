@@ -37,7 +37,7 @@ func _on_timer_timeout():
 	if isSpawningActive:
 		var enemy_spawns = spawns
 		for i in enemy_spawns:
-			if GlobalEvents.time >= i.time_start and GlobalEvents.time <= i.time_end:
+			if GlobalEvents.time >= i.time_start and GlobalEvents.time <= i.time_end or GlobalEvents.time >= i.time_start and i.time_end == 0:
 				if i.spawn_delay_counter < i.enemy_spawn_delay:
 					i.spawn_delay_counter += 1
 				else:

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://gonj5el6g8iq"
+path="res://.godot/imported/WE Light Wind Whistle 1.mp3-2fa64b333b5eec9e39f7216ecf9193cc.mp3str"
+
+[deps]
+
+source_file="res://Audio/SoundEffect/BackgroundNoise/WE Light Wind Whistle 1.mp3"
+dest_files=["res://.godot/imported/WE Light Wind Whistle 1.mp3-2fa64b333b5eec9e39f7216ecf9193cc.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

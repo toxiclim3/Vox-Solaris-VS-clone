@@ -5,6 +5,7 @@ extends Node2D
 func _ready() -> void:
 	GlobalEvents.time = 0
 	MusicController.resetPlaylists()
+	MusicController.setLooping(true)
 	MusicController.fadeInFromSilence()
 	MusicController.playNext(MusicController.MusicType.NORMAL)
 

@@ -6,6 +6,9 @@ extends Control
 
 var titleMenu = "res://TitleScreen/menu.tscn"
 
+signal openMenu()
+signal closeMenu()
+
 func _input(event: InputEvent) -> void:
 	if event.is_echo():
 		return
@@ -13,10 +16,10 @@ func _input(event: InputEvent) -> void:
 	if event.is_action("debugMenu"):
 		if debug_menu:
 			if event.is_pressed():
-				anim_player.play("show")
+				openMenu.emit()
 			
 			if event.is_released():
-				anim_player.play("hide")
+				closeMenu.emit()
 		get_viewport().set_input_as_handled()
 		
 		

@@ -15,6 +15,7 @@
 [ext_resource type="PackedScene" uid="uid://b7c7gsdx2rkjm" path="res://Utility/basic_button.tscn" id="12_i8esf"]
 [ext_resource type="AudioStream" uid="uid://dt01f8kjva8hs" path="res://Audio/SoundEffect/magic_crumple2.ogg" id="12_p5o4e"]
 [ext_resource type="Theme" uid="uid://kvmf0od5c6rf" path="res://Themes/DebugButtons.tres" id="15_dkpta"]
+[ext_resource type="Script" uid="uid://eq8qugfbk7vl" path="res://Player/debugmenu.gd" id="15_lfmf2"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_dkpta"]
 
@@ -28,68 +29,6 @@ radius = 370.951
 radius = 50.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6vwp8"]
-
-[sub_resource type="Animation" id="Animation_dkpta"]
-length = 0.001
-tracks/0/type = "bezier"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:position:x")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(648, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/1/type = "bezier"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:position:y")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(66, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-
-[sub_resource type="Animation" id="Animation_lfmf2"]
-resource_name = "hide"
-length = 0.3
-tracks/0/type = "bezier"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:position:x")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"handle_modes": PackedInt32Array(0, 0),
-"points": PackedFloat32Array(496, 0, 0, 0, 0, 648, -0.3, 0, 0, 0),
-"times": PackedFloat32Array(0, 0.3)
-}
-
-[sub_resource type="Animation" id="Animation_pisgm"]
-resource_name = "show"
-length = 0.5
-tracks/0/type = "bezier"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:position:x")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"handle_modes": PackedInt32Array(2, 0),
-"points": PackedFloat32Array(648, 0, 0, 0, 0, 496.62552, -0.4, 0, 0, 0),
-"times": PackedFloat32Array(0, 0.4)
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_b1ygp"]
-_data = {
-&"RESET": SubResource("Animation_dkpta"),
-&"hide": SubResource("Animation_lfmf2"),
-&"show": SubResource("Animation_pisgm")
-}
 
 [node name="Player" type="CharacterBody2D" unique_id=1361429612 groups=["player"]]
 motion_mode = 1
@@ -201,20 +140,25 @@ process_mode = 3
 
 [node name="GUI" type="Control" parent="GUILayer" unique_id=783179294 node_paths=PackedStringArray("pause_menu", "debug_menu", "anim_player")]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 640.0
-offset_bottom = 360.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("4_gu6f8")
 pause_menu = NodePath("PauseMenu")
-debug_menu = NodePath("debugMenu")
-anim_player = NodePath("debugMenu/AnimationPlayer")
+debug_menu = NodePath("Debugmenu")
+anim_player = NodePath("")
 
 [node name="ExperienceBar" type="TextureProgressBar" parent="GUILayer/GUI" unique_id=2083831736]
 unique_name_in_owner = true
-layout_mode = 0
-offset_right = 640.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 20.0
+grow_horizontal = 2
 fill_mode = 6
+nine_patch_stretch = true
 texture_over = ExtResource("4_pbpj5")
 texture_progress = ExtResource("5_p5o4e")
 
@@ -412,301 +356,169 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "Exit game"
 
-[node name="debugMenu" type="Panel" parent="GUILayer/GUI" unique_id=1650127741]
-modulate = Color(0.6333334, 1, 0.56, 1)
-show_behind_parent = true
-z_index = 10
+[node name="Debugmenu" type="MarginContainer" parent="GUILayer/GUI" unique_id=1500833420]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 1.01275
-anchor_top = 0.18333334
-anchor_right = 1.2247499
-anchor_bottom = 0.822
-offset_left = -0.16003418
-offset_right = 0.16125488
-offset_bottom = 0.07998657
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -152.0
+offset_top = -107.0
+offset_right = -8.0
+offset_bottom = 108.0
 grow_horizontal = 0
 grow_vertical = 2
-metadata/_edit_use_anchors_ = true
+theme_override_constants/margin_right = 0
+script = ExtResource("15_lfmf2")
+menu_width = 2.5
 
-[node name="Label" type="Label" parent="GUILayer/GUI/debugMenu" unique_id=1014688637]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.31640625
-anchor_top = 0.026086956
-anchor_right = 0.6835938
-anchor_bottom = 0.12608695
-offset_left = -8.5
-offset_right = 8.499992
-grow_horizontal = 2
+[node name="background" type="Panel" parent="GUILayer/GUI/Debugmenu" unique_id=1650127741]
+modulate = Color(0.30112115, 0.9912104, 7.70092e-07, 1)
+self_modulate = Color(1, 1, 1, 0.8901961)
+show_behind_parent = true
+z_index = -1
+layout_mode = 2
+
+[node name="Padded container" type="MarginContainer" parent="GUILayer/GUI/Debugmenu" unique_id=1475646517]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GUILayer/GUI/Debugmenu/Padded container" unique_id=225952374]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer" unique_id=1014688637]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "Debug"
 horizontal_alignment = 1
 vertical_alignment = 1
-metadata/_edit_use_anchors_ = true
 
-[node name="btn_end_run" parent="GUILayer/GUI/debugMenu" unique_id=486226472 instance=ExtResource("12_i8esf")]
+[node name="GridContainer" type="GridContainer" parent="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer" unique_id=1198252385]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="btn_end_run" parent="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer" unique_id=486226472 instance=ExtResource("12_i8esf")]
 z_index = 1
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -60.0
-offset_top = -192.0
-offset_right = -4.0
-offset_bottom = -172.0
-grow_horizontal = 2
-grow_vertical = 0
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
 focus_mode = 0
 theme = ExtResource("15_dkpta")
 text = "End run"
 
-[node name="btn_exit_game" parent="GUILayer/GUI/debugMenu" unique_id=821377785 instance=ExtResource("12_i8esf")]
+[node name="btn_exit_game" parent="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer" unique_id=821377785 instance=ExtResource("12_i8esf")]
 z_index = 1
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = 4.0
-offset_top = -192.0
-offset_right = 60.0
-offset_bottom = -172.0
-grow_horizontal = 2
-grow_vertical = 0
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
 focus_mode = 0
 theme = ExtResource("15_dkpta")
 text = "Exit game"
 
-[node name="btn_give_xp" parent="GUILayer/GUI/debugMenu" unique_id=1062571127 instance=ExtResource("12_i8esf")]
+[node name="btn_give_xp" parent="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer" unique_id=1062571127 instance=ExtResource("12_i8esf")]
 z_index = 1
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -60.0
-offset_top = -168.0
-offset_right = -4.0
-offset_bottom = -148.0
-grow_horizontal = 2
-grow_vertical = 0
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
 focus_mode = 0
 theme = ExtResource("15_dkpta")
 text = "Give XP"
 
-[node name="btn_give_level" parent="GUILayer/GUI/debugMenu" unique_id=760045520 instance=ExtResource("12_i8esf")]
+[node name="btn_give_level" parent="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer" unique_id=760045520 instance=ExtResource("12_i8esf")]
 z_index = 1
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = 4.0
-offset_top = -168.0
-offset_right = 60.5
-offset_bottom = -148.0
-grow_horizontal = 2
-grow_vertical = 0
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
 focus_mode = 0
 theme = ExtResource("15_dkpta")
 text = "Give level"
 
-[node name="btn_kill_player" parent="GUILayer/GUI/debugMenu" unique_id=1404436878 instance=ExtResource("12_i8esf")]
+[node name="btn_kill_player" parent="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer" unique_id=1404436878 instance=ExtResource("12_i8esf")]
 z_index = 1
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -60.0
-offset_top = -144.0
-offset_right = -3.5
-offset_bottom = -124.0
-grow_horizontal = 2
-grow_vertical = 0
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
 focus_mode = 0
 theme = ExtResource("15_dkpta")
 text = "Kill player"
 
-[node name="btn_damage_player" parent="GUILayer/GUI/debugMenu" unique_id=1416143240 instance=ExtResource("12_i8esf")]
+[node name="btn_damage_player" parent="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer" unique_id=1416143240 instance=ExtResource("12_i8esf")]
 z_index = 1
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = 4.0
-offset_top = -144.0
-offset_right = 60.0
-offset_bottom = -124.0
-grow_horizontal = 2
-grow_vertical = 0
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
 focus_mode = 0
 theme = ExtResource("15_dkpta")
 text = "Damage self"
 
-[node name="btn_toggle_godmode" parent="GUILayer/GUI/debugMenu" unique_id=283840757 instance=ExtResource("12_i8esf")]
+[node name="btn_toggle_godmode" parent="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer" unique_id=283840757 instance=ExtResource("12_i8esf")]
 z_index = 1
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = 4.0
-offset_top = -120.0
-offset_right = 60.0
-offset_bottom = -100.0
-grow_horizontal = 2
-grow_vertical = 0
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
 focus_mode = 0
 theme = ExtResource("15_dkpta")
 toggle_mode = true
 text = "Godmode"
 
-[node name="btn_toggle_spawns" parent="GUILayer/GUI/debugMenu" unique_id=1717811240 instance=ExtResource("12_i8esf")]
+[node name="btn_toggle_spawns" parent="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer" unique_id=1717811240 instance=ExtResource("12_i8esf")]
 z_index = 1
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -60.0
-offset_top = -120.0
-offset_right = -4.0
-offset_bottom = -100.0
-grow_horizontal = 2
-grow_vertical = 0
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
 focus_mode = 0
 theme = ExtResource("15_dkpta")
-theme_override_font_sizes/font_size = 6
 toggle_mode = true
 text = "Toggle spawns"
 
-[node name="btn_next_normal_track" parent="GUILayer/GUI/debugMenu" unique_id=587350050 instance=ExtResource("12_i8esf")]
+[node name="btn_next_normal_track" parent="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer" unique_id=587350050 instance=ExtResource("12_i8esf")]
 z_index = 1
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -60.00061
-offset_top = -96.0
-offset_right = -4.0006104
-offset_bottom = -76.0
-grow_horizontal = 2
-grow_vertical = 0
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
 focus_mode = 0
 theme = ExtResource("15_dkpta")
-theme_override_font_sizes/font_size = 5
 text = "Next normal track"
 
-[node name="btn_next_boss_track" parent="GUILayer/GUI/debugMenu" unique_id=1447930104 instance=ExtResource("12_i8esf")]
+[node name="btn_next_boss_track" parent="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer" unique_id=1447930104 instance=ExtResource("12_i8esf")]
 z_index = 1
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = 3.9993896
-offset_top = -96.0
-offset_right = 59.99939
-offset_bottom = -76.0
-grow_horizontal = 2
-grow_vertical = 0
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
 focus_mode = 0
 theme = ExtResource("15_dkpta")
-theme_override_font_sizes/font_size = 6
 text = "Next boss track"
 
-[node name="btn_pause_music" parent="GUILayer/GUI/debugMenu" unique_id=1520240956 instance=ExtResource("12_i8esf")]
+[node name="btn_pause_music" parent="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer" unique_id=1520240956 instance=ExtResource("12_i8esf")]
 z_index = 1
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -60.00061
-offset_top = -72.0
-offset_right = -4.0006104
-offset_bottom = -52.0
-grow_horizontal = 2
-grow_vertical = 0
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
 focus_mode = 0
 theme = ExtResource("15_dkpta")
-theme_override_font_sizes/font_size = 6
 text = "Pause music"
 
-[node name="btn_unpause_music" parent="GUILayer/GUI/debugMenu" unique_id=1724961784 instance=ExtResource("12_i8esf")]
+[node name="btn_unpause_music" parent="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer" unique_id=1724961784 instance=ExtResource("12_i8esf")]
 z_index = 1
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = 3.9993896
-offset_top = -72.0
-offset_right = 59.99939
-offset_bottom = -52.0
-grow_horizontal = 2
-grow_vertical = 0
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
 focus_mode = 0
 theme = ExtResource("15_dkpta")
-theme_override_font_sizes/font_size = 6
 text = "Unpause music"
 
-[node name="btn_timer_1m" parent="GUILayer/GUI/debugMenu" unique_id=1284255928 instance=ExtResource("12_i8esf")]
+[node name="btn_timer_1m" parent="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer" unique_id=1284255928 instance=ExtResource("12_i8esf")]
 z_index = 1
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -60.00061
-offset_top = -48.0
-offset_right = -4.0006104
-offset_bottom = -28.0
-grow_horizontal = 2
-grow_vertical = 0
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
 focus_mode = 0
 theme = ExtResource("15_dkpta")
-theme_override_font_sizes/font_size = 5
 text = "Advance timer 1m"
 
-[node name="btn_timer_5m" parent="GUILayer/GUI/debugMenu" unique_id=1731754616 instance=ExtResource("12_i8esf")]
+[node name="btn_timer_5m" parent="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer" unique_id=1731754616 instance=ExtResource("12_i8esf")]
 z_index = 1
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = 3.9993896
-offset_top = -48.0
-offset_right = 59.99939
-offset_bottom = -28.0
-grow_horizontal = 2
-grow_vertical = 0
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
 focus_mode = 0
 theme = ExtResource("15_dkpta")
-theme_override_font_sizes/font_size = 5
 text = "Advance timer 5m"
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="GUILayer/GUI/debugMenu" unique_id=1254991331]
-libraries/ = SubResource("AnimationLibrary_b1ygp")
 
 [connection signal="timeout" from="regenTimer" to="." method="_on_regen_timer_timeout"]
 [connection signal="hurt" from="HurtBox" to="." method="_on_hurt_box_hurt"]
@@ -718,23 +530,25 @@ libraries/ = SubResource("AnimationLibrary_b1ygp")
 [connection signal="body_exited" from="EnemyDetectionArea" to="." method="_on_enemy_detection_area_body_exited"]
 [connection signal="area_entered" from="GrabArea" to="." method="_on_grab_area_area_entered"]
 [connection signal="area_entered" from="CollectArea" to="." method="_on_collect_area_area_entered"]
+[connection signal="closeMenu" from="GUILayer/GUI" to="GUILayer/GUI/Debugmenu" method="_on_gui_close_menu"]
+[connection signal="openMenu" from="GUILayer/GUI" to="GUILayer/GUI/Debugmenu" method="_on_gui_open_menu"]
 [connection signal="click_end" from="GUILayer/GUI/DeathPanel/btn_menu" to="GUILayer/GUI" method="_on_btn_menu_click_end"]
 [connection signal="click_end" from="GUILayer/GUI/DeathPanel/btn_restart" to="GUILayer/GUI" method="_on_btn_restart_click_end"]
 [connection signal="click_end" from="GUILayer/GUI/PauseMenu/btn_end_run" to="GUILayer/GUI" method="_on_btn_end_run_click_end"]
 [connection signal="click_end" from="GUILayer/GUI/PauseMenu/btn_exit_game" to="GUILayer/GUI" method="_on_btn_exit_game_click_end"]
-[connection signal="click_end" from="GUILayer/GUI/debugMenu/btn_end_run" to="." method="_on_btn_menu_click_end"]
-[connection signal="click_end" from="GUILayer/GUI/debugMenu/btn_exit_game" to="." method="_on_btn_exit_game_click_end"]
-[connection signal="click_end" from="GUILayer/GUI/debugMenu/btn_give_xp" to="." method="_on_btn_give_xp_click_end"]
-[connection signal="click_end" from="GUILayer/GUI/debugMenu/btn_give_level" to="." method="_on_btn_give_level_click_end"]
-[connection signal="click_end" from="GUILayer/GUI/debugMenu/btn_kill_player" to="." method="_on_btn_kill_player_click_end"]
-[connection signal="click_end" from="GUILayer/GUI/debugMenu/btn_damage_player" to="." method="_on_btn_damage_player_click_end"]
-[connection signal="toggled" from="GUILayer/GUI/debugMenu/btn_toggle_godmode" to="." method="_on_btn_toggle_godmode_toggled"]
-[connection signal="toggled" from="GUILayer/GUI/debugMenu/btn_toggle_spawns" to="." method="_on_btn_toggle_spawns_toggled"]
-[connection signal="click_end" from="GUILayer/GUI/debugMenu/btn_next_normal_track" to="." method="_on_btn_next_normal_track_click_end"]
-[connection signal="click_end" from="GUILayer/GUI/debugMenu/btn_next_boss_track" to="." method="_on_btn_next_boss_track_click_end"]
-[connection signal="click_end" from="GUILayer/GUI/debugMenu/btn_pause_music" to="." method="_on_btn_pause_music_click_end"]
-[connection signal="click_end" from="GUILayer/GUI/debugMenu/btn_unpause_music" to="." method="_on_btn_unpause_music_click_end"]
-[connection signal="click_end" from="GUILayer/GUI/debugMenu/btn_timer_1m" to="." method="_on_btn_timer_1m_click_end"]
-[connection signal="click_end" from="GUILayer/GUI/debugMenu/btn_timer_5m" to="." method="_on_btn_timer_5m_click_end"]
+[connection signal="click_end" from="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer/btn_end_run" to="." method="_on_btn_end_run_click_end"]
+[connection signal="click_end" from="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer/btn_exit_game" to="." method="_on_btn_exit_game_click_end"]
+[connection signal="click_end" from="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer/btn_give_xp" to="." method="_on_btn_give_xp_click_end"]
+[connection signal="click_end" from="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer/btn_give_level" to="." method="_on_btn_give_level_click_end"]
+[connection signal="click_end" from="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer/btn_kill_player" to="." method="_on_btn_kill_player_click_end"]
+[connection signal="click_end" from="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer/btn_damage_player" to="." method="_on_btn_damage_player_click_end"]
+[connection signal="toggled" from="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer/btn_toggle_godmode" to="." method="_on_btn_toggle_godmode_toggled"]
+[connection signal="toggled" from="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer/btn_toggle_spawns" to="." method="_on_btn_toggle_spawns_toggled"]
+[connection signal="click_end" from="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer/btn_next_normal_track" to="." method="_on_btn_next_normal_track_click_end"]
+[connection signal="click_end" from="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer/btn_next_boss_track" to="." method="_on_btn_next_boss_track_click_end"]
+[connection signal="click_end" from="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer/btn_pause_music" to="." method="_on_btn_pause_music_click_end"]
+[connection signal="click_end" from="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer/btn_unpause_music" to="." method="_on_btn_unpause_music_click_end"]
+[connection signal="click_end" from="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer/btn_timer_1m" to="." method="_on_btn_timer_1m_click_end"]
+[connection signal="click_end" from="GUILayer/GUI/Debugmenu/Padded container/VBoxContainer/GridContainer/btn_timer_5m" to="." method="_on_btn_timer_5m_click_end"]
 
 [editable path="HurtBox"]

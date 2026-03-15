@@ -15,6 +15,8 @@ var experience = 0
 var experience_level = 1
 var collected_experience = 0
 
+var titleMenu = "res://TitleScreen/menu.tscn"
+
 #Attacks
 var iceSpear = preload("res://Player/Attack/ice_spear.tscn")
 var tornado = preload("res://Player/Attack/tornado.tscn")
@@ -393,6 +395,7 @@ func death():
 	if time >= 300:
 		lblResult.text = "You Win"
 		sndVictory.play()
+		MusicController.setLooping(false)
 		MusicController.playSpecificTrack(MusicController.winMusic)
 	else:
 		lblResult.text = "You Lose"
@@ -442,3 +445,8 @@ func _on_btn_timer_1m_click_end() -> void:
 
 func _on_btn_timer_5m_click_end() -> void:
 	GlobalEvents.time += 60 * 5
+
+func _on_btn_exit_game_click_end() -> void:
+	get_tree().quit()
+func _on_btn_end_run_click_end() -> void:
+	var _level = get_tree().change_scene_to_file(titleMenu)

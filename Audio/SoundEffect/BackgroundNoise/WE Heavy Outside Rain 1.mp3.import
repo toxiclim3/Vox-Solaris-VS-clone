@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://tien114vt1fv"
+path="res://.godot/imported/WE Heavy Outside Rain 1.mp3-07552444dcd952dbcbb0c07d8891adbb.mp3str"
+
+[deps]
+
+source_file="res://Audio/SoundEffect/BackgroundNoise/WE Heavy Outside Rain 1.mp3"
+dest_files=["res://.godot/imported/WE Heavy Outside Rain 1.mp3-07552444dcd952dbcbb0c07d8891adbb.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

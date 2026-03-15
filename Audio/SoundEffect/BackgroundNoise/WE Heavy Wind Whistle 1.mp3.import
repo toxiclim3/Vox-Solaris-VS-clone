@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dr8rgs2tdjdwc"
+path="res://.godot/imported/WE Heavy Wind Whistle 1.mp3-9e2fbdb99c1672f5bb02f8937cdf814f.mp3str"
+
+[deps]
+
+source_file="res://Audio/SoundEffect/BackgroundNoise/WE Heavy Wind Whistle 1.mp3"
+dest_files=["res://.godot/imported/WE Heavy Wind Whistle 1.mp3-9e2fbdb99c1672f5bb02f8937cdf814f.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

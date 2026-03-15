@@ -4,6 +4,7 @@ var level = "res://World/world.tscn"
 
 func _ready():
 	get_tree().paused = false
+	MusicController.setLooping(false)
 	MusicController.playSpecificTrack(MusicController.titleMusic)
 
 func _on_btn_play_click_end():
