@@ -1,12 +1,23 @@
 extends Node2D
 
+@export var spawns_easy: Array[Spawn_info] = []
+@export var spawns_normal: Array[Spawn_info] = []
+@export var spawns_hard: Array[Spawn_info] = []
+@export var spawns_super: Array[Spawn_info] = []
 
-@export var spawns: Array[Spawn_info] = []
+@export var base_soft_limit: int = 100
+@export var min_soft_limit: int = 50
+@export var max_soft_limit: int = 200
+@export var boss_spawn_interval: int = 600
+@export var time_normal_unlock_minutes: float = 1.0
+@export var time_hard_unlock_minutes: float = 3.0
 
 @onready var player = get_tree().get_first_node_in_group("player")
-
 @onready var timer = get_node("Timer")
-var isSpawningActive = 1
+
+var isSpawningActive = true
+@onready var soft_limit = base_soft_limit
+var current_wave_delay = 0
 
 signal changetime(time)
 
@@ -17,10 +28,10 @@ func _ready():
 	GlobalEvents.disableSpawns.connect(disableSpawns)
 
 func enableSpawns():
-		isSpawningActive = true
+	isSpawningActive = true
 
 func disableSpawns():
-		isSpawningActive = false
+	isSpawningActive = false
 
 func stopTimer():
 	timer.paused = true
@@ -35,17 +46,79 @@ func _on_timer_timeout():
 		MusicController.playNext(MusicController.MusicType.BOSS)
 		
 	if isSpawningActive:
-		var enemy_spawns = spawns
-		for i in enemy_spawns:
-			if GlobalEvents.time >= i.time_start and GlobalEvents.time <= i.time_end or GlobalEvents.time >= i.time_start and i.time_end == 0:
-				if i.spawn_delay_counter < i.enemy_spawn_delay:
-					i.spawn_delay_counter += 1
-				else:
-					i.spawn_delay_counter = 0
-					var new_enemy = i.enemy
+		# FPS soft limit adjustment
+		var fps = Engine.get_frames_per_second()
+		if fps >= 55:
+			soft_limit = min(soft_limit + 5, max_soft_limit)
+		elif fps <= 30:
+			soft_limit = max(soft_limit - 5, min_soft_limit)
+
+		var current_enemies = get_tree().get_nodes_in_group("enemy").size()
+		
+		# Boss Spawns
+		if boss_spawn_interval > 0 and GlobalEvents.time % boss_spawn_interval == 0 and GlobalEvents.time > 0:
+			if spawns_super.size() > 0:
+				var boss_info = spawns_super.pick_random()
+				var boss_spawn = boss_info.enemy.instantiate()
+				boss_spawn.global_position = get_random_position()
+				add_child(boss_spawn)
+
+		if current_wave_delay > 0:
+			current_wave_delay -= 1
+		else:
+			var minutes = GlobalEvents.time / 60.0
+			
+			var weight_easy = 100
+			var weight_normal = 0
+			var weight_hard = 0
+			
+			if minutes >= time_normal_unlock_minutes:
+				weight_normal = min(int((minutes - time_normal_unlock_minutes) * 10) + 10, 50)
+				weight_easy -= weight_normal
+				
+			if minutes >= time_hard_unlock_minutes:
+				weight_hard = min(int((minutes - time_hard_unlock_minutes) * 10), 40)
+				weight_easy -= weight_hard
+			
+			weight_easy = max(10, weight_easy)
+			
+			var total_weight = weight_easy + weight_normal + weight_hard
+			var roll = randi_range(0, total_weight)
+			
+			var selected_pool_type = "easy"
+			var selected_pool = spawns_easy
+			if roll > weight_easy and spawns_normal.size() > 0:
+				selected_pool_type = "normal"
+				selected_pool = spawns_normal
+			if roll > (weight_easy + weight_normal) and spawns_hard.size() > 0:
+				selected_pool_type = "hard"
+				selected_pool = spawns_hard
+				
+			if selected_pool.size() == 0:
+				selected_pool = spawns_easy
+				
+			if selected_pool.size() > 0:
+				var enemy_info = selected_pool.pick_random()
+				current_wave_delay = max(1, enemy_info.enemy_spawn_delay) 
+				current_wave_delay = max(1, current_wave_delay + randi_range(-1, 1))
+				
+				if current_enemies < soft_limit:
+					var time_multiplier = 1.0 + (minutes * 0.5)
+					var spawn_count = int(enemy_info.enemy_num * time_multiplier * randf_range(0.8, 1.2))
+					
+					if selected_pool_type == "easy" and minutes >= time_hard_unlock_minutes:
+						spawn_count = int(spawn_count * 1.5)
+						
+					if enemy_info.enemy_num > 0 and spawn_count < 1:
+						spawn_count = 1
+						
+					var max_allowed = (soft_limit - current_enemies) + 5
+					if spawn_count > max_allowed and max_allowed > 0:
+						spawn_count = max_allowed
+						
 					var counter = 0
-					while  counter < i.enemy_num:
-						var enemy_spawn = new_enemy.instantiate()
+					while counter < spawn_count:
+						var enemy_spawn = enemy_info.enemy.instantiate()
 						enemy_spawn.global_position = get_random_position()
 						add_child(enemy_spawn)
 						counter += 1
