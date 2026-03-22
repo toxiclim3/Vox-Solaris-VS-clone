@@ -5,6 +5,7 @@ var titleMenu = "res://TitleScreen/menu.tscn"
 @onready var settings_menu = get_node("SettingsMenu")
 @onready var pause_menu = get_node("PauseMenu")
 @onready var debug_menu = get_node("DebugMenu")
+@onready var levelup_menu = get_node("LevelUp")
 
 @export var transition_duration: float = 0.4
 @export var gap: float = 0.5 * 8 * 8 # Расстояние между окнами
@@ -47,10 +48,13 @@ func _input(event: InputEvent) -> void:
 
 
 func toggle_menu():
-	if pause_menu:
-		pause_menu.visible = !pause_menu.visible
-		get_tree().paused = pause_menu.visible
-		MusicController.focusMusic(!pause_menu.visible)
+	if !levelup_menu.visible:
+		if pause_menu:
+			pause_menu.visible = !pause_menu.visible
+			get_tree().paused = pause_menu.visible
+			MusicController.focusMusic(!pause_menu.visible)
+		if !pause_menu.visible and settings_menu.visible:
+			close_settings()
 
 
 func open_settings() -> void:
@@ -104,6 +108,8 @@ func _on_btn_end_run_click_end() -> void:
 	var _level = get_tree().change_scene_to_file(titleMenu)
 
 func _on_btn_resume_run_click_end() -> void:
+	if settings_menu.visible:
+		close_settings()
 	toggle_menu()
 
 func _on_btn_settings_click_end() -> void:

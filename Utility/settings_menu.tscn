@@ -8,10 +8,11 @@
 [ext_resource type="Script" uid="uid://djswmy6caitni" path="res://Utility/volume_slider.gd" id="4_wf2ud"]
 [ext_resource type="AudioStream" uid="uid://bwahs2mtjus02" path="res://Audio/GUI/hover.wav" id="5_88pqv"]
 [ext_resource type="AudioStream" uid="uid://dobpqbspunihg" path="res://Audio/GUI/click.wav" id="6_hevq0"]
+[ext_resource type="Theme" uid="uid://bibrcd7ekt5bd" path="res://Themes/RegularText.tres" id="7_hevq0"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_0eg15"]
 font = ExtResource("3_56o74")
-font_size = 12
+font_size = 10
 
 [node name="SettingsMenu" type="PanelContainer" unique_id=244721166]
 anchors_preset = 8
@@ -62,6 +63,7 @@ columns = 2
 
 [node name="Label" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=1895475832]
 layout_mode = 2
+theme = ExtResource("7_hevq0")
 text = "Volume"
 label_settings = SubResource("LabelSettings_0eg15")
 
@@ -73,6 +75,7 @@ busName = "Master"
 
 [node name="Label2" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=442111478]
 layout_mode = 2
+theme = ExtResource("7_hevq0")
 text = "Music"
 label_settings = SubResource("LabelSettings_0eg15")
 
@@ -83,6 +86,7 @@ script = ExtResource("4_wf2ud")
 
 [node name="Label3" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=1478261467]
 layout_mode = 2
+theme = ExtResource("7_hevq0")
 text = "SFX"
 label_settings = SubResource("LabelSettings_0eg15")
 
@@ -91,6 +95,19 @@ layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("4_wf2ud")
 busName = "SFX"
+
+[node name="Label4" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=647318269]
+layout_mode = 2
+theme = ExtResource("7_hevq0")
+text = "Sound Profile"
+label_settings = SubResource("LabelSettings_0eg15")
+
+[node name="ProfileButton" type="OptionButton" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=987216453]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("7_hevq0")
+allow_reselect = true
 
 [connection signal="mouse_entered" from="MarginContainer2/VBoxContainer/CloseSettingsButton" to="MarginContainer2/VBoxContainer/CloseSettingsButton" method="_on_mouse_entered"]
 [connection signal="pressed" from="MarginContainer2/VBoxContainer/CloseSettingsButton" to="." method="_on_close_settings_button_pressed"]

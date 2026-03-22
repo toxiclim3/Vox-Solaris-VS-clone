@@ -15,7 +15,7 @@ export_credentials.cfg
 data_*/
 mono_crash.*.json
 
-#music
+# music
 Audio/Music/**/*.mp3
 Audio/Music/**/*.wav
 Audio/Music/**/*.ogg
@@ -23,3 +23,6 @@ Audio/Music/**/*.flac
 Audio/Music/**/*.import
 
 !Audio/Music/**/.gitkeep
+
+Audio/SoundEffect/*.wav
+Audio/SoundEffect/*.import

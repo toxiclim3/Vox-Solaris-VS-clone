@@ -78,6 +78,8 @@ var enemy_close = []
 @onready var lblResult = get_node("%lbl_Result")
 @onready var sndVictory = get_node("%snd_victory")
 @onready var sndLose = get_node("%snd_lose")
+@onready var sndHurt = get_node("%snd_hurt")
+@onready var sndHurtBad = get_node("%snd_hurt_bad")
 
 @onready var pauseMenu = get_node("GUILayer/GUI/PauseMenu")
 @onready var debugMenu = get_node("GUILayer/GUI/DebugMenu")
@@ -136,7 +138,13 @@ func _on_regen_timer_timeout(): #regens regenPerSecond percent of maxHp every re
 
 func _on_hurt_box_hurt(damage, _angle, _knockback):
 	if godmode == false:
-		hp -= clamp(damage-armor, 1.0, 999.0)
+		var actual_damage = clamp(damage-armor, 1.0, 999.0)
+		if actual_damage > 0:
+			if hp >= maxhp * 0.1:
+				sndHurt.play()
+			else:
+				sndHurtBad.play()
+		hp -= actual_damage
 		healthBar.max_value = maxhp
 		healthBar.value = hp
 		if hp <= 0:

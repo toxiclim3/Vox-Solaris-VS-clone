@@ -8,9 +8,13 @@ extends Node2D
 @export var base_soft_limit: int = 100
 @export var min_soft_limit: int = 50
 @export var max_soft_limit: int = 200
+
 @export var boss_spawn_interval: int = 600
 @export var time_normal_unlock_minutes: float = 1.0
 @export var time_hard_unlock_minutes: float = 3.0
+
+@export var base_enemy_intensity: float = 3.0
+@export var enemy_intensity_time_multiplier: float = 1.0
 
 @onready var player = get_tree().get_first_node_in_group("player")
 @onready var timer = get_node("Timer")
@@ -103,7 +107,7 @@ func _on_timer_timeout():
 				current_wave_delay = max(1, current_wave_delay + randi_range(-1, 1))
 				
 				if current_enemies < soft_limit:
-					var time_multiplier = 1.0 + (minutes * 0.5)
+					var time_multiplier = base_enemy_intensity + (minutes * enemy_intensity_time_multiplier)
 					var spawn_count = int(enemy_info.enemy_num * time_multiplier * randf_range(0.8, 1.2))
 					
 					if selected_pool_type == "easy" and minutes >= time_hard_unlock_minutes:

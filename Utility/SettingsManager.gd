@@ -4,6 +4,22 @@ extends Node
 const SAVE_PATH = "user://settings.cfg"
 var config = ConfigFile.new()
 
+var sound_profile: String = "Full"
+const PROFILES = {
+	"Full": {
+		"EnemyHurt": 1.0,
+		"EnemyDeath": 1.0,
+		"PlayerHurt": 1.0,
+		"LevelUp": 1.0
+	},
+	"Grindfest": {
+		"EnemyHurt": 0.15,
+		"EnemyDeath": 0.15,
+		"PlayerHurt": 0.8,
+		"LevelUp": 0.5
+	}
+}
+
 func _ready() -> void:
 	loadSettings()
 
@@ -22,9 +38,31 @@ func loadSettings() -> void:
 
 	# Применяем громкость для всех сохраненных шин
 	if config.has_section("audio"):
+		sound_profile = config.get_value("audio", "sound_profile", "Full")
 		for busName in config.get_section_keys("audio"):
-			var volumeValue = config.get_value("audio", busName, 1.0)
-			applyBusVolume(busName, volumeValue)
+			if busName != "sound_profile":
+				var volumeValue = config.get_value("audio", busName, 1.0)
+				applyBusVolume(busName, volumeValue)
+	
+	applySoundProfile(sound_profile)
+
+func set_sound_profile(profile: String) -> void:
+	sound_profile = profile
+	config.set_value("audio", "sound_profile", profile)
+	config.save(SAVE_PATH)
+	applySoundProfile(profile)
+
+func get_sound_profile_index() -> int:
+	if sound_profile == "Grindfest":
+		return 1
+	return 0
+
+func applySoundProfile(profile: String) -> void:
+	if not PROFILES.has(profile):
+		return
+	var settings = PROFILES[profile]
+	for busName in settings:
+		applyBusVolume(busName, settings[busName])
 
 # Вспомогательная функция для применения громкости к AudioServer
 func applyBusVolume(busName: String, linearValue: float) -> void:

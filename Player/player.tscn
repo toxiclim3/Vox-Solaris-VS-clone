@@ -6,9 +6,11 @@
 [ext_resource type="Script" uid="uid://cixj7hojfeitd" path="res://Player/gui.gd" id="4_gu6f8"]
 [ext_resource type="Texture2D" uid="uid://dx7xx6vfahxlq" path="res://Textures/GUI/exp_background.png" id="4_pbpj5"]
 [ext_resource type="Texture2D" uid="uid://2e6c0h52rqvc" path="res://Textures/GUI/exp_progress_alt2.png" id="5_p5o4e"]
+[ext_resource type="AudioStream" uid="uid://cw6gd5eleb2fy" path="res://Audio/SoundEffect/PlayerHurt.wav" id="6_7emwf"]
 [ext_resource type="FontFile" uid="uid://d0avhtg6twdo2" path="res://Font/ArchivoBlack-Regular.ttf" id="6_gu6f8"]
 [ext_resource type="FontFile" uid="uid://cb4e8g30xxp5u" path="res://Font/tenderness.otf" id="6_okx7u"]
 [ext_resource type="Texture2D" uid="uid://ptj28vdafu7m" path="res://Textures/GUI/healthcircleunderlay.png" id="7_5htga"]
+[ext_resource type="AudioStream" uid="uid://cgf78ydglric8" path="res://Audio/SoundEffect/PlayerHurtBad.wav" id="7_hshwv"]
 [ext_resource type="PackedScene" uid="uid://dyahivqch5l16" path="res://Utility/settings_menu.tscn" id="7_pisgm"]
 [ext_resource type="AudioStream" uid="uid://ul8hunj8tl2t" path="res://Audio/SoundEffect/levelup.ogg" id="7_wl7d2"]
 [ext_resource type="Texture2D" uid="uid://diw4w587rd2qa" path="res://Textures/GUI/healthcircle.png" id="8_p5o4e"]
@@ -138,6 +140,16 @@ collision_mask = 8
 position = Vector2(0, 2)
 shape = SubResource("CircleShape2D_6vwp8")
 
+[node name="snd_hurt" type="AudioStreamPlayer" parent="." unique_id=837194827]
+unique_name_in_owner = true
+stream = ExtResource("6_7emwf")
+bus = &"PlayerHurt"
+
+[node name="snd_hurt_bad" type="AudioStreamPlayer" parent="." unique_id=1305310068]
+unique_name_in_owner = true
+stream = ExtResource("7_hshwv")
+bus = &"PlayerHurt"
+
 [node name="GUILayer" type="CanvasLayer" parent="." unique_id=1336760669]
 process_mode = 3
 
@@ -214,7 +226,6 @@ offset_bottom = 100.0
 unique_name_in_owner = true
 stream = ExtResource("7_wl7d2")
 volume_db = -10.0
-bus = &"SFX"
 
 [node name="DeathPanel" type="Panel" parent="GUILayer/GUI" unique_id=266401415]
 unique_name_in_owner = true
@@ -308,9 +319,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -80.0
-offset_top = -112.0
+offset_top = -96.0
 offset_right = 80.0
-offset_bottom = 80.0
+offset_bottom = 96.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -379,6 +390,10 @@ text = "Exit game"
 visible = false
 z_index = 2
 layout_mode = 1
+offset_left = -96.0
+offset_top = -90.0
+offset_right = 96.0
+offset_bottom = 90.0
 
 [node name="DebugMenu" type="MarginContainer" parent="GUILayer/GUI" unique_id=1500833420]
 z_index = 10

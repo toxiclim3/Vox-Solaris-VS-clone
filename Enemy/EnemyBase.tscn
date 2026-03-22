@@ -35,7 +35,7 @@ shape = SubResource("RectangleShape2D_0c0ua")
 [node name="snd_hit" type="AudioStreamPlayer2D" parent="." unique_id=2103931640]
 stream = ExtResource("4_u3dbg")
 volume_db = -20.0
-bus = &"SFX"
+bus = &"EnemyHurt"
 
 [editable path="HurtBox"]
 [editable path="HitBox"]

@@ -53,7 +53,7 @@ script = ExtResource("2_d6gja")
 stream = ExtResource("2_wsm1y")
 pitch_scale = 0.5
 autoplay = true
-bus = &"SFX"
+bus = &"EnemyDeath"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=373262376]
 libraries/ = SubResource("AnimationLibrary_w1lln")
