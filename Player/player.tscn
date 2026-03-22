@@ -95,23 +95,7 @@ shape = SubResource("RectangleShape2D_yfi4i")
 
 [node name="Attack" type="Node2D" parent="." unique_id=1452306207]
 
-[node name="IceSpearTimer" type="Timer" parent="Attack" unique_id=897818898]
-unique_name_in_owner = true
-wait_time = 1.5
-
-[node name="IceSpearAttackTimer" type="Timer" parent="Attack/IceSpearTimer" unique_id=1815200367]
-unique_name_in_owner = true
-wait_time = 0.075
-
-[node name="TornadoTimer" type="Timer" parent="Attack" unique_id=1186702690]
-unique_name_in_owner = true
-wait_time = 3.0
-
-[node name="TornadoAttackTimer" type="Timer" parent="Attack/TornadoTimer" unique_id=549036800]
-unique_name_in_owner = true
-wait_time = 0.2
-
-[node name="JavelinBase" type="Node2D" parent="Attack" unique_id=164170231]
+[node name="Weapons" type="Node2D" parent="Attack" unique_id=164170232]
 unique_name_in_owner = true
 
 [node name="EnemyDetectionArea" type="Area2D" parent="." unique_id=1559163077]
@@ -226,6 +210,65 @@ offset_bottom = 100.0
 unique_name_in_owner = true
 stream = ExtResource("7_wl7d2")
 volume_db = -10.0
+
+[node name="GiveItemMenu" type="Panel" parent="GUILayer/GUI" unique_id=739812498]
+unique_name_in_owner = true
+process_mode = 2
+visible = false
+z_index = 4
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="GUILayer/GUI/GiveItemMenu" unique_id=987654321]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GUILayer/GUI/GiveItemMenu/ScrollContainer" unique_id=123456789]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MainGrid" type="GridContainer" parent="GUILayer/GUI/GiveItemMenu/ScrollContainer/VBoxContainer" unique_id=345678901]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 3
+
+[node name="SubGrid" type="GridContainer" parent="GUILayer/GUI/GiveItemMenu/ScrollContainer/VBoxContainer" unique_id=456789012]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 3
+
+[node name="btn_close_give_item" type="Button" parent="GUILayer/GUI/GiveItemMenu" unique_id=567890123]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -50.0
+offset_top = -45.0
+offset_right = 50.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Close"
 
 [node name="DeathPanel" type="Panel" parent="GUILayer/GUI" unique_id=266401415]
 unique_name_in_owner = true
@@ -396,7 +439,7 @@ offset_right = 96.0
 offset_bottom = 90.0
 
 [node name="DebugMenu" type="MarginContainer" parent="GUILayer/GUI" unique_id=1500833420]
-z_index = 10
+z_index = 2
 layout_mode = 1
 anchors_preset = 11
 anchor_left = 1.0
@@ -473,6 +516,14 @@ layout_mode = 2
 focus_mode = 0
 theme = ExtResource("15_dkpta")
 text = "Give level"
+
+[node name="btn_give_item" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=760045521 instance=ExtResource("12_i8esf")]
+z_index = 1
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("15_dkpta")
+text = "Give item"
 
 [node name="btn_kill_player" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=1404436878 instance=ExtResource("12_i8esf")]
 z_index = 1
@@ -558,16 +609,13 @@ text = "Advance timer 5m"
 
 [connection signal="timeout" from="regenTimer" to="." method="_on_regen_timer_timeout"]
 [connection signal="hurt" from="HurtBox" to="." method="_on_hurt_box_hurt"]
-[connection signal="timeout" from="Attack/IceSpearTimer" to="." method="_on_ice_spear_timer_timeout"]
-[connection signal="timeout" from="Attack/IceSpearTimer/IceSpearAttackTimer" to="." method="_on_ice_spear_attack_timer_timeout"]
-[connection signal="timeout" from="Attack/TornadoTimer" to="." method="_on_tornado_timer_timeout"]
-[connection signal="timeout" from="Attack/TornadoTimer/TornadoAttackTimer" to="." method="_on_tornado_attack_timer_timeout"]
 [connection signal="body_entered" from="EnemyDetectionArea" to="." method="_on_enemy_detection_area_body_entered"]
 [connection signal="body_exited" from="EnemyDetectionArea" to="." method="_on_enemy_detection_area_body_exited"]
 [connection signal="area_entered" from="GrabArea" to="." method="_on_grab_area_area_entered"]
 [connection signal="area_entered" from="CollectArea" to="." method="_on_collect_area_area_entered"]
 [connection signal="closeMenu" from="GUILayer/GUI" to="GUILayer/GUI/DebugMenu" method="_on_gui_close_menu"]
 [connection signal="openMenu" from="GUILayer/GUI" to="GUILayer/GUI/DebugMenu" method="_on_gui_open_menu"]
+[connection signal="pressed" from="GUILayer/GUI/GiveItemMenu/btn_close_give_item" to="GUILayer/GUI" method="_on_btn_close_give_item_pressed"]
 [connection signal="click_end" from="GUILayer/GUI/DeathPanel/btn_menu" to="GUILayer/GUI" method="_on_btn_menu_click_end"]
 [connection signal="click_end" from="GUILayer/GUI/DeathPanel/btn_restart" to="GUILayer/GUI" method="_on_btn_restart_click_end"]
 [connection signal="click_end" from="GUILayer/GUI/PauseMenu/MarginContainer/VBoxContainer2/VBoxContainer/btn_resume_run" to="GUILayer/GUI" method="_on_btn_resume_run_click_end"]
@@ -579,6 +627,7 @@ text = "Advance timer 5m"
 [connection signal="click_end" from="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer/btn_exit_game" to="." method="_on_btn_exit_game_click_end"]
 [connection signal="click_end" from="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer/btn_give_xp" to="." method="_on_btn_give_xp_click_end"]
 [connection signal="click_end" from="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer/btn_give_level" to="." method="_on_btn_give_level_click_end"]
+[connection signal="click_end" from="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer/btn_give_item" to="GUILayer/GUI" method="_on_btn_give_item_click_end"]
 [connection signal="click_end" from="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer/btn_kill_player" to="." method="_on_btn_kill_player_click_end"]
 [connection signal="click_end" from="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer/btn_damage_player" to="." method="_on_btn_damage_player_click_end"]
 [connection signal="toggled" from="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer/btn_toggle_godmode" to="." method="_on_btn_toggle_godmode_toggled"]

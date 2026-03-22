@@ -7,6 +7,11 @@ var titleMenu = "res://TitleScreen/menu.tscn"
 @onready var debug_menu = get_node("DebugMenu")
 @onready var levelup_menu = get_node("LevelUp")
 
+@onready var giveItemMenu = get_node("GiveItemMenu")
+@onready var giveItemMainGrid = get_node("GiveItemMenu/ScrollContainer/VBoxContainer/MainGrid")
+@onready var giveItemSubGrid = get_node("GiveItemMenu/ScrollContainer/VBoxContainer/SubGrid")
+@onready var player = get_tree().get_first_node_in_group("player")
+
 @export var transition_duration: float = 0.4
 @export var gap: float = 0.5 * 8 * 8 # Расстояние между окнами
 
@@ -27,6 +32,7 @@ func _ready() -> void:
 	var screen_width: float = get_viewport_rect().size.x
 	settings_menu.position.x = screen_width + gap
 	settings_menu.hide()
+	setup_give_item_menu()
 
 func _input(event: InputEvent) -> void:
 	if event.is_echo():
@@ -120,3 +126,57 @@ func _on_btn_settings_click_end() -> void:
 
 func _on_settings_menu_settings_closed() -> void:
 	close_settings()
+
+# Give Item Menu Logic
+func setup_give_item_menu():
+	var items = {}
+	for i in UpgradeDb.UPGRADES:
+		var base_name = i.rstrip("0123456789")
+		if not items.has(base_name):
+			items[base_name] = []
+		items[base_name].append(i)
+		
+	for base_name in items.keys():
+		var btn = Button.new()
+		var first_id = items[base_name][0]
+		var dname = UpgradeDb.UPGRADES[first_id].get("displayname", base_name)
+		btn.text = dname
+		btn.custom_minimum_size = Vector2(180, 40)
+		btn.pressed.connect(func(b_name=base_name):
+			giveItemMainGrid.hide()
+			giveItemSubGrid.show()
+			for child in giveItemSubGrid.get_children():
+				child.queue_free()
+			
+			var back_btn = Button.new()
+			back_btn.text = "<- Back"
+			back_btn.custom_minimum_size = Vector2(180, 40)
+			back_btn.pressed.connect(func():
+				giveItemSubGrid.hide()
+				giveItemMainGrid.show()
+			)
+			giveItemSubGrid.add_child(back_btn)
+			
+			for lvl_id in items[b_name]:
+				var lvl_btn = Button.new()
+				var lvl_text = str(UpgradeDb.UPGRADES[lvl_id].get("level", lvl_id))
+				lvl_btn.text = lvl_text
+				lvl_btn.custom_minimum_size = Vector2(180, 40)
+				lvl_btn.pressed.connect(func(id=lvl_id):
+					player.grant_upgrade_with_prereqs(id)
+					get_tree().paused = false
+					giveItemMenu.visible = false
+				)
+				giveItemSubGrid.add_child(lvl_btn)
+		)
+		giveItemMainGrid.add_child(btn)
+
+func _on_btn_give_item_click_end() -> void:
+	get_tree().paused = true
+	giveItemMainGrid.show()
+	giveItemSubGrid.hide()
+	giveItemMenu.visible = true
+
+func _on_btn_close_give_item_pressed() -> void:
+	get_tree().paused = false
+	giveItemMenu.visible = false

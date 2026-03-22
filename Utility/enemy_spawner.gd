@@ -107,7 +107,15 @@ func _on_timer_timeout():
 				current_wave_delay = max(1, current_wave_delay + randi_range(-1, 1))
 				
 				if current_enemies < soft_limit:
-					var time_multiplier = base_enemy_intensity + (minutes * enemy_intensity_time_multiplier)
+					var time_multiplier = base_enemy_intensity
+					if minutes > 1.0 and minutes <= 3.0:
+						var t = minutes - 1.0
+						var A = enemy_intensity_time_multiplier / 4.0
+						time_multiplier = base_enemy_intensity + (A * t * t)
+					elif minutes > 3.0:
+						var val_at_3 = base_enemy_intensity + enemy_intensity_time_multiplier
+						time_multiplier = val_at_3 + (minutes - 3.0) * enemy_intensity_time_multiplier
+						
 					var spawn_count = int(enemy_info.enemy_num * time_multiplier * randf_range(0.8, 1.2))
 					
 					if selected_pool_type == "easy" and minutes >= time_hard_unlock_minutes:
