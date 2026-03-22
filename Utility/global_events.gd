@@ -4,7 +4,8 @@ signal advanceBackground
 signal enableSpawns
 signal disableSpawns
 
-@export var musicInterval = 5
+@export var backgroundInterval = 5
+@export var musicInterval = 10
 @export var bossMusicInterval = 5 * 60 #Minutes		
 
 @export var time = 0

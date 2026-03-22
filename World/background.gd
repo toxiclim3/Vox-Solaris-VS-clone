@@ -65,7 +65,7 @@ func _start_transition(new_tex: Texture2D) -> void:
 	fade_sprite.modulate.a = 0.0
 
 ## Новая логика для тайлинга (замощения)
-func _setup_tiling_region(tex: Texture2D) -> void:
+func _setup_tiling_region(_tex: Texture2D) -> void:
 	var view_size = get_viewport_rect().size
 	
 	# Учитываем масштаб (если хочешь сделать пиксели крупнее)

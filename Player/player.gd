@@ -1,8 +1,6 @@
 extends CharacterBody2D
 
-
 @export var movement_speed = 50.0
-@export var backgroundInterval = 2
 
 var hp = 80
 var maxhp = 80
@@ -80,6 +78,9 @@ var enemy_close = []
 @onready var lblResult = get_node("%lbl_Result")
 @onready var sndVictory = get_node("%snd_victory")
 @onready var sndLose = get_node("%snd_lose")
+
+@onready var pauseMenu = get_node("GUILayer/GUI/PauseMenu")
+@onready var debugMenu = get_node("GUILayer/GUI/DebugMenu")
 
 #Signal
 signal playerdeath
@@ -238,7 +239,7 @@ func calculate_experiencecap():
 	if experience_level < 20:
 		exp_cap = experience_level*5
 	elif experience_level < 40:
-		exp_cap + 95 * (experience_level-19)*8
+		exp_cap += 95 * (experience_level-19)*8
 	else:
 		exp_cap = 255 + (experience_level-39)*12
 		
@@ -251,7 +252,7 @@ func set_expbar(set_value = 1, set_max_value = 100):
 func levelup():
 	sndLevelUp.play()
 	lblLevel.text = str("Level: ",experience_level)
-	if experience_level % backgroundInterval == 0:
+	if experience_level % GlobalEvents.backgroundInterval == 0:
 		GlobalEvents.advanceBackground.emit()
 	
 	var tween = levelPanel.create_tween()
@@ -448,5 +449,6 @@ func _on_btn_timer_5m_click_end() -> void:
 
 func _on_btn_exit_game_click_end() -> void:
 	get_tree().quit()
+	
 func _on_btn_end_run_click_end() -> void:
 	var _level = get_tree().change_scene_to_file(titleMenu)

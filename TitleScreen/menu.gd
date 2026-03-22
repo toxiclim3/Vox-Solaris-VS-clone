@@ -1,6 +1,7 @@
 extends Control
 
 var level = "res://World/world.tscn"
+@onready var settings = %SettingsMenu
 
 func _ready():
 	get_tree().paused = false
@@ -13,3 +14,9 @@ func _on_btn_play_click_end():
 
 func _on_btn_exit_click_end():
 	get_tree().quit()
+
+func _on_btn_settings_click_end() -> void:
+	settings.visible = !settings.visible
+
+func _on_settings_menu_settings_closed() -> void:
+	settings.visible = !settings.visible

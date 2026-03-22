@@ -24,6 +24,7 @@ config/icon="res://icon.svg"
 UpgradeDb="*res://Utility/upgrade_db.tscn"
 GlobalEvents="*uid://cfmtka6m73iiv"
 MusicController="*uid://b8x5a6sgnm38g"
+SettingsManager="*uid://bf4lvmyjbidka"
 
 [display]
 

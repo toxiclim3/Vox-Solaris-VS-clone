@@ -8,8 +8,3 @@ func _ready() -> void:
 	MusicController.setLooping(true)
 	MusicController.fadeInFromSilence()
 	MusicController.playNext(MusicController.MusicType.NORMAL)
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass

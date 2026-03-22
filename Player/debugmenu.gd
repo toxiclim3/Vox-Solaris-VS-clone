@@ -12,9 +12,10 @@ var largeGridSize = 8;
 var is_open: bool = false
 
 func _ready() -> void:
+	menu_width = self.get_rect().size.x
 	# 1. Задаем фиксированную ширину меню
-	menu_width *= largeGridSize * smallGridSize
-	custom_minimum_size.x = menu_width
+	#menu_width *= largeGridSize * smallGridSize
+	#custom_minimum_size.x = menu_width
 	
 	# 2. Прячем меню при старте (сдвигаем влево за край экрана)
 	# Мы используем отрицательный margin_left, равный ширине меню
@@ -33,7 +34,7 @@ func open_menu() -> void:
 	tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	
 	# Анимируем отступ к 0 (край экрана)
-	tween.tween_method(_set_menu_margin, menu_width+smallGridSize, 0.0, slide_duration)
+	tween.tween_method(_set_menu_margin, menu_width, 0.0, slide_duration)
 	is_open = true	
 	self.visible = is_open
 
@@ -42,15 +43,15 @@ func close_menu() -> void:
 	tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	
 	# Анимируем отступ обратно за экран
-	tween.tween_method(_set_menu_margin, 0.0, menu_width+smallGridSize, slide_duration)
+	tween.tween_method(_set_menu_margin, 0.0, menu_width, slide_duration)
 	is_open = false
 	await tween.finished
 	self.visible = is_open
 
 # Вспомогательный метод для Tween, так как мы меняем theme_override
 func _set_menu_margin(value: float) -> void:
-	add_theme_constant_override("margin_left", value)
-	add_theme_constant_override("margin_right", -value)
+	add_theme_constant_override("margin_left", int(value))
+	add_theme_constant_override("margin_right", int(-value))
 
 
 func _on_gui_open_menu() -> void:

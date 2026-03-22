@@ -6,17 +6,19 @@
 [ext_resource type="AudioStream" uid="uid://dobpqbspunihg" path="res://Audio/GUI/click.wav" id="2_jbqnc"]
 
 [node name="Button" type="Button" unique_id=964057103]
-offset_right = 8.0
-offset_bottom = 8.0
+offset_right = 56.0
+offset_bottom = 20.0
 theme = ExtResource("1_qkrmd")
 text = "Example"
 script = ExtResource("1_t2e60")
 
 [node name="snd_hover" type="AudioStreamPlayer" parent="." unique_id=685127907]
 stream = ExtResource("1_2ggfj")
+bus = &"SFX"
 
 [node name="snd_click" type="AudioStreamPlayer" parent="." unique_id=1310888880]
 stream = ExtResource("2_jbqnc")
+bus = &"SFX"
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="pressed" from="." to="." method="_on_pressed"]

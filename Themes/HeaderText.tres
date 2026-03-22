@@ -1,0 +1,7 @@
+[gd_resource type="Theme" format=3 uid="uid://dg7yl74xayfwi"]
+
+[ext_resource type="FontFile" uid="uid://bsxgsqnu51ihf" path="res://Font/OpenSans-Bold.ttf" id="1_6rux6"]
+
+[resource]
+default_font = ExtResource("1_6rux6")
+default_font_size = 14

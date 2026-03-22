@@ -195,7 +195,8 @@ func toggleMusic(shouldPlay: bool) -> void:
 # Функция для приглушения музыки (например, для меню паузы)
 func focusMusic(isFocused: bool) -> void:
 	if fadeTween and fadeTween.is_valid():
-		fadeTween.kill()
+		await fadeTween.finished
+		#fadeTween.kill()
 	
 	fadeTween = create_tween()
 	var targetVolume: float = maxVolumeDb if isFocused else backgroundVolumeDb

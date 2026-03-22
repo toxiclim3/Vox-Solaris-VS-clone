@@ -1,0 +1,7 @@
+[gd_resource type="Theme" format=3 uid="uid://bibrcd7ekt5bd"]
+
+[ext_resource type="FontFile" uid="uid://b0s4gbyeyrex1" path="res://Font/OpenSans-Regular.ttf" id="1_1jl60"]
+
+[resource]
+default_font = ExtResource("1_1jl60")
+default_font_size = 8
