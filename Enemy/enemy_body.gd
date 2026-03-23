@@ -25,6 +25,7 @@ var exp_gem = preload("res://Objects/experience_gem.tscn")
 signal remove_from_array(object)
 
 var screen_size
+var update_timer = 0.0
 
 func _ready():
 	add_to_group("enemy")
@@ -33,10 +34,36 @@ func _ready():
 	screen_size = get_viewport_rect().size
 	hurtBox.connect("hurt",Callable(self,"_on_hurt_box_hurt"))
 	
-func _physics_process(_delta):
+func _physics_process(delta):
 	knockback = knockback.move_toward(Vector2.ZERO, knockback_recovery)
-	var direction = global_position.direction_to(player.global_position)
-	velocity = direction*movement_speed
+	var direction = Vector2.ZERO
+	
+	var dist_sq = global_position.distance_squared_to(player.global_position)
+	if dist_sq > 400000:
+		update_timer -= delta
+		if update_timer <= 0:
+			direction = global_position.direction_to(player.global_position)
+			velocity = direction * movement_speed
+			update_timer = 0.2
+		else:
+			direction = velocity.normalized()
+	else:
+		direction = global_position.direction_to(player.global_position)
+		velocity = direction * movement_speed
+		
+		if hurtBox.has_overlapping_areas():
+			var push_vector = Vector2.ZERO
+			for area in hurtBox.get_overlapping_areas():
+				if area.owner != self and area.owner != null:
+					var dist = global_position.distance_to(area.global_position)
+					if dist < 22.0:
+						var push_strength = 1.0 - (dist / 22.0)
+						push_vector += area.global_position.direction_to(global_position) * push_strength
+			velocity += push_vector.normalized() * (movement_speed * 0.4)
+			
+		if velocity.length() > movement_speed:
+			velocity = velocity.normalized() * movement_speed
+			
 	velocity += knockback
 	move_and_slide()
 	

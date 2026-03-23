@@ -48,7 +48,7 @@ _data = {
 
 [node name="enemy_cyclops" type="CharacterBody2D" unique_id=70363022]
 collision_layer = 5
-collision_mask = 5
+collision_mask = 1
 motion_mode = 1
 script = ExtResource("1_c35cp")
 movement_speed = 26.0

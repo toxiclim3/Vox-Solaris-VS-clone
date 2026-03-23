@@ -5,16 +5,16 @@ extends Node2D
 @export var spawns_hard: Array[Spawn_info] = []
 @export var spawns_super: Array[Spawn_info] = []
 
-@export var base_soft_limit: int = 100
-@export var min_soft_limit: int = 50
-@export var max_soft_limit: int = 200
+@export var base_soft_limit: int = 150
+@export var min_soft_limit: int = 80
+@export var max_soft_limit: int = 400
 
 @export var boss_spawn_interval: int = 5 * 60
 @export var time_normal_unlock_minutes: float = 1.0
 @export var time_hard_unlock_minutes: float = 3.0
 
-@export var base_enemy_intensity: float = 3.0
-@export var enemy_intensity_time_multiplier: float = 1.0
+@export var base_enemy_intensity: float = 4.0
+@export var enemy_intensity_time_multiplier: float = 1.5
 
 @onready var player = get_tree().get_first_node_in_group("player")
 @onready var timer = get_node("Timer")
