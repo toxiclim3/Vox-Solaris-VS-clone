@@ -64,7 +64,7 @@ columns = 2
 [node name="Label" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=1895475832]
 layout_mode = 2
 theme = ExtResource("7_hevq0")
-text = "Volume"
+text = "ui_volume"
 label_settings = SubResource("LabelSettings_0eg15")
 
 [node name="HSlider" type="HSlider" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=755617098]
@@ -76,7 +76,7 @@ busName = "Master"
 [node name="Label2" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=442111478]
 layout_mode = 2
 theme = ExtResource("7_hevq0")
-text = "Music"
+text = "ui_music"
 label_settings = SubResource("LabelSettings_0eg15")
 
 [node name="HSlider2" type="HSlider" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=1724079725]
@@ -87,7 +87,7 @@ script = ExtResource("4_wf2ud")
 [node name="Label3" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=1478261467]
 layout_mode = 2
 theme = ExtResource("7_hevq0")
-text = "SFX"
+text = "ui_sfx"
 label_settings = SubResource("LabelSettings_0eg15")
 
 [node name="HSlider3" type="HSlider" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=27236900]
@@ -99,7 +99,7 @@ busName = "SFX"
 [node name="Label4" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=647318269]
 layout_mode = 2
 theme = ExtResource("7_hevq0")
-text = "Sound Profile"
+text = "ui_soundProfile"
 label_settings = SubResource("LabelSettings_0eg15")
 
 [node name="ProfileButton" type="OptionButton" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=987216453]
@@ -112,7 +112,7 @@ allow_reselect = true
 [node name="LanguageLabel" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer"]
 layout_mode = 2
 theme = ExtResource("7_hevq0")
-text = "Language"
+text = "ui_language"
 label_settings = SubResource("LabelSettings_0eg15")
 
 [node name="LanguageButton" type="OptionButton" parent="MarginContainer2/VBoxContainer/GridContainer"]

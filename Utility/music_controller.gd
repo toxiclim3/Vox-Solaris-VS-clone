@@ -44,7 +44,7 @@ func _ready() -> void:
 	
 	playerA.finished.connect(_on_track_finished)
 	playerB.finished.connect(_on_track_finished)
-	GlobalEvents.boss_defeated.connect(unlockMusic)
+	GlobalEvents.boss_defeated.connect(_on_boss_death)
 
 func unlockMusic() -> void:
 	is_music_locked = false
@@ -233,6 +233,10 @@ func resetPlaylists() -> void:
 
 func setLooping(willLoop: bool):
 	restartable = willLoop
+
+func _on_boss_death():
+	unlockMusic()
+	playNext(MusicType.NORMAL)
 
 func _on_track_finished():
 	if restartable:

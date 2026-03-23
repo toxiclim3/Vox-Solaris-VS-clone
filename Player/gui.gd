@@ -149,7 +149,7 @@ func setup_give_item_menu():
 				child.queue_free()
 			
 			var back_btn = Button.new()
-			back_btn.text = tr("<- Back")
+			back_btn.text = tr("ui_backButton")
 			back_btn.custom_minimum_size = Vector2(180, 40)
 			back_btn.pressed.connect(func():
 				giveItemSubGrid.hide()

@@ -72,7 +72,7 @@ offset_bottom = 100.0
 grow_horizontal = 2
 theme_override_fonts/font = ExtResource("2_t4alp")
 theme_override_font_sizes/font_size = 44
-text = "Survivors Clone #7809243"
+text = "ui_gameTitle"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -105,22 +105,22 @@ theme_override_constants/separation = 8
 [node name="btn_play" parent="MarginContainer/VBoxContainer" unique_id=1214550896 instance=ExtResource("3_kwsdd")]
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
-text = "Play"
+text = "ui_play"
 
 [node name="btn_how_to_play" parent="MarginContainer/VBoxContainer" unique_id=964057103 instance=ExtResource("3_kwsdd")]
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
-text = "How to play"
+text = "ui_howToPlay"
 
 [node name="btn_settings" parent="MarginContainer/VBoxContainer" unique_id=1384267404 instance=ExtResource("3_kwsdd")]
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
-text = "Settings"
+text = "ui_settings"
 
 [node name="btn_exit" parent="MarginContainer/VBoxContainer" unique_id=487451911 instance=ExtResource("3_kwsdd")]
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
-text = "Exit"
+text = "ui_exit"
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=980280563]
 

@@ -9,7 +9,7 @@
 offset_right = 56.0
 offset_bottom = 20.0
 theme = ExtResource("1_qkrmd")
-text = "Example"
+text = "ui_buttonExample"
 script = ExtResource("1_t2e60")
 
 [node name="snd_hover" type="AudioStreamPlayer" parent="." unique_id=685127907]

@@ -7,117 +7,117 @@ const UPGRADES = {
 	"icespear1": 
 	{
 		"icon": WEAPON_PATH + "ice_spear.png",
-		"displayname": "Ice Spear",
-		"details": "A spear of ice is thrown at a random enemy",
-		"level": "Level: 1",
+		"displayname": "item_icespear",
+		"details": "ItemDesc_IceSpear1",
+		"level": "item_level1",
 		"prerequisite": [],
 		"type": "weapon"
 	},
 	"icespear2": 
 	{
 		"icon": WEAPON_PATH + "ice_spear.png",
-		"displayname": "Ice Spear",
-		"details": "An addition Ice Spear is thrown",
-		"level": "Level: 2",
+		"displayname": "item_icespear",
+		"details": "ItemDesc_IceSpear2",
+		"level": "item_level2",
 		"prerequisite": ["icespear1"],
 		"type": "weapon"
 	},
 	"icespear3": 
 	{
 		"icon": WEAPON_PATH + "ice_spear.png",
-		"displayname": "Ice Spear",
-		"details": "Ice Spears now pass through another enemy and do + 3 damage",
-		"level": "Level: 3",
+		"displayname": "item_icespear",
+		"details": "ItemDesc_IceSpear3",
+		"level": "item_level3",
 		"prerequisite": ["icespear2"],
 		"type": "weapon"
 	},
 	"icespear4": 
 	{
 		"icon": WEAPON_PATH + "ice_spear.png",
-		"displayname": "Ice Spear",
-		"details": "An additional 2 Ice Spears are thrown",
-		"level": "Level: 4",
+		"displayname": "item_icespear",
+		"details": "ItemDesc_IceSpear4",
+		"level": "item_level4",
 		"prerequisite": ["icespear3"],
 		"type": "weapon"
 	},
 	"javelin1": 
 	{
 		"icon": WEAPON_PATH + "javelin_3_new_attack.png",
-		"displayname": "Javelin",
-		"details": "A magical javelin will follow you attacking enemies in a straight line",
-		"level": "Level: 1",
+		"displayname": "item_javelin",
+		"details": "ItemDesc_Javelin1",
+		"level": "item_level1",
 		"prerequisite": [],
 		"type": "weapon"
 	},
 	"javelin2": 
 	{
 		"icon": WEAPON_PATH + "javelin_3_new_attack.png",
-		"displayname": "Javelin",
-		"details": "The javelin will now attack an additional enemy per attack",
-		"level": "Level: 2",
+		"displayname": "item_javelin",
+		"details": "ItemDesc_Javelin2",
+		"level": "item_level2",
 		"prerequisite": ["javelin1"],
 		"type": "weapon"
 	},
 	"javelin3": 
 	{
 		"icon": WEAPON_PATH + "javelin_3_new_attack.png",
-		"displayname": "Javelin",
-		"details": "The javelin will attack another additional enemy per attack",
-		"level": "Level: 3",
+		"displayname": "item_javelin",
+		"details": "ItemDesc_Javelin3",
+		"level": "item_level3",
 		"prerequisite": ["javelin2"],
 		"type": "weapon"
 	},
 	"javelin4": 
 	{
 		"icon": WEAPON_PATH + "javelin_3_new_attack.png",
-		"displayname": "Javelin",
-		"details": "The javelin now does + 5 damage per attack and causes 20% additional knockback",
-		"level": "Level: 4",
+		"displayname": "item_javelin",
+		"details": "ItemDesc_Javelin4",
+		"level": "item_level4",
 		"prerequisite": ["javelin3"],
 		"type": "weapon"
 	},
 	"tornado1": 
 	{
 		"icon": WEAPON_PATH + "tornado.png",
-		"displayname": "Tornado",
-		"details": "A tornado is created and random heads somewhere in the players direction",
-		"level": "Level: 1",
+		"displayname": "item_tornado",
+		"details": "ItemDesc_Tornado1",
+		"level": "item_level1",
 		"prerequisite": [],
 		"type": "weapon"
 	},
 	"tornado2": 
 	{
 		"icon": WEAPON_PATH + "tornado.png",
-		"displayname": "Tornado",
-		"details": "An additional Tornado is created",
-		"level": "Level: 2",
+		"displayname": "item_tornado",
+		"details": "ItemDesc_Tornado2",
+		"level": "item_level2",
 		"prerequisite": ["tornado1"],
 		"type": "weapon"
 	},
 	"tornado3": 
 	{
 		"icon": WEAPON_PATH + "tornado.png",
-		"displayname": "Tornado",
-		"details": "The Tornado cooldown is reduced by 0.5 seconds",
-		"level": "Level: 3",
+		"displayname": "item_tornado",
+		"details": "ItemDesc_Tornado3",
+		"level": "item_level3",
 		"prerequisite": ["tornado2"],
 		"type": "weapon"
 	},
 	"tornado4": 
 	{
 		"icon": WEAPON_PATH + "tornado.png",
-		"displayname": "Tornado",
-		"details": "An additional tornado is created and the knockback is increased by 25%",
-		"level": "Level: 4",
+		"displayname": "item_tornado",
+		"details": "ItemDesc_Tornado4",
+		"level": "item_level4",
 		"prerequisite": ["tornado3"],
 		"type": "weapon"
 	},
 	"armor1": 
 	{
 		"icon": ICON_PATH + "helmet_1.png",
-		"displayname": "Armor",
-		"details": "Reduces Damage By 1 point",
-		"level": "Level: 1",
+		"displayname": "item_armor",
+		"details": "ItemDesc_Armor1",
+		"level": "item_level1",
 		"prerequisite": [],
 		"type": "upgrade",
 		"stat_modifiers": {"armor": 1}
@@ -125,9 +125,9 @@ const UPGRADES = {
 	"armor2": 
 	{
 		"icon": ICON_PATH + "helmet_1.png",
-		"displayname": "Armor",
-		"details": "Reduces Damage By an additional 1 point",
-		"level": "Level: 2",
+		"displayname": "item_armor",
+		"details": "ItemDesc_Armor2",
+		"level": "item_level2",
 		"prerequisite": ["armor1"],
 		"type": "upgrade",
 		"stat_modifiers": {"armor": 1}
@@ -135,9 +135,9 @@ const UPGRADES = {
 	"armor3": 
 	{
 		"icon": ICON_PATH + "helmet_1.png",
-		"displayname": "Armor",
-		"details": "Reduces Damage By an additional 1 point",
-		"level": "Level: 3",
+		"displayname": "item_armor",
+		"details": "ItemDesc_Armor3",
+		"level": "item_level3",
 		"prerequisite": ["armor2"],
 		"type": "upgrade",
 		"stat_modifiers": {"armor": 1}
@@ -145,9 +145,9 @@ const UPGRADES = {
 	"armor4": 
 	{
 		"icon": ICON_PATH + "helmet_1.png",
-		"displayname": "Armor",
-		"details": "Reduces Damage By an additional 1 point",
-		"level": "Level: 4",
+		"displayname": "item_armor",
+		"details": "ItemDesc_Armor4",
+		"level": "item_level4",
 		"prerequisite": ["armor3"],
 		"type": "upgrade",
 		"stat_modifiers": {"armor": 1}
@@ -155,9 +155,9 @@ const UPGRADES = {
 	"speed1": 
 	{
 		"icon": ICON_PATH + "boots_4_green.png",
-		"displayname": "Speed",
-		"details": "Movement Speed Increased by 50% of base speed",
-		"level": "Level: 1",
+		"displayname": "item_speed",
+		"details": "ItemDesc_Speed1",
+		"level": "item_level1",
 		"prerequisite": [],
 		"type": "upgrade",
 		"stat_modifiers": {"movement_speed": 20.0}
@@ -165,9 +165,9 @@ const UPGRADES = {
 	"speed2": 
 	{
 		"icon": ICON_PATH + "boots_4_green.png",
-		"displayname": "Speed",
-		"details": "Movement Speed Increased by an additional 50% of base speed",
-		"level": "Level: 2",
+		"displayname": "item_speed",
+		"details": "ItemDesc_Speed2",
+		"level": "item_level2",
 		"prerequisite": ["speed1"],
 		"type": "upgrade",
 		"stat_modifiers": {"movement_speed": 20.0}
@@ -175,9 +175,9 @@ const UPGRADES = {
 	"speed3": 
 	{
 		"icon": ICON_PATH + "boots_4_green.png",
-		"displayname": "Speed",
-		"details": "Movement Speed Increased by an additional 50% of base speed",
-		"level": "Level: 3",
+		"displayname": "item_speed",
+		"details": "ItemDesc_Speed3",
+		"level": "item_level3",
 		"prerequisite": ["speed2"],
 		"type": "upgrade",
 		"stat_modifiers": {"movement_speed": 20.0}
@@ -185,9 +185,9 @@ const UPGRADES = {
 	"speed4": 
 	{
 		"icon": ICON_PATH + "boots_4_green.png",
-		"displayname": "Speed",
-		"details": "Movement Speed Increased an additional 50% of base speed",
-		"level": "Level: 4",
+		"displayname": "item_speed",
+		"details": "ItemDesc_Speed4",
+		"level": "item_level4",
 		"prerequisite": ["speed3"],
 		"type": "upgrade",
 		"stat_modifiers": {"movement_speed": 20.0}
@@ -195,9 +195,9 @@ const UPGRADES = {
 	"tome1": 
 	{
 		"icon": ICON_PATH + "thick_new.png",
-		"displayname": "Tome",
-		"details": "Increases the size of spells an additional 10% of their base size",
-		"level": "Level: 1",
+		"displayname": "item_tome",
+		"details": "ItemDesc_Tome1",
+		"level": "item_level1",
 		"prerequisite": [],
 		"type": "upgrade",
 		"stat_modifiers": {"spell_size": 0.10}
@@ -205,9 +205,9 @@ const UPGRADES = {
 	"tome2": 
 	{
 		"icon": ICON_PATH + "thick_new.png",
-		"displayname": "Tome",
-		"details": "Increases the size of spells an additional 10% of their base size",
-		"level": "Level: 2",
+		"displayname": "item_tome",
+		"details": "ItemDesc_Tome2",
+		"level": "item_level2",
 		"prerequisite": ["tome1"],
 		"type": "upgrade",
 		"stat_modifiers": {"spell_size": 0.10}
@@ -215,9 +215,9 @@ const UPGRADES = {
 	"tome3": 
 	{
 		"icon": ICON_PATH + "thick_new.png",
-		"displayname": "Tome",
-		"details": "Increases the size of spells an additional 10% of their base size",
-		"level": "Level: 3",
+		"displayname": "item_tome",
+		"details": "ItemDesc_Tome3",
+		"level": "item_level3",
 		"prerequisite": ["tome2"],
 		"type": "upgrade",
 		"stat_modifiers": {"spell_size": 0.10}
@@ -225,9 +225,9 @@ const UPGRADES = {
 	"tome4": 
 	{
 		"icon": ICON_PATH + "thick_new.png",
-		"displayname": "Tome",
-		"details": "Increases the size of spells an additional 10% of their base size",
-		"level": "Level: 4",
+		"displayname": "item_tome",
+		"details": "ItemDesc_Tome4",
+		"level": "item_level4",
 		"prerequisite": ["tome3"],
 		"type": "upgrade",
 		"stat_modifiers": {"spell_size": 0.10}
@@ -235,9 +235,9 @@ const UPGRADES = {
 	"scroll1": 
 	{
 		"icon": ICON_PATH + "scroll_old.png",
-		"displayname": "Scroll",
-		"details": "Decreases of the cooldown of spells by an additional 5% of their base time",
-		"level": "Level: 1",
+		"displayname": "item_scroll",
+		"details": "ItemDesc_Scroll1",
+		"level": "item_level1",
 		"prerequisite": [],
 		"type": "upgrade",
 		"stat_modifiers": {"spell_cooldown": 0.05}
@@ -245,9 +245,9 @@ const UPGRADES = {
 	"scroll2": 
 	{
 		"icon": ICON_PATH + "scroll_old.png",
-		"displayname": "Scroll",
-		"details": "Decreases of the cooldown of spells by an additional 5% of their base time",
-		"level": "Level: 2",
+		"displayname": "item_scroll",
+		"details": "ItemDesc_Scroll2",
+		"level": "item_level2",
 		"prerequisite": ["scroll1"],
 		"type": "upgrade",
 		"stat_modifiers": {"spell_cooldown": 0.05}
@@ -255,9 +255,9 @@ const UPGRADES = {
 	"scroll3": 
 	{
 		"icon": ICON_PATH + "scroll_old.png",
-		"displayname": "Scroll",
-		"details": "Decreases of the cooldown of spells by an additional 5% of their base time",
-		"level": "Level: 3",
+		"displayname": "item_scroll",
+		"details": "ItemDesc_Scroll3",
+		"level": "item_level3",
 		"prerequisite": ["scroll2"],
 		"type": "upgrade",
 		"stat_modifiers": {"spell_cooldown": 0.05}
@@ -265,9 +265,9 @@ const UPGRADES = {
 	"scroll4": 
 	{
 		"icon": ICON_PATH + "scroll_old.png",
-		"displayname": "Scroll",
-		"details": "Decreases of the cooldown of spells by an additional 5% of their base time",
-		"level": "Level: 4",
+		"displayname": "item_scroll",
+		"details": "ItemDesc_Scroll4",
+		"level": "item_level4",
 		"prerequisite": ["scroll3"],
 		"type": "upgrade",
 		"stat_modifiers": {"spell_cooldown": 0.05}
@@ -275,9 +275,9 @@ const UPGRADES = {
 	"ring1": 
 	{
 		"icon": ICON_PATH + "urand_mage.png",
-		"displayname": "Ring",
-		"details": "Your spells now spawn 1 more additional attack",
-		"level": "Level: 1",
+		"displayname": "item_ring",
+		"details": "ItemDesc_Ring1",
+		"level": "item_level1",
 		"prerequisite": [],
 		"type": "upgrade",
 		"stat_modifiers": {"additional_attacks": 1}
@@ -285,9 +285,9 @@ const UPGRADES = {
 	"ring2": 
 	{
 		"icon": ICON_PATH + "urand_mage.png",
-		"displayname": "Ring",
-		"details": "Your spells now spawn an additional attack",
-		"level": "Level: 2",
+		"displayname": "item_ring",
+		"details": "ItemDesc_Ring2",
+		"level": "item_level2",
 		"prerequisite": ["ring1"],
 		"type": "upgrade",
 		"stat_modifiers": {"additional_attacks": 1}
@@ -295,9 +295,9 @@ const UPGRADES = {
 	"food": 
 	{
 		"icon": ICON_PATH + "chunk.png",
-		"displayname": "Food",
-		"details": "Heals you for 20 health",
-		"level": "N/A",
+		"displayname": "item_food",
+		"details": "ItemDesc_Food",
+		"level": "item_levelNA",
 		"prerequisite": [],
 		"type": "item",
 		"stat_modifiers": {"hp": 20}

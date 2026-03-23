@@ -76,6 +76,7 @@ func _ready():
 	upgrade_character("icespear1")
 	attack()
 	set_expbar(experience, calculate_experiencecap())
+	lblLevel.text = str(tr("ui_level"),experience_level)
 	_on_hurt_box_hurt(0,0,0)
 	
 
@@ -189,7 +190,7 @@ func set_expbar(set_value = 1, set_max_value = 100):
 
 func levelup():
 	sndLevelUp.play()
-	lblLevel.text = str(tr("LEVEL"),experience_level)
+	lblLevel.text = str(tr("ui_level"),experience_level)
 	if experience_level % GlobalEvents.backgroundInterval == 0:
 		GlobalEvents.advanceBackground.emit()
 	
@@ -206,6 +207,17 @@ func levelup():
 		options += 1
 	get_tree().paused = true
 	MusicController.focusMusic(!levelPanel.visible)
+	# Wait one frame for layout to compute sizes, then equalize all box widths
+	await get_tree().process_frame
+	_equalize_upgrade_option_widths()
+
+func _equalize_upgrade_option_widths():
+	var children = upgradeOptions.get_children()
+	var max_width: float = 0.0
+	for child in children:
+		max_width = max(max_width, child.get_combined_minimum_size().x)
+	for child in children:
+		child.custom_minimum_size.x = max_width
 
 func apply_stat_modifiers():
 	armor = base_armor
@@ -337,12 +349,12 @@ func death():
 	tween.play()
 	MusicController.focusMusic(false)
 	if time >= 300:
-		lblResult.text = tr("You Win")
+		lblResult.text = tr("result_win")
 		sndVictory.play()
 		MusicController.setLooping(false)
 		MusicController.playSpecificTrack(MusicController.winMusic)
 	else:
-		lblResult.text = tr("You Lose")
+		lblResult.text = tr("result_lose")
 		sndLose.play()
 
 
