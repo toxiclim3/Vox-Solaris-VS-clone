@@ -189,7 +189,7 @@ func set_expbar(set_value = 1, set_max_value = 100):
 
 func levelup():
 	sndLevelUp.play()
-	lblLevel.text = str("Level: ",experience_level)
+	lblLevel.text = str(tr("LEVEL"),experience_level)
 	if experience_level % GlobalEvents.backgroundInterval == 0:
 		GlobalEvents.advanceBackground.emit()
 	
@@ -337,12 +337,12 @@ func death():
 	tween.play()
 	MusicController.focusMusic(false)
 	if time >= 300:
-		lblResult.text = "You Win"
+		lblResult.text = tr("You Win")
 		sndVictory.play()
 		MusicController.setLooping(false)
 		MusicController.playSpecificTrack(MusicController.winMusic)
 	else:
-		lblResult.text = "You Lose"
+		lblResult.text = tr("You Lose")
 		sndLose.play()
 
 

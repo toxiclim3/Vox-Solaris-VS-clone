@@ -140,7 +140,7 @@ func setup_give_item_menu():
 		var btn = Button.new()
 		var first_id = items[base_name][0]
 		var dname = UpgradeDb.UPGRADES[first_id].get("displayname", base_name)
-		btn.text = dname
+		btn.text = tr(dname)
 		btn.custom_minimum_size = Vector2(180, 40)
 		btn.pressed.connect(func(b_name=base_name):
 			giveItemMainGrid.hide()
@@ -149,7 +149,7 @@ func setup_give_item_menu():
 				child.queue_free()
 			
 			var back_btn = Button.new()
-			back_btn.text = "<- Back"
+			back_btn.text = tr("<- Back")
 			back_btn.custom_minimum_size = Vector2(180, 40)
 			back_btn.pressed.connect(func():
 				giveItemSubGrid.hide()
@@ -159,7 +159,7 @@ func setup_give_item_menu():
 			
 			for lvl_id in items[b_name]:
 				var lvl_btn = Button.new()
-				var lvl_text = str(UpgradeDb.UPGRADES[lvl_id].get("level", lvl_id))
+				var lvl_text = str(tr(UpgradeDb.UPGRADES[lvl_id].get("level", lvl_id)))
 				lvl_btn.text = lvl_text
 				lvl_btn.custom_minimum_size = Vector2(180, 40)
 				lvl_btn.pressed.connect(func(id=lvl_id):

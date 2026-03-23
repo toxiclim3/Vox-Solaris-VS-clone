@@ -26,3 +26,5 @@ Audio/Music/**/*.import
 
 Audio/SoundEffect/*.wav
 Audio/SoundEffect/*.import
+
+.geminirules

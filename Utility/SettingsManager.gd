@@ -5,6 +5,8 @@ const SAVE_PATH = "user://settings.cfg"
 var config = ConfigFile.new()
 
 var sound_profile: String = "Full"
+var language: String = "en"
+
 const PROFILES = {
 	"Full": {
 		"EnemyHurt": 1.0,
@@ -34,6 +36,7 @@ func loadSettings() -> void:
 	
 	# Если файла нет (первый запуск), ничего не делаем
 	if error != OK:
+		TranslationServer.set_locale(language)
 		return
 
 	# Применяем громкость для всех сохраненных шин
@@ -45,6 +48,16 @@ func loadSettings() -> void:
 				applyBusVolume(busName, volumeValue)
 	
 	applySoundProfile(sound_profile)
+	
+	if config.has_section("localization"):
+		language = config.get_value("localization", "language", "en")
+	TranslationServer.set_locale(language)
+
+func set_language(lang: String) -> void:
+	language = lang
+	config.set_value("localization", "language", lang)
+	config.save(SAVE_PATH)
+	TranslationServer.set_locale(lang)
 
 func set_sound_profile(profile: String) -> void:
 	sound_profile = profile
