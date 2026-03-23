@@ -32,6 +32,7 @@ var fadeTween: Tween
 var restartable = true
 # Состояние паузы музыки (не путать с get_tree().paused)
 var isMusicMuted: bool = false
+var is_music_locked: bool = false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -43,7 +44,13 @@ func _ready() -> void:
 	
 	playerA.finished.connect(_on_track_finished)
 	playerB.finished.connect(_on_track_finished)
+	GlobalEvents.boss_defeated.connect(unlockMusic)
 
+func unlockMusic() -> void:
+	is_music_locked = false
+
+func lockMusic() -> void:
+	is_music_locked = true
 
 var winMusic = "res://Audio/Music/Extra/i finally found my voice as an artist [FsTc4TCRHy8].mp3"
 var titleMusic = "res://Audio/Music/Extra/checkpoint (day) [sOZNRzxwJXA].mp3"
@@ -52,6 +59,9 @@ var trackCache: Dictionary = {}
 
 # Запуск конкретного файла с кэшированием
 func playSpecificTrack(filePath: String) -> void:
+	if is_music_locked and filePath != winMusic and filePath != titleMusic:
+		return
+		
 	var stream: AudioStream
 	
 	# 1. Проверяем, есть ли трек в кэше
@@ -81,6 +91,12 @@ func clearMusicCache() -> void:
 	trackCache.clear()
 
 func playNext(type: MusicType) -> void:
+	if is_music_locked and type != MusicType.BOSS:
+		return
+		
+	if type == MusicType.BOSS:
+		lockMusic()
+		
 	var tracks: Array[AudioStream] = normalTracks if type == MusicType.NORMAL else bossTracks
 	
 	if tracks.is_empty():

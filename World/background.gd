@@ -33,9 +33,12 @@ func load_backgrounds_from_folder() -> void:
 		dir.list_dir_begin()
 		var file_name = dir.get_next()
 		while file_name != "":
-			if !dir.current_is_dir() and (file_name.ends_with(".png") or file_name.ends_with(".jpg") or file_name.ends_with(".webp")):
-				var tex = load(folder_path + "/" + file_name) as Texture2D
-				if tex: backgrounds.append(tex)
+			if not dir.current_is_dir():
+				var clean_name = file_name.trim_suffix(".remap").trim_suffix(".import")
+				if clean_name.ends_with(".png") or clean_name.ends_with(".jpg") or clean_name.ends_with(".webp"):
+					var tex = load(folder_path + "/" + clean_name) as Texture2D
+					if tex and not backgrounds.has(tex):
+						backgrounds.append(tex)
 			file_name = dir.get_next()
 		backgrounds.shuffle()
 	print("Загружено фонов для Parallax: ", backgrounds.size())

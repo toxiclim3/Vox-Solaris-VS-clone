@@ -9,7 +9,7 @@ extends Node2D
 @export var min_soft_limit: int = 50
 @export var max_soft_limit: int = 200
 
-@export var boss_spawn_interval: int = 600
+@export var boss_spawn_interval: int = 5 * 60
 @export var time_normal_unlock_minutes: float = 1.0
 @export var time_hard_unlock_minutes: float = 3.0
 
@@ -109,12 +109,12 @@ func _on_timer_timeout():
 				if current_enemies < soft_limit:
 					var time_multiplier = base_enemy_intensity
 					if minutes > 1.0 and minutes <= 3.0:
-						var t = minutes - 1.0
-						var A = enemy_intensity_time_multiplier / 4.0
+						var t = minutes
+						var A = enemy_intensity_time_multiplier / 2.0
 						time_multiplier = base_enemy_intensity + (A * t * t)
 					elif minutes > 3.0:
 						var val_at_3 = base_enemy_intensity + enemy_intensity_time_multiplier
-						time_multiplier = val_at_3 + (minutes - 3.0) * enemy_intensity_time_multiplier
+						time_multiplier = val_at_3 + minutes * enemy_intensity_time_multiplier
 						
 					var spawn_count = int(enemy_info.enemy_num * time_multiplier * randf_range(0.8, 1.2))
 					

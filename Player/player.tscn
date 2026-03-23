@@ -342,6 +342,7 @@ offset_left = 8.0
 offset_top = 24.0
 offset_right = 208.0
 offset_bottom = 40.0
+mouse_filter = 2
 columns = 10
 
 [node name="CollectedUpgrades" type="GridContainer" parent="GUILayer/GUI" unique_id=2075942441]
@@ -351,6 +352,7 @@ offset_left = 8.0
 offset_top = 40.0
 offset_right = 208.0
 offset_bottom = 56.0
+mouse_filter = 2
 columns = 10
 
 [node name="PauseMenu" type="PanelContainer" parent="GUILayer/GUI" unique_id=1300825726]

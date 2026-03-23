@@ -3,6 +3,7 @@ extends Node
 signal advanceBackground
 signal enableSpawns
 signal disableSpawns
+signal boss_defeated
 
 @export var backgroundInterval = 5
 @export var musicInterval = 10
