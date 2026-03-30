@@ -312,6 +312,26 @@ const UPGRADES = {
 		"type": "upgrade",
 		"stat_modifiers": {"regen": 0.001}
 	},
+	"ringofaffinity1": 
+	{
+		"icon": ICON_PATH + "icon25.png",
+		"displayname": "item_ringofaffinity",
+		"details": "ItemDesc_RingOfAffinity1",
+		"level": "item_level1",
+		"prerequisite": [],
+		"type": "upgrade",
+		"stat_modifiers": {"xp_range_percent": 0.20}
+	},
+	"ringofaffinity2": 
+	{
+		"icon": ICON_PATH + "icon25.png",
+		"displayname": "item_ringofaffinity",
+		"details": "ItemDesc_RingOfAffinity2",
+		"level": "item_level2",
+		"prerequisite": ["ringofaffinity1"],
+		"type": "upgrade",
+		"stat_modifiers": {"xp_range_percent": 0.40}
+	},
 	"poisonbottle1": 
 	{
 		"icon": WEAPON_PATH + "poison_gas.png",

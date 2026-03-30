@@ -59,7 +59,7 @@ func scale_name_to_fit():
 	lblName.add_theme_font_size_override("font_size", current_size)
 	
 func _input(event):
-	if event.is_action("click"):
+	if event.is_action("click") and event.is_pressed():
 		if mouse_over:
 			emit_signal("selected_upgrade",item)
 

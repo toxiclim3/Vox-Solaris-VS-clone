@@ -23,6 +23,7 @@ var titleMenu = "res://TitleScreen/menu.tscn"
 #UPGRADES
 var collected_upgrades = []
 var upgrade_options = []
+var pending_levelups = 0  # Queue of level-ups waiting to be shown
 
 # Base Stats
 var base_armor = 0
@@ -36,6 +37,9 @@ var spell_size = 0.0
 var base_additional_attacks = 0
 var additional_attacks = 0
 
+# XP gem grab range
+const BASE_GRAB_RADIUS = 50.0
+
 # Track Stat Modifiers
 var stat_modifiers = {}
 
@@ -48,6 +52,7 @@ var enemy_close = []
 @onready var sprite = $Sprite2D
 @onready var walkTimer = get_node("%walkTimer")
 @onready var regen_timer = get_node("%regenTimer")
+@onready var grab_shape = get_node("GrabArea/CollisionShape2D")
 
 @onready var weapons = get_node("%Weapons") # Dynamic weapons container
 
@@ -56,6 +61,7 @@ var enemy_close = []
 @onready var lblLevel = get_node("%lbl_level")
 @onready var levelPanel = get_node("%LevelUp")
 @onready var upgradeOptions = get_node("%UpgradeOptions")
+@onready var upgradeScroll = get_node("%UpgradeScroll")
 @onready var itemOptions = preload("res://Utility/item_option.tscn")
 @onready var sndLevelUp = get_node("%snd_levelup")
 @onready var healthBar = get_node("%HealthBar")
@@ -178,19 +184,24 @@ func _on_collect_area_area_entered(area):
 		calculate_experience(gem_exp)
 
 func calculate_experience(gem_exp):
-	var exp_required = calculate_experiencecap()
 	collected_experience += gem_exp
-	if experience + collected_experience >= exp_required: #level up
-		collected_experience -= exp_required-experience
-		experience_level += 1
-		experience = 0
-		exp_required = calculate_experiencecap()
-		levelup()
-	else:
-		experience += collected_experience
-		collected_experience = 0
-	
-	set_expbar(experience, exp_required)
+	var leveled_up = false
+	while true:
+		var exp_required = calculate_experiencecap()
+		if experience + collected_experience >= exp_required:
+			collected_experience -= exp_required - experience
+			experience_level += 1
+			experience = 0
+			pending_levelups += 1
+			leveled_up = true
+		else:
+			experience += collected_experience
+			collected_experience = 0
+			break
+	# Trigger the first level-up menu only if one isn't already showing
+	if leveled_up and not levelPanel.visible:
+		_show_next_levelup()
+	set_expbar(experience, calculate_experiencecap())
 
 func calculate_experiencecap():
 	var exp_cap = experience_level
@@ -207,11 +218,25 @@ func set_expbar(set_value = 1, set_max_value = 100):
 	expBar.value = set_value
 	expBar.max_value = set_max_value
 
+## Shows the level-up menu for the current level, consuming one pending_levelup.
+func _show_next_levelup():
+	if pending_levelups <= 0:
+		return
+	pending_levelups -= 1
+	levelup()
+
 func levelup():
 	sndLevelUp.play()
-	lblLevel.text = str(tr("ui_level"),experience_level)
-	if experience_level % GlobalEvents.backgroundInterval == 0:
+	var current_visual_level = experience_level - pending_levelups
+	lblLevel.text = str(tr("ui_level"), current_visual_level)
+	if current_visual_level % GlobalEvents.backgroundInterval == 0:
 		GlobalEvents.advanceBackground.emit()
+	
+	# Clear any leftover options from a previous panel
+	for child in upgradeOptions.get_children():
+		upgradeOptions.remove_child(child)
+		child.queue_free()
+	upgrade_options.clear()
 	
 	levelPanel.visible = true
 	var options = 0
@@ -226,8 +251,19 @@ func levelup():
 	# Wait one frame for layout to compute sizes, then equalize all box widths
 	await get_tree().process_frame
 	_equalize_upgrade_option_widths()
+	
+	# We need the VBoxContainer's desired height to size the ScrollContainer properly
+	var desired_scroll_h = upgradeOptions.get_combined_minimum_size().y
+	
+	# Cap the scroll container so it doesn't overflow the screen
+	var vp_h = get_viewport_rect().size.y
+	var max_scroll_h = vp_h * 0.65
+	
+	upgradeScroll.custom_minimum_size.y = min(desired_scroll_h, max_scroll_h)
+	
 	# Wait another frame so the panel recalculates its size after width equalization
 	await get_tree().process_frame
+	
 	# Force the PanelContainer to recalculate its layout, then recenter via anchors
 	levelPanel.reset_size()
 	_recenter_anchored_panel(levelPanel)
@@ -242,9 +278,10 @@ func _equalize_upgrade_option_widths():
 
 func _recenter_anchored_panel(panel: Control) -> void:
 	# For a panel with center anchors (0.5) and grow-both, reset offsets
-	# so it stays centered at its current content size.
-	var half_w = panel.size.x / 2.0
-	var half_h = panel.size.y / 2.0
+	# so it stays centered at its current content size, clamped to the viewport.
+	var vp_size = get_viewport_rect().size
+	var half_w = min(panel.size.x, vp_size.x * 0.95) / 2.0
+	var half_h = min(panel.size.y, vp_size.y * 0.95) / 2.0
 	panel.offset_left = -half_w
 	panel.offset_right = half_w
 	panel.offset_top = -half_h
@@ -257,6 +294,7 @@ func apply_stat_modifiers():
 	spell_size = base_spell_size
 	additional_attacks = base_additional_attacks
 	var max_hp_percent_total = 0.0
+	var xp_range_percent_total = 0.0
 	regenPerSecond = base_regenPerSecond
 	
 	for mod in stat_modifiers.values():
@@ -269,6 +307,7 @@ func apply_stat_modifiers():
 				"additional_attacks": additional_attacks += mod[stat_name]
 				"max_hp_percent": max_hp_percent_total += mod[stat_name]
 				"regen": regenPerSecond = mod[stat_name]
+				"xp_range_percent": xp_range_percent_total += mod[stat_name]
 	
 	# Apply max HP percent bonus on top of base
 	var new_maxhp = int(base_maxhp * (1.0 + max_hp_percent_total))
@@ -278,6 +317,9 @@ func apply_stat_modifiers():
 		hp = clamp(int(ratio * maxhp), 1, maxhp)
 		healthBar.max_value = maxhp
 		healthBar.value = hp
+	
+	# Apply XP grab range
+	grab_shape.shape.radius = BASE_GRAB_RADIUS * (1.0 + xp_range_percent_total)
 	
 	attack()
 
@@ -316,14 +358,23 @@ func upgrade_character(upgrade):
 	attack()
 	var option_children = upgradeOptions.get_children()
 	for i in option_children:
+		upgradeOptions.remove_child(i)
 		i.queue_free()
 	upgrade_options.clear()
 	collected_upgrades.append(upgrade)
 	levelPanel.visible = false
-	get_tree().paused = false
+	# Get the level that we just finished upgrading
+	var current_visual_level = experience_level - pending_levelups
+	
+	# If more level-ups are queued, show the next one; otherwise unpause
+	if pending_levelups > 0:
+		_show_next_levelup()
+	else:
+		get_tree().paused = false
+		MusicController.focusMusic(true)
 	calculate_experience(0)
-	MusicController.focusMusic(!levelPanel.visible)	
-	if experience_level % GlobalEvents.musicInterval == 0:
+	
+	if current_visual_level % GlobalEvents.musicInterval == 0:
 		MusicController.playNext(MusicController.MusicType.NORMAL)	
 	
 func get_random_item():
