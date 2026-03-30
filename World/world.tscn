@@ -12,21 +12,16 @@
 [ext_resource type="PackedScene" uid="uid://hcjnrdsb563h" path="res://Enemy/enemy_juggernaut.tscn" id="8_ltymd"]
 [ext_resource type="Texture2D" uid="uid://b4tu8mxdnvsy1" path="res://Textures/Enemy/cyclops.png" id="9_f23eu"]
 [ext_resource type="PackedScene" uid="uid://btf7clk4jja87" path="res://Enemy/enemy_super.tscn" id="9_xs42h"]
-[ext_resource type="AudioStream" uid="uid://dn37bgrjxgs6j" path="res://Audio/Music/Normal/Disdrometer.mp3" id="10_lo5ox"]
-[ext_resource type="Script" uid="uid://bkwemuaxmlxl2" path="res://Audio/Music/snd_Music.gd" id="11_ovtx6"]
+[ext_resource type="Script" uid="uid://ce07rf0axv8m" path="res://Utility/snd_Music.gd" id="11_ovtx6"]
 
 [sub_resource type="Resource" id="Resource_EASY"]
 script = ExtResource("5_jj7s8")
-time_start = 0
-time_end = 0
 enemy = ExtResource("4_ee8bm")
 enemy_num = 1
 enemy_spawn_delay = 1
 
 [sub_resource type="Resource" id="Resource_NORMAL"]
 script = ExtResource("5_jj7s8")
-time_start = 0
-time_end = 0
 enemy = ExtResource("6_rumbx")
 enemy_num = 1
 enemy_spawn_delay = 1
@@ -66,27 +61,20 @@ _bundled = {
 
 [sub_resource type="Resource" id="Resource_HARD_CYCLOPS"]
 script = ExtResource("5_jj7s8")
-time_start = 0
-time_end = 0
 enemy = SubResource("PackedScene_oeat8")
 enemy_num = 1
 enemy_spawn_delay = 2
 
 [sub_resource type="Resource" id="Resource_HARD_JUGG"]
 script = ExtResource("5_jj7s8")
-time_start = 0
-time_end = 0
 enemy = ExtResource("8_ltymd")
 enemy_num = 1
 enemy_spawn_delay = 2
 
 [sub_resource type="Resource" id="Resource_SUPER"]
 script = ExtResource("5_jj7s8")
-time_start = 0
-time_end = 0
 enemy = ExtResource("9_xs42h")
 enemy_num = 1
-enemy_spawn_delay = 0
 
 [node name="World" type="Node2D" unique_id=73796557]
 script = ExtResource("1_awrha")
@@ -106,7 +94,6 @@ spawns_super = Array[ExtResource("5_jj7s8")]([SubResource("Resource_SUPER")])
 
 [node name="snd_Music" type="AudioStreamPlayer" parent="." unique_id=1155585204]
 process_mode = 3
-stream = ExtResource("10_lo5ox")
 volume_db = -5.0
 script = ExtResource("11_ovtx6")
 
