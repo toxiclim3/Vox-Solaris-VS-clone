@@ -292,6 +292,26 @@ const UPGRADES = {
 		"type": "upgrade",
 		"stat_modifiers": {"additional_attacks": 1}
 	},
+	"ringofrejuvenation1": 
+	{
+		"icon": ICON_PATH + "icon26.png",
+		"displayname": "item_ringofrejuvenation",
+		"details": "ItemDesc_RingOfRejuvenation1",
+		"level": "item_level1",
+		"prerequisite": [],
+		"type": "upgrade",
+		"stat_modifiers": {"max_hp_percent": 0.30}
+	},
+	"ringofrejuvenation2": 
+	{
+		"icon": ICON_PATH + "icon26.png",
+		"displayname": "item_ringofrejuvenation",
+		"details": "ItemDesc_RingOfRejuvenation2",
+		"level": "item_level2",
+		"prerequisite": ["ringofrejuvenation1"],
+		"type": "upgrade",
+		"stat_modifiers": {"regen": 0.001}
+	},
 	"poisonbottle1": 
 	{
 		"icon": WEAPON_PATH + "poison_gas.png",

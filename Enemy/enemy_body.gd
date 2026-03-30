@@ -8,6 +8,7 @@ class_name EnemyBody
 @export var experience = 1
 @export var enemy_damage = 1
 @export var isBoss = 0
+var max_hp = 0
 var knockback = Vector2.ZERO
 
 @onready var sprite = $EnemyBase/Sprite2D
@@ -29,7 +30,10 @@ var screen_size
 var update_timer = 0.0
 
 func _ready():
+	max_hp = hp
 	add_to_group("enemy")
+	if isBoss:
+		add_to_group("boss")
 	anim.play("walk")
 	hitBox.damage = enemy_damage
 	screen_size = get_viewport_rect().size

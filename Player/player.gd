@@ -1,8 +1,10 @@
 extends CharacterBody2D
 
 @export var maxhp = 80
+var base_maxhp = 80
 var hp = maxhp
 @export var regenPerSecond = 0.5 / 100 #regen percent of max hp, by default 0.5%
+var base_regenPerSecond = 0.5 / 100
 var last_movement = Vector2.UP
 var time = 0
 var godmode = false
@@ -254,6 +256,8 @@ func apply_stat_modifiers():
 	spell_cooldown = base_spell_cooldown
 	spell_size = base_spell_size
 	additional_attacks = base_additional_attacks
+	var max_hp_percent_total = 0.0
+	regenPerSecond = base_regenPerSecond
 	
 	for mod in stat_modifiers.values():
 		for stat_name in mod.keys():
@@ -263,6 +267,17 @@ func apply_stat_modifiers():
 				"spell_cooldown": spell_cooldown += mod[stat_name]
 				"spell_size": spell_size += mod[stat_name]
 				"additional_attacks": additional_attacks += mod[stat_name]
+				"max_hp_percent": max_hp_percent_total += mod[stat_name]
+				"regen": regenPerSecond = mod[stat_name]
+	
+	# Apply max HP percent bonus on top of base
+	var new_maxhp = int(base_maxhp * (1.0 + max_hp_percent_total))
+	if new_maxhp != maxhp:
+		var ratio = float(hp) / float(maxhp)
+		maxhp = new_maxhp
+		hp = clamp(int(ratio * maxhp), 1, maxhp)
+		healthBar.max_value = maxhp
+		healthBar.value = hp
 	
 	attack()
 
@@ -404,6 +419,73 @@ func grant_upgrade_with_prereqs(upgrade_id: String):
 	for p in prereqs:
 		grant_upgrade_with_prereqs(p)
 	upgrade_character(upgrade_id)
+
+## Removes a single upgrade from the player's collected list.
+## For weapons: downgrades or removes the weapon spawner.
+## For upgrades: removes the stat modifier.
+func remove_upgrade(upgrade_id: String) -> void:
+	if not upgrade_id in collected_upgrades:
+		return
+	var upgrade_data = UpgradeDb.UPGRADES.get(upgrade_id)
+	if upgrade_data == null:
+		return
+
+	collected_upgrades.erase(upgrade_id)
+
+	var type = upgrade_data["type"]
+	if type == "weapon":
+		var base_name = upgrade_id.rstrip("0123456789")
+		var weapon_spawner = weapons.get_node_or_null(base_name)
+		# Check if there is still a collected level for this weapon
+		var remaining_level = ""
+		var max_lvl = 0
+		for uid in collected_upgrades:
+			if uid.rstrip("0123456789") == base_name:
+				var lvl = int(uid.right(uid.length() - base_name.length()))
+				if lvl > max_lvl:
+					max_lvl = lvl
+					remaining_level = uid
+		if remaining_level == "" and weapon_spawner:
+			# No levels left — remove the spawner entirely
+			weapon_spawner.queue_free()
+		elif remaining_level != "" and weapon_spawner and weapon_spawner.has_method("upgrade"):
+			# Downgrade the spawner to the remaining highest level
+			weapon_spawner.upgrade(remaining_level)
+	elif type == "upgrade":
+		stat_modifiers.erase(upgrade_id)
+		apply_stat_modifiers()
+
+	# Update GUI collection (remove icon if no levels owned)
+	var base_name_check = upgrade_id.rstrip("0123456789")
+	var still_owned = false
+	for uid in collected_upgrades:
+		if uid.rstrip("0123456789") == base_name_check:
+			still_owned = true
+			break
+	if not still_owned:
+		# Remove from collectedWeapons or collectedUpgrades display
+		for container in [collectedWeapons, collectedUpgrades]:
+			for child in container.get_children():
+				if child.get("upgrade") != null:
+					var child_base = child.upgrade.rstrip("0123456789")
+					if child_base == base_name_check:
+						child.queue_free()
+
+## Removes all levels of the given base item above `keep_level`.
+## Pass keep_level=0 to remove completely.
+func remove_upgrade_to_level(base_name: String, keep_level: int) -> void:
+	# Collect which upgrade IDs to remove (all levels > keep_level for this base)
+	var to_remove: Array = []
+	for uid in collected_upgrades:
+		if uid.rstrip("0123456789") == base_name:
+			var lvl = int(uid.right(uid.length() - base_name.length()))
+			if lvl > keep_level:
+				to_remove.append(uid)
+	# Remove highest levels first so the weapon spawner stays valid
+	to_remove.sort()
+	to_remove.reverse()
+	for uid in to_remove:
+		remove_upgrade(uid)
 
 func _on_btn_kill_player_click_end() -> void:
 	death()

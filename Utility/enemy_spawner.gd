@@ -32,12 +32,27 @@ func _ready():
 	connect("changetime",Callable(player,"change_time"))
 	GlobalEvents.enableSpawns.connect(enableSpawns)
 	GlobalEvents.disableSpawns.connect(disableSpawns)
+	GlobalEvents.queue_boss.connect(force_queue_boss)
 
 func enableSpawns():
 	isSpawningActive = true
 
 func disableSpawns():
 	isSpawningActive = false
+
+func force_queue_boss() -> void:
+	# If a boss is already queued, don't overwrite it
+	if upcoming_boss != null:
+		return
+	if spawns_super.size() == 0:
+		return
+	upcoming_boss = spawns_super.pick_random()
+	# Spawn immediately: instantiate and emit the spawned signal now
+	var boss_spawn = upcoming_boss.enemy.instantiate()
+	boss_spawn.global_position = get_random_position()
+	add_child(boss_spawn)
+	GlobalEvents.boss_spawned.emit(boss_spawn)
+	upcoming_boss = null
 
 func stopTimer():
 	timer.paused = true
@@ -79,6 +94,7 @@ func _on_timer_timeout():
 				var boss_spawn = boss_info.enemy.instantiate()
 				boss_spawn.global_position = get_random_position()
 				add_child(boss_spawn)
+				GlobalEvents.boss_spawned.emit(boss_spawn)
 				upcoming_boss = null
 
 		if current_wave_delay > 0:
