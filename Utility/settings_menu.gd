@@ -5,6 +5,8 @@ signal settings_closed
 @onready var profile_button = %ProfileButton
 @onready var language_button = %LanguageButton
 
+enum Languages {en,ru,ua}
+
 func _ready() -> void:
 	if profile_button:
 		profile_button.add_item("Full")
@@ -15,9 +17,15 @@ func _ready() -> void:
 	if language_button:
 		language_button.add_item("English")
 		language_button.add_item("Русский")
+		language_button.add_item("Українська")
 		var lang_index = 0
-		if SettingsManager.language == "ru":
-			lang_index = 1
+		match SettingsManager.language:
+			"en":
+				lang_index = Languages.en
+			"ru":
+				lang_index = Languages.ru
+			"ua":
+				lang_index = Languages.ua
 		language_button.select(lang_index)
 		language_button.item_selected.connect(_on_language_selected)
 
@@ -29,5 +37,4 @@ func _on_profile_selected(index: int) -> void:
 	SettingsManager.set_sound_profile(profiles[index])
 
 func _on_language_selected(index: int) -> void:
-	var langs = ["en", "ru"]
-	SettingsManager.set_language(langs[index])
+	SettingsManager.set_language(Languages.find_key(index))

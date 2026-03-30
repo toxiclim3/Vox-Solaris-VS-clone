@@ -89,7 +89,7 @@ collision_layer = 2
 collision_mask = 2
 HurtBoxType = 2
 
-[node name="CollisionShape2D" parent="HurtBox" index="0"]
+[node name="CollisionShape2D" parent="HurtBox" index="0" unique_id=931685760]
 position = Vector2(2, 3)
 shape = SubResource("RectangleShape2D_yfi4i")
 
@@ -127,11 +127,13 @@ shape = SubResource("CircleShape2D_6vwp8")
 [node name="snd_hurt" type="AudioStreamPlayer" parent="." unique_id=837194827]
 unique_name_in_owner = true
 stream = ExtResource("6_7emwf")
+volume_db = -10.0
 bus = &"PlayerHurt"
 
 [node name="snd_hurt_bad" type="AudioStreamPlayer" parent="." unique_id=1305310068]
 unique_name_in_owner = true
 stream = ExtResource("7_hshwv")
+volume_db = -5.0
 bus = &"PlayerHurt"
 
 [node name="GUILayer" type="CanvasLayer" parent="." unique_id=1336760669]
@@ -180,37 +182,48 @@ text = "Level 1"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="LevelUp" type="Panel" parent="GUILayer/GUI" unique_id=833692885]
+[node name="LevelUp" type="PanelContainer" parent="GUILayer/GUI" unique_id=1699352669]
 unique_name_in_owner = true
-process_mode = 2
 visible = false
-layout_mode = 0
-offset_left = 800.0
-offset_top = 50.0
-offset_right = 1000.0
-offset_bottom = 300.0
-
-[node name="lbl_LevelUP" type="Label" parent="GUILayer/GUI/LevelUp" unique_id=1449850959]
-layout_mode = 0
-offset_right = 200.0
-offset_bottom = 50.0
-theme_override_fonts/font = ExtResource("6_okx7u")
-text = "ui_levelUp"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="UpgradeOptions" type="VBoxContainer" parent="GUILayer/GUI/LevelUp" unique_id=826318037]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 10.0
-offset_top = 50.0
-offset_right = 190.0
-offset_bottom = 100.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -41.0
+offset_top = -20.5
+offset_right = 41.0
+offset_bottom = 20.5
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="snd_levelup" type="AudioStreamPlayer" parent="GUILayer/GUI/LevelUp" unique_id=9773351]
 unique_name_in_owner = true
 stream = ExtResource("7_wl7d2")
 volume_db = -10.0
+
+[node name="MarginContainer" type="MarginContainer" parent="GUILayer/GUI/LevelUp" unique_id=1812571992]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GUILayer/GUI/LevelUp/MarginContainer" unique_id=403045324]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="lbl_LevelUP" type="Label" parent="GUILayer/GUI/LevelUp/MarginContainer/VBoxContainer" unique_id=1449850959]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("6_okx7u")
+text = "ui_levelUp"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="UpgradeOptions" type="VBoxContainer" parent="GUILayer/GUI/LevelUp/MarginContainer/VBoxContainer" unique_id=826318037]
+unique_name_in_owner = true
+layout_mode = 2
 
 [node name="GiveItemMenu" type="Panel" parent="GUILayer/GUI" unique_id=739812498]
 unique_name_in_owner = true
@@ -357,7 +370,7 @@ mouse_filter = 2
 columns = 10
 
 [node name="PauseMenu" type="PanelContainer" parent="GUILayer/GUI" unique_id=1300825726]
-visible = false
+custom_minimum_size = Vector2(160, 192)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -365,9 +378,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -80.0
-offset_top = -96.0
+offset_top = -113.0
 offset_right = 80.0
-offset_bottom = 96.0
+offset_bottom = 43.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -395,10 +408,10 @@ custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
 
 [node name="RichTextLabel" type="RichTextLabel" parent="GUILayer/GUI/PauseMenu/MarginContainer/VBoxContainer2" unique_id=448275699]
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 theme = ExtResource("15_b1ygp")
 text = "tips_runInCircles"
-fit_content = true
 scroll_active = false
 
 [node name="filler2" type="Control" parent="GUILayer/GUI/PauseMenu/MarginContainer/VBoxContainer2" unique_id=1438850757]

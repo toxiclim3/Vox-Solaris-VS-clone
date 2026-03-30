@@ -47,10 +47,9 @@ _data = {
 
 [node name="enemy_juggernaut" type="CharacterBody2D" unique_id=2008886138]
 collision_layer = 5
-collision_mask = 1
 motion_mode = 1
 script = ExtResource("1_r5pfe")
-movement_speed = 50.0
+movement_speed = 45.0
 hp = 300
 knockback_recovery = 20.0
 experience = 100

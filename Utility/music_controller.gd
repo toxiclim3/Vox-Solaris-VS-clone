@@ -54,11 +54,12 @@ func lockMusic() -> void:
 
 var winMusic = "res://Audio/Music/Extra/i finally found my voice as an artist [FsTc4TCRHy8].mp3"
 var titleMusic = "res://Audio/Music/Extra/checkpoint (day) [sOZNRzxwJXA].mp3"
+var tutorialMusic = "res://Audio/Music/Extra/musicHitItSonA.ogg"
 # Словарь для хранения загруженных ресурсов: { "res://path": AudioStream }
 var trackCache: Dictionary = {}
 
 # Запуск конкретного файла с кэшированием
-func playSpecificTrack(filePath: String) -> void:
+func playSpecificTrack(filePath: String,crossfade: bool = 1) -> void:
 	if is_music_locked and filePath != winMusic and filePath != titleMusic:
 		return
 		
@@ -83,8 +84,11 @@ func playSpecificTrack(filePath: String) -> void:
 	# 3. Если этот трек уже играет — выходим
 	if activePlayer.playing and activePlayer.stream and activePlayer.stream.resource_path == stream.resource_path:
 		return
-		
-	_crossfadeTo(stream)
+	
+	if crossfade:
+		_crossfadeTo(stream,true)
+	else:
+		_crossfadeTo(stream,false)
 
 # Функция для ручной очистки памяти (если кэш раздулся)
 func clearMusicCache() -> void:
@@ -149,14 +153,21 @@ func loadTracksFromDir(path: String, targetArray: Array[AudioStream]) -> void:
 				targetArray.append(stream)
 	targetArray.shuffle()
 
-func _crossfadeTo(newStream: AudioStream) -> void:
+func _switchTo(newStream: AudioStream) -> void:
+	var nextPlayer: AudioStreamPlayer = playerA if activePlayer == playerA else playerB
+	
+	nextPlayer.stream = newStream
+	nextPlayer.volume_db = minVolumeDb
+	nextPlayer.play()
+
+func _crossfadeTo(newStream: AudioStream, immediate: bool = 1) -> void:
 	# Определяем, какой плеер сейчас свободен
 	var nextPlayer: AudioStreamPlayer = playerB if activePlayer == playerA else playerA
 	
 	nextPlayer.stream = newStream
 	nextPlayer.volume_db = minVolumeDb
-	nextPlayer.play()
-	
+	if immediate:
+		nextPlayer.play()
 	# Убиваем предыдущий Tween, если мы переключили трек слишком быстро
 	if fadeTween and fadeTween.is_valid():
 		fadeTween.kill()
@@ -172,6 +183,8 @@ func _crossfadeTo(newStream: AudioStream) -> void:
 	
 	# После завершения анимации останавливаем старый трек и меняем ссылки
 	fadeTween.chain().tween_callback(activePlayer.stop)
+	if !immediate:
+		fadeTween.chain().tween_callback(nextPlayer.play)
 	fadeTween.tween_callback(func(): activePlayer = nextPlayer)
 
 # Плавный уход в тишину (Mute)

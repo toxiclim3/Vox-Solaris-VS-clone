@@ -13,7 +13,7 @@ extends Node2D
 @export var time_normal_unlock_minutes: float = 1.0
 @export var time_hard_unlock_minutes: float = 3.0
 
-@export var base_enemy_intensity: float = 4.0
+@export var base_enemy_intensity: float = 3.0
 @export var enemy_intensity_time_multiplier: float = 1.5
 
 @onready var player = get_tree().get_first_node_in_group("player")

@@ -292,6 +292,42 @@ const UPGRADES = {
 		"type": "upgrade",
 		"stat_modifiers": {"additional_attacks": 1}
 	},
+	"poisonbottle1": 
+	{
+		"icon": WEAPON_PATH + "poison_gas.png",
+		"displayname": "item_poisonbottle",
+		"details": "ItemDesc_PoisonBottle1",
+		"level": "item_level1",
+		"prerequisite": [],
+		"type": "weapon"
+	},
+	"poisonbottle2": 
+	{
+		"icon": WEAPON_PATH + "poison_gas.png",
+		"displayname": "item_poisonbottle",
+		"details": "ItemDesc_PoisonBottle2",
+		"level": "item_level2",
+		"prerequisite": ["poisonbottle1"],
+		"type": "weapon"
+	},
+	"poisonbottle3": 
+	{
+		"icon": WEAPON_PATH + "poison_gas.png",
+		"displayname": "item_poisonbottle",
+		"details": "ItemDesc_PoisonBottle3",
+		"level": "item_level3",
+		"prerequisite": ["poisonbottle2"],
+		"type": "weapon"
+	},
+	"poisonbottle4": 
+	{
+		"icon": WEAPON_PATH + "poison_gas.png",
+		"displayname": "item_poisonbottle",
+		"details": "ItemDesc_PoisonBottle4",
+		"level": "item_level4",
+		"prerequisite": ["poisonbottle3"],
+		"type": "weapon"
+	},
 	"food": 
 	{
 		"icon": ICON_PATH + "chunk.png",

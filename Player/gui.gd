@@ -23,13 +23,23 @@ signal closeMenu()
 
 # Запоминаем изначальный центр для возврата
 var pause_original_x: float
+var pause_hidden_x: float
+var is_menu_open: bool = false
+
 
 func _ready() -> void:
 	# Запоминаем, где меню паузы стоит по умолчанию
 	pause_original_x = pause_menu.position.x
 	
-	# Прячем настройки за правый край экрана
+	# Используем размер экрана, как и в SettingsMenu, чтобы не запрашивать size.x до компоновки интерфейса
 	var screen_width: float = get_viewport_rect().size.x
+	pause_hidden_x = -screen_width
+	
+	# Прячем меню паузы за левый край экрана
+	pause_menu.position.x = pause_hidden_x
+	pause_menu.hide()
+	
+	# Прячем настройки за правый край экрана
 	settings_menu.position.x = screen_width + gap
 	settings_menu.hide()
 	setup_give_item_menu()
@@ -56,11 +66,35 @@ func _input(event: InputEvent) -> void:
 func toggle_menu():
 	if !levelup_menu.visible:
 		if pause_menu:
-			pause_menu.visible = !pause_menu.visible
-			get_tree().paused = pause_menu.visible
-			MusicController.focusMusic(!pause_menu.visible)
-		if !pause_menu.visible and settings_menu.visible:
-			close_settings()
+			is_menu_open = !is_menu_open
+			if is_menu_open:
+				open_pause_menu()
+			else:
+				close_pause_menu()
+
+func open_pause_menu() -> void:
+	pause_menu.show()
+	get_tree().paused = true
+	MusicController.focusMusic(false)
+	
+	var tween: Tween = create_tween()
+	tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(pause_menu, "position:x", pause_original_x, transition_duration)
+
+func close_pause_menu() -> void:
+	get_tree().paused = false
+	MusicController.focusMusic(true)
+	
+	var tween: Tween = create_tween().set_parallel(true)
+	tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(pause_menu, "position:x", pause_hidden_x, transition_duration)
+	
+	if settings_menu.visible:
+		var screen_width: float = get_viewport_rect().size.x
+		tween.tween_property(settings_menu, "position:x", screen_width + gap, transition_duration)
+		tween.chain().tween_callback(settings_menu.hide)
+		
+	tween.chain().tween_callback(pause_menu.hide)
 
 
 func open_settings() -> void:
@@ -114,8 +148,6 @@ func _on_btn_end_run_click_end() -> void:
 	var _level = get_tree().change_scene_to_file(titleMenu)
 
 func _on_btn_resume_run_click_end() -> void:
-	if settings_menu.visible:
-		close_settings()
 	toggle_menu()
 
 func _on_btn_settings_click_end() -> void:

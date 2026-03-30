@@ -1,8 +1,8 @@
 extends CharacterBody2D
 
-var hp = 80
-var maxhp = 80
-var regenPerSecond = 0.5 / 100 #regen percent of max hp, by default 0.5%
+@export var maxhp = 80
+var hp = maxhp
+@export var regenPerSecond = 0.5 / 100 #regen percent of max hp, by default 0.5%
 var last_movement = Vector2.UP
 var time = 0
 var godmode = false
@@ -10,6 +10,9 @@ var godmode = false
 var experience = 0
 var experience_level = 1
 var collected_experience = 0
+
+@export var hurtBadThreshold = 0.20
+var hurtBadTriggered = false
 
 var titleMenu = "res://TitleScreen/menu.tscn"
 
@@ -22,7 +25,7 @@ var upgrade_options = []
 # Base Stats
 var base_armor = 0
 var armor = 0
-var base_movement_speed = 50.0
+@export var base_movement_speed = 50.0
 var movement_speed = 50.0
 var base_spell_cooldown = 0.0
 var spell_cooldown = 0.0
@@ -73,7 +76,15 @@ var enemy_close = []
 signal playerdeath
 
 func _ready():
-	upgrade_character("icespear1")
+	match GlobalEvents.playerItem:
+		0:
+			pass
+		1:
+			upgrade_character("icespear1")
+		2:
+			upgrade_character("javelin1")
+		3: 
+			upgrade_character("tornado1")
 	attack()
 	set_expbar(experience, calculate_experiencecap())
 	lblLevel.text = str(tr("ui_level"),experience_level)
@@ -114,15 +125,21 @@ func _on_regen_timer_timeout(): #regens regenPerSecond percent of maxHp every re
 		hp = clamp(hp + regenPerSecond*maxhp, 0, maxhp)	
 		healthBar.max_value = maxhp
 		healthBar.value = hp
+		
+		if (hp >= (maxhp * hurtBadThreshold)) and hurtBadTriggered:
+			hurtBadTriggered = false
+
+
 
 func _on_hurt_box_hurt(damage, _angle, _knockback):
 	if godmode == false:
 		var actual_damage = clamp(damage-armor, 0.0, 999.0)
 		if actual_damage > 0:
-			if hp >= (maxhp * 0.15):
+			if (hp >= (maxhp * hurtBadThreshold)) or hurtBadTriggered:
 				sndHurt.play()
 			else:
 				sndHurtBad.play()
+				hurtBadTriggered = true
 		hp -= actual_damage
 	healthBar.max_value = maxhp
 	healthBar.value = hp
@@ -194,9 +211,6 @@ func levelup():
 	if experience_level % GlobalEvents.backgroundInterval == 0:
 		GlobalEvents.advanceBackground.emit()
 	
-	var tween = levelPanel.create_tween()
-	tween.tween_property(levelPanel,"position",Vector2(220,50),0.2).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_IN)
-	tween.play()
 	levelPanel.visible = true
 	var options = 0
 	var optionsmax = 3
@@ -210,6 +224,11 @@ func levelup():
 	# Wait one frame for layout to compute sizes, then equalize all box widths
 	await get_tree().process_frame
 	_equalize_upgrade_option_widths()
+	# Wait another frame so the panel recalculates its size after width equalization
+	await get_tree().process_frame
+	# Force the PanelContainer to recalculate its layout, then recenter via anchors
+	levelPanel.reset_size()
+	_recenter_anchored_panel(levelPanel)
 
 func _equalize_upgrade_option_widths():
 	var children = upgradeOptions.get_children()
@@ -218,6 +237,16 @@ func _equalize_upgrade_option_widths():
 		max_width = max(max_width, child.get_combined_minimum_size().x)
 	for child in children:
 		child.custom_minimum_size.x = max_width
+
+func _recenter_anchored_panel(panel: Control) -> void:
+	# For a panel with center anchors (0.5) and grow-both, reset offsets
+	# so it stays centered at its current content size.
+	var half_w = panel.size.x / 2.0
+	var half_h = panel.size.y / 2.0
+	panel.offset_left = -half_w
+	panel.offset_right = half_w
+	panel.offset_top = -half_h
+	panel.offset_bottom = half_h
 
 func apply_stat_modifiers():
 	armor = base_armor
@@ -247,9 +276,6 @@ func upgrade_character(upgrade):
 		var base_name = upgrade.rstrip("0123456789")
 		var folder_name = base_name.capitalize()
 		var file_name = base_name
-		if base_name == "icespear": 
-			folder_name = "IceSpear"
-			file_name = "ice_spear"
 		
 		var weapon_spawner = weapons.get_node_or_null(base_name)
 		if weapon_spawner == null:
@@ -279,7 +305,6 @@ func upgrade_character(upgrade):
 	upgrade_options.clear()
 	collected_upgrades.append(upgrade)
 	levelPanel.visible = false
-	levelPanel.position = Vector2(800,50)
 	get_tree().paused = false
 	calculate_experience(0)
 	MusicController.focusMusic(!levelPanel.visible)	
@@ -344,8 +369,14 @@ func death():
 	deathPanel.visible = true
 	emit_signal("playerdeath")
 	get_tree().paused = true
+	# Center the death panel on screen
+	await get_tree().process_frame
+	var vp_size = get_viewport_rect().size
+	var target_pos = (vp_size - deathPanel.size) / 2.0
+	var start_pos = Vector2(target_pos.x, -deathPanel.size.y)
+	deathPanel.position = start_pos
 	var tween = deathPanel.create_tween()
-	tween.tween_property(deathPanel,"position",Vector2(220,50),3.0).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
+	tween.tween_property(deathPanel, "position", target_pos, 3.0).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
 	tween.play()
 	MusicController.focusMusic(false)
 	if time >= 300:

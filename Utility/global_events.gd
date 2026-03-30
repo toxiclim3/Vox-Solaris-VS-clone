@@ -11,8 +11,11 @@ signal boss_defeated
 
 @export var time = 0
 
+@export var playerItem = 0
+
 func restart_run() -> void:
 	MusicController.fadeOutToSilence()
+	MusicController.unlockMusic()
 	MusicController.resetPlaylists()
 	get_tree().change_scene_to_file("res://World/world.tscn")
 	MusicController.fadeInFromSilence()

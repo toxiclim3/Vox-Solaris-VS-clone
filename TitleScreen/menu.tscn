@@ -129,6 +129,7 @@ unique_name_in_owner = true
 visible = false
 
 [connection signal="click_end" from="MarginContainer/VBoxContainer/btn_play" to="." method="_on_btn_play_click_end"]
+[connection signal="click_end" from="MarginContainer/VBoxContainer/btn_how_to_play" to="." method="_on_btn_how_to_play_click_end"]
 [connection signal="click_end" from="MarginContainer/VBoxContainer/btn_settings" to="." method="_on_btn_settings_click_end"]
 [connection signal="click_end" from="MarginContainer/VBoxContainer/btn_exit" to="." method="_on_btn_exit_click_end"]
 [connection signal="settings_closed" from="CanvasLayer/SettingsMenu" to="." method="_on_settings_menu_settings_closed"]
