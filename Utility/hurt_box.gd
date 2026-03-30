@@ -29,7 +29,7 @@ func _on_area_entered(area):
 						area.tempdisable()
 			var damage = area.damage
 			var angle = Vector2.ZERO
-			var knockback = 1
+			var knockback = 0
 			if not area.get("angle") == null:
 				angle = area.angle
 			if not area.get("knockback_amount") == null:

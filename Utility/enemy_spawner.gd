@@ -9,7 +9,7 @@ extends Node2D
 @export var min_soft_limit: int = 80
 @export var max_soft_limit: int = 400
 
-@export var boss_spawn_interval: int = 5 * 60
+@export var boss_spawn_interval: int = GlobalEvents.bossInterval
 @export var time_normal_unlock_minutes: float = 1.0
 @export var time_hard_unlock_minutes: float = 3.0
 
@@ -22,6 +22,8 @@ extends Node2D
 var isSpawningActive = true
 @onready var soft_limit = base_soft_limit
 var current_wave_delay = 0
+
+var upcoming_boss: Spawn_info = null
 
 signal changetime(time)
 
@@ -46,7 +48,7 @@ func startTimer():
 func _on_timer_timeout():
 	GlobalEvents.time += 1
 	
-	if GlobalEvents.time % GlobalEvents.bossMusicInterval == 0: 
+	if GlobalEvents.time % GlobalEvents.bossInterval == 0: 
 		MusicController.playNext(MusicController.MusicType.BOSS)
 		
 	if isSpawningActive:
@@ -59,13 +61,25 @@ func _on_timer_timeout():
 
 		var current_enemies = get_tree().get_nodes_in_group("enemy").size()
 		
+		# Boss Spawns 1 minute Warning
+		if boss_spawn_interval > 60 and (GlobalEvents.time + 60) % boss_spawn_interval == 0 and GlobalEvents.time > 0:
+			if spawns_super.size() > 0:
+				upcoming_boss = spawns_super.pick_random()
+				var boss_path = upcoming_boss.enemy.resource_path
+				var warning_key = GlobalEvents.boss_warnings.get(boss_path, "warning_boss_generic")
+				GlobalEvents.emit_signal("show_boss_warning", warning_key)
+		
 		# Boss Spawns
 		if boss_spawn_interval > 0 and GlobalEvents.time % boss_spawn_interval == 0 and GlobalEvents.time > 0:
-			if spawns_super.size() > 0:
-				var boss_info = spawns_super.pick_random()
+			var boss_info = upcoming_boss
+			if not boss_info and spawns_super.size() > 0:
+				boss_info = spawns_super.pick_random()
+			
+			if boss_info:
 				var boss_spawn = boss_info.enemy.instantiate()
 				boss_spawn.global_position = get_random_position()
 				add_child(boss_spawn)
+				upcoming_boss = null
 
 		if current_wave_delay > 0:
 			current_wave_delay -= 1

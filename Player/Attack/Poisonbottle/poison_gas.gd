@@ -3,7 +3,7 @@ extends Area2D
 var level = 1
 var attack_size = 1.0
 var damage = 2.5
-var slow_amount = 0.0
+var slow_amount = 0
 var duration = 2.0
 
 var min_frame = 33

@@ -1,35 +1,32 @@
 [gd_scene format=3 uid="uid://pbottle12345"]
 
-[ext_resource type="Script" uid="uid://pbscript1234" path="res://Player/Attack/Poisonbottle/poisonbottle.gd" id="1_bdhjd"]
-[ext_resource type="Texture2D" uid="uid://pbtx12345678" path="res://Textures/Items/Weapons/poison_gas.png" id="2_txxbt"]
+[ext_resource type="Script" uid="uid://t2lj0todwtba" path="res://Player/Attack/Poisonbottle/poisonbottle.gd" id="1_bdhjd"]
+[ext_resource type="Texture2D" uid="uid://bq3t6184nv83o" path="res://Textures/Items/Weapons/poison_gas.png" id="2_txxbt"]
 [ext_resource type="AudioStream" uid="uid://cl3g2vts3nyt0" path="res://Audio/SoundEffect/ice.wav" id="3_sndbt"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pbott"]
-size = Vector2(20, 20)
 
-[node name="PoisonBottle" type="Area2D" groups=["attack"]]
+[node name="PoisonBottle" type="Area2D" unique_id=988240515 groups=["attack"]]
 top_level = true
-scale = Vector2(1.0, 1.0)
 collision_layer = 4
 collision_mask = 0
 script = ExtResource("1_bdhjd")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=358140881]
 texture = ExtResource("2_txxbt")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1413597057]
 shape = SubResource("RectangleShape2D_pbott")
 
-[node name="Timer" type="Timer" parent="."]
+[node name="Timer" type="Timer" parent="." unique_id=1225874846]
 wait_time = 3.0
 one_shot = true
 autostart = true
 
-[node name="snd_play" type="AudioStreamPlayer" parent="."]
+[node name="snd_play" type="AudioStreamPlayer" parent="." unique_id=283340530]
 stream = ExtResource("3_sndbt")
 volume_db = -10.0
-pitch_scale = 1.0
 autoplay = true
-bus = &"SFX"
+bus = &"MiscUnimportant"
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

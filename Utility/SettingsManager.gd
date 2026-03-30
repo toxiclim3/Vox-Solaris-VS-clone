@@ -12,13 +12,17 @@ const PROFILES = {
 		"EnemyHurt": 1.0,
 		"EnemyDeath": 1.0,
 		"PlayerHurt": 1.0,
-		"LevelUp": 1.0
+		"LevelUp": 1.0,
+		"MiscImportant": 1.0,
+		"MiscUnimportant": 1.0
 	},
 	"Grindfest": {
 		"EnemyHurt": 0.15,
 		"EnemyDeath": 0.15,
 		"PlayerHurt": 0.8,
-		"LevelUp": 0.5
+		"LevelUp": 0.5,
+		"MiscImportant": 0.8,
+		"MiscUnimportant": 0.2
 	}
 }
 

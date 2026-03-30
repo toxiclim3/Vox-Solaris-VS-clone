@@ -12,6 +12,12 @@ var titleMenu = "res://TitleScreen/menu.tscn"
 @onready var giveItemSubGrid = get_node("GiveItemMenu/ScrollContainer/VBoxContainer/SubGrid")
 @onready var player = get_tree().get_first_node_in_group("player")
 
+@onready var boss_warning_panel = get_node("BossWarning")
+@onready var boss_warning_label = get_node("BossWarning/Label")
+@onready var snd_boss_warning = get_node("BossWarning/snd_boss_warning")
+
+var boss_warning_tween: Tween
+
 @export var transition_duration: float = 0.4
 @export var gap: float = 0.5 * 8 * 8 # Расстояние между окнами
 
@@ -43,6 +49,36 @@ func _ready() -> void:
 	settings_menu.position.x = screen_width + gap
 	settings_menu.hide()
 	setup_give_item_menu()
+	
+	GlobalEvents.show_boss_warning.connect(_on_show_boss_warning)
+
+func _on_show_boss_warning(warning_key: String) -> void:
+	boss_warning_label.text = tr(warning_key)
+	boss_warning_panel.show()
+	snd_boss_warning.play()
+	
+	if boss_warning_tween:
+		boss_warning_tween.kill()
+		
+	boss_warning_tween = create_tween()
+	boss_warning_tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	boss_warning_tween.tween_property(boss_warning_panel, "position:y", 0.0, 0.5)
+	
+	get_tree().create_timer(5.0).timeout.connect(hide_boss_warning)
+
+func hide_boss_warning() -> void:
+	if not boss_warning_panel.visible:
+		return
+	if boss_warning_tween:
+		boss_warning_tween.kill()
+		
+	boss_warning_tween = create_tween()
+	boss_warning_tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+	boss_warning_tween.tween_property(boss_warning_panel, "position:y", -32.0, 0.5)
+	boss_warning_tween.tween_callback(boss_warning_panel.hide)
+
+func _on_btn_warning_dismiss_pressed() -> void:
+	hide_boss_warning()
 
 func _input(event: InputEvent) -> void:
 	if event.is_echo():

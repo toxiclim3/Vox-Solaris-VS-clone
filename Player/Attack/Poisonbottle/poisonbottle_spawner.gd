@@ -2,7 +2,7 @@ extends Node2D
 
 var ammo = 0
 var baseammo = 1
-var attackspeed = 1.5
+var attackspeed = 3	
 var level = 0
 
 var poisonBottle = preload("res://Player/Attack/Poisonbottle/poisonbottle.tscn")

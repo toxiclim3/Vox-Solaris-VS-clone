@@ -1,6 +1,6 @@
 extends Area2D
 
-var damage = 5.0
+var damage = 2.5
 
 signal remove_from_array(object)
 
