@@ -24,6 +24,16 @@ Audio/Music/**/*.import
 
 !Audio/Music/**/.gitkeep
 
+# music lite
+# music
+Audio/Music_Lite/**/*.mp3
+Audio/Music_Lite/**/*.wav
+Audio/Music_Lite/**/*.ogg
+Audio/Music_Lite/**/*.flac
+Audio/Music_Lite/**/*.import
+
+!Audio/Music_Lite/**/.gitkeep
+
 Audio/SoundEffect/*.wav
 Audio/SoundEffect/*.import
 

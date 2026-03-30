@@ -37,6 +37,14 @@ var is_music_locked: bool = false
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	
+	if OS.has_feature("lite_audio"):
+		normalMusicDir = normalMusicDir.replace("Music", "Music_Lite")
+		bossMusicDir = bossMusicDir.replace("Music", "Music_Lite")
+		extraMusicDir = extraMusicDir.replace("Music", "Music_Lite")
+		winMusic = winMusic.replace("Music", "Music_Lite")
+		titleMusic = titleMusic.replace("Music", "Music_Lite")
+		tutorialMusic = tutorialMusic.replace("Music", "Music_Lite")
+		
 	_initPlayers()
 	loadTracksFromDir(normalMusicDir, normalTracks)
 	loadTracksFromDir(bossMusicDir, bossTracks)
@@ -70,7 +78,7 @@ func playSpecificTrack(filePath: String,crossfade: bool = 1) -> void:
 		stream = trackCache[filePath]
 	else:
 		# 2. Если нет, проверяем файл и загружаем
-		if not FileAccess.file_exists(filePath):
+		if not FileAccess.file_exists(filePath) and not FileAccess.file_exists(filePath + ".import") and not FileAccess.file_exists(filePath + ".remap") and not ResourceLoader.exists(filePath):
 			push_error("MusicController: Файл не найден: ", filePath)
 			return
 			

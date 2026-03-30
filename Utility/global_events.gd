@@ -25,7 +25,7 @@ var boss_names: Dictionary = {
 
 @export var time = 0
 
-@export var playerItem = 0
+@export var playerItem = 1
 
 func restart_run() -> void:
 	MusicController.fadeOutToSilence()
