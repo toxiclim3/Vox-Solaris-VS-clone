@@ -3,12 +3,13 @@
 [ext_resource type="Texture2D" uid="uid://bb2kcf2xvcy5y" path="res://Textures/GUI/close_x.png" id="1_1t2v0"]
 [ext_resource type="Script" uid="uid://c4q7sllda5x3h" path="res://Utility/settings_menu.gd" id="1_pfsr1"]
 [ext_resource type="Texture2D" uid="uid://cuxlw7m6x5ojn" path="res://Textures/GUI/close_x_hover.png" id="2_pfsr1"]
-[ext_resource type="FontFile" uid="uid://fs2dvvujoay8" path="res://Font/OpenSans-Medium.ttf" id="3_56o74"]
+[ext_resource type="FontFile" uid="uid://b0s4gbyeyrex1" path="res://Font/OpenSans-Regular.ttf" id="3_56o74"]
 [ext_resource type="Script" uid="uid://cqqhkqs35l5w2" path="res://Utility/texture_button.gd" id="4_56o74"]
 [ext_resource type="Script" uid="uid://djswmy6caitni" path="res://Utility/volume_slider.gd" id="4_wf2ud"]
 [ext_resource type="AudioStream" uid="uid://bwahs2mtjus02" path="res://Audio/GUI/hover.wav" id="5_88pqv"]
 [ext_resource type="AudioStream" uid="uid://dobpqbspunihg" path="res://Audio/GUI/click.wav" id="6_hevq0"]
 [ext_resource type="Theme" uid="uid://bibrcd7ekt5bd" path="res://Themes/RegularText.tres" id="7_hevq0"]
+[ext_resource type="PackedScene" uid="uid://b7c7gsdx2rkjm" path="res://Utility/basic_button.tscn" id="8_bbttn"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_0eg15"]
 font = ExtResource("3_56o74")
@@ -121,6 +122,19 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("7_hevq0")
 
+[node name="btn_reset_stats" parent="MarginContainer2/VBoxContainer" instance=ExtResource("8_bbttn")]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "ui_resetStats"
+
+[node name="ConfirmationDialog" type="ConfirmationDialog" parent="."]
+title = "ui_confirmResetTitle"
+initial_position = 2
+size = Vector2i(200, 100)
+dialog_text = "ui_confirmResetText"
+
 [connection signal="mouse_entered" from="MarginContainer2/VBoxContainer/CloseSettingsButton" to="MarginContainer2/VBoxContainer/CloseSettingsButton" method="_on_mouse_entered"]
 [connection signal="pressed" from="MarginContainer2/VBoxContainer/CloseSettingsButton" to="." method="_on_close_settings_button_pressed"]
 [connection signal="pressed" from="MarginContainer2/VBoxContainer/CloseSettingsButton" to="MarginContainer2/VBoxContainer/CloseSettingsButton" method="_on_pressed"]
+[connection signal="click_end" from="MarginContainer2/VBoxContainer/btn_reset_stats" to="." method="_on_btn_reset_stats_click_end"]
+[connection signal="confirmed" from="ConfirmationDialog" to="." method="_on_confirmation_dialog_confirmed"]

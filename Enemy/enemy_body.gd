@@ -93,6 +93,7 @@ func death():
 	if isBoss:
 		GlobalEvents.boss_defeated.emit()
 	
+	StatsManager.register_kill(isBoss)
 	queue_free()
 
 func _on_hurt_box_hurt(damage, angle, knockback_amount):

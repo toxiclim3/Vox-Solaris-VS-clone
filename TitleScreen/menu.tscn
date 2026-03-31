@@ -1,10 +1,11 @@
 [gd_scene format=3 uid="uid://dcyka5e06knff"]
 
 [ext_resource type="Script" uid="uid://dkuevxic02mb7" path="res://TitleScreen/menu.gd" id="1_oi0p3"]
-[ext_resource type="FontFile" uid="uid://d0avhtg6twdo2" path="res://Font/ArchivoBlack-Regular.ttf" id="2_t4alp"]
+[ext_resource type="FontFile" uid="uid://dkatxtvn4e35l" path="res://Font/morana.otf" id="2_morana"]
 [ext_resource type="PackedScene" uid="uid://b7c7gsdx2rkjm" path="res://Utility/basic_button.tscn" id="3_kwsdd"]
 [ext_resource type="AudioStream" uid="uid://tien114vt1fv" path="res://Audio/SoundEffect/BackgroundNoise/WE Heavy Outside Rain 1.mp3" id="4_cxswi"]
 [ext_resource type="PackedScene" uid="uid://dyahivqch5l16" path="res://Utility/settings_menu.tscn" id="5_yf0qj"]
+[ext_resource type="PackedScene" path="res://Utility/stats_menu.tscn" id="6_stats"]
 
 [sub_resource type="Gradient" id="Gradient_t4alp"]
 offsets = PackedFloat32Array(0.11347517)
@@ -67,11 +68,12 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -336.5
+offset_top = 10.0
 offset_right = 336.5
-offset_bottom = 100.0
+offset_bottom = 110.0
 grow_horizontal = 2
-theme_override_fonts/font = ExtResource("2_t4alp")
-theme_override_font_sizes/font_size = 44
+theme_override_fonts/font = ExtResource("2_morana")
+theme_override_font_sizes/font_size = 46
 text = "ui_gameTitle"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -84,6 +86,7 @@ bus = &"Music"
 parameters/looping = true
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=470872525]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -113,9 +116,12 @@ layout_mode = 2
 text = "ui_howToPlay"
 
 [node name="btn_settings" parent="MarginContainer/VBoxContainer" unique_id=1384267404 instance=ExtResource("3_kwsdd")]
-custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 text = "ui_settings"
+
+[node name="btn_stats" parent="MarginContainer/VBoxContainer" unique_id=1584267404 instance=ExtResource("3_kwsdd")]
+layout_mode = 2
+text = "ui_stats"
 
 [node name="btn_exit" parent="MarginContainer/VBoxContainer" unique_id=487451911 instance=ExtResource("3_kwsdd")]
 custom_minimum_size = Vector2(0, 24)
@@ -128,8 +134,14 @@ text = "ui_exit"
 unique_name_in_owner = true
 visible = false
 
+[node name="StatsMenu" parent="CanvasLayer" unique_id=344721166 instance=ExtResource("6_stats")]
+unique_name_in_owner = true
+visible = false
+
 [connection signal="click_end" from="MarginContainer/VBoxContainer/btn_play" to="." method="_on_btn_play_click_end"]
 [connection signal="click_end" from="MarginContainer/VBoxContainer/btn_how_to_play" to="." method="_on_btn_how_to_play_click_end"]
 [connection signal="click_end" from="MarginContainer/VBoxContainer/btn_settings" to="." method="_on_btn_settings_click_end"]
+[connection signal="click_end" from="MarginContainer/VBoxContainer/btn_stats" to="." method="_on_btn_stats_click_end"]
 [connection signal="click_end" from="MarginContainer/VBoxContainer/btn_exit" to="." method="_on_btn_exit_click_end"]
 [connection signal="settings_closed" from="CanvasLayer/SettingsMenu" to="." method="_on_settings_menu_settings_closed"]
+[connection signal="stats_closed" from="CanvasLayer/StatsMenu" to="." method="_on_stats_menu_stats_closed"]

@@ -4,6 +4,7 @@ signal settings_closed
 
 @onready var profile_button = %ProfileButton
 @onready var language_button = %LanguageButton
+@onready var confirmation_dialog = $ConfirmationDialog
 
 enum Languages {en,ru,ua}
 
@@ -38,3 +39,10 @@ func _on_profile_selected(index: int) -> void:
 
 func _on_language_selected(index: int) -> void:
 	SettingsManager.set_language(Languages.find_key(index))
+
+func _on_btn_reset_stats_click_end() -> void:
+	if confirmation_dialog:
+		confirmation_dialog.popup_centered()
+
+func _on_confirmation_dialog_confirmed() -> void:
+	StatsManager.reset_stats()

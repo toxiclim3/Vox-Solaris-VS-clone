@@ -1,7 +1,7 @@
 [gd_resource type="Theme" format=3 uid="uid://b00q52p3y3ard"]
 
-[ext_resource type="FontFile" uid="uid://d0avhtg6twdo2" path="res://Font/ArchivoBlack-Regular.ttf" id="1_l76nx"]
+[ext_resource type="FontFile" uid="uid://dkatxtvn4e35l" path="res://Font/morana.otf" id="1_morana"]
 
 [resource]
-default_font = ExtResource("1_l76nx")
+default_font = ExtResource("1_morana")
 default_font_size = 10

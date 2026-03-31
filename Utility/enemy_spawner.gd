@@ -13,6 +13,10 @@ extends Node2D
 @export var time_normal_unlock_minutes: float = 1.0
 @export var time_hard_unlock_minutes: float = 3.0
 
+@export_group("Boss Scaling")
+@export var boss_hp_scaling_base: float = 1.05
+@export var enable_boss_debug_logging: bool = true
+
 @export var base_enemy_intensity: float = 3.0
 @export var enemy_intensity_time_multiplier: float = 1.5
 
@@ -49,6 +53,14 @@ func force_queue_boss() -> void:
 	upcoming_boss = spawns_super.pick_random()
 	# Spawn immediately: instantiate and emit the spawned signal now
 	var boss_spawn = upcoming_boss.enemy.instantiate()
+	
+	# Apply HP scaling
+	var multiplier = get_boss_hp_multiplier()
+	var original_hp = boss_spawn.hp
+	boss_spawn.hp = int(original_hp * multiplier)
+	if enable_boss_debug_logging:
+		print("[Boss Spawner] Forced Spawn: %s | Time: %d sec | Multiplier: %.2f | HP: %d (was %d)" % [boss_spawn.name, GlobalEvents.time, multiplier, boss_spawn.hp, original_hp])
+		
 	boss_spawn.global_position = get_random_position()
 	add_child(boss_spawn)
 	GlobalEvents.boss_spawned.emit(boss_spawn)
@@ -92,6 +104,14 @@ func _on_timer_timeout():
 			
 			if boss_info:
 				var boss_spawn = boss_info.enemy.instantiate()
+				
+				# Apply HP scaling
+				var multiplier = get_boss_hp_multiplier()
+				var original_hp = boss_spawn.hp
+				boss_spawn.hp = int(original_hp * multiplier)
+				if enable_boss_debug_logging:
+					print("[Boss Spawner] Scheduled Spawn: %s | Time: %d sec | Multiplier: %.2f | HP: %d (was %d)" % [boss_spawn.name, GlobalEvents.time, multiplier, boss_spawn.hp, original_hp])
+
 				boss_spawn.global_position = get_random_position()
 				add_child(boss_spawn)
 				GlobalEvents.boss_spawned.emit(boss_spawn)
@@ -166,6 +186,10 @@ func _on_timer_timeout():
 						counter += 1
 	
 	emit_signal("changetime",GlobalEvents.time)
+
+func get_boss_hp_multiplier() -> float:
+	var minutes = GlobalEvents.time / 60.0
+	return pow(boss_hp_scaling_base, minutes)
 
 func get_random_position():
 	var vpr = get_viewport_rect().size * randf_range(1.1,1.4)

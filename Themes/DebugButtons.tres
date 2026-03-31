@@ -1,6 +1,6 @@
 [gd_resource type="Theme" format=3 uid="uid://kvmf0od5c6rf"]
 
-[ext_resource type="FontFile" uid="uid://fs2dvvujoay8" path="res://Font/OpenSans-Medium.ttf" id="1_bmh2e"]
+[ext_resource type="FontFile" uid="uid://b0s4gbyeyrex1" path="res://Font/OpenSans-Regular.ttf" id="1_bmh2e"]
 
 [resource]
 default_font = ExtResource("1_bmh2e")
