@@ -7,6 +7,10 @@
 [ext_resource type="PackedScene" uid="uid://dyahivqch5l16" path="res://Utility/settings_menu.tscn" id="5_yf0qj"]
 [ext_resource type="PackedScene" path="res://Utility/stats_menu.tscn" id="6_stats"]
 [ext_resource type="PackedScene" uid="uid://cxw5k8g4y2f2p" path="res://Utility/custom_difficulty_menu.tscn" id="7_custom"]
+[ext_resource type="PackedScene" uid="uid://dfxw7xjk1r111" path="res://TitleScreen/play_menu.tscn" id="8_play"]
+[ext_resource type="PackedScene" uid="uid://dyahivqch5l16" path="res://Utility/settings_menu.tscn" id="5_yf0qj"]
+[ext_resource type="PackedScene" path="res://Utility/stats_menu.tscn" id="6_stats"]
+[ext_resource type="PackedScene" uid="uid://cxw5k8g4y2f2p" path="res://Utility/custom_difficulty_menu.tscn" id="7_custom"]
 [sub_resource type="Gradient" id="Gradient_t4alp"]
 offsets = PackedFloat32Array(0.11347517)
 colors = PackedColorArray(1, 0.56666666, 0, 0.38431373)
@@ -110,17 +114,6 @@ custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 text = "ui_play"
 
-[node name="btn_difficulty" parent="MarginContainer/VBoxContainer" instance=ExtResource("3_kwsdd")]
-custom_minimum_size = Vector2(0, 24)
-layout_mode = 2
-text = "ui_difficulty_normal"
-
-[node name="btn_custom_difficulty" parent="MarginContainer/VBoxContainer" instance=ExtResource("3_kwsdd")]
-custom_minimum_size = Vector2(0, 24)
-layout_mode = 2
-text = "Edit Custom Difficulty"
-visible = false
-
 [node name="btn_how_to_play" parent="MarginContainer/VBoxContainer" unique_id=964057103 instance=ExtResource("3_kwsdd")]
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
@@ -153,9 +146,11 @@ visible = false
 unique_name_in_owner = true
 visible = false
 
+[node name="PlayMenu" parent="CanvasLayer" instance=ExtResource("8_play")]
+unique_name_in_owner = true
+visible = false
+
 [connection signal="click_end" from="MarginContainer/VBoxContainer/btn_play" to="." method="_on_btn_play_click_end"]
-[connection signal="click_end" from="MarginContainer/VBoxContainer/btn_difficulty" to="." method="_on_btn_difficulty_click_end"]
-[connection signal="click_end" from="MarginContainer/VBoxContainer/btn_custom_difficulty" to="." method="_on_btn_custom_difficulty_click_end"]
 [connection signal="click_end" from="MarginContainer/VBoxContainer/btn_how_to_play" to="." method="_on_btn_how_to_play_click_end"]
 [connection signal="click_end" from="MarginContainer/VBoxContainer/btn_settings" to="." method="_on_btn_settings_click_end"]
 [connection signal="click_end" from="MarginContainer/VBoxContainer/btn_stats" to="." method="_on_btn_stats_click_end"]
@@ -163,3 +158,6 @@ visible = false
 [connection signal="settings_closed" from="CanvasLayer/SettingsMenu" to="." method="_on_settings_menu_settings_closed"]
 [connection signal="stats_closed" from="CanvasLayer/StatsMenu" to="." method="_on_stats_menu_stats_closed"]
 [connection signal="difficulty_custom_closed" from="CanvasLayer/CustomDifficultyMenu" to="." method="_on_custom_difficulty_menu_closed"]
+[connection signal="play_menu_closed" from="CanvasLayer/PlayMenu" to="." method="_on_play_menu_closed"]
+[connection signal="start_run_requested" from="CanvasLayer/PlayMenu" to="." method="_on_play_menu_start_run_requested"]
+[connection signal="edit_custom_requested" from="CanvasLayer/PlayMenu" to="." method="_on_play_menu_edit_custom_requested"]

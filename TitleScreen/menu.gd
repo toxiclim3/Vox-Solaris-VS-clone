@@ -4,10 +4,9 @@ var level = "res://World/world.tscn"
 @onready var settings_menu = %SettingsMenu
 @onready var stats_menu = %StatsMenu
 @onready var custom_menu = %CustomDifficultyMenu
+@onready var play_menu = %PlayMenu
 @onready var main_menu_content = %MarginContainer
 @onready var title_label = get_node("Label")
-@onready var btn_difficulty = main_menu_content.get_node("VBoxContainer/btn_difficulty")
-@onready var btn_custom_difficulty = main_menu_content.get_node("VBoxContainer/btn_custom_difficulty")
 
 @export var transition_duration: float = 0.4
 @export var gap: float = 0.5 * 8 * 8
@@ -16,6 +15,7 @@ var main_menu_original_x: float
 var is_settings_open: bool = false
 var is_stats_open: bool = false
 var is_custom_diff_open: bool = false
+var is_play_open: bool = false
 
 func _ready():
 	get_tree().paused = false
@@ -34,6 +34,8 @@ func _ready():
 	stats_menu.hide()
 	custom_menu.position.y = -viewport_size.y
 	custom_menu.hide()
+	play_menu.position.y = -viewport_size.y
+	play_menu.hide()
 	
 	# Intro animation: slide in from top
 	var original_title_y = title_label.position.y
@@ -54,8 +56,7 @@ func _ready():
 	)
 
 func _on_btn_play_click_end():
-	MusicController.fadeOutToSilence()
-	var _level = get_tree().change_scene_to_file(level)
+	toggle_play()
 
 func _on_btn_exit_click_end():
 	get_tree().quit()
@@ -72,18 +73,15 @@ func _on_settings_menu_settings_closed() -> void:
 func _on_stats_menu_stats_closed() -> void:
 	toggle_stats()
 
-func _on_btn_difficulty_click_end() -> void:
-	GlobalEvents.next_difficulty()
-	btn_difficulty.text = GlobalEvents.get_difficulty_name()
-	if GlobalEvents.current_difficulty == GlobalEvents.Difficulty.CUSTOM:
-		btn_custom_difficulty.show()
-	else:
-		btn_custom_difficulty.hide()
-		if is_custom_diff_open:
-			toggle_custom_diff()
+func _on_play_menu_start_run_requested() -> void:
+	MusicController.fadeOutToSilence()
+	var _level = get_tree().change_scene_to_file(level)
 
-func _on_btn_custom_difficulty_click_end() -> void:
+func _on_play_menu_edit_custom_requested() -> void:
 	toggle_custom_diff()
+
+func _on_play_menu_closed() -> void:
+	toggle_play()
 
 func _on_custom_difficulty_menu_closed() -> void:
 	toggle_custom_diff()
@@ -95,6 +93,9 @@ func toggle_settings():
 	if is_custom_diff_open:
 		close_custom_diff()
 		is_custom_diff_open = false
+	if is_play_open:
+		close_play()
+		is_play_open = false
 	is_settings_open = !is_settings_open
 	if is_settings_open:
 		open_settings()
@@ -108,6 +109,9 @@ func toggle_stats():
 	if is_custom_diff_open:
 		close_custom_diff()
 		is_custom_diff_open = false
+	if is_play_open:
+		close_play()
+		is_play_open = false
 	is_stats_open = !is_stats_open
 	if is_stats_open:
 		open_stats()
@@ -121,11 +125,62 @@ func toggle_custom_diff():
 	if is_stats_open:
 		close_stats()
 		is_stats_open = false
+	if is_play_open:
+		close_play()
+		is_play_open = false
 	is_custom_diff_open = !is_custom_diff_open
 	if is_custom_diff_open:
 		open_custom_diff()
 	else:
 		close_custom_diff()
+
+func toggle_play():
+	if is_settings_open:
+		close_settings()
+		is_settings_open = false
+	if is_stats_open:
+		close_stats()
+		is_stats_open = false
+	if is_custom_diff_open:
+		close_custom_diff()
+		is_custom_diff_open = false
+	is_play_open = !is_play_open
+	if is_play_open:
+		open_play()
+	else:
+		close_play()
+
+func open_play() -> void:
+	play_menu.show()
+	play_menu.update_menu_state()
+	
+	var screen_size = get_viewport_rect().size
+	var screen_center_x: float = screen_size.x / 2.0
+	
+	var total_width: float = main_menu_content.size.x + gap + play_menu.size.x
+	var group_start_x: float = screen_center_x - (total_width / 2.0)
+	
+	var main_target_x: float = group_start_x
+	var play_target_x: float = group_start_x + main_menu_content.size.x + gap
+	var bottom_y: float = main_menu_content.position.y + main_menu_content.size.y - 32.0
+	var play_target_y: float = bottom_y - play_menu.size.y
+	
+	play_menu.position.x = screen_size.x + play_menu.size.x + 50
+	play_menu.position.y = play_target_y
+	
+	var tween: Tween = create_tween().set_parallel(true)
+	tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	
+	tween.tween_property(main_menu_content, "position:x", main_target_x, transition_duration)
+	tween.tween_property(play_menu, "position:x", play_target_x, transition_duration)
+
+func close_play() -> void:
+	var viewport_size = get_viewport_rect().size
+	var tween: Tween = create_tween().set_parallel(true)
+	tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(main_menu_content, "position:x", main_menu_original_x, transition_duration)
+	tween.tween_property(play_menu, "position:x", viewport_size.x + play_menu.size.x + 50, transition_duration)
+	tween.chain().tween_callback(play_menu.hide)
 
 func open_settings() -> void:
 	settings_menu.show()
