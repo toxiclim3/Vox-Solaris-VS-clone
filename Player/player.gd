@@ -139,7 +139,8 @@ func attack():
 
 func _on_regen_timer_timeout(): #regens regenPerSecond percent of maxHp every regenTimer timeout
 	if hp < maxhp:
-		hp = clamp(hp + regenPerSecond*maxhp, 0, maxhp)	
+		var actual_regen = regenPerSecond * GlobalEvents.get_player_regen_modifier()
+		hp = clamp(hp + actual_regen*maxhp, 0, maxhp)	
 		healthBar.max_value = maxhp
 		healthBar.value = hp
 		
@@ -193,7 +194,7 @@ func _on_collect_area_area_entered(area):
 		calculate_experience(gem_exp)
 
 func calculate_experience(gem_exp):
-	collected_experience += gem_exp
+	collected_experience += (gem_exp * GlobalEvents.get_xp_gain_modifier())
 	var leveled_up = false
 	while true:
 		var exp_required = calculate_experiencecap()

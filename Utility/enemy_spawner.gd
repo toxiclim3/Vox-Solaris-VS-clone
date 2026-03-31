@@ -166,7 +166,7 @@ func _on_timer_timeout():
 						var val_at_3 = base_enemy_intensity + enemy_intensity_time_multiplier
 						time_multiplier = val_at_3 + minutes * enemy_intensity_time_multiplier
 						
-					var spawn_count = int(enemy_info.enemy_num * time_multiplier * randf_range(0.8, 1.2))
+					var spawn_count = int(enemy_info.enemy_num * time_multiplier * randf_range(0.8, 1.2) * GlobalEvents.get_enemy_spawn_modifier())
 					
 					if selected_pool_type == "easy" and minutes >= time_hard_unlock_minutes:
 						spawn_count = int(spawn_count * 1.5)
@@ -181,6 +181,12 @@ func _on_timer_timeout():
 					var counter = 0
 					while counter < spawn_count:
 						var enemy_spawn = enemy_info.enemy.instantiate()
+						
+						# Apply generic Enemy HP modifier
+						var hp_mod = GlobalEvents.get_enemy_hp_modifier()
+						if hp_mod != 1.0:
+							enemy_spawn.hp = int(enemy_spawn.hp * hp_mod)
+						
 						enemy_spawn.global_position = get_random_position()
 						add_child(enemy_spawn)
 						counter += 1
@@ -189,7 +195,7 @@ func _on_timer_timeout():
 
 func get_boss_hp_multiplier() -> float:
 	var minutes = GlobalEvents.time / 60.0
-	return pow(boss_hp_scaling_base, minutes)
+	return pow(boss_hp_scaling_base, minutes) * GlobalEvents.get_boss_hp_modifier()
 
 func get_random_position():
 	var vpr = get_viewport_rect().size * randf_range(1.1,1.4)

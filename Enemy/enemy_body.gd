@@ -97,7 +97,7 @@ func death():
 	queue_free()
 
 func _on_hurt_box_hurt(damage, angle, knockback_amount):
-	hp -= damage
+	hp -= (damage * GlobalEvents.get_player_damage_modifier())
 	knockback = angle * knockback_amount
 	if hp <= 0:
 		death()
