@@ -279,7 +279,7 @@ const UPGRADES = {
 		"details": "ItemDesc_Ring1",
 		"level": "item_level1",
 		"prerequisite": [],
-		"type": "upgrade",
+		"type": "bossitem",
 		"stat_modifiers": {"additional_attacks": 1}
 	},
 	"ring2": 
@@ -289,7 +289,7 @@ const UPGRADES = {
 		"details": "ItemDesc_Ring2",
 		"level": "item_level2",
 		"prerequisite": ["ring1"],
-		"type": "upgrade",
+		"type": "bossitem",
 		"stat_modifiers": {"additional_attacks": 1}
 	},
 	"ringofrejuvenation1": 

@@ -41,18 +41,23 @@ func attack():
 			timer.start()
 
 func _on_timer_timeout():
-	ammo += baseammo + player.additional_attacks
+	var attack_burst = baseammo + player.additional_attacks
+	if ammo < attack_burst:
+		ammo = attack_burst
 	attackTimer.start()
 
 func _on_attack_timer_timeout():
 	if ammo > 0:
-		var icespear_attack = iceSpear.instantiate()
-		icespear_attack.position = player.position
-		icespear_attack.target = player.get_random_target()
-		icespear_attack.level = level
-		# Add to main scene tree or to a projectiles node so they don't move with player
-		player.get_parent().add_child(icespear_attack)
-		ammo -= 1
+		var target = player.get_random_target()
+		if target != Vector2.INF:
+			var icespear_attack = iceSpear.instantiate()
+			icespear_attack.position = player.position
+			icespear_attack.target = target
+			icespear_attack.level = level
+			# Add to main scene tree or to a projectiles node so they don't move with player
+			player.get_parent().add_child(icespear_attack)
+			ammo -= 1
+		
 		if ammo > 0:
 			attackTimer.start()
 		else:

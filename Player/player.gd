@@ -6,6 +6,7 @@ var hp = maxhp
 @export var regenPerSecond = 0.5 / 100 #regen percent of max hp, by default 0.5%
 var base_regenPerSecond = 0.5 / 100
 var last_movement = Vector2.UP
+var hasWon = false
 var time = 0
 var godmode = false
 
@@ -24,6 +25,7 @@ var titleMenu = "res://TitleScreen/menu.tscn"
 var collected_upgrades = []
 var upgrade_options = []
 var pending_levelups = 0  # Queue of level-ups waiting to be shown
+var pending_boss_rewards = 0 # Queue of boss rewards waiting to be shown
 
 # Base Stats
 var base_armor = 0
@@ -68,7 +70,13 @@ var enemy_close = []
 @onready var lblTimer = get_node("%lblTimer")
 @onready var collectedWeapons = get_node("%CollectedWeapons")
 @onready var collectedUpgrades = get_node("%CollectedUpgrades")
+@onready var collectedBossItems = get_node("%CollectedBossItems")
 @onready var itemContainer = preload("res://Player/GUI/item_container.tscn")
+
+#Boss Level Up
+@onready var bossLevelPanel = get_node("%BossLevelUp")
+@onready var bossUpgradeOptions = get_node("%BossUpgradeOptions")
+@onready var bossUpgradeScroll = get_node("%BossUpgradeScroll")
 
 @onready var deathPanel = get_node("%DeathPanel")
 @onready var lblResult = get_node("%lbl_Result")
@@ -97,6 +105,7 @@ func _ready():
 	set_expbar(experience, calculate_experiencecap())
 	lblLevel.text = str(tr("ui_level"),experience_level)
 	_on_hurt_box_hurt(0,0,0)
+	GlobalEvents.boss_defeated.connect(_on_boss_defeated)
 	
 
 func _physics_process(_delta):
@@ -162,7 +171,7 @@ func get_random_target():
 	if enemy_close.size() > 0:
 		return enemy_close.pick_random().global_position
 	else:
-		return Vector2.UP
+		return Vector2.INF
 
 
 func _on_enemy_detection_area_body_entered(body):
@@ -198,9 +207,9 @@ func calculate_experience(gem_exp):
 			experience += collected_experience
 			collected_experience = 0
 			break
-	# Trigger the first level-up menu only if one isn't already showing
-	if leveled_up and not levelPanel.visible:
-		_show_next_levelup()
+	# Trigger the first reward menu only if one isn't already showing
+	if (leveled_up or pending_boss_rewards > 0) and not levelPanel.visible and not bossLevelPanel.visible:
+		_show_next_reward()
 	set_expbar(experience, calculate_experiencecap())
 
 func calculate_experiencecap():
@@ -218,12 +227,14 @@ func set_expbar(set_value = 1, set_max_value = 100):
 	expBar.value = set_value
 	expBar.max_value = set_max_value
 
-## Shows the level-up menu for the current level, consuming one pending_levelup.
-func _show_next_levelup():
-	if pending_levelups <= 0:
-		return
-	pending_levelups -= 1
-	levelup()
+## Shows the next reward in queue (prioritize level-ups, then boss rewards)
+func _show_next_reward():
+	if pending_levelups > 0:
+		pending_levelups -= 1
+		levelup()
+	elif pending_boss_rewards > 0:
+		pending_boss_rewards -= 1
+		boss_levelup()
 
 func levelup():
 	sndLevelUp.play()
@@ -267,6 +278,54 @@ func levelup():
 	# Force the PanelContainer to recalculate its layout, then recenter via anchors
 	levelPanel.reset_size()
 	_recenter_anchored_panel(levelPanel)
+
+func boss_levelup():
+	sndLevelUp.play()
+	# Clear any leftover options
+	for child in bossUpgradeOptions.get_children():
+		bossUpgradeOptions.remove_child(child)
+		child.queue_free()
+	upgrade_options.clear()
+	
+	bossLevelPanel.visible = true
+	var options = 0
+	var optionsmax = 3
+	while options < optionsmax:
+		var item = get_random_boss_item()
+		if item == null: break # No more boss items available
+		var option_choice = itemOptions.instantiate()
+		option_choice.item = item
+		bossUpgradeOptions.add_child(option_choice)
+		options += 1
+		
+	# If no options found, just close
+	if options == 0:
+		bossLevelPanel.visible = false
+		_show_next_reward()
+		return
+
+	get_tree().paused = true
+	MusicController.focusMusic(!bossLevelPanel.visible)
+	
+	await get_tree().process_frame
+	_equalize_upgrade_option_widths_boss()
+	
+	var desired_scroll_h = bossUpgradeOptions.get_combined_minimum_size().y
+	var vp_h = get_viewport_rect().size.y
+	var max_scroll_h = vp_h * 0.65
+	bossUpgradeScroll.custom_minimum_size.y = min(desired_scroll_h, max_scroll_h)
+	
+	await get_tree().process_frame
+	bossLevelPanel.reset_size()
+	_recenter_anchored_panel(bossLevelPanel)
+
+func _equalize_upgrade_option_widths_boss():
+	var children = bossUpgradeOptions.get_children()
+	var max_width: float = 0.0
+	for child in children:
+		max_width = max(max_width, child.get_combined_minimum_size().x)
+	for child in children:
+		child.custom_minimum_size.x = max_width
 
 func _equalize_upgrade_option_widths():
 	var children = upgradeOptions.get_children()
@@ -363,12 +422,13 @@ func upgrade_character(upgrade):
 	upgrade_options.clear()
 	collected_upgrades.append(upgrade)
 	levelPanel.visible = false
+	bossLevelPanel.visible = false
 	# Get the level that we just finished upgrading
 	var current_visual_level = experience_level - pending_levelups
 	
-	# If more level-ups are queued, show the next one; otherwise unpause
-	if pending_levelups > 0:
-		_show_next_levelup()
+	# If more rewards are queued, show the next one; otherwise unpause
+	if pending_levelups > 0 or pending_boss_rewards > 0:
+		_show_next_reward()
 	else:
 		get_tree().paused = false
 		MusicController.focusMusic(true)
@@ -384,9 +444,34 @@ func get_random_item():
 			pass
 		elif i in upgrade_options: #If the upgrade is already an option
 			pass
-		elif UpgradeDb.UPGRADES[i]["type"] == "item": #Don't pick food
+		elif UpgradeDb.UPGRADES[i]["type"] == "item" or UpgradeDb.UPGRADES[i]["type"] == "bossitem": #Don't pick food or boss items
 			pass
 		elif UpgradeDb.UPGRADES[i]["prerequisite"].size() > 0: #Check for PreRequisites
+			var to_add = true
+			for n in UpgradeDb.UPGRADES[i]["prerequisite"]:
+				if not n in collected_upgrades:
+					to_add = false
+			if to_add:
+				dblist.append(i)
+		else:
+			dblist.append(i)
+	if dblist.size() > 0:
+		var randomitem = dblist.pick_random()
+		upgrade_options.append(randomitem)
+		return randomitem
+	else:
+		return null
+
+func get_random_boss_item():
+	var dblist = []
+	for i in UpgradeDb.UPGRADES:
+		if i in collected_upgrades:
+			pass
+		elif i in upgrade_options:
+			pass
+		elif UpgradeDb.UPGRADES[i]["type"] != "bossitem":
+			pass
+		elif UpgradeDb.UPGRADES[i]["prerequisite"].size() > 0:
 			var to_add = true
 			for n in UpgradeDb.UPGRADES[i]["prerequisite"]:
 				if not n in collected_upgrades:
@@ -430,8 +515,12 @@ func adjust_gui_collection(upgrade):
 					collectedWeapons.add_child(new_item)
 				"upgrade":
 					collectedUpgrades.add_child(new_item)
+				"bossitem":
+					collectedBossItems.add_child(new_item)
 
 func death():
+	if deathPanel.visible:
+		return
 	deathPanel.visible = true
 	emit_signal("playerdeath")
 	get_tree().paused = true
@@ -445,7 +534,7 @@ func death():
 	tween.tween_property(deathPanel, "position", target_pos, 3.0).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
 	tween.play()
 	MusicController.focusMusic(false)
-	if time >= 300:
+	if hasWon:
 		lblResult.text = tr("result_win")
 		sndVictory.play()
 		MusicController.setLooping(false)
@@ -453,6 +542,12 @@ func death():
 	else:
 		lblResult.text = tr("result_lose")
 		sndLose.play()
+
+func _on_boss_defeated():
+	hasWon = true
+	pending_boss_rewards += 1
+	if not levelPanel.visible and not bossLevelPanel.visible:
+		_show_next_reward()
 
 
 #Debug buttons
@@ -515,7 +610,7 @@ func remove_upgrade(upgrade_id: String) -> void:
 			break
 	if not still_owned:
 		# Remove from collectedWeapons or collectedUpgrades display
-		for container in [collectedWeapons, collectedUpgrades]:
+		for container in [collectedWeapons, collectedUpgrades, collectedBossItems]:
 			for child in container.get_children():
 				if child.get("upgrade") != null:
 					var child_base = child.upgrade.rstrip("0123456789")

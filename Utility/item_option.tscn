@@ -2,7 +2,8 @@
 
 [ext_resource type="Texture2D" uid="uid://bu2son8g2konp" path="res://Textures/Items/Weapons/sword.png" id="1_583l0"]
 [ext_resource type="Script" uid="uid://b01bgp18xbw8a" path="res://Utility/item_option.gd" id="1_script"]
-[ext_resource type="FontFile" uid="uid://cb4e8g30xxp5u" path="res://Font/tenderness.otf" id="2_wif5r"]
+[ext_resource type="Theme" uid="uid://dg7yl74xayfwi" path="res://Themes/HeaderText.tres" id="2_header"]
+[ext_resource type="Theme" uid="uid://bibrcd7ekt5bd" path="res://Themes/RegularText.tres" id="3_regular"]
 
 [node name="ItemOption" type="PanelContainer" unique_id=53943087]
 script = ExtResource("1_script")
@@ -39,13 +40,13 @@ texture = ExtResource("1_583l0")
 
 [node name="lbl_name" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=845083178]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_wif5r")
+theme = ExtResource("2_header")
 text = "ui_itemExampleName"
 vertical_alignment = 1
 
 [node name="lbl_level" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1427683332]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_wif5r")
+theme = ExtResource("2_header")
 theme_override_font_sizes/font_size = 12
 text = "item_levelNA"
 vertical_alignment = 1
@@ -58,7 +59,6 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
-theme_override_fonts/font = ExtResource("2_wif5r")
-theme_override_font_sizes/font_size = 8
+theme = ExtResource("3_regular")
 text = "ui_itemExampleDesc"
 autowrap_mode = 3

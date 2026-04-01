@@ -91,11 +91,17 @@ func add_paths():
 	var counter = 0
 	while counter < paths:
 		var new_path = player.get_random_target()
-		target_array.append(new_path)
+		if new_path != Vector2.INF:
+			target_array.append(new_path)
 		counter += 1
-	enable_attack(true)
-	target = target_array[0]
-	process_path()
+	
+	if target_array.size() > 0:
+		enable_attack(true)
+		target = target_array[0]
+		process_path()
+	else:
+		enable_attack(false)
+		attackTimer.start()
 
 func process_path():
 	angle = global_position.direction_to(target)

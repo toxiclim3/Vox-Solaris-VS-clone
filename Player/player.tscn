@@ -7,8 +7,6 @@
 [ext_resource type="Texture2D" uid="uid://dx7xx6vfahxlq" path="res://Textures/GUI/exp_background.png" id="4_pbpj5"]
 [ext_resource type="Texture2D" uid="uid://2e6c0h52rqvc" path="res://Textures/GUI/exp_progress_alt2.png" id="5_p5o4e"]
 [ext_resource type="AudioStream" uid="uid://cw6gd5eleb2fy" path="res://Audio/SoundEffect/PlayerHurt.wav" id="6_7emwf"]
-[ext_resource type="FontFile" uid="uid://d0avhtg6twdo2" path="res://Font/ArchivoBlack-Regular.ttf" id="6_gu6f8"]
-[ext_resource type="FontFile" uid="uid://cb4e8g30xxp5u" path="res://Font/tenderness.otf" id="6_okx7u"]
 [ext_resource type="Texture2D" uid="uid://ptj28vdafu7m" path="res://Textures/GUI/healthcircleunderlay.png" id="7_5htga"]
 [ext_resource type="AudioStream" uid="uid://cgf78ydglric8" path="res://Audio/SoundEffect/PlayerHurtBad.wav" id="7_hshwv"]
 [ext_resource type="PackedScene" uid="uid://dyahivqch5l16" path="res://Utility/settings_menu.tscn" id="7_pisgm"]
@@ -28,8 +26,8 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yfi4i"]
 size = Vector2(12, 20)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_anwqc"]
-radius = 370.951
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_screen"]
+size = Vector2(640, 360)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_p2554"]
 radius = 50.0
@@ -106,7 +104,7 @@ collision_mask = 4
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyDetectionArea" unique_id=1476038746]
-shape = SubResource("CircleShape2D_anwqc")
+shape = SubResource("RectangleShape2D_screen")
 
 [node name="GrabArea" type="Area2D" parent="." unique_id=1083391922]
 position = Vector2(-1, 0)
@@ -174,11 +172,11 @@ offset_top = 2.0
 offset_right = 50.0
 offset_bottom = 18.0
 grow_horizontal = 2
+theme = ExtResource("15_o28un")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
-theme_override_fonts/font = ExtResource("6_gu6f8")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 12
 text = "Level 1"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -194,7 +192,7 @@ offset_top = 20.0
 offset_right = 83.5
 offset_bottom = 43.0
 grow_horizontal = 2
-theme_override_fonts/font = ExtResource("6_gu6f8")
+theme = ExtResource("15_o28un")
 theme_override_font_sizes/font_size = 20
 text = "ui_timerDefault"
 horizontal_alignment = 1
@@ -233,11 +231,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("15_o28un")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
-theme_override_fonts/font = ExtResource("6_gu6f8")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 12
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -285,7 +283,7 @@ theme_override_constants/separation = 8
 
 [node name="lbl_LevelUP" type="Label" parent="GUILayer/GUI/LevelUp/MarginContainer/VBoxContainer" unique_id=1449850959]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("6_okx7u")
+theme = ExtResource("15_o28un")
 text = "ui_levelUp"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -300,6 +298,54 @@ size_flags_vertical = 3
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="BossLevelUp" type="PanelContainer" parent="GUILayer/GUI" unique_id=1700000000]
+unique_name_in_owner = true
+visible = false
+self_modulate = Color(1, 0.843137, 0, 1)
+custom_minimum_size = Vector2(192, 0)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -41.0
+offset_top = -20.5
+offset_right = 41.0
+offset_bottom = 20.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="GUILayer/GUI/BossLevelUp" unique_id=1700000001]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GUILayer/GUI/BossLevelUp/MarginContainer" unique_id=1700000002]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="lbl_BossReward" type="Label" parent="GUILayer/GUI/BossLevelUp/MarginContainer/VBoxContainer" unique_id=1700000003]
+layout_mode = 2
+theme = ExtResource("15_o28un")
+text = "ui_bossReward"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BossUpgradeScroll" type="ScrollContainer" parent="GUILayer/GUI/BossLevelUp/MarginContainer/VBoxContainer" unique_id=1700000004]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BossUpgradeOptions" type="VBoxContainer" parent="GUILayer/GUI/BossLevelUp/MarginContainer/VBoxContainer/BossUpgradeScroll" unique_id=1700000005]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
 
 [node name="GiveItemMenu" type="Panel" parent="GUILayer/GUI" unique_id=739812498]
 unique_name_in_owner = true
@@ -432,7 +478,7 @@ unique_name_in_owner = true
 layout_mode = 0
 offset_right = 200.0
 offset_bottom = 50.0
-theme_override_fonts/font = ExtResource("6_okx7u")
+theme = ExtResource("15_o28un")
 text = "ui_result"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -465,25 +511,34 @@ offset_right = 138.0
 offset_bottom = 186.0
 text = "ui_newRun"
 
-[node name="CollectedWeapons" type="GridContainer" parent="GUILayer/GUI" unique_id=1077747810]
-unique_name_in_owner = true
+[node name="CollectedItemContainer" type="VBoxContainer" parent="GUILayer/GUI" unique_id=1077747811]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 24.0
-offset_right = 208.0
-offset_bottom = 40.0
+offset_right = 248.0
+offset_bottom = 100.0
 mouse_filter = 2
-columns = 10
 
-[node name="CollectedUpgrades" type="GridContainer" parent="GUILayer/GUI" unique_id=2075942441]
+[node name="CollectedWeapons" type="GridContainer" parent="GUILayer/GUI/CollectedItemContainer" unique_id=1077747810]
 unique_name_in_owner = true
-layout_mode = 0
-offset_left = 8.0
-offset_top = 40.0
-offset_right = 208.0
-offset_bottom = 56.0
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
 mouse_filter = 2
-columns = 10
+columns = 12
+
+[node name="CollectedUpgrades" type="GridContainer" parent="GUILayer/GUI/CollectedItemContainer" unique_id=2075942441]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+mouse_filter = 2
+columns = 12
+
+[node name="CollectedBossItems" type="GridContainer" parent="GUILayer/GUI/CollectedItemContainer" unique_id=2075942442]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+mouse_filter = 2
+columns = 12
 
 [node name="PauseMenu" type="PanelContainer" parent="GUILayer/GUI" unique_id=1300825726]
 custom_minimum_size = Vector2(192, 224)
@@ -783,8 +838,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("15_o28un")
 theme_override_colors/font_color = Color(0.541176, 0.121569, 0.0901961, 1)
-theme_override_fonts/font = ExtResource("6_gu6f8")
 theme_override_font_sizes/font_size = 14
 text = "warning_boss_generic"
 horizontal_alignment = 1
