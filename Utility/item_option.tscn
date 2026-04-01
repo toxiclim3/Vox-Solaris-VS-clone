@@ -44,6 +44,10 @@ theme = ExtResource("2_header")
 text = "ui_itemExampleName"
 vertical_alignment = 1
 
+[node name="Control" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=691258249]
+layout_mode = 2
+size_flags_horizontal = 3
+
 [node name="lbl_level" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1427683332]
 layout_mode = 2
 theme = ExtResource("2_header")

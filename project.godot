@@ -26,6 +26,7 @@ UpgradeDb="*res://Utility/upgrade_db.tscn"
 GlobalEvents="*uid://cfmtka6m73iiv"
 MusicController="*uid://b8x5a6sgnm38g"
 SettingsManager="*uid://bf4lvmyjbidka"
+StatsManager="*res://Utility/StatsManager.gd"
 
 [display]
 
