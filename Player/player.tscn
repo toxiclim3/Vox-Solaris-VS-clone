@@ -19,6 +19,8 @@
 [ext_resource type="Theme" uid="uid://kvmf0od5c6rf" path="res://Themes/DebugButtons.tres" id="15_dkpta"]
 [ext_resource type="Script" uid="uid://eq8qugfbk7vl" path="res://Player/debugmenu.gd" id="15_lfmf2"]
 [ext_resource type="Theme" uid="uid://dg7yl74xayfwi" path="res://Themes/HeaderText.tres" id="15_o28un"]
+[ext_resource type="Theme" path="res://Themes/HeaderText_White.tres" id="16_7emwf"]
+[ext_resource type="Theme" uid="uid://dlpshatg4y1v3" path="res://Themes/Buttons_Dark.tres" id="18_hshwv"]
 [ext_resource type="AudioStream" uid="uid://bthqe0qhx0ik8" path="res://Audio/SoundEffect/Difficulty.wav" id="24_wdifc"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_dkpta"]
@@ -250,8 +252,7 @@ explosiveness = 0.8
 
 [node name="LevelUp" type="PanelContainer" parent="GUILayer/GUI" unique_id=1699352669]
 unique_name_in_owner = true
-visible = false
-custom_minimum_size = Vector2(192, 0)
+custom_minimum_size = Vector2(224, 0)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -298,6 +299,7 @@ size_flags_vertical = 3
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/separation = 8
 
 [node name="BossLevelUp" type="PanelContainer" parent="GUILayer/GUI" unique_id=1700000000]
 unique_name_in_owner = true
@@ -345,7 +347,6 @@ size_flags_vertical = 3
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-
 
 [node name="GiveItemMenu" type="Panel" parent="GUILayer/GUI" unique_id=739812498]
 unique_name_in_owner = true
@@ -501,6 +502,7 @@ offset_left = 58.0
 offset_top = 194.0
 offset_right = 138.0
 offset_bottom = 226.0
+theme = ExtResource("18_hshwv")
 text = "ui_menu"
 
 [node name="btn_restart" parent="GUILayer/GUI/DeathPanel" unique_id=1864663429 instance=ExtResource("12_i8esf")]
@@ -509,6 +511,7 @@ offset_left = 58.0
 offset_top = 154.0
 offset_right = 138.0
 offset_bottom = 186.0
+theme = ExtResource("18_hshwv")
 text = "ui_newRun"
 
 [node name="CollectedItemContainer" type="VBoxContainer" parent="GUILayer/GUI" unique_id=1077747811]
@@ -541,6 +544,7 @@ mouse_filter = 2
 columns = 12
 
 [node name="PauseMenu" type="PanelContainer" parent="GUILayer/GUI" unique_id=1300825726]
+visible = false
 custom_minimum_size = Vector2(192, 224)
 layout_mode = 1
 anchors_preset = 8
@@ -569,7 +573,7 @@ theme_override_constants/separation = -1
 [node name="Label" type="Label" parent="GUILayer/GUI/PauseMenu/MarginContainer/VBoxContainer2" unique_id=96015178]
 layout_mode = 2
 size_flags_vertical = 0
-theme = ExtResource("15_o28un")
+theme = ExtResource("16_7emwf")
 text = "ui_paused"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -598,22 +602,29 @@ alignment = 1
 
 [node name="btn_resume_run" parent="GUILayer/GUI/PauseMenu/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=1844249941 instance=ExtResource("12_i8esf")]
 z_index = 1
-custom_minimum_size = Vector2(96, 0)
+custom_minimum_size = Vector2(96, 24)
 layout_mode = 2
+theme = ExtResource("18_hshwv")
 text = "ui_resumeRun"
 
 [node name="btn_settings" parent="GUILayer/GUI/PauseMenu/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=268518607 instance=ExtResource("12_i8esf")]
+custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
+theme = ExtResource("18_hshwv")
 text = "ui_settings"
 
 [node name="btn_end_run" parent="GUILayer/GUI/PauseMenu/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=1741874230 instance=ExtResource("12_i8esf")]
 z_index = 1
+custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
+theme = ExtResource("18_hshwv")
 text = "ui_endRun"
 
 [node name="btn_exit_game" parent="GUILayer/GUI/PauseMenu/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=604014048 instance=ExtResource("12_i8esf")]
 z_index = 1
+custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
+theme = ExtResource("18_hshwv")
 text = "ui_exitGame"
 
 [node name="SettingsMenu" parent="GUILayer/GUI" unique_id=244721166 instance=ExtResource("7_pisgm")]
@@ -646,6 +657,7 @@ self_modulate = Color(1, 1, 1, 0.8901961)
 show_behind_parent = true
 z_index = -1
 layout_mode = 2
+theme = ExtResource("15_dkpta")
 
 [node name="Padded container" type="MarginContainer" parent="GUILayer/GUI/DebugMenu" unique_id=1475646517]
 layout_mode = 2

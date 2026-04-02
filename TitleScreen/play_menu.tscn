@@ -2,10 +2,14 @@
 
 [ext_resource type="Texture2D" uid="uid://bb2kcf2xvcy5y" path="res://Textures/GUI/close_x.png" id="1_1t2v0"]
 [ext_resource type="Script" uid="uid://b1yvg62vscrqj" path="res://TitleScreen/play_menu.gd" id="1_pfsr1"]
+[ext_resource type="Theme" path="res://Themes/RegularText_Brick.tres" id="2_55gqi"]
 [ext_resource type="Texture2D" uid="uid://cuxlw7m6x5ojn" path="res://Textures/GUI/close_x_hover.png" id="2_pfsr1"]
 [ext_resource type="FontFile" uid="uid://b0s4gbyeyrex1" path="res://Font/OpenSans-Regular.ttf" id="3_56o74"]
+[ext_resource type="Theme" uid="uid://dlpshatg4y1v3" path="res://Themes/Buttons_Dark.tres" id="7_6jopl"]
 [ext_resource type="Theme" uid="uid://bibrcd7ekt5bd" path="res://Themes/RegularText.tres" id="7_hevq0"]
 [ext_resource type="PackedScene" uid="uid://b7c7gsdx2rkjm" path="res://Utility/basic_button.tscn" id="8_bbttn"]
+
+[sub_resource type="Theme" id="Theme_empty"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_0eg15"]
 font = ExtResource("3_56o74")
@@ -27,6 +31,7 @@ offset_right = 160.0
 offset_bottom = 120.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = SubResource("Theme_empty")
 script = ExtResource("1_pfsr1")
 
 [node name="MarginContainer2" type="MarginContainer" parent="." unique_id=623687775]
@@ -46,7 +51,7 @@ layout_mode = 2
 [node name="TitleLabel" type="Label" parent="MarginContainer2/VBoxContainer/TopRow" unique_id=286289049]
 layout_mode = 2
 size_flags_horizontal = 3
-theme = ExtResource("7_hevq0")
+theme = ExtResource("2_55gqi")
 text = "Play Setup"
 label_settings = SubResource("LabelSettings_0eg15")
 
@@ -94,8 +99,9 @@ label_settings = SubResource("LabelSettings_Small")
 
 [node name="btn_difficulty" parent="MarginContainer2/VBoxContainer/HBoxContainer/RightCol" unique_id=2085896107 instance=ExtResource("8_bbttn")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 24)
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
+theme = ExtResource("7_6jopl")
 text = "ui_difficulty_normal"
 
 [node name="btn_custom_difficulty" parent="MarginContainer2/VBoxContainer/HBoxContainer/RightCol" unique_id=1693818788 instance=ExtResource("8_bbttn")]
@@ -112,6 +118,7 @@ layout_mode = 2
 unique_name_in_owner = true
 custom_minimum_size = Vector2(120, 32)
 layout_mode = 2
+theme = ExtResource("7_6jopl")
 text = "Start Run"
 
 [connection signal="pressed" from="MarginContainer2/VBoxContainer/TopRow/ClosePlayMenuButton" to="." method="_on_close_play_menu_button_pressed"]

@@ -1,0 +1,9 @@
+[gd_resource type="Theme" format=3]
+
+[ext_resource type="FontFile" uid="uid://dkatxtvn4e35l" path="res://Font/morana.otf" id="1_morana"]
+
+[resource]
+default_font = ExtResource("1_morana")
+default_font_size = 14
+Label/colors/font_color = Color(1, 1, 1, 1)
+RichTextLabel/colors/default_color = Color(1, 1, 1, 1)

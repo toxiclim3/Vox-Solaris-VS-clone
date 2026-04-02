@@ -15,7 +15,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="SurvivorsClone"
-config/version="0.6.0-alpha"
+config/version="0.6.3-alpha"
 run/main_scene="res://TitleScreen/menu.tscn"
 config/features=PackedStringArray("4.6", "Mobile")
 config/icon="res://icon.svg"
@@ -43,6 +43,10 @@ window/vsync/vsync_mode=2
 
 version_control/plugin_name="GitPlugin"
 version_control/autoload_on_startup=true
+
+[gui]
+
+theme/custom="res://Themes/NinePatchUI.tres"
 
 [input]
 

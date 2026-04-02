@@ -2,6 +2,10 @@
 
 [ext_resource type="FontFile" uid="uid://b0s4gbyeyrex1" path="res://Font/OpenSans-Regular.ttf" id="1_bmh2e"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1"]
+bg_color = Color(0.1, 0.1, 0.1, 1)
+
 [resource]
 default_font = ExtResource("1_bmh2e")
 default_font_size = 6
+Panel/styles/panel = SubResource("StyleBoxFlat_1")

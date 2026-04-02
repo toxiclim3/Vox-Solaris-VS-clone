@@ -1,9 +1,9 @@
-[gd_resource type="Theme" format=3 uid="uid://b00q52p3y3ard"]
+[gd_resource type="Theme" format=3 uid="uid://dlpshatg4y1v3"]
 
 [ext_resource type="FontFile" uid="uid://dkatxtvn4e35l" path="res://Font/morana.otf" id="1_morana"]
 [ext_resource type="Texture2D" uid="uid://biaguqyqd426p" path="res://Textures/GUI/alloy_smelter_top.png" id="2_tex"]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_disabled"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_disabled_dark"]
 content_margin_left = 4.0
 content_margin_top = 2.0
 content_margin_right = 4.0
@@ -15,9 +15,9 @@ texture_margin_right = 9.0
 texture_margin_bottom = 9.0
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
-modulate_color = Color(0.5, 0.5, 0.5, 0.7)
+modulate_color = Color(0.3, 0.3, 0.3, 0.7)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_focus"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_focus_dark"]
 content_margin_left = 4.0
 content_margin_top = 2.0
 content_margin_right = 4.0
@@ -29,8 +29,9 @@ texture_margin_right = 9.0
 texture_margin_bottom = 9.0
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
+modulate_color = Color(0.6, 0.6, 0.6, 1)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hover"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hover_dark"]
 content_margin_left = 4.0
 content_margin_top = 2.0
 content_margin_right = 4.0
@@ -42,9 +43,9 @@ texture_margin_right = 9.0
 texture_margin_bottom = 9.0
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
-modulate_color = Color(1.3, 1.3, 1.3, 1)
+modulate_color = Color(0.8, 0.8, 0.8, 1)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_normal"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_normal_dark"]
 content_margin_left = 4.0
 content_margin_top = 2.0
 content_margin_right = 4.0
@@ -56,8 +57,9 @@ texture_margin_right = 9.0
 texture_margin_bottom = 9.0
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
+modulate_color = Color(0.6, 0.6, 0.6, 1)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pressed"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pressed_dark"]
 content_margin_left = 4.0
 content_margin_top = 2.0
 content_margin_right = 4.0
@@ -69,13 +71,13 @@ texture_margin_right = 9.0
 texture_margin_bottom = 9.0
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
-modulate_color = Color(0.7, 0.7, 0.7, 1)
+modulate_color = Color(0.4, 0.4, 0.4, 1)
 
 [resource]
 default_font = ExtResource("1_morana")
 default_font_size = 10
-Button/styles/disabled = SubResource("StyleBoxTexture_disabled")
-Button/styles/focus = SubResource("StyleBoxTexture_focus")
-Button/styles/hover = SubResource("StyleBoxTexture_hover")
-Button/styles/normal = SubResource("StyleBoxTexture_normal")
-Button/styles/pressed = SubResource("StyleBoxTexture_pressed")
+Button/styles/disabled = SubResource("StyleBoxTexture_disabled_dark")
+Button/styles/focus = SubResource("StyleBoxTexture_focus_dark")
+Button/styles/hover = SubResource("StyleBoxTexture_hover_dark")
+Button/styles/normal = SubResource("StyleBoxTexture_normal_dark")
+Button/styles/pressed = SubResource("StyleBoxTexture_pressed_dark")

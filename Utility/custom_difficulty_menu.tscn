@@ -9,11 +9,15 @@
 [ext_resource type="AudioStream" uid="uid://dobpqbspunihg" path="res://Audio/GUI/click.wav" id="6_hevq0"]
 [ext_resource type="Theme" uid="uid://bibrcd7ekt5bd" path="res://Themes/RegularText.tres" id="7_hevq0"]
 
+[sub_resource type="Theme" id="Theme_empty"]
+
 [sub_resource type="LabelSettings" id="LabelSettings_0eg15"]
 font = ExtResource("3_56o74")
 font_size = 10
 
 [node name="CustomDifficultyMenu" type="PanelContainer" unique_id=1136300107]
+theme = SubResource("Theme_empty")
+
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
