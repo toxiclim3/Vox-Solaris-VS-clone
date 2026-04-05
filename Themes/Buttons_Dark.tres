@@ -1,6 +1,6 @@
 [gd_resource type="Theme" format=3 uid="uid://dlpshatg4y1v3"]
 
-[ext_resource type="FontFile" uid="uid://dkatxtvn4e35l" path="res://Font/morana.otf" id="1_morana"]
+[ext_resource type="FontFile" uid="uid://bcl80yjdjx8r5" path="res://Font/Palitura-ExtraBold.ttf" id="2_8y11j"]
 [ext_resource type="Texture2D" uid="uid://biaguqyqd426p" path="res://Textures/GUI/alloy_smelter_top.png" id="2_tex"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_disabled_dark"]
@@ -74,7 +74,7 @@ axis_stretch_vertical = 1
 modulate_color = Color(0.4, 0.4, 0.4, 1)
 
 [resource]
-default_font = ExtResource("1_morana")
+default_font = ExtResource("2_8y11j")
 default_font_size = 10
 Button/styles/disabled = SubResource("StyleBoxTexture_disabled_dark")
 Button/styles/focus = SubResource("StyleBoxTexture_focus_dark")

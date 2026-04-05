@@ -67,7 +67,7 @@ columns = 2
 [node name="Label_SpawnRate" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=634265897]
 layout_mode = 2
 theme = ExtResource("7_hevq0")
-text = "Enemy Spawn Rate"
+text = "ui_enemySpawnRate"
 label_settings = SubResource("LabelSettings_0eg15")
 
 [node name="LineEdit_SpawnRate" type="LineEdit" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=496085791]
@@ -80,7 +80,7 @@ text = "1.0"
 [node name="Label_EnemyHP" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=1998528812]
 layout_mode = 2
 theme = ExtResource("7_hevq0")
-text = "Enemy HP"
+text = "ui_enemyHP"
 label_settings = SubResource("LabelSettings_0eg15")
 
 [node name="LineEdit_EnemyHP" type="LineEdit" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=1424524857]
@@ -93,7 +93,7 @@ text = "1.0"
 [node name="Label_BossHP" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=1610368240]
 layout_mode = 2
 theme = ExtResource("7_hevq0")
-text = "Boss HP"
+text = "ui_bossHP"
 label_settings = SubResource("LabelSettings_0eg15")
 
 [node name="LineEdit_BossHP" type="LineEdit" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=848559769]
@@ -106,7 +106,7 @@ text = "1.0"
 [node name="Label_PlayerDamage" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=1080426627]
 layout_mode = 2
 theme = ExtResource("7_hevq0")
-text = "Player Damage"
+text = "ui_playerDamage"
 label_settings = SubResource("LabelSettings_0eg15")
 
 [node name="LineEdit_PlayerDamage" type="LineEdit" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=20351225]
@@ -119,7 +119,7 @@ text = "1.0"
 [node name="Label_PlayerRegen" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=494723901]
 layout_mode = 2
 theme = ExtResource("7_hevq0")
-text = "Player Regen"
+text = "ui_playerRegen"
 label_settings = SubResource("LabelSettings_0eg15")
 
 [node name="LineEdit_PlayerRegen" type="LineEdit" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=2091244320]
@@ -132,7 +132,7 @@ text = "1.0"
 [node name="Label_XPGain" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=439054116]
 layout_mode = 2
 theme = ExtResource("7_hevq0")
-text = "XP Gain"
+text = "ui_xpGain"
 label_settings = SubResource("LabelSettings_0eg15")
 
 [node name="LineEdit_XPGain" type="LineEdit" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=1380939399]

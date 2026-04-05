@@ -161,12 +161,13 @@ func _on_hurt_box_hurt(damage, _angle, _knockback):
 	if godmode == false:
 		var actual_damage = clamp(damage-armor, 0.0, 999.0)
 		if actual_damage > 0:
-			GlobalEvents.camera_shake.emit(5.0, 0.2)
 			if (hp >= (maxhp * hurtBadThreshold)) or hurtBadTriggered:
 				sndHurt.play()
+				GlobalEvents.camera_shake.emit(2.0, 0.2)
 			else:
 				sndHurtBad.play()
 				hurtBadTriggered = true
+				GlobalEvents.camera_shake.emit(3.0, 0.5)
 		hp -= actual_damage
 	healthBar.max_value = maxhp
 	healthBar.value = hp
