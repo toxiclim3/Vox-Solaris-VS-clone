@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://26wlkjgitxub"]
+
+[ext_resource type="Texture2D" uid="uid://cg5sf2esmywhf" path="res://Textures/Items/XPOrb.png" id="2_mlxyo"]
+[ext_resource type="Script" uid="uid://bemu6hjyxg6xc" path="res://Objects/magnet.gd" id="2_script"]
+[ext_resource type="AudioStream" uid="uid://bcwhw5ek4wop0" path="res://Audio/SoundEffect/ItemDrop_Yellow.wav" id="3_audio"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_7r8m"]
+radius = 12.0
+
+[node name="Magnet" type="Area2D" unique_id=1454207397 groups=["loot"]]
+scale = Vector2(0.5, 0.5)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("2_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1978480849]
+texture = ExtResource("2_mlxyo")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=192578145]
+shape = SubResource("CircleShape2D_7r8m")
+
+[node name="snd_collected" type="AudioStreamPlayer" parent="." unique_id=699591434]
+stream = ExtResource("3_audio")
+volume_db = -10.0
+bus = &"SFX"
+
+[connection signal="finished" from="snd_collected" to="." method="_on_snd_collected_finished"]
