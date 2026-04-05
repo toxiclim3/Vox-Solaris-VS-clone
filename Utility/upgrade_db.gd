@@ -160,7 +160,7 @@ const UPGRADES = {
 		"level": "item_level1",
 		"prerequisite": [],
 		"type": "upgrade",
-		"stat_modifiers": {"movement_speed": 20.0}
+		"stat_modifiers": {"movement_speed_percent": 0.20}
 	},
 	"speed2": 
 	{
@@ -170,7 +170,7 @@ const UPGRADES = {
 		"level": "item_level2",
 		"prerequisite": ["speed1"],
 		"type": "upgrade",
-		"stat_modifiers": {"movement_speed": 20.0}
+		"stat_modifiers": {"movement_speed_percent": 0.10}
 	},
 	"speed3": 
 	{
@@ -180,7 +180,7 @@ const UPGRADES = {
 		"level": "item_level3",
 		"prerequisite": ["speed2"],
 		"type": "upgrade",
-		"stat_modifiers": {"movement_speed": 20.0}
+		"stat_modifiers": {"movement_speed_percent": 0.10}
 	},
 	"speed4": 
 	{
@@ -190,7 +190,7 @@ const UPGRADES = {
 		"level": "item_level4",
 		"prerequisite": ["speed3"],
 		"type": "upgrade",
-		"stat_modifiers": {"movement_speed": 20.0}
+		"stat_modifiers": {"movement_speed_percent": 0.10}
 	},
 	"tome1": 
 	{

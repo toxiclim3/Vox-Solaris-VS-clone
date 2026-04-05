@@ -2,7 +2,7 @@ extends Area2D
 
 var level = 1
 var hp = 9999
-var speed = 200.0
+var speed = 300.0
 var damage = 10
 var knockback_amount = 100
 var paths = 1
@@ -37,7 +37,7 @@ func update_javelin():
 	match level:
 		1:
 			hp = 9999
-			speed = 200.0
+			speed = 300.0
 			damage = 10
 			knockback_amount = 100
 			paths = 1
@@ -45,7 +45,7 @@ func update_javelin():
 			attack_speed = 5.0 * (1-player.spell_cooldown)
 		2:
 			hp = 9999
-			speed = 200.0
+			speed = 300.0
 			damage = 10
 			knockback_amount = 100
 			paths = 2
@@ -53,7 +53,7 @@ func update_javelin():
 			attack_speed = 5.0 * (1-player.spell_cooldown)
 		3:
 			hp = 9999
-			speed = 200.0
+			speed = 300.0
 			damage = 10
 			knockback_amount = 100
 			paths = 3
@@ -61,7 +61,7 @@ func update_javelin():
 			attack_speed = 5.0 * (1-player.spell_cooldown)
 		4:
 			hp = 9999
-			speed = 200.0
+			speed = 300.0
 			damage = 15
 			knockback_amount = 120
 			paths = 3

@@ -1,13 +1,13 @@
 [gd_resource type="Theme" format=3 uid="uid://b00q52p3y3ard"]
 
-[ext_resource type="FontFile" uid="uid://dkatxtvn4e35l" path="res://Font/morana.otf" id="1_morana"]
+[ext_resource type="FontFile" uid="uid://bcl80yjdjx8r5" path="res://Font/Palitura-ExtraBold.ttf" id="2_e7fam"]
 [ext_resource type="Texture2D" uid="uid://biaguqyqd426p" path="res://Textures/GUI/alloy_smelter_top.png" id="2_tex"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_disabled"]
-content_margin_left = 4.0
-content_margin_top = 2.0
-content_margin_right = 4.0
-content_margin_bottom = 2.0
+content_margin_left = 9.0
+content_margin_top = 4.0
+content_margin_right = 9.0
+content_margin_bottom = 4.0
 texture = ExtResource("2_tex")
 texture_margin_left = 9.0
 texture_margin_top = 9.0
@@ -42,7 +42,7 @@ texture_margin_right = 9.0
 texture_margin_bottom = 9.0
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
-modulate_color = Color(1.3, 1.3, 1.3, 1)
+modulate_color = Color(1.300188, 1.300188, 1.300188, 1)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_normal"]
 content_margin_left = 4.0
@@ -72,7 +72,7 @@ axis_stretch_vertical = 1
 modulate_color = Color(0.7, 0.7, 0.7, 1)
 
 [resource]
-default_font = ExtResource("1_morana")
+default_font = ExtResource("2_e7fam")
 default_font_size = 10
 Button/styles/disabled = SubResource("StyleBoxTexture_disabled")
 Button/styles/focus = SubResource("StyleBoxTexture_focus")
