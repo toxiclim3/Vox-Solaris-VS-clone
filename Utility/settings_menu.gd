@@ -4,6 +4,7 @@ signal settings_closed
 
 @onready var profile_button = %ProfileButton
 @onready var language_button = %LanguageButton
+@onready var mouse_control_button = %MouseControlButton
 @onready var confirmation_dialog = $ConfirmationDialog
 
 enum Languages {en,ru,ua}
@@ -29,6 +30,10 @@ func _ready() -> void:
 				lang_index = Languages.ua
 		language_button.select(lang_index)
 		language_button.item_selected.connect(_on_language_selected)
+	
+	if mouse_control_button:
+		mouse_control_button.button_pressed = SettingsManager.mouse_control
+		mouse_control_button.toggled.connect(_on_mouse_control_toggled)
 
 func _on_close_settings_button_pressed() -> void:
 	settings_closed.emit()
@@ -39,6 +44,9 @@ func _on_profile_selected(index: int) -> void:
 
 func _on_language_selected(index: int) -> void:
 	SettingsManager.set_language(Languages.find_key(index))
+
+func _on_mouse_control_toggled(toggled_on: bool) -> void:
+	SettingsManager.set_mouse_control(toggled_on)
 
 func _on_btn_reset_stats_click_end() -> void:
 	if confirmation_dialog:

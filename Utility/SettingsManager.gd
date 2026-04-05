@@ -6,6 +6,7 @@ var config = ConfigFile.new()
 
 var sound_profile: String = "Full"
 var language: String = "en"
+var mouse_control: bool = false
 
 const PROFILES = {
 	"Full": {
@@ -56,6 +57,9 @@ func loadSettings() -> void:
 	if config.has_section("localization"):
 		language = config.get_value("localization", "language", "en")
 	TranslationServer.set_locale(language)
+	
+	if config.has_section("controls"):
+		mouse_control = config.get_value("controls", "mouse_control", false)
 
 func set_language(lang: String) -> void:
 	language = lang
@@ -68,6 +72,11 @@ func set_sound_profile(profile: String) -> void:
 	config.set_value("audio", "sound_profile", profile)
 	config.save(SAVE_PATH)
 	applySoundProfile(profile)
+
+func set_mouse_control(value: bool) -> void:
+	mouse_control = value
+	config.set_value("controls", "mouse_control", value)
+	config.save(SAVE_PATH)
 
 func get_sound_profile_index() -> int:
 	if sound_profile == "Grindfest":

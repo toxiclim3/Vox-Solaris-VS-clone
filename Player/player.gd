@@ -112,9 +112,17 @@ func _physics_process(_delta):
 	movement()
 
 func movement():
-	var x_mov = Input.get_action_strength("right") - Input.get_action_strength("left")
-	var y_mov = Input.get_action_strength("down") - Input.get_action_strength("up")
-	var mov = Vector2(x_mov,y_mov)
+	var mov = Vector2.ZERO
+	if SettingsManager.mouse_control:
+		var target_pos = get_global_mouse_position()
+		var diff = target_pos - global_position
+		if diff.length() > 6: # Deadzone to prevent jitter
+			mov = diff.normalized()
+	else:
+		var x_mov = Input.get_action_strength("right") - Input.get_action_strength("left")
+		var y_mov = Input.get_action_strength("down") - Input.get_action_strength("up")
+		mov = Vector2(x_mov,y_mov)
+
 	if mov.x > 0:
 		sprite.flip_h = true
 	elif mov.x < 0:

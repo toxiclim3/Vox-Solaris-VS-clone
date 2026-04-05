@@ -122,3 +122,4 @@ keys,en,ru,ua
 "ui_resetStats","Reset Statistics","Сбросить статистику","Скинути статистику"
 "ui_confirmResetTitle","Confirm Reset","Подтвердить сброс","Підтвердити скидання"
 "ui_confirmResetText","Are you sure you want to completely reset all statistics?","Вы уверены, что хотите полностью сбросить всю статистику?","Ви впевнені, що хочете повністю скинути всю статистику?"
+"ui_mouseControl","Mouse Movement","Управление мышью","Керування мишею"
