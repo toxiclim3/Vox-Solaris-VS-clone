@@ -2,7 +2,7 @@ extends Area2D
 
 var level = 1
 var hp = 1
-var speed = 150
+var speed = 225
 var damage = 0 # Damage is dealt by the explosion, not the bottle itself
 var attack_size = 1.0
 var knockback_amount = 0
@@ -20,16 +20,16 @@ func _ready():
 	rotation = angle.angle() + deg_to_rad(135)
 	match level:
 		1:
-			speed = 150
+			speed = 225
 			attack_size = 1.0 * (1 + player.spell_size)
 		2:
-			speed = 150
+			speed = 225
 			attack_size = 1.1 * (1 + player.spell_size)
 		3:
-			speed = 150
+			speed = 225
 			attack_size = 1.1 * (1 + player.spell_size)
 		4:
-			speed = 150
+			speed = 225
 			attack_size = 1.1 * (1 + player.spell_size)
 
 	var tween = create_tween()

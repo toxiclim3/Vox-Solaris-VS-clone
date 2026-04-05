@@ -2,7 +2,7 @@ extends CharacterBody2D
 
 class_name EnemyBody
 
-@export var movement_speed = 20.0
+@export var movement_speed = 30.0
 @export var hp = 10
 @export var knockback_recovery = 3.5
 @export var experience = 1

@@ -30,8 +30,8 @@ var pending_boss_rewards = 0 # Queue of boss rewards waiting to be shown
 # Base Stats
 var base_armor = 0
 var armor = 0
-@export var base_movement_speed = 50.0
-var movement_speed = 50.0
+@export var base_movement_speed = 75.0
+var movement_speed = 75.0
 var base_spell_cooldown = 0.0
 var spell_cooldown = 0.0
 var base_spell_size = 0.0
@@ -364,19 +364,23 @@ func apply_stat_modifiers():
 	additional_attacks = base_additional_attacks
 	var max_hp_percent_total = 0.0
 	var xp_range_percent_total = 0.0
+	var movement_speed_percent_total = 0.0
 	regenPerSecond = base_regenPerSecond
 	
 	for mod in stat_modifiers.values():
 		for stat_name in mod.keys():
 			match stat_name:
 				"armor": armor += mod[stat_name]
-				"movement_speed": movement_speed += mod[stat_name]
+				"movement_speed_percent": movement_speed_percent_total += mod[stat_name]
 				"spell_cooldown": spell_cooldown += mod[stat_name]
 				"spell_size": spell_size += mod[stat_name]
 				"additional_attacks": additional_attacks += mod[stat_name]
 				"max_hp_percent": max_hp_percent_total += mod[stat_name]
 				"regen": regenPerSecond = mod[stat_name]
 				"xp_range_percent": xp_range_percent_total += mod[stat_name]
+	
+	# Apply movement speed percent bonus
+	movement_speed = base_movement_speed * (1.0 + movement_speed_percent_total)
 	
 	# Apply max HP percent bonus on top of base
 	var new_maxhp = int(base_maxhp * (1.0 + max_hp_percent_total))

@@ -6,7 +6,7 @@
 [ext_resource type="AudioStream" uid="uid://dobpqbspunihg" path="res://Audio/GUI/click.wav" id="2_jbqnc"]
 
 [node name="Button" type="Button" unique_id=964057103]
-offset_right = 56.0
+offset_right = 104.0
 offset_bottom = 20.0
 theme = ExtResource("1_qkrmd")
 text = "ui_buttonExample"

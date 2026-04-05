@@ -2,7 +2,7 @@ extends Area2D
 
 var level = 1
 var hp = 1
-var speed = 100
+var speed = 150
 var damage = 5
 var knockback_amount = 100
 var attack_size = 1.0
@@ -19,26 +19,26 @@ func _ready():
 	match level:
 		1:
 			hp = 1
-			speed = 100
+			speed = 150
 			damage = 5
 			knockback_amount = 100
 			attack_size = 1.0 * (1 + player.spell_size)
 		2:
-			hp = 1
-			speed = 100
+			hp = 2
+			speed = 150
 			damage = 5
 			knockback_amount = 100
 			attack_size = 1.0 * (1 + player.spell_size)
 		3:
 			hp = 2
-			speed = 100
+			speed = 150
 			damage = 8
 			knockback_amount = 100
 			attack_size = 1.0 * (1 + player.spell_size)
 		4:
-			hp = 2
-			speed = 100
-			damage = 8
+			hp = 4
+			speed = 150
+			damage = 12
 			knockback_amount = 100
 			attack_size = 1.0 * (1 + player.spell_size)
 
