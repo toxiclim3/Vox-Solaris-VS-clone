@@ -7,6 +7,7 @@ var config = ConfigFile.new()
 var sound_profile: String = "Full"
 var language: String = "en"
 var mouse_control: bool = false
+var screen_shake: bool = true
 
 const PROFILES = {
 	"Full": {
@@ -60,6 +61,7 @@ func loadSettings() -> void:
 	
 	if config.has_section("controls"):
 		mouse_control = config.get_value("controls", "mouse_control", false)
+		screen_shake = config.get_value("controls", "screen_shake", true)
 
 func set_language(lang: String) -> void:
 	language = lang
@@ -76,6 +78,11 @@ func set_sound_profile(profile: String) -> void:
 func set_mouse_control(value: bool) -> void:
 	mouse_control = value
 	config.set_value("controls", "mouse_control", value)
+	config.save(SAVE_PATH)
+
+func set_screen_shake(value: bool) -> void:
+	screen_shake = value
+	config.set_value("controls", "screen_shake", value)
 	config.save(SAVE_PATH)
 
 func get_sound_profile_index() -> int:

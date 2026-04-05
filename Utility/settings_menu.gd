@@ -5,6 +5,7 @@ signal settings_closed
 @onready var profile_button = %ProfileButton
 @onready var language_button = %LanguageButton
 @onready var mouse_control_button = %MouseControlButton
+@onready var screen_shake_button = %ScreenShakeButton
 @onready var confirmation_dialog = $ConfirmationDialog
 
 enum Languages {en,ru,ua}
@@ -34,6 +35,10 @@ func _ready() -> void:
 	if mouse_control_button:
 		mouse_control_button.button_pressed = SettingsManager.mouse_control
 		mouse_control_button.toggled.connect(_on_mouse_control_toggled)
+	
+	if screen_shake_button:
+		screen_shake_button.button_pressed = SettingsManager.screen_shake
+		screen_shake_button.toggled.connect(_on_screen_shake_toggled)
 
 func _on_close_settings_button_pressed() -> void:
 	settings_closed.emit()
@@ -47,6 +52,9 @@ func _on_language_selected(index: int) -> void:
 
 func _on_mouse_control_toggled(toggled_on: bool) -> void:
 	SettingsManager.set_mouse_control(toggled_on)
+
+func _on_screen_shake_toggled(toggled_on: bool) -> void:
+	SettingsManager.set_screen_shake(toggled_on)
 
 func _on_btn_reset_stats_click_end() -> void:
 	if confirmation_dialog:
