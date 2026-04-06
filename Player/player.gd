@@ -59,29 +59,8 @@ var enemy_close = []
 @onready var weapons = get_node("%Weapons") # Dynamic weapons container
 
 #GUI
-@onready var expBar = get_node("%ExperienceBar")
-@onready var lblLevel = get_node("%lbl_level")
-@onready var levelPanel = get_node("%LevelUp")
-@onready var upgradeOptions = get_node("%UpgradeOptions")
-@onready var upgradeScroll = get_node("%UpgradeScroll")
-@onready var itemOptions = preload("res://Utility/item_option.tscn")
-@onready var sndLevelUp = get_node("%snd_levelup")
+@onready var gui = get_node("GUILayer/GUI")
 @onready var healthBar = get_node("%HealthBar")
-@onready var lblTimer = get_node("%lblTimer")
-@onready var collectedWeapons = get_node("%CollectedWeapons")
-@onready var collectedUpgrades = get_node("%CollectedUpgrades")
-@onready var collectedBossItems = get_node("%CollectedBossItems")
-@onready var itemContainer = preload("res://Player/GUI/item_container.tscn")
-
-#Boss Level Up
-@onready var bossLevelPanel = get_node("%BossLevelUp")
-@onready var bossUpgradeOptions = get_node("%BossUpgradeOptions")
-@onready var bossUpgradeScroll = get_node("%BossUpgradeScroll")
-
-@onready var deathPanel = get_node("%DeathPanel")
-@onready var lblResult = get_node("%lbl_Result")
-@onready var sndVictory = get_node("%snd_victory")
-@onready var sndLose = get_node("%snd_lose")
 @onready var sndHurt = get_node("%snd_hurt")
 @onready var sndHurtBad = get_node("%snd_hurt_bad")
 
@@ -102,8 +81,8 @@ func _ready():
 		3: 
 			upgrade_character("tornado1")
 	attack()
-	set_expbar(experience, calculate_experiencecap())
-	lblLevel.text = str(tr("ui_level"),experience_level)
+	gui.set_expbar(experience, calculate_experiencecap())
+	gui.set_level_text(experience_level)
 	_on_hurt_box_hurt(0,0,0)
 	GlobalEvents.boss_defeated.connect(_on_boss_defeated)
 	
@@ -219,9 +198,9 @@ func calculate_experience(gem_exp):
 			collected_experience = 0
 			break
 	# Trigger the first reward menu only if one isn't already showing
-	if (leveled_up or pending_boss_rewards > 0) and not levelPanel.visible and not bossLevelPanel.visible:
+	if (leveled_up or pending_boss_rewards > 0) and not gui.levelPanel.visible and not gui.bossLevelPanel.visible:
 		_show_next_reward()
-	set_expbar(experience, calculate_experiencecap())
+	gui.set_expbar(experience, calculate_experiencecap())
 
 func calculate_experiencecap():
 	var exp_cap = experience_level
@@ -234,9 +213,7 @@ func calculate_experiencecap():
 		
 	return exp_cap
 		
-func set_expbar(set_value = 1, set_max_value = 100):
-	expBar.value = set_value
-	expBar.max_value = set_max_value
+
 
 ## Shows the next reward in queue (prioritize level-ups, then boss rewards)
 func _show_next_reward():
@@ -248,114 +225,46 @@ func _show_next_reward():
 		boss_levelup()
 
 func levelup():
-	sndLevelUp.play()
 	var current_visual_level = experience_level - pending_levelups
-	lblLevel.text = str(tr("ui_level"), current_visual_level)
 	if current_visual_level % GlobalEvents.backgroundInterval == 0:
 		GlobalEvents.advanceBackground.emit()
 	
-	# Clear any leftover options from a previous panel
-	for child in upgradeOptions.get_children():
-		upgradeOptions.remove_child(child)
-		child.queue_free()
 	upgrade_options.clear()
 	
-	levelPanel.visible = true
 	var options = 0
 	var optionsmax = 3
+	var options_list = []
 	while options < optionsmax:
-		var option_choice = itemOptions.instantiate()
-		option_choice.item = get_random_item()
-		upgradeOptions.add_child(option_choice)
-		options += 1
-	get_tree().paused = true
-	MusicController.focusMusic(!levelPanel.visible)
-	# Wait one frame for layout to compute sizes, then equalize all box widths
-	await get_tree().process_frame
-	_equalize_upgrade_option_widths()
-	
-	# We need the VBoxContainer's desired height to size the ScrollContainer properly
-	var desired_scroll_h = upgradeOptions.get_combined_minimum_size().y
-	
-	# Cap the scroll container so it doesn't overflow the screen
-	var vp_h = get_viewport_rect().size.y
-	var max_scroll_h = vp_h * 0.65
-	
-	upgradeScroll.custom_minimum_size.y = min(desired_scroll_h, max_scroll_h)
-	
-	# Wait another frame so the panel recalculates its size after width equalization
-	await get_tree().process_frame
-	
-	# Force the PanelContainer to recalculate its layout, then recenter via anchors
-	levelPanel.reset_size()
-	_recenter_anchored_panel(levelPanel)
-
-func boss_levelup():
-	sndLevelUp.play()
-	# Clear any leftover options
-	for child in bossUpgradeOptions.get_children():
-		bossUpgradeOptions.remove_child(child)
-		child.queue_free()
-	upgrade_options.clear()
-	
-	bossLevelPanel.visible = true
-	var options = 0
-	var optionsmax = 3
-	while options < optionsmax:
-		var item = get_random_boss_item()
-		if item == null: break # No more boss items available
-		var option_choice = itemOptions.instantiate()
-		option_choice.item = item
-		bossUpgradeOptions.add_child(option_choice)
+		var item = get_random_item()
+		if item != null:
+			options_list.append(item)
 		options += 1
 		
-	# If no options found, just close
-	if options == 0:
-		bossLevelPanel.visible = false
+	gui.show_levelup(options_list, current_visual_level)
+	get_tree().paused = true
+	MusicController.focusMusic(false)
+
+func boss_levelup():
+	upgrade_options.clear()
+	
+	var options = 0
+	var optionsmax = 3
+	var options_list = []
+	while options < optionsmax:
+		var item = get_random_boss_item()
+		if item == null: break
+		options_list.append(item)
+		options += 1
+		
+	if options_list.size() == 0:
 		_show_next_reward()
 		return
 
+	gui.show_boss_levelup(options_list)
 	get_tree().paused = true
-	MusicController.focusMusic(!bossLevelPanel.visible)
-	
-	await get_tree().process_frame
-	_equalize_upgrade_option_widths_boss()
-	
-	var desired_scroll_h = bossUpgradeOptions.get_combined_minimum_size().y
-	var vp_h = get_viewport_rect().size.y
-	var max_scroll_h = vp_h * 0.65
-	bossUpgradeScroll.custom_minimum_size.y = min(desired_scroll_h, max_scroll_h)
-	
-	await get_tree().process_frame
-	bossLevelPanel.reset_size()
-	_recenter_anchored_panel(bossLevelPanel)
+	MusicController.focusMusic(false)
 
-func _equalize_upgrade_option_widths_boss():
-	var children = bossUpgradeOptions.get_children()
-	var max_width: float = 0.0
-	for child in children:
-		max_width = max(max_width, child.get_combined_minimum_size().x)
-	for child in children:
-		child.custom_minimum_size.x = max_width
 
-func _equalize_upgrade_option_widths():
-	var children = upgradeOptions.get_children()
-	var max_width: float = 0.0
-	for child in children:
-		max_width = max(max_width, child.get_combined_minimum_size().x)
-	for child in children:
-		child.custom_minimum_size.x = max_width
-
-func _recenter_anchored_panel(panel: Control) -> void:
-	# For a panel with center anchors (0.5) and grow-both, reset offsets
-	# so it stays centered at its current content size, clamped to the viewport.
-	var vp_size = get_viewport_rect().size
-	var half_w = min(panel.size.x, vp_size.x * 0.95) / 2.0
-	var half_h = min(panel.size.y, vp_size.y * 0.95) / 2.0
-	panel.offset_left = -half_w
-	panel.offset_right = half_w
-	panel.offset_top = -half_h
-	panel.offset_bottom = half_h
 
 func apply_stat_modifiers():
 	armor = base_armor
@@ -428,16 +337,11 @@ func upgrade_character(upgrade):
 				stat_modifiers[upgrade] = upgrade_data["stat_modifiers"]
 				apply_stat_modifiers()
 				
-	adjust_gui_collection(upgrade)
+	gui.adjust_gui_collection(upgrade)
 	attack()
-	var option_children = upgradeOptions.get_children()
-	for i in option_children:
-		upgradeOptions.remove_child(i)
-		i.queue_free()
 	upgrade_options.clear()
 	collected_upgrades.append(upgrade)
-	levelPanel.visible = false
-	bossLevelPanel.visible = false
+	gui.hide_level_panels()
 	# Get the level that we just finished upgrading
 	var current_visual_level = experience_level - pending_levelups
 	
@@ -505,66 +409,32 @@ func get_random_boss_item():
 #timer
 func change_time(argtime = 0):
 	time = argtime
-	var get_m = int(time/60.0)
-	var get_s = time % 60
-	if get_m < 10:
-		get_m = str(0,get_m)
-	if get_s < 10:
-		get_s = str(0,get_s)
-	lblTimer.text = str(get_m,":",get_s)
+	gui.update_timer(time)
 	
 	
 
-func adjust_gui_collection(upgrade):
-	var get_upgraded_displayname = UpgradeDb.UPGRADES[upgrade]["displayname"]
-	var get_type = UpgradeDb.UPGRADES[upgrade]["type"]
-	if get_type != "item":
-		var get_collected_displaynames = []
-		for i in collected_upgrades:
-			get_collected_displaynames.append(UpgradeDb.UPGRADES[i]["displayname"])
-		if not get_upgraded_displayname in get_collected_displaynames:
-			var new_item = itemContainer.instantiate()
-			new_item.upgrade = upgrade
-			match get_type:
-				"weapon":
-					collectedWeapons.add_child(new_item)
-				"upgrade":
-					collectedUpgrades.add_child(new_item)
-				"bossitem":
-					collectedBossItems.add_child(new_item)
+
 
 func death():
-	if deathPanel.visible:
+	if gui.deathPanel.visible:
 		return
-	deathPanel.visible = true
 	emit_signal("playerdeath")
 	get_tree().paused = true
 	
 	StatsManager.register_end_run(hasWon)
 	StatsManager.update_best_run(experience_level, GlobalEvents.time)
-	# Center the death panel on screen
-	await get_tree().process_frame
-	var vp_size = get_viewport_rect().size
-	var target_pos = (vp_size - deathPanel.size) / 2.0
-	var start_pos = Vector2(target_pos.x, -deathPanel.size.y)
-	deathPanel.position = start_pos
-	var tween = deathPanel.create_tween()
-	tween.tween_property(deathPanel, "position", target_pos, 3.0).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
-	tween.play()
+	
+	gui.show_death_panel(hasWon)
+	
 	MusicController.focusMusic(false)
 	if hasWon:
-		lblResult.text = tr("result_win")
-		sndVictory.play()
 		MusicController.setLooping(false)
 		MusicController.playSpecificTrack(MusicController.winMusic)
-	else:
-		lblResult.text = tr("result_lose")
-		sndLose.play()
 
 func _on_boss_defeated():
 	hasWon = true
 	pending_boss_rewards += 1
-	if not levelPanel.visible and not bossLevelPanel.visible:
+	if not gui.levelPanel.visible and not gui.bossLevelPanel.visible:
 		_show_next_reward()
 
 
@@ -628,7 +498,7 @@ func remove_upgrade(upgrade_id: String) -> void:
 			break
 	if not still_owned:
 		# Remove from collectedWeapons or collectedUpgrades display
-		for container in [collectedWeapons, collectedUpgrades, collectedBossItems]:
+		for container in [gui.collectedWeapons, gui.collectedUpgrades, gui.collectedBossItems]:
 			for child in container.get_children():
 				if child.get("upgrade") != null:
 					var child_base = child.upgrade.rstrip("0123456789")

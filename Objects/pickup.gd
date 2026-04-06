@@ -1,5 +1,7 @@
 extends Area2D
 
+# 0 = Experience Gem, 1 = Magnet
+@export_enum("Experience", "Magnet") var pickup_type = 0
 @export var experience = 1
 
 var spr_green = preload("res://Textures/Items/Gems/Gem_green.png")
@@ -14,8 +16,12 @@ var speed = -1
 @onready var sound = $snd_collected
 
 func _ready():
-	if experience < 5:
+	if pickup_type == 1:
+		add_to_group("loot")
 		return
+
+	if experience < 5:
+		pass # Keep default texture
 	elif experience < 25:
 		sprite.texture = spr_blue
 	else:
@@ -30,8 +36,16 @@ func collect():
 	sound.play()
 	collision.call_deferred("set","disabled",true)
 	sprite.visible = false
-	return experience
-
+	
+	if pickup_type == 1: # Magnet
+		var player = get_tree().get_first_node_in_group("player")
+		var loot = get_tree().get_nodes_in_group("loot")
+		for item in loot:
+			if "target" in item and item != self:
+				item.target = player
+		return 0 # No experience
+		
+	return experience # Experience Gem
 
 func _on_snd_collected_finished():
 	queue_free()

@@ -23,6 +23,7 @@
 [ext_resource type="Theme" path="res://Themes/HeaderText_White.tres" id="16_7emwf"]
 [ext_resource type="Theme" uid="uid://dlpshatg4y1v3" path="res://Themes/Buttons_Dark.tres" id="18_hshwv"]
 [ext_resource type="AudioStream" uid="uid://bthqe0qhx0ik8" path="res://Audio/SoundEffect/Difficulty.wav" id="24_wdifc"]
+[ext_resource type="Script" path="res://Player/boss_ui.gd" id="boss_ui_script"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_dkpta"]
 
@@ -204,6 +205,7 @@ vertical_alignment = 1
 
 [node name="BossBarContainer" type="Control" parent="GUILayer/GUI" unique_id=1500000001]
 unique_name_in_owner = true
+script = ExtResource("boss_ui_script")
 visible = false
 layout_mode = 1
 anchors_preset = 10
@@ -908,6 +910,6 @@ flat = true
 [connection signal="click_end" from="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer/btn_timer_5m" to="." method="_on_btn_timer_5m_click_end"]
 [connection signal="click_end" from="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer/btn_show_warning" to="GUILayer/GUI" method="_on_btn_show_warning_click_end"]
 [connection signal="click_end" from="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer/btn_spawn_boss" to="GUILayer/GUI" method="_on_btn_spawn_boss_click_end"]
-[connection signal="pressed" from="GUILayer/GUI/BossWarning/btn_warning_dismiss" to="GUILayer/GUI" method="_on_btn_warning_dismiss_pressed"]
+[connection signal="pressed" from="GUILayer/GUI/BossWarning/btn_warning_dismiss" to="GUILayer/GUI/BossBarContainer" method="_on_btn_warning_dismiss_pressed"]
 
 [editable path="HurtBox"]

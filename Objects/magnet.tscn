@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://26wlkjgitxub"]
 
 [ext_resource type="Texture2D" uid="uid://cg5sf2esmywhf" path="res://Textures/Items/XPOrb.png" id="2_mlxyo"]
-[ext_resource type="Script" uid="uid://bemu6hjyxg6xc" path="res://Objects/magnet.gd" id="2_script"]
+[ext_resource type="Script" path="res://Objects/pickup.gd" id="2_script"]
 [ext_resource type="AudioStream" uid="uid://bcwhw5ek4wop0" path="res://Audio/SoundEffect/ItemDrop_Yellow.wav" id="3_audio"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_7r8m"]
@@ -12,6 +12,7 @@ scale = Vector2(0.5, 0.5)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("2_script")
+pickup_type = 1
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1978480849]
 texture = ExtResource("2_mlxyo")
