@@ -22,6 +22,8 @@ func _ready():
 	MusicController.setLooping(false)
 	MusicController.playSpecificTrack(MusicController.titleMusic)
 	
+	%VersionLabel.text = "v" + str(ProjectSettings.get_setting("application/config/version"))
+	
 	# Initial positions
 	main_menu_original_x = main_menu_content.position.x
 	
