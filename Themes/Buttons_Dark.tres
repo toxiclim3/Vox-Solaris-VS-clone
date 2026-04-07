@@ -1,18 +1,18 @@
 [gd_resource type="Theme" format=3 uid="uid://dlpshatg4y1v3"]
 
 [ext_resource type="FontFile" uid="uid://bcl80yjdjx8r5" path="res://Font/Palitura-ExtraBold.ttf" id="2_8y11j"]
-[ext_resource type="Texture2D" uid="uid://biaguqyqd426p" path="res://Textures/GUI/alloy_smelter_top.png" id="2_tex"]
+[ext_resource type="Texture2D" uid="uid://72cpo6utv5f3" path="res://Textures/GUI/basic_engineering.png" id="2_stmhm"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_disabled_dark"]
 content_margin_left = 4.0
 content_margin_top = 2.0
 content_margin_right = 4.0
 content_margin_bottom = 2.0
-texture = ExtResource("2_tex")
-texture_margin_left = 9.0
-texture_margin_top = 9.0
-texture_margin_right = 9.0
-texture_margin_bottom = 9.0
+texture = ExtResource("2_stmhm")
+texture_margin_left = 4.0
+texture_margin_top = 4.0
+texture_margin_right = 4.0
+texture_margin_bottom = 4.0
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 modulate_color = Color(0.3, 0.3, 0.3, 0.7)
@@ -22,11 +22,11 @@ content_margin_left = 4.0
 content_margin_top = 2.0
 content_margin_right = 4.0
 content_margin_bottom = 2.0
-texture = ExtResource("2_tex")
-texture_margin_left = 9.0
-texture_margin_top = 9.0
-texture_margin_right = 9.0
-texture_margin_bottom = 9.0
+texture = ExtResource("2_stmhm")
+texture_margin_left = 4.0
+texture_margin_top = 4.0
+texture_margin_right = 4.0
+texture_margin_bottom = 4.0
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 modulate_color = Color(0.6, 0.6, 0.6, 1)
@@ -36,11 +36,11 @@ content_margin_left = 4.0
 content_margin_top = 2.0
 content_margin_right = 4.0
 content_margin_bottom = 2.0
-texture = ExtResource("2_tex")
-texture_margin_left = 9.0
-texture_margin_top = 9.0
-texture_margin_right = 9.0
-texture_margin_bottom = 9.0
+texture = ExtResource("2_stmhm")
+texture_margin_left = 4.0
+texture_margin_top = 4.0
+texture_margin_right = 4.0
+texture_margin_bottom = 4.0
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 modulate_color = Color(0.8, 0.8, 0.8, 1)
@@ -50,25 +50,24 @@ content_margin_left = 4.0
 content_margin_top = 2.0
 content_margin_right = 4.0
 content_margin_bottom = 2.0
-texture = ExtResource("2_tex")
-texture_margin_left = 9.0
-texture_margin_top = 9.0
-texture_margin_right = 9.0
-texture_margin_bottom = 9.0
+texture = ExtResource("2_stmhm")
+texture_margin_left = 4.0
+texture_margin_top = 4.0
+texture_margin_right = 4.0
+texture_margin_bottom = 4.0
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
-modulate_color = Color(0.6, 0.6, 0.6, 1)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pressed_dark"]
 content_margin_left = 4.0
 content_margin_top = 2.0
 content_margin_right = 4.0
 content_margin_bottom = 2.0
-texture = ExtResource("2_tex")
-texture_margin_left = 9.0
-texture_margin_top = 9.0
-texture_margin_right = 9.0
-texture_margin_bottom = 9.0
+texture = ExtResource("2_stmhm")
+texture_margin_left = 4.0
+texture_margin_top = 4.0
+texture_margin_right = 4.0
+texture_margin_bottom = 4.0
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 modulate_color = Color(0.4, 0.4, 0.4, 1)

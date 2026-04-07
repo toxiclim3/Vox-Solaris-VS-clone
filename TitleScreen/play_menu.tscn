@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://bb2kcf2xvcy5y" path="res://Textures/GUI/close_x.png" id="1_1t2v0"]
 [ext_resource type="Script" uid="uid://b1yvg62vscrqj" path="res://TitleScreen/play_menu.gd" id="1_pfsr1"]
-[ext_resource type="Theme" path="res://Themes/RegularText_Brick.tres" id="2_55gqi"]
+[ext_resource type="Theme" uid="uid://gdyimm2d23wv" path="res://Themes/RegularText_Brick.tres" id="2_55gqi"]
 [ext_resource type="Texture2D" uid="uid://cuxlw7m6x5ojn" path="res://Textures/GUI/close_x_hover.png" id="2_pfsr1"]
 [ext_resource type="FontFile" uid="uid://b0s4gbyeyrex1" path="res://Font/OpenSans-Regular.ttf" id="3_56o74"]
 [ext_resource type="Theme" uid="uid://dlpshatg4y1v3" path="res://Themes/Buttons_Dark.tres" id="7_6jopl"]
@@ -106,9 +106,9 @@ text = "ui_difficulty_normal"
 
 [node name="btn_custom_difficulty" parent="MarginContainer2/VBoxContainer/HBoxContainer/RightCol" unique_id=1693818788 instance=ExtResource("8_bbttn")]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
+theme = ExtResource("7_6jopl")
 text = "ui_editCustomDifficulty"
 
 [node name="CenterContainer" type="CenterContainer" parent="MarginContainer2/VBoxContainer" unique_id=1375665020]
