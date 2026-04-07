@@ -25,7 +25,8 @@ extends Node2D
 
 var isSpawningActive = true
 @onready var soft_limit = base_soft_limit
-var current_wave_delay = 0
+var current_fodder_delay = 0
+var current_elite_delay = 0
 
 var upcoming_boss: Spawn_info = null
 
@@ -117,79 +118,90 @@ func _on_timer_timeout():
 				GlobalEvents.boss_spawned.emit(boss_spawn)
 				upcoming_boss = null
 
-		if current_wave_delay > 0:
-			current_wave_delay -= 1
+		# Handle Fodder Spawns (Easy + Normal)
+		if current_fodder_delay > 0:
+			current_fodder_delay -= 1
 		else:
 			var minutes = GlobalEvents.time / 60.0
 			
 			var weight_easy = 100
 			var weight_normal = 0
-			var weight_hard = 0
 			
 			if minutes >= time_normal_unlock_minutes:
-				weight_normal = min(int((minutes - time_normal_unlock_minutes) * 10) + 10, 50)
-				weight_easy -= weight_normal
-				
-			if minutes >= time_hard_unlock_minutes:
-				weight_hard = min(int((minutes - time_hard_unlock_minutes) * 10), 40)
-				weight_easy -= weight_hard
+				# Normal enemies gradually become common, but never completely replace Easy ones
+				weight_normal = min(int((minutes - time_normal_unlock_minutes) * 20), 100)
 			
-			weight_easy = max(10, weight_easy)
-			
-			var total_weight = weight_easy + weight_normal + weight_hard
-			var roll = randi_range(0, total_weight)
-			
-			var selected_pool_type = "easy"
+			var roll = randi_range(0, weight_easy + weight_normal)
 			var selected_pool = spawns_easy
+			var selected_type = "easy"
+			
 			if roll > weight_easy and spawns_normal.size() > 0:
-				selected_pool_type = "normal"
 				selected_pool = spawns_normal
-			if roll > (weight_easy + weight_normal) and spawns_hard.size() > 0:
-				selected_pool_type = "hard"
-				selected_pool = spawns_hard
-				
-			if selected_pool.size() == 0:
-				selected_pool = spawns_easy
+				selected_type = "normal"
 				
 			if selected_pool.size() > 0:
 				var enemy_info = selected_pool.pick_random()
-				current_wave_delay = max(1, enemy_info.enemy_spawn_delay) 
-				current_wave_delay = max(1, current_wave_delay + randi_range(-1, 1))
+				current_fodder_delay = max(1, enemy_info.enemy_spawn_delay)
+				current_fodder_delay = max(1, current_fodder_delay + randi_range(-1, 1))
 				
-				if current_enemies < soft_limit:
-					var time_multiplier = base_enemy_intensity
-					if minutes > 1.0 and minutes <= 3.0:
-						var t = minutes
-						var A = enemy_intensity_time_multiplier / 2.0
-						time_multiplier = base_enemy_intensity + (A * t * t)
-					elif minutes > 3.0:
-						var val_at_3 = base_enemy_intensity + enemy_intensity_time_multiplier
-						time_multiplier = val_at_3 + minutes * enemy_intensity_time_multiplier
-						
-					var spawn_count = int(enemy_info.enemy_num * time_multiplier * randf_range(0.8, 1.2) * GlobalEvents.get_enemy_spawn_modifier())
+				spawn_enemy_group(enemy_info, selected_type)
+
+		# Handle Elite Spawns (Hard)
+		if GlobalEvents.time / 60.0 >= time_hard_unlock_minutes:
+			if current_elite_delay > 0:
+				current_elite_delay -= 1
+			else:
+				if spawns_hard.size() > 0:
+					var elite_info = spawns_hard.pick_random()
+					# Elites spawn less frequently than fodder
+					current_elite_delay = max(5, elite_info.enemy_spawn_delay * 4)
+					current_elite_delay = max(3, current_elite_delay + randi_range(-2, 2))
 					
-					if selected_pool_type == "easy" and minutes >= time_hard_unlock_minutes:
-						spawn_count = int(spawn_count * 1.5)
-						
-					if enemy_info.enemy_num > 0 and spawn_count < 1:
-						spawn_count = 1
-						
-					var max_allowed = (soft_limit - current_enemies) + 5
-					if spawn_count > max_allowed and max_allowed > 0:
-						spawn_count = max_allowed
-						
-					var counter = 0
-					while counter < spawn_count:
-						var enemy_spawn = enemy_info.enemy.instantiate()
-						
-						# Apply generic Enemy HP modifier
-						var hp_mod = GlobalEvents.get_enemy_hp_modifier()
-						if hp_mod != 1.0:
-							enemy_spawn.hp = int(enemy_spawn.hp * hp_mod)
-						
-						enemy_spawn.global_position = get_random_position()
-						add_child(enemy_spawn)
-						counter += 1
+					spawn_enemy_group(elite_info, "hard")
+	
+	emit_signal("changetime",GlobalEvents.time)
+
+func spawn_enemy_group(enemy_info: Spawn_info, pool_type: String) -> void:
+	var current_enemies = get_tree().get_nodes_in_group("enemy").size()
+	if current_enemies >= soft_limit:
+		return
+		
+	var minutes = GlobalEvents.time / 60.0
+	var time_multiplier = base_enemy_intensity
+	
+	if minutes > 1.0 and minutes <= 3.0:
+		var t = minutes
+		var A = enemy_intensity_time_multiplier / 2.0
+		time_multiplier = base_enemy_intensity + (A * t * t)
+	elif minutes > 3.0:
+		var val_at_3 = base_enemy_intensity + enemy_intensity_time_multiplier
+		time_multiplier = val_at_3 + minutes * enemy_intensity_time_multiplier
+		
+	var spawn_count = int(enemy_info.enemy_num * time_multiplier * randf_range(0.8, 1.2) * GlobalEvents.get_enemy_spawn_modifier())
+	
+	# Small enemies should spawn in larger quantities
+	if pool_type == "easy":
+		spawn_count = int(spawn_count * 1.5)
+		
+	if enemy_info.enemy_num > 0 and spawn_count < 1:
+		spawn_count = 1
+		
+	var max_allowed = (soft_limit - current_enemies) + 5
+	if spawn_count > max_allowed and max_allowed > 0:
+		spawn_count = max_allowed
+		
+	var counter = 0
+	while counter < spawn_count:
+		var enemy_spawn = enemy_info.enemy.instantiate()
+		
+		# Apply generic Enemy HP modifier
+		var hp_mod = GlobalEvents.get_enemy_hp_modifier()
+		if hp_mod != 1.0:
+			enemy_spawn.hp = int(enemy_spawn.hp * hp_mod)
+		
+		enemy_spawn.global_position = get_random_position()
+		add_child(enemy_spawn)
+		counter += 1
 	
 	emit_signal("changetime",GlobalEvents.time)
 

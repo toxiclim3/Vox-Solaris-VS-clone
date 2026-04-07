@@ -13,11 +13,11 @@ signal camera_shake(intensity: float, duration: float)
 
 var boss_warnings: Dictionary = {
 	"generic": "warning_boss_generic",
-	"res://Enemy/enemy_super.tscn": "warning_boss_super"
+	"res://Enemy/Boss/enemy_super.tscn": "warning_boss_super"
 }
 
 var boss_names: Dictionary = {
-	"res://Enemy/enemy_super.tscn": "boss_name_super"
+	"res://Enemy/Boss/enemy_super.tscn": "boss_name_super"
 }
 
 @export var backgroundInterval = 5

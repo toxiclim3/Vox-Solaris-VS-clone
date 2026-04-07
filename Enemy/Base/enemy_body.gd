@@ -21,7 +21,7 @@ var knockback = Vector2.ZERO
 @onready var player = get_tree().get_first_node_in_group("player")
 @onready var loot_base = get_tree().get_first_node_in_group("loot")
 
-var death_anim = preload("res://Enemy/explosion.tscn")
+var death_anim = preload("res://Enemy/Base/explosion.tscn")
 var exp_gem = preload("res://Objects/experience_gem.tscn")
 var magnet = preload("res://Objects/magnet.tscn")
 
@@ -29,6 +29,7 @@ signal remove_from_array(object)
 
 var screen_size
 var update_timer = 0.0
+var proc_offset = 0 # Offset for staggered physics updates
 
 func _ready():
 	max_hp = hp
@@ -39,6 +40,7 @@ func _ready():
 	hitBox.damage = enemy_damage
 	screen_size = get_viewport_rect().size
 	hurtBox.connect("hurt",Callable(self,"_on_hurt_box_hurt"))
+	proc_offset = randi_range(0, 9) # Randomize update frame
 	
 func _physics_process(delta):
 	knockback = knockback.move_toward(Vector2.ZERO, knockback_recovery)
@@ -57,15 +59,29 @@ func _physics_process(delta):
 		direction = global_position.direction_to(player.global_position)
 		velocity = direction * movement_speed
 		
-		if hurtBox.has_overlapping_areas():
-			var push_vector = Vector2.ZERO
-			for area in hurtBox.get_overlapping_areas():
-				if area.owner != self and area.owner != null:
-					var dist = global_position.distance_to(area.global_position)
-					if dist < 22.0:
-						var push_strength = 1.0 - (dist / 22.0)
-						push_vector += area.global_position.direction_to(global_position) * push_strength
-			velocity += push_vector.normalized() * (movement_speed * 0.4)
+		# Soft collision / Separation behavior
+		# Optimization: Staggered updates (adaptive frequency) and neighbor capping
+		var stagger_interval = 10
+		if dist_sq > 160000: # Further than 400px (outside common view)
+			stagger_interval = 20
+			
+		if (Engine.get_physics_frames() + proc_offset) % stagger_interval == 0:
+			if hurtBox.has_overlapping_areas():
+				var push_vector = Vector2.ZERO
+				var overlapping = hurtBox.get_overlapping_areas()
+				
+				# Cap neighbors to prevent O(N^2) complexity spikes in dense crowds
+				if overlapping.size() > 10:
+					overlapping = overlapping.slice(0, 10)
+					
+				for area in overlapping:
+					if area.owner != self and area.owner != null:
+						var n_dist_sq = global_position.distance_squared_to(area.global_position)
+						if n_dist_sq < 484.0: # 22.0 * 22.0
+							# Faster linear push strength based on squared distance
+							var push_strength = 1.0 - (n_dist_sq / 484.0)
+							push_vector += area.global_position.direction_to(global_position) * push_strength
+				velocity += push_vector.normalized() * (movement_speed * 0.4)
 			
 		if velocity.length() > movement_speed:
 			velocity = velocity.normalized() * movement_speed

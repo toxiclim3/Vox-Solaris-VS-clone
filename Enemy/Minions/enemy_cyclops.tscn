@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://co8cgyg00x05f"]
 
-[ext_resource type="Script" uid="uid://c1m16auiseqlg" path="res://Enemy/enemy.gd" id="1_c35cp"]
+[ext_resource type="Script" uid="uid://c1m16auiseqlg" path="res://Enemy/Base/enemy.gd" id="1_c35cp"]
 [ext_resource type="Texture2D" uid="uid://b4tu8mxdnvsy1" path="res://Textures/Enemy/cyclops.png" id="2_qrtfd"]
-[ext_resource type="PackedScene" uid="uid://ndk3tlufsxr8" path="res://Enemy/EnemyBase.tscn" id="2_r75sy"]
+[ext_resource type="PackedScene" uid="uid://ndk3tlufsxr8" path="res://Enemy/Base/EnemyBase.tscn" id="2_r75sy"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_24u87"]
 radius = 4.0

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://hcjnrdsb563h"]
 
-[ext_resource type="Script" uid="uid://c1m16auiseqlg" path="res://Enemy/enemy.gd" id="1_r5pfe"]
-[ext_resource type="PackedScene" uid="uid://ndk3tlufsxr8" path="res://Enemy/EnemyBase.tscn" id="2_ds0su"]
+[ext_resource type="Script" uid="uid://c1m16auiseqlg" path="res://Enemy/Base/enemy.gd" id="1_r5pfe"]
+[ext_resource type="PackedScene" uid="uid://ndk3tlufsxr8" path="res://Enemy/Base/EnemyBase.tscn" id="2_ds0su"]
 [ext_resource type="Texture2D" uid="uid://blpjl8raquq2s" path="res://Textures/Enemy/juggernaut.png" id="2_hyeot"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_2nyyb"]

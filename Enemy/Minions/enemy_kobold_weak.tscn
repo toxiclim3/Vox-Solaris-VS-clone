@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://p4n2byek3hf6"]
 
-[ext_resource type="Script" uid="uid://c1m16auiseqlg" path="res://Enemy/enemy.gd" id="1_1bh7b"]
-[ext_resource type="PackedScene" uid="uid://ndk3tlufsxr8" path="res://Enemy/EnemyBase.tscn" id="2_eftmw"]
+[ext_resource type="Script" uid="uid://c1m16auiseqlg" path="res://Enemy/Base/enemy.gd" id="1_1bh7b"]
+[ext_resource type="PackedScene" uid="uid://ndk3tlufsxr8" path="res://Enemy/Base/EnemyBase.tscn" id="2_eftmw"]
 [ext_resource type="Texture2D" uid="uid://bb2tqmla8xdg8" path="res://Textures/Enemy/kolbold_weak.png" id="2_ojadc"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8yduk"]

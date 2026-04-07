@@ -12,7 +12,7 @@ var state = BossState.CHASE
 var ability_timer: float = ability_cooldown
 var state_timer: float = 0.0
 
-var telegraph_scene = preload("res://Enemy/telegraph_area.tscn")
+var telegraph_scene = preload("res://Enemy/Base/telegraph_area.tscn")
 var teleport_target: Vector2
 var particles: CPUParticles2D
 var warning_particles: CPUParticles2D
