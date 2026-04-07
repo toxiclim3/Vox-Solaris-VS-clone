@@ -23,7 +23,7 @@
 [ext_resource type="Theme" path="res://Themes/HeaderText_White.tres" id="16_7emwf"]
 [ext_resource type="Theme" uid="uid://dlpshatg4y1v3" path="res://Themes/Buttons_Dark.tres" id="18_hshwv"]
 [ext_resource type="AudioStream" uid="uid://bthqe0qhx0ik8" path="res://Audio/SoundEffect/Difficulty.wav" id="24_wdifc"]
-[ext_resource type="Script" path="res://Player/boss_ui.gd" id="boss_ui_script"]
+[ext_resource type="Script" uid="uid://b8kmo7xmbqafv" path="res://Player/boss_ui.gd" id="boss_ui_script"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_dkpta"]
 
@@ -205,7 +205,6 @@ vertical_alignment = 1
 
 [node name="BossBarContainer" type="Control" parent="GUILayer/GUI" unique_id=1500000001]
 unique_name_in_owner = true
-script = ExtResource("boss_ui_script")
 visible = false
 layout_mode = 1
 anchors_preset = 10
@@ -214,6 +213,7 @@ offset_top = -40.0
 offset_bottom = -17.0
 grow_horizontal = 2
 mouse_filter = 2
+script = ExtResource("boss_ui_script")
 
 [node name="BossBarProgress" type="TextureProgressBar" parent="GUILayer/GUI/BossBarContainer" unique_id=1500000002]
 unique_name_in_owner = true
