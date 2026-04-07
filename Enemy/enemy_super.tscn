@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://btf7clk4jja87"]
 
-[ext_resource type="Script" uid="uid://c1m16auiseqlg" path="res://Enemy/enemy.gd" id="1_friak"]
+[ext_resource type="Script" uid="uid://c1m16auiseqlg" path="res://Enemy/boss.gd" id="1_friak"]
 [ext_resource type="PackedScene" uid="uid://ndk3tlufsxr8" path="res://Enemy/EnemyBase.tscn" id="2_aji1p"]
 [ext_resource type="Texture2D" uid="uid://ce0hue7fwpa3a" path="res://Textures/Enemy/giant_amoeba_new.png" id="2_f58yx"]
 

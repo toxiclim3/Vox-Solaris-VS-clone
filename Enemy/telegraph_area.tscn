@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://dxmeke1lkmgt5"]
+
+[ext_resource type="Script" path="res://Enemy/telegraph_area.gd" id="1_telegraph"]
+
+[node name="TelegraphArea" type="Area2D"]
+z_index = -1
+collision_layer = 0
+collision_mask = 6
+monitorable = false
+script = ExtResource("1_telegraph")
