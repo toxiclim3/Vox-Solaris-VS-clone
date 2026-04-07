@@ -46,6 +46,7 @@ func _ready():
 	duration_timer.start()
 	
 	damage_box.damage = damage
+	damage_box.get_node("CollisionShape2D").disabled = true
 	
 	if debug_red:
 		sprite.modulate = Color(1.0, 0.0, 0.0, 0.7)
@@ -59,8 +60,10 @@ func _on_animation_timer_timeout():
 func _on_pulse_timer_timeout():
 	if damage_box.has_signal("remove_from_array"):
 		damage_box.emit_signal("remove_from_array", damage_box)
-	damage_box.get_node("CollisionShape2D").set_deferred("disabled", true)
+	
 	damage_box.get_node("CollisionShape2D").set_deferred("disabled", false)
+	await get_tree().create_timer(0.05).timeout
+	damage_box.get_node("CollisionShape2D").set_deferred("disabled", true)
 
 func _on_duration_timer_timeout():
 	queue_free()

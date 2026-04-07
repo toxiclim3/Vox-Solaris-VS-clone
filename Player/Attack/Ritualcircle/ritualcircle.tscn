@@ -1,0 +1,37 @@
+[gd_scene load_steps=3 format=3 uid="uid://cbp1v1v1v1v1v"]
+
+[ext_resource type="Script" path="res://Player/Attack/Ritualcircle/ritualcircle.gd" id="1_r1tua"]
+[ext_resource type="Script" path="res://Player/Attack/Ritualcircle/ritual_hitbox.gd" id="2_hitbox"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_r1tua"]
+radius = 40.0
+
+[node name="RitualCircle" type="Node2D"]
+z_index = 1
+script = ExtResource("1_r1tua")
+
+[node name="BurstSprite" type="Polygon2D" parent="."]
+visible = false
+color = Color(0.6, 0.2, 0.8, 0.4)
+polygon = PackedVector2Array(0, -40, 28, -28, 40, 0, 28, 28, 0, 40, -28, 28, -40, 0, -28, -28)
+
+[node name="Area2D" type="Area2D" parent="." groups=["attack"]]
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+script = ExtResource("2_hitbox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_r1tua")
+
+[node name="DrawTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="BurstTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="PulseTimer" type="Timer" parent="."]
+
+[connection signal="timeout" from="DrawTimer" to="." method="_on_draw_timer_timeout"]
+[connection signal="timeout" from="BurstTimer" to="." method="_on_burst_timer_timeout"]
+[connection signal="timeout" from="PulseTimer" to="." method="_on_pulse_timer_timeout"]

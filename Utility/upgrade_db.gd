@@ -368,6 +368,42 @@ const UPGRADES = {
 		"prerequisite": ["poisonbottle3"],
 		"type": "weapon"
 	},
+	"ritualcircle1": 
+	{
+		"icon": WEAPON_PATH + "ritual_circle.png", # Placeholder icon
+		"displayname": "item_ritualcircle",
+		"details": "ItemDesc_RitualCircle1",
+		"level": "item_level1",
+		"prerequisite": [],
+		"type": "weapon"
+	},
+	"ritualcircle2": 
+	{
+		"icon": WEAPON_PATH + "ritual_circle.png",
+		"displayname": "item_ritualcircle",
+		"details": "ItemDesc_RitualCircle2",
+		"level": "item_level2",
+		"prerequisite": ["ritualcircle1"],
+		"type": "weapon"
+	},
+	"ritualcircle3": 
+	{
+		"icon": WEAPON_PATH + "ritual_circle.png",
+		"displayname": "item_ritualcircle",
+		"details": "ItemDesc_RitualCircle3",
+		"level": "item_level3",
+		"prerequisite": ["ritualcircle2"],
+		"type": "weapon"
+	},
+	"ritualcircle4": 
+	{
+		"icon": WEAPON_PATH + "ritual_circle.png",
+		"displayname": "item_ritualcircle",
+		"details": "ItemDesc_RitualCircle4",
+		"level": "item_level4",
+		"prerequisite": ["ritualcircle3"],
+		"type": "weapon"
+	},
 	"food": 
 	{
 		"icon": ICON_PATH + "chunk.png",
