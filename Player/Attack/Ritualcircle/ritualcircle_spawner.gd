@@ -2,7 +2,7 @@ extends Node2D
 
 var ammo = 0
 var baseammo = 0
-var attackspeed = 5.0
+var attackspeed = 10
 var level = 0
 
 var ritualCircle = preload("res://Player/Attack/Ritualcircle/ritualcircle.tscn")
