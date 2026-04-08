@@ -23,7 +23,7 @@ var knockback = Vector2.ZERO
 
 var death_anim = preload("res://Enemy/Base/explosion.tscn")
 var exp_gem = preload("res://Objects/experience_gem.tscn")
-var magnet = preload("res://Objects/magnet.tscn")
+var xp_orb = preload("res://Objects/xp_orb.tscn")
 
 signal remove_from_array(object)
 
@@ -108,9 +108,9 @@ func death():
 	loot_base.call_deferred("add_child",new_gem)
 	
 	if randf() < 0.01:
-		var new_magnet = magnet.instantiate()
-		new_magnet.global_position = global_position
-		loot_base.call_deferred("add_child",new_magnet)
+		var new_xp_orb = xp_orb.instantiate()
+		new_xp_orb.global_position = global_position
+		loot_base.call_deferred("add_child",new_xp_orb)
 	
 	if isBoss:
 		GlobalEvents.boss_defeated.emit()

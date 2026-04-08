@@ -586,7 +586,8 @@ vertical_alignment = 1
 custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="GUILayer/GUI/PauseMenu/MarginContainer/VBoxContainer2" unique_id=448275699]
+[node name="lblTips" type="RichTextLabel" parent="GUILayer/GUI/PauseMenu/MarginContainer/VBoxContainer2" unique_id=448275699]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 theme = ExtResource("15_b1ygp")

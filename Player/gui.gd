@@ -35,6 +35,35 @@ var titleMenu = "res://TitleScreen/menu.tscn"
 @onready var collectedBossItems = get_node("%CollectedBossItems")
 @onready var itemOptions = preload("res://Utility/item_option.tscn")
 @onready var itemContainer = preload("res://Player/GUI/item_container.tscn")
+@onready var lblTips = get_node("%lblTips")
+
+var tip_timer = 0.0
+const TIP_ROTATION_TIME = 10.0
+var tip_keys = [
+	"tips_runInCircles",
+	"tips_armor",
+	"tips_movement",
+	"tips_focus",
+	"tips_bosses",
+	"tips_redgems",
+	"tips_xporb",
+	"tips_cooldown",
+	"tips_size",
+	"tips_wincon",
+	"tips_poisonbottle",
+	"tips_ritualcircle",
+	"tips_icespear_pierce",
+	"tips_amoeba_boss",
+	"tips_surrounded_graze",
+	"tips_vibecoded",
+	"tips_ror_promo",
+	"tips_try_terraria",
+	"tips_try_minecraft",
+	"tips_try_mamasboy",
+	"tips_box_sleep",
+	"tips_green_person",
+	"tips_inspiration"
+]
 
 func set_level_text(level: int) -> void:
 	lblLevel.text = str(tr("ui_level"), level)
@@ -231,6 +260,7 @@ func toggle_menu():
 				close_pause_menu()
 
 func open_pause_menu() -> void:
+	change_random_tip()
 	pause_menu.show()
 	get_tree().paused = true
 	MusicController.focusMusic(false)
@@ -462,3 +492,21 @@ func _on_btn_show_warning_click_end() -> void:
 
 func _on_btn_spawn_boss_click_end() ->	void:
 	GlobalEvents.queue_boss.emit()
+
+func _process(delta: float) -> void:
+	if pause_menu.visible:
+		tip_timer += delta
+		if tip_timer >= TIP_ROTATION_TIME:
+			change_random_tip()
+
+func change_random_tip() -> void:
+	var current_text = lblTips.text
+	var available_keys = []
+	for key in tip_keys:
+		if tr(key) != current_text:
+			available_keys.append(key)
+	
+	if available_keys.size() > 0:
+		var new_key = available_keys.pick_random()
+		lblTips.text = tr(new_key)
+		tip_timer = 0.0

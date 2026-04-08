@@ -1,7 +1,7 @@
 extends Area2D
 
-# 0 = Experience Gem, 1 = Magnet
-@export_enum("Experience", "Magnet") var pickup_type = 0
+# 0 = Experience Gem, 1 = XP Orb
+@export_enum("Experience", "XP Orb") var pickup_type = 0
 @export var experience = 1
 
 var spr_green = preload("res://Textures/Items/Gems/Gem_green.png")
@@ -37,7 +37,7 @@ func collect():
 	collision.call_deferred("set","disabled",true)
 	sprite.visible = false
 	
-	if pickup_type == 1: # Magnet
+	if pickup_type == 1: # XP Orb
 		var player = get_tree().get_first_node_in_group("player")
 		var loot = get_tree().get_nodes_in_group("loot")
 		for item in loot:
