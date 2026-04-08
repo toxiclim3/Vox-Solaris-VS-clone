@@ -83,14 +83,20 @@ theme = ExtResource("7_hevq0")
 text = "ui_characterSelect"
 label_settings = SubResource("LabelSettings_Small")
 
-[node name="OptionButtonCharSelect" type="OptionButton" parent="MarginContainer2/PanelContainer/VBoxContainer/HBoxContainer/LeftCol" unique_id=649226019]
+[node name="CharacterGrid" type="GridContainer" parent="MarginContainer2/PanelContainer/VBoxContainer/HBoxContainer/LeftCol" unique_id=649226101]
+unique_name_in_owner = true
+layout_mode = 2
+columns = 3
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+
+[node name="LabelCharDetails" type="Label" parent="MarginContainer2/PanelContainer/VBoxContainer/HBoxContainer/LeftCol" unique_id=649226102]
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("7_hevq0")
-disabled = true
-item_count = 1
-popup/item_0/text = "ui_comingSoon"
-popup/item_0/id = 0
+text = ""
+label_settings = SubResource("LabelSettings_Small")
+autowrap_mode = 2
 
 [node name="RightCol" type="VBoxContainer" parent="MarginContainer2/PanelContainer/VBoxContainer/HBoxContainer" unique_id=1887216903]
 layout_mode = 2

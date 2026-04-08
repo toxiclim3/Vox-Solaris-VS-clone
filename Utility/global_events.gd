@@ -27,7 +27,40 @@ var boss_names: Dictionary = {
 
 @export var time = 0
 
-@export var playerItem = 1
+const CHARACTERS: Dictionary = {
+	"mage": {
+		"displayname": "char_mage",
+		"icon": "res://Textures/Player/player_sprite.png",
+		"icon_color": Color(1.0, 1.0, 1.0),
+		"starting_weapon": "icespear1",
+		"details": "char_mage_desc",
+		"base_stats": {},
+		"level_stats": {"spell_cooldown": -0.01},
+		"level_stats_cap": {"spell_cooldown": -0.30}
+	},
+	"plague_doctor": {
+		"displayname": "char_plague_doctor",
+		"icon": "res://Textures/Player/player_sprite.png",
+		"icon_color": Color(0.3, 0.9, 0.3),
+		"starting_weapon": "poisonbottle1",
+		"details": "char_plague_doctor_desc",
+		"base_stats": {},
+		"level_stats": {"spell_size": 0.05},
+		"level_stats_cap": {"spell_size": 1.50}
+	},
+	"occultist": {
+		"displayname": "char_occultist",
+		"icon": "res://Textures/Player/player_sprite.png",
+		"icon_color": Color(0.7, 0.3, 0.9),
+		"starting_weapon": "ritualcircle1",
+		"details": "char_occultist_desc",
+		"base_stats": {},
+		"level_stats": {"lifesteal": 0.05},
+		"level_stats_cap": {"lifesteal": 2.0}
+	}
+}
+
+var selected_character: String = "mage"
 
 enum Difficulty { EASY, NORMAL, HARD, CUSTOM }
 var current_difficulty: Difficulty = Difficulty.NORMAL

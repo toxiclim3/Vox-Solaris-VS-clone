@@ -45,6 +45,9 @@ const BASE_GRAB_RADIUS = 50.0
 # Track Stat Modifiers
 var stat_modifiers = {}
 
+# Lifesteal mechanic
+var lifesteal: float = 0.0
+
 # Javelin level tracked for global updates to Javelins
 var javelin_level = 0
 
@@ -71,21 +74,22 @@ var enemy_close = []
 signal playerdeath
 
 func _ready():
-	match GlobalEvents.playerItem:
-		0:
-			pass
-		1:
-			upgrade_character("icespear1")
-		2:
-			upgrade_character("javelin1")
-		3: 
-			upgrade_character("tornado1")
+	var active_char = GlobalEvents.selected_character
+	if active_char != "" and GlobalEvents.CHARACTERS.has(active_char):
+		var char_data = GlobalEvents.CHARACTERS[active_char]
+		if char_data.has("starting_weapon") and char_data["starting_weapon"] != "":
+			upgrade_character(char_data["starting_weapon"])
+		if char_data.has("icon_color"):
+			sprite.modulate = char_data["icon_color"]
+			
 	attack()
+	apply_stat_modifiers()
 	gui.set_expbar(experience, calculate_experiencecap())
 	gui.set_level_text(experience_level)
 	_on_hurt_box_hurt(0,0,0)
 	GlobalEvents.boss_defeated.connect(_on_boss_defeated)
-	
+	GlobalEvents.enemy_died.connect(_on_enemy_died)
+
 
 func _physics_process(_delta):
 	movement()
@@ -213,6 +217,8 @@ func calculate_experience(gem_exp):
 	# Trigger the first reward menu only if one isn't already showing
 	if (leveled_up or pending_boss_rewards > 0) and not gui.levelPanel.visible and not gui.bossLevelPanel.visible:
 		_show_next_reward()
+	if leveled_up:
+		apply_stat_modifiers()
 	gui.set_expbar(experience, calculate_experiencecap())
 
 func calculate_experiencecap():
@@ -220,7 +226,7 @@ func calculate_experiencecap():
 	if experience_level < 20:
 		exp_cap = experience_level*5
 	elif experience_level < 40:
-		exp_cap += 95 * (experience_level-19)*8
+		exp_cap = 95 + (experience_level-19)*8
 	else:
 		exp_cap = 255 + (experience_level-39)*12
 		
@@ -289,6 +295,7 @@ func apply_stat_modifiers():
 	var xp_range_percent_total = 0.0
 	var movement_speed_percent_total = 0.0
 	regenPerSecond = base_regenPerSecond
+	lifesteal = 0.0
 	
 	for mod in stat_modifiers.values():
 		for stat_name in mod.keys():
@@ -299,8 +306,51 @@ func apply_stat_modifiers():
 				"spell_size": spell_size += mod[stat_name]
 				"additional_attacks": additional_attacks += mod[stat_name]
 				"max_hp_percent": max_hp_percent_total += mod[stat_name]
-				"regen": regenPerSecond = mod[stat_name]
+				"regen": regenPerSecond += mod[stat_name]
 				"xp_range_percent": xp_range_percent_total += mod[stat_name]
+				"lifesteal": lifesteal += mod[stat_name]
+				
+	# Apply character specific stats based on experience_level
+	var active_char = GlobalEvents.selected_character
+	if GlobalEvents.CHARACTERS.has(active_char):
+		var char_data = GlobalEvents.CHARACTERS[active_char]
+		# Base character stats
+		if char_data.has("base_stats"):
+			for stat_name in char_data["base_stats"].keys():
+				var val = char_data["base_stats"][stat_name]
+				match stat_name:
+					"armor": armor += val
+					"movement_speed_percent": movement_speed_percent_total += val
+					"spell_cooldown": spell_cooldown += val
+					"spell_size": spell_size += val
+					"additional_attacks": additional_attacks += val
+					"max_hp_percent": max_hp_percent_total += val
+					"regen": regenPerSecond += val
+					"xp_range_percent": xp_range_percent_total += val
+					"lifesteal": lifesteal += val
+		# Scaled character stats based on levels above 1
+		if char_data.has("level_stats") and experience_level > 1:
+			var lvl_bonus = experience_level - 1
+			for stat_name in char_data["level_stats"].keys():
+				var val = char_data["level_stats"][stat_name] * lvl_bonus
+				# Apply cap if defined
+				if char_data.has("level_stats_cap") and char_data["level_stats_cap"].has(stat_name):
+					var cap = char_data["level_stats_cap"][stat_name]
+					# Support both positive matching cap and negative matching cap
+					if val > 0 and val > cap and cap > 0:
+						val = cap
+					elif val < 0 and val < cap and cap < 0:
+						val = cap
+				match stat_name:
+					"armor": armor += val
+					"movement_speed_percent": movement_speed_percent_total += val
+					"spell_cooldown": spell_cooldown += val
+					"spell_size": spell_size += val
+					"additional_attacks": additional_attacks += val
+					"max_hp_percent": max_hp_percent_total += val
+					"regen": regenPerSecond += val
+					"xp_range_percent": xp_range_percent_total += val
+					"lifesteal": lifesteal += val
 	
 	# Apply movement speed percent bonus
 	movement_speed = base_movement_speed * (1.0 + movement_speed_percent_total)
@@ -450,6 +500,12 @@ func _on_boss_defeated():
 	pending_boss_rewards += 1
 	if not gui.levelPanel.visible and not gui.bossLevelPanel.visible:
 		_show_next_reward()
+
+func _on_enemy_died(_pos: Vector2, _enemy_max_hp: float, _killer: String):
+	if hp > 0 and lifesteal > 0.0:
+		# Heal by lifesteal amount
+		hp = clamp(hp + lifesteal, 0, maxhp)
+		healthBar.value = hp
 
 
 #Debug buttons

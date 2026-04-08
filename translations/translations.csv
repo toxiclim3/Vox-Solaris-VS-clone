@@ -165,7 +165,7 @@ keys,en,ru,ua
 "tips_try_minecraft","Also try Minecraft!","Также попробуйте Minecraft!","Також спробуйте Minecraft!"
 "tips_try_mamasboy","Also try Mama's Boy!","Также попробуйте Mama's Boy!","Також спробуйте Mama's Boy!"
 "tips_box_sleep","After destroying the box 📦 he lays on it #facts","После уничтожения коробки 📦 он лёг на неё #факты","Після знищення коробки 📦 він ляг на неї #факти"
-"tips_green_person","You are green because you can be placed there","Вы зеленый, потому что вас можно туда поставить","Ви зелений, тому що вас можна туди поставити"
+"tips_green_person","You are green 💚 because you can be placed there ✅","Вы зеленый 💚 потому что вас можно туда поставить ✅","Ви зелений 💚 тому що вас можна туди поставити ✅"
 "tips_inspiration","Inspired by Risk of Rain, Brotato, Vampire Survivors, and my friend :)","Вдохновлено Risk of Rain, Brotato, Vampire Survivors и моим другом :)","Натхненно Risk of Rain, Brotato, Vampire Survivors та моїм другом :)"
 "tips_swag","i'm losing my mind but i also happen to be swag","я схожу с ума но я также свэг","я втрачаю глузд але я також свег"
 "ui_audio_tab","Audio","Звук","Звук"
@@ -183,3 +183,9 @@ keys,en,ru,ua
 "ItemDesc_GlassLash2","Increased damage and significantly reduced cooldown.","Увеличенный урон и значительно уменьшенная перезарядка.","Збільшена шкода та значно зменшена перезарядка."
 "ItemDesc_GlassLash3","Further increased damage and reduced cooldown.","Еще больше урона и еще меньше перезарядка.","Ще більше шкоди та ще менша перезарядка."
 "ItemDesc_GlassLash4","Maximum damage. Enemies die in a burst of shards.","Максимальный урон. Враги гибнут во вспышке осколков.","Максимальна шкода. Вороги гинуть у спалаху осколків."
+char_mage,Mage,Маг,Маг
+char_plague_doctor,Plague Doctor,Чумной Доктор,Чумний Лікар
+char_occultist,Occultist,Оккультист,Окультист
+char_mage_desc,Lower Attack Cooldown based on level,Снижение перезарядки атак с уровнем,Зниження перезарядки атак з рівнем
+char_plague_doctor_desc,Bigger Attack Size based on level,Увеличение размера атак с уровнем,Збільшення розміру атак з рівнем
+char_occultist_desc,Gains Lifesteal based on level,Получает кражу здоровья с уровнем,Отримує крадіжку здоров'я з рівнем
