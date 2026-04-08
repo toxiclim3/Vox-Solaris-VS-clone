@@ -2,18 +2,16 @@
 
 [ext_resource type="Texture2D" uid="uid://bb2kcf2xvcy5y" path="res://Textures/GUI/close_x.png" id="1_1t2v0"]
 [ext_resource type="Script" uid="uid://c4q7sllda5x3h" path="res://Utility/settings_menu.gd" id="1_pfsr1"]
+[ext_resource type="StyleBox" uid="uid://pckkvhpg3ymk" path="res://Themes/Shadowpanel.tres" id="2_1rgld"]
 [ext_resource type="Texture2D" uid="uid://cuxlw7m6x5ojn" path="res://Textures/GUI/close_x_hover.png" id="2_pfsr1"]
-[ext_resource type="FontFile" uid="uid://b0s4gbyeyrex1" path="res://Font/OpenSans-Regular.ttf" id="3_56o74"]
 [ext_resource type="Script" uid="uid://cqqhkqs35l5w2" path="res://Utility/texture_button.gd" id="4_56o74"]
 [ext_resource type="Script" uid="uid://djswmy6caitni" path="res://Utility/volume_slider.gd" id="4_wf2ud"]
 [ext_resource type="AudioStream" uid="uid://bwahs2mtjus02" path="res://Audio/GUI/hover.wav" id="5_88pqv"]
 [ext_resource type="AudioStream" uid="uid://dobpqbspunihg" path="res://Audio/GUI/click.wav" id="6_hevq0"]
 [ext_resource type="Theme" uid="uid://bibrcd7ekt5bd" path="res://Themes/RegularText.tres" id="7_hevq0"]
 [ext_resource type="PackedScene" uid="uid://b7c7gsdx2rkjm" path="res://Utility/basic_button.tscn" id="8_bbttn"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_0eg15"]
-font = ExtResource("3_56o74")
-font_size = 10
+[ext_resource type="Theme" uid="uid://dlpshatg4y1v3" path="res://Themes/Buttons_Dark.tres" id="11_ohw6q"]
+[ext_resource type="Theme" path="res://Themes/RegularText_NoShadow.tres" id="12_noshadow"]
 
 [node name="SettingsMenu" type="PanelContainer" unique_id=244721166]
 anchors_preset = 8
@@ -31,16 +29,20 @@ script = ExtResource("1_pfsr1")
 
 [node name="MarginContainer2" type="MarginContainer" parent="." unique_id=2107670659]
 layout_mode = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 16
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer2" unique_id=2087672850]
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer2" unique_id=2087672851]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("2_1rgld")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer2/PanelContainer" unique_id=2087672850]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="CloseSettingsButton" type="TextureButton" parent="MarginContainer2/VBoxContainer" unique_id=1820651584]
+[node name="CloseSettingsButton" type="TextureButton" parent="MarginContainer2/PanelContainer/VBoxContainer" unique_id=1820651584]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
@@ -48,117 +50,117 @@ texture_normal = ExtResource("1_1t2v0")
 texture_hover = ExtResource("2_pfsr1")
 script = ExtResource("4_56o74")
 
-[node name="snd_hover" type="AudioStreamPlayer" parent="MarginContainer2/VBoxContainer/CloseSettingsButton" unique_id=82417648]
+[node name="snd_hover" type="AudioStreamPlayer" parent="MarginContainer2/PanelContainer/VBoxContainer/CloseSettingsButton" unique_id=82417648]
 stream = ExtResource("5_88pqv")
 bus = &"SFX"
 
-[node name="snd_click" type="AudioStreamPlayer" parent="MarginContainer2/VBoxContainer/CloseSettingsButton" unique_id=965219706]
+[node name="snd_click" type="AudioStreamPlayer" parent="MarginContainer2/PanelContainer/VBoxContainer/CloseSettingsButton" unique_id=965219706]
 stream = ExtResource("6_hevq0")
 bus = &"SFX"
 
-[node name="GridContainer" type="GridContainer" parent="MarginContainer2/VBoxContainer" unique_id=1693703925]
+[node name="GridContainer" type="GridContainer" parent="MarginContainer2/PanelContainer/VBoxContainer" unique_id=1693703925]
 layout_mode = 2
 theme_override_constants/h_separation = 16
 theme_override_constants/v_separation = 16
 columns = 2
 
-[node name="Label" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=1895475832]
+[node name="Label" type="Label" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=1895475832]
 layout_mode = 2
-theme = ExtResource("7_hevq0")
+theme = ExtResource("12_noshadow")
 text = "ui_volume"
-label_settings = SubResource("LabelSettings_0eg15")
+vertical_alignment = 1
 
-[node name="HSlider" type="HSlider" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=755617098]
+[node name="HSlider" type="HSlider" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=755617098]
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("4_wf2ud")
 busName = "Master"
 
-[node name="Label2" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=442111478]
+[node name="Label2" type="Label" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=442111478]
 layout_mode = 2
-theme = ExtResource("7_hevq0")
+theme = ExtResource("12_noshadow")
 text = "ui_music"
-label_settings = SubResource("LabelSettings_0eg15")
+vertical_alignment = 1
 
-[node name="HSlider2" type="HSlider" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=1724079725]
+[node name="HSlider2" type="HSlider" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=1724079725]
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("4_wf2ud")
 
-[node name="Label3" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=1478261467]
+[node name="Label3" type="Label" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=1478261467]
 layout_mode = 2
-theme = ExtResource("7_hevq0")
+theme = ExtResource("12_noshadow")
 text = "ui_sfx"
-label_settings = SubResource("LabelSettings_0eg15")
+vertical_alignment = 1
 
-[node name="HSlider3" type="HSlider" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=27236900]
+[node name="HSlider3" type="HSlider" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=27236900]
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("4_wf2ud")
 busName = "SFX"
 
-[node name="Label4" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=647318269]
+[node name="Label4" type="Label" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=647318269]
 layout_mode = 2
-theme = ExtResource("7_hevq0")
+theme = ExtResource("12_noshadow")
 text = "ui_soundProfile"
-label_settings = SubResource("LabelSettings_0eg15")
+vertical_alignment = 1
 
-[node name="ProfileButton" type="OptionButton" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=987216453]
+[node name="ProfileButton" type="OptionButton" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=987216453]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("7_hevq0")
 allow_reselect = true
 
-[node name="MouseControlLabel" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=301824155]
+[node name="MouseControlLabel" type="Label" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=301824155]
 layout_mode = 2
-theme = ExtResource("7_hevq0")
+theme = ExtResource("12_noshadow")
 text = "ui_mouseControl"
-label_settings = SubResource("LabelSettings_0eg15")
+vertical_alignment = 1
 
-[node name="MouseControlButton" type="CheckButton" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=21948712]
+[node name="MouseControlButton" type="CheckButton" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=21948712]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("7_hevq0")
 
-[node name="ScreenShakeLabel" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=40291485]
+[node name="ScreenShakeLabel" type="Label" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=40291485]
 layout_mode = 2
-theme = ExtResource("7_hevq0")
+theme = ExtResource("12_noshadow")
 text = "ui_screenShake"
-label_settings = SubResource("LabelSettings_0eg15")
+vertical_alignment = 1
 
-[node name="ScreenShakeButton" type="CheckButton" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=21948713]
+[node name="ScreenShakeButton" type="CheckButton" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=21948713]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("7_hevq0")
 
-[node name="LanguageLabel" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=1555064727]
+[node name="LanguageLabel" type="Label" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=1555064727]
 layout_mode = 2
-theme = ExtResource("7_hevq0")
+theme = ExtResource("12_noshadow")
 text = "ui_language"
-label_settings = SubResource("LabelSettings_0eg15")
+vertical_alignment = 1
 
-[node name="LanguageButton" type="OptionButton" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=1073290354]
+[node name="LanguageButton" type="OptionButton" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=1073290354]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("7_hevq0")
 
-[node name="btn_reset_stats" parent="MarginContainer2/VBoxContainer" instance=ExtResource("8_bbttn")]
+[node name="btn_reset_stats" parent="MarginContainer2/PanelContainer/VBoxContainer" unique_id=651760695 instance=ExtResource("8_bbttn")]
 layout_mode = 2
 size_flags_horizontal = 4
+theme = ExtResource("11_ohw6q")
 text = "ui_resetStats"
 
-[node name="ConfirmationDialog" type="ConfirmationDialog" parent="."]
+[node name="ConfirmationDialog" type="ConfirmationDialog" parent="." unique_id=1043388006]
 title = "ui_confirmResetTitle"
 initial_position = 2
-size = Vector2i(200, 100)
 dialog_text = "ui_confirmResetText"
 
-[connection signal="mouse_entered" from="MarginContainer2/VBoxContainer/CloseSettingsButton" to="MarginContainer2/VBoxContainer/CloseSettingsButton" method="_on_mouse_entered"]
-[connection signal="pressed" from="MarginContainer2/VBoxContainer/CloseSettingsButton" to="." method="_on_close_settings_button_pressed"]
-[connection signal="pressed" from="MarginContainer2/VBoxContainer/CloseSettingsButton" to="MarginContainer2/VBoxContainer/CloseSettingsButton" method="_on_pressed"]
-[connection signal="click_end" from="MarginContainer2/VBoxContainer/btn_reset_stats" to="." method="_on_btn_reset_stats_click_end"]
+[connection signal="mouse_entered" from="MarginContainer2/PanelContainer/VBoxContainer/CloseSettingsButton" to="MarginContainer2/PanelContainer/VBoxContainer/CloseSettingsButton" method="_on_mouse_entered"]
+[connection signal="pressed" from="MarginContainer2/PanelContainer/VBoxContainer/CloseSettingsButton" to="." method="_on_close_settings_button_pressed"]
+[connection signal="pressed" from="MarginContainer2/PanelContainer/VBoxContainer/CloseSettingsButton" to="MarginContainer2/PanelContainer/VBoxContainer/CloseSettingsButton" method="_on_pressed"]
+[connection signal="click_end" from="MarginContainer2/PanelContainer/VBoxContainer/btn_reset_stats" to="." method="_on_btn_reset_stats_click_end"]
 [connection signal="confirmed" from="ConfirmationDialog" to="." method="_on_confirmation_dialog_confirmed"]

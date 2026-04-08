@@ -74,6 +74,11 @@ modulate_color = Color(0.7, 0.7, 0.7, 1)
 [resource]
 default_font = ExtResource("2_e7fam")
 default_font_size = 10
+Button/colors/font_outline_color = Color(0, 0, 0, 0.37254903)
+Button/colors/font_shadow_color = Color(0, 0, 0, 1)
+Button/constants/outline_size = 2
+Button/constants/shadow_offset_x = 1
+Button/constants/shadow_offset_y = 1
 Button/styles/disabled = SubResource("StyleBoxTexture_disabled")
 Button/styles/focus = SubResource("StyleBoxTexture_focus")
 Button/styles/hover = SubResource("StyleBoxTexture_hover")

@@ -2,8 +2,8 @@
 
 [ext_resource type="Texture2D" uid="uid://bu2son8g2konp" path="res://Textures/Items/Weapons/sword.png" id="1_583l0"]
 [ext_resource type="Script" uid="uid://b01bgp18xbw8a" path="res://Utility/item_option.gd" id="1_script"]
-[ext_resource type="Theme" uid="uid://dg7yl74xayfwi" path="res://Themes/HeaderText.tres" id="2_header"]
-[ext_resource type="Theme" uid="uid://bibrcd7ekt5bd" path="res://Themes/RegularText.tres" id="3_regular"]
+[ext_resource type="Theme" path="res://Themes/HeaderText_NoShadow.tres" id="2_header"]
+[ext_resource type="Theme" path="res://Themes/RegularText_NoShadow.tres" id="3_regular"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r6i4i"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -63,6 +63,7 @@ mouse_filter = 2
 [node name="lbl_level" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1427683332]
 layout_mode = 2
 theme = ExtResource("2_header")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 theme_override_font_sizes/font_size = 12
 text = "item_levelNA"
 vertical_alignment = 1

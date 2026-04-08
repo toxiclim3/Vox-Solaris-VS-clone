@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://bb2kcf2xvcy5y" path="res://Textures/GUI/close_x.png" id="1_1t2v0"]
 [ext_resource type="Script" uid="uid://bckphulljbeag" path="res://Utility/stats_menu.gd" id="1_pfsr1"]
+[ext_resource type="StyleBox" uid="uid://pckkvhpg3ymk" path="res://Themes/Shadowpanel.tres" id="2_5at8i"]
 [ext_resource type="Texture2D" uid="uid://cuxlw7m6x5ojn" path="res://Textures/GUI/close_x_hover.png" id="2_pfsr1"]
 [ext_resource type="FontFile" uid="uid://b0s4gbyeyrex1" path="res://Font/OpenSans-Regular.ttf" id="3_56o74"]
 [ext_resource type="Script" uid="uid://cqqhkqs35l5w2" path="res://Utility/texture_button.gd" id="4_56o74"]
@@ -35,19 +36,23 @@ script = ExtResource("1_pfsr1")
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=2080764673]
 layout_mode = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 16
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1354648853]
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer" unique_id=1537030153]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("2_5at8i")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/PanelContainer" unique_id=1354648853]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="Header" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=965952773]
+[node name="Header" type="HBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer" unique_id=965952773]
 layout_mode = 2
 
-[node name="Title" type="Label" parent="MarginContainer/VBoxContainer/Header" unique_id=139455132]
+[node name="Title" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/Header" unique_id=139455132]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("7_hevq0")
@@ -55,7 +60,7 @@ text = "ui_stats"
 label_settings = SubResource("LabelSettings_0eg15")
 horizontal_alignment = 1
 
-[node name="CloseStatsButton" type="TextureButton" parent="MarginContainer/VBoxContainer/Header" unique_id=1531038381]
+[node name="CloseStatsButton" type="TextureButton" parent="MarginContainer/PanelContainer/VBoxContainer/Header" unique_id=1531038381]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
@@ -63,27 +68,27 @@ texture_normal = ExtResource("1_1t2v0")
 texture_hover = ExtResource("2_pfsr1")
 script = ExtResource("4_56o74")
 
-[node name="snd_hover" type="AudioStreamPlayer" parent="MarginContainer/VBoxContainer/Header/CloseStatsButton" unique_id=1930188114]
+[node name="snd_hover" type="AudioStreamPlayer" parent="MarginContainer/PanelContainer/VBoxContainer/Header/CloseStatsButton" unique_id=1930188114]
 stream = ExtResource("5_88pqv")
 bus = &"SFX"
 
-[node name="snd_click" type="AudioStreamPlayer" parent="MarginContainer/VBoxContainer/Header/CloseStatsButton" unique_id=304441201]
+[node name="snd_click" type="AudioStreamPlayer" parent="MarginContainer/PanelContainer/VBoxContainer/Header/CloseStatsButton" unique_id=304441201]
 stream = ExtResource("6_hevq0")
 bus = &"SFX"
 
-[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer" unique_id=1050715260]
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/PanelContainer/VBoxContainer" unique_id=1050715260]
 layout_mode = 2
 theme_override_constants/h_separation = 24
 theme_override_constants/v_separation = 8
 columns = 2
 
-[node name="lbl_enemy_kills_tag" type="Label" parent="MarginContainer/VBoxContainer/GridContainer" unique_id=220951161]
+[node name="lbl_enemy_kills_tag" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=220951161]
 layout_mode = 2
 theme = ExtResource("7_hevq0")
 text = "stat_enemy_kills"
 label_settings = SubResource("LabelSettings_0eg15")
 
-[node name="lbl_enemy_kills" type="Label" parent="MarginContainer/VBoxContainer/GridContainer" unique_id=487972773]
+[node name="lbl_enemy_kills" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=487972773]
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("7_hevq0")
@@ -91,13 +96,13 @@ text = "0"
 label_settings = SubResource("LabelSettings_0eg15")
 horizontal_alignment = 2
 
-[node name="lbl_boss_kills_tag" type="Label" parent="MarginContainer/VBoxContainer/GridContainer" unique_id=354781294]
+[node name="lbl_boss_kills_tag" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=354781294]
 layout_mode = 2
 theme = ExtResource("7_hevq0")
 text = "stat_boss_kills"
 label_settings = SubResource("LabelSettings_0eg15")
 
-[node name="lbl_boss_kills" type="Label" parent="MarginContainer/VBoxContainer/GridContainer" unique_id=1977229970]
+[node name="lbl_boss_kills" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=1977229970]
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("7_hevq0")
@@ -105,13 +110,13 @@ text = "0"
 label_settings = SubResource("LabelSettings_0eg15")
 horizontal_alignment = 2
 
-[node name="lbl_total_kills_tag" type="Label" parent="MarginContainer/VBoxContainer/GridContainer" unique_id=688670133]
+[node name="lbl_total_kills_tag" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=688670133]
 layout_mode = 2
 theme = ExtResource("7_hevq0")
 text = "stat_total_kills"
 label_settings = SubResource("LabelSettings_0eg15")
 
-[node name="lbl_total_kills" type="Label" parent="MarginContainer/VBoxContainer/GridContainer" unique_id=242136546]
+[node name="lbl_total_kills" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=242136546]
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("7_hevq0")
@@ -119,22 +124,22 @@ text = "0"
 label_settings = SubResource("LabelSettings_0eg15")
 horizontal_alignment = 2
 
-[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/GridContainer" unique_id=108042465]
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=108042465]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/separator = SubResource("StyleBoxLine_cbwmu")
 
-[node name="HSeparator2" type="HSeparator" parent="MarginContainer/VBoxContainer/GridContainer" unique_id=666307418]
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=666307418]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_cbwmu")
 
-[node name="lbl_total_wins_tag" type="Label" parent="MarginContainer/VBoxContainer/GridContainer" unique_id=1456465559]
+[node name="lbl_total_wins_tag" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=1456465559]
 layout_mode = 2
 theme = ExtResource("7_hevq0")
 text = "stat_total_wins"
 label_settings = SubResource("LabelSettings_0eg15")
 
-[node name="lbl_total_wins" type="Label" parent="MarginContainer/VBoxContainer/GridContainer" unique_id=442688791]
+[node name="lbl_total_wins" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=442688791]
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("7_hevq0")
@@ -142,13 +147,13 @@ text = "0"
 label_settings = SubResource("LabelSettings_0eg15")
 horizontal_alignment = 2
 
-[node name="lbl_total_deaths_tag" type="Label" parent="MarginContainer/VBoxContainer/GridContainer" unique_id=1685847755]
+[node name="lbl_total_deaths_tag" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=1685847755]
 layout_mode = 2
 theme = ExtResource("7_hevq0")
 text = "stat_total_deaths"
 label_settings = SubResource("LabelSettings_0eg15")
 
-[node name="lbl_total_deaths" type="Label" parent="MarginContainer/VBoxContainer/GridContainer" unique_id=1196015845]
+[node name="lbl_total_deaths" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=1196015845]
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("7_hevq0")
@@ -156,13 +161,13 @@ text = "0"
 label_settings = SubResource("LabelSettings_0eg15")
 horizontal_alignment = 2
 
-[node name="lbl_win_ratio_tag" type="Label" parent="MarginContainer/VBoxContainer/GridContainer" unique_id=1587940170]
+[node name="lbl_win_ratio_tag" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=1587940170]
 layout_mode = 2
 theme = ExtResource("7_hevq0")
 text = "stat_win_ratio"
 label_settings = SubResource("LabelSettings_0eg15")
 
-[node name="lbl_win_ratio" type="Label" parent="MarginContainer/VBoxContainer/GridContainer" unique_id=390070006]
+[node name="lbl_win_ratio" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=390070006]
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("7_hevq0")
@@ -170,21 +175,21 @@ text = "0%"
 label_settings = SubResource("LabelSettings_0eg15")
 horizontal_alignment = 2
 
-[node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer/GridContainer" unique_id=230025306]
+[node name="HSeparator3" type="HSeparator" parent="MarginContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=230025306]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_cbwmu")
 
-[node name="HSeparator4" type="HSeparator" parent="MarginContainer/VBoxContainer/GridContainer" unique_id=560343308]
+[node name="HSeparator4" type="HSeparator" parent="MarginContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=560343308]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_cbwmu")
 
-[node name="lbl_best_level_tag" type="Label" parent="MarginContainer/VBoxContainer/GridContainer" unique_id=384945429]
+[node name="lbl_best_level_tag" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=384945429]
 layout_mode = 2
 theme = ExtResource("7_hevq0")
 text = "stat_best_level"
 label_settings = SubResource("LabelSettings_0eg15")
 
-[node name="lbl_best_level" type="Label" parent="MarginContainer/VBoxContainer/GridContainer" unique_id=471721807]
+[node name="lbl_best_level" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=471721807]
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("7_hevq0")
@@ -192,13 +197,13 @@ text = "1"
 label_settings = SubResource("LabelSettings_0eg15")
 horizontal_alignment = 2
 
-[node name="lbl_best_time_tag" type="Label" parent="MarginContainer/VBoxContainer/GridContainer" unique_id=505865438]
+[node name="lbl_best_time_tag" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=505865438]
 layout_mode = 2
 theme = ExtResource("7_hevq0")
 text = "stat_best_time"
 label_settings = SubResource("LabelSettings_0eg15")
 
-[node name="lbl_best_time" type="Label" parent="MarginContainer/VBoxContainer/GridContainer" unique_id=644967565]
+[node name="lbl_best_time" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=644967565]
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("7_hevq0")
@@ -206,6 +211,6 @@ text = "00:00"
 label_settings = SubResource("LabelSettings_0eg15")
 horizontal_alignment = 2
 
-[connection signal="mouse_entered" from="MarginContainer/VBoxContainer/Header/CloseStatsButton" to="MarginContainer/VBoxContainer/Header/CloseStatsButton" method="_on_mouse_entered"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Header/CloseStatsButton" to="." method="_on_close_stats_button_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Header/CloseStatsButton" to="MarginContainer/VBoxContainer/Header/CloseStatsButton" method="_on_pressed"]
+[connection signal="mouse_entered" from="MarginContainer/PanelContainer/VBoxContainer/Header/CloseStatsButton" to="MarginContainer/PanelContainer/VBoxContainer/Header/CloseStatsButton" method="_on_mouse_entered"]
+[connection signal="pressed" from="MarginContainer/PanelContainer/VBoxContainer/Header/CloseStatsButton" to="." method="_on_close_stats_button_pressed"]
+[connection signal="pressed" from="MarginContainer/PanelContainer/VBoxContainer/Header/CloseStatsButton" to="MarginContainer/PanelContainer/VBoxContainer/Header/CloseStatsButton" method="_on_pressed"]

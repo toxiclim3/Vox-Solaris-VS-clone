@@ -16,12 +16,14 @@
 [ext_resource type="AudioStream" uid="uid://dncwwdnm7g3n1" path="res://Audio/SoundEffect/win.ogg" id="11_p5o4e"]
 [ext_resource type="PackedScene" uid="uid://b7c7gsdx2rkjm" path="res://Utility/basic_button.tscn" id="12_i8esf"]
 [ext_resource type="AudioStream" uid="uid://dt01f8kjva8hs" path="res://Audio/SoundEffect/magic_crumple2.ogg" id="12_p5o4e"]
-[ext_resource type="Theme" uid="uid://bibrcd7ekt5bd" path="res://Themes/RegularText.tres" id="15_b1ygp"]
 [ext_resource type="Theme" uid="uid://kvmf0od5c6rf" path="res://Themes/DebugButtons.tres" id="15_dkpta"]
 [ext_resource type="Script" uid="uid://eq8qugfbk7vl" path="res://Player/debugmenu.gd" id="15_lfmf2"]
 [ext_resource type="Theme" uid="uid://dg7yl74xayfwi" path="res://Themes/HeaderText.tres" id="15_o28un"]
 [ext_resource type="Theme" path="res://Themes/HeaderText_White.tres" id="16_7emwf"]
+[ext_resource type="Theme" path="res://Themes/HeaderText_NoShadow.tres" id="16_noshadow"]
 [ext_resource type="Theme" uid="uid://dlpshatg4y1v3" path="res://Themes/Buttons_Dark.tres" id="18_hshwv"]
+[ext_resource type="StyleBox" uid="uid://pckkvhpg3ymk" path="res://Themes/Shadowpanel.tres" id="21_8viyr"]
+[ext_resource type="Theme" path="res://Themes/RegularText_NoShadow.tres" id="22_8viyr"]
 [ext_resource type="AudioStream" uid="uid://bthqe0qhx0ik8" path="res://Audio/SoundEffect/Difficulty.wav" id="24_wdifc"]
 [ext_resource type="Script" uid="uid://b8kmo7xmbqafv" path="res://Player/boss_ui.gd" id="boss_ui_script"]
 
@@ -288,7 +290,7 @@ theme_override_constants/separation = 8
 
 [node name="lbl_LevelUP" type="Label" parent="GUILayer/GUI/LevelUp/MarginContainer/VBoxContainer" unique_id=1449850959]
 layout_mode = 2
-theme = ExtResource("15_o28un")
+theme = ExtResource("16_noshadow")
 text = "ui_levelUp"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -336,7 +338,7 @@ theme_override_constants/separation = 8
 
 [node name="lbl_BossReward" type="Label" parent="GUILayer/GUI/BossLevelUp/MarginContainer/VBoxContainer" unique_id=1700000003]
 layout_mode = 2
-theme = ExtResource("15_o28un")
+theme = ExtResource("16_noshadow")
 text = "ui_bossReward"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -570,11 +572,15 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="GUILayer/GUI/PauseMenu/MarginContainer" unique_id=4575288]
+[node name="PanelContainer" type="PanelContainer" parent="GUILayer/GUI/PauseMenu/MarginContainer" unique_id=1549249058]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("21_8viyr")
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer" unique_id=4575288]
 layout_mode = 2
 theme_override_constants/separation = -1
 
-[node name="Label" type="Label" parent="GUILayer/GUI/PauseMenu/MarginContainer/VBoxContainer2" unique_id=96015178]
+[node name="Label" type="Label" parent="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2" unique_id=96015178]
 layout_mode = 2
 size_flags_vertical = 0
 theme = ExtResource("16_7emwf")
@@ -582,50 +588,50 @@ text = "ui_paused"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="filler1" type="Control" parent="GUILayer/GUI/PauseMenu/MarginContainer/VBoxContainer2" unique_id=565688035]
+[node name="filler1" type="Control" parent="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2" unique_id=565688035]
 custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
 
-[node name="lblTips" type="RichTextLabel" parent="GUILayer/GUI/PauseMenu/MarginContainer/VBoxContainer2" unique_id=448275699]
+[node name="lblTips" type="RichTextLabel" parent="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2" unique_id=448275699]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-theme = ExtResource("15_b1ygp")
+theme = ExtResource("22_8viyr")
 text = "tips_runInCircles"
 scroll_active = false
 
-[node name="filler2" type="Control" parent="GUILayer/GUI/PauseMenu/MarginContainer/VBoxContainer2" unique_id=1438850757]
+[node name="filler2" type="Control" parent="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2" unique_id=1438850757]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="GUILayer/GUI/PauseMenu/MarginContainer/VBoxContainer2" unique_id=1158111951]
+[node name="VBoxContainer" type="VBoxContainer" parent="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2" unique_id=1158111951]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="btn_resume_run" parent="GUILayer/GUI/PauseMenu/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=1844249941 instance=ExtResource("12_i8esf")]
+[node name="btn_resume_run" parent="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2/VBoxContainer" unique_id=1844249941 instance=ExtResource("12_i8esf")]
 z_index = 1
 custom_minimum_size = Vector2(96, 24)
 layout_mode = 2
 theme = ExtResource("18_hshwv")
 text = "ui_resumeRun"
 
-[node name="btn_settings" parent="GUILayer/GUI/PauseMenu/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=268518607 instance=ExtResource("12_i8esf")]
+[node name="btn_settings" parent="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2/VBoxContainer" unique_id=268518607 instance=ExtResource("12_i8esf")]
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 theme = ExtResource("18_hshwv")
 text = "ui_settings"
 
-[node name="btn_end_run" parent="GUILayer/GUI/PauseMenu/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=1741874230 instance=ExtResource("12_i8esf")]
+[node name="btn_end_run" parent="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2/VBoxContainer" unique_id=1741874230 instance=ExtResource("12_i8esf")]
 z_index = 1
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 theme = ExtResource("18_hshwv")
 text = "ui_endRun"
 
-[node name="btn_exit_game" parent="GUILayer/GUI/PauseMenu/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=604014048 instance=ExtResource("12_i8esf")]
+[node name="btn_exit_game" parent="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2/VBoxContainer" unique_id=604014048 instance=ExtResource("12_i8esf")]
 z_index = 1
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
@@ -888,10 +894,10 @@ flat = true
 [connection signal="pressed" from="GUILayer/GUI/RemoveItemMenu/btn_close_remove_item" to="GUILayer/GUI" method="_on_btn_close_remove_item_pressed"]
 [connection signal="click_end" from="GUILayer/GUI/DeathPanel/btn_menu" to="GUILayer/GUI" method="_on_btn_menu_click_end"]
 [connection signal="click_end" from="GUILayer/GUI/DeathPanel/btn_restart" to="GUILayer/GUI" method="_on_btn_restart_click_end"]
-[connection signal="click_end" from="GUILayer/GUI/PauseMenu/MarginContainer/VBoxContainer2/VBoxContainer/btn_resume_run" to="GUILayer/GUI" method="_on_btn_resume_run_click_end"]
-[connection signal="click_end" from="GUILayer/GUI/PauseMenu/MarginContainer/VBoxContainer2/VBoxContainer/btn_settings" to="GUILayer/GUI" method="_on_btn_settings_click_end"]
-[connection signal="click_end" from="GUILayer/GUI/PauseMenu/MarginContainer/VBoxContainer2/VBoxContainer/btn_end_run" to="GUILayer/GUI" method="_on_btn_end_run_click_end"]
-[connection signal="click_end" from="GUILayer/GUI/PauseMenu/MarginContainer/VBoxContainer2/VBoxContainer/btn_exit_game" to="GUILayer/GUI" method="_on_btn_exit_game_click_end"]
+[connection signal="click_end" from="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2/VBoxContainer/btn_resume_run" to="GUILayer/GUI" method="_on_btn_resume_run_click_end"]
+[connection signal="click_end" from="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2/VBoxContainer/btn_settings" to="GUILayer/GUI" method="_on_btn_settings_click_end"]
+[connection signal="click_end" from="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2/VBoxContainer/btn_end_run" to="GUILayer/GUI" method="_on_btn_end_run_click_end"]
+[connection signal="click_end" from="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2/VBoxContainer/btn_exit_game" to="GUILayer/GUI" method="_on_btn_exit_game_click_end"]
 [connection signal="settings_closed" from="GUILayer/GUI/SettingsMenu" to="GUILayer/GUI" method="_on_settings_menu_settings_closed"]
 [connection signal="click_end" from="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer/btn_end_run" to="." method="_on_btn_end_run_click_end"]
 [connection signal="click_end" from="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer/btn_exit_game" to="." method="_on_btn_exit_game_click_end"]

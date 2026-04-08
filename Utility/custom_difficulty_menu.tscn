@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://bb2kcf2xvcy5y" path="res://Textures/GUI/close_x.png" id="1_1t2v0"]
 [ext_resource type="Script" uid="uid://2klf2he4qq8a" path="res://Utility/custom_difficulty_menu.gd" id="1_pfsr1"]
 [ext_resource type="Texture2D" uid="uid://cuxlw7m6x5ojn" path="res://Textures/GUI/close_x_hover.png" id="2_pfsr1"]
+[ext_resource type="StyleBox" uid="uid://pckkvhpg3ymk" path="res://Themes/Shadowpanel.tres" id="2_r5yck"]
 [ext_resource type="FontFile" uid="uid://b0s4gbyeyrex1" path="res://Font/OpenSans-Regular.ttf" id="3_56o74"]
 [ext_resource type="Script" uid="uid://cqqhkqs35l5w2" path="res://Utility/texture_button.gd" id="4_56o74"]
 [ext_resource type="AudioStream" uid="uid://bwahs2mtjus02" path="res://Audio/GUI/hover.wav" id="5_88pqv"]
@@ -16,8 +17,6 @@ font = ExtResource("3_56o74")
 font_size = 10
 
 [node name="CustomDifficultyMenu" type="PanelContainer" unique_id=1136300107]
-theme = SubResource("Theme_empty")
-
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -29,6 +28,7 @@ offset_right = 112.0
 offset_bottom = 67.5
 grow_horizontal = 2
 grow_vertical = 2
+theme = SubResource("Theme_empty")
 script = ExtResource("1_pfsr1")
 
 [node name="MarginContainer2" type="MarginContainer" parent="." unique_id=2110427749]
@@ -38,11 +38,15 @@ theme_override_constants/margin_top = 16
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 16
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer2" unique_id=727183799]
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer2" unique_id=1327048636]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("2_r5yck")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer2/PanelContainer" unique_id=727183799]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="CloseSettingsButton" type="TextureButton" parent="MarginContainer2/VBoxContainer" unique_id=264253997]
+[node name="CloseSettingsButton" type="TextureButton" parent="MarginContainer2/PanelContainer/VBoxContainer" unique_id=264253997]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
@@ -50,104 +54,104 @@ texture_normal = ExtResource("1_1t2v0")
 texture_hover = ExtResource("2_pfsr1")
 script = ExtResource("4_56o74")
 
-[node name="snd_hover" type="AudioStreamPlayer" parent="MarginContainer2/VBoxContainer/CloseSettingsButton" unique_id=247122856]
+[node name="snd_hover" type="AudioStreamPlayer" parent="MarginContainer2/PanelContainer/VBoxContainer/CloseSettingsButton" unique_id=247122856]
 stream = ExtResource("5_88pqv")
 bus = &"SFX"
 
-[node name="snd_click" type="AudioStreamPlayer" parent="MarginContainer2/VBoxContainer/CloseSettingsButton" unique_id=813306795]
+[node name="snd_click" type="AudioStreamPlayer" parent="MarginContainer2/PanelContainer/VBoxContainer/CloseSettingsButton" unique_id=813306795]
 stream = ExtResource("6_hevq0")
 bus = &"SFX"
 
-[node name="GridContainer" type="GridContainer" parent="MarginContainer2/VBoxContainer" unique_id=544186067]
+[node name="GridContainer" type="GridContainer" parent="MarginContainer2/PanelContainer/VBoxContainer" unique_id=544186067]
 layout_mode = 2
 theme_override_constants/h_separation = 16
 theme_override_constants/v_separation = 16
 columns = 2
 
-[node name="Label_SpawnRate" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=634265897]
+[node name="Label_SpawnRate" type="Label" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=634265897]
 layout_mode = 2
 theme = ExtResource("7_hevq0")
 text = "ui_enemySpawnRate"
 label_settings = SubResource("LabelSettings_0eg15")
 
-[node name="LineEdit_SpawnRate" type="LineEdit" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=496085791]
+[node name="LineEdit_SpawnRate" type="LineEdit" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=496085791]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("7_hevq0")
 text = "1.0"
 
-[node name="Label_EnemyHP" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=1998528812]
+[node name="Label_EnemyHP" type="Label" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=1998528812]
 layout_mode = 2
 theme = ExtResource("7_hevq0")
 text = "ui_enemyHP"
 label_settings = SubResource("LabelSettings_0eg15")
 
-[node name="LineEdit_EnemyHP" type="LineEdit" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=1424524857]
+[node name="LineEdit_EnemyHP" type="LineEdit" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=1424524857]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("7_hevq0")
 text = "1.0"
 
-[node name="Label_BossHP" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=1610368240]
+[node name="Label_BossHP" type="Label" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=1610368240]
 layout_mode = 2
 theme = ExtResource("7_hevq0")
 text = "ui_bossHP"
 label_settings = SubResource("LabelSettings_0eg15")
 
-[node name="LineEdit_BossHP" type="LineEdit" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=848559769]
+[node name="LineEdit_BossHP" type="LineEdit" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=848559769]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("7_hevq0")
 text = "1.0"
 
-[node name="Label_PlayerDamage" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=1080426627]
+[node name="Label_PlayerDamage" type="Label" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=1080426627]
 layout_mode = 2
 theme = ExtResource("7_hevq0")
 text = "ui_playerDamage"
 label_settings = SubResource("LabelSettings_0eg15")
 
-[node name="LineEdit_PlayerDamage" type="LineEdit" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=20351225]
+[node name="LineEdit_PlayerDamage" type="LineEdit" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=20351225]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("7_hevq0")
 text = "1.0"
 
-[node name="Label_PlayerRegen" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=494723901]
+[node name="Label_PlayerRegen" type="Label" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=494723901]
 layout_mode = 2
 theme = ExtResource("7_hevq0")
 text = "ui_playerRegen"
 label_settings = SubResource("LabelSettings_0eg15")
 
-[node name="LineEdit_PlayerRegen" type="LineEdit" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=2091244320]
+[node name="LineEdit_PlayerRegen" type="LineEdit" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=2091244320]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("7_hevq0")
 text = "1.0"
 
-[node name="Label_XPGain" type="Label" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=439054116]
+[node name="Label_XPGain" type="Label" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=439054116]
 layout_mode = 2
 theme = ExtResource("7_hevq0")
 text = "ui_xpGain"
 label_settings = SubResource("LabelSettings_0eg15")
 
-[node name="LineEdit_XPGain" type="LineEdit" parent="MarginContainer2/VBoxContainer/GridContainer" unique_id=1380939399]
+[node name="LineEdit_XPGain" type="LineEdit" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=1380939399]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("7_hevq0")
 text = "1.0"
 
-[connection signal="mouse_entered" from="MarginContainer2/VBoxContainer/CloseSettingsButton" to="MarginContainer2/VBoxContainer/CloseSettingsButton" method="_on_mouse_entered"]
-[connection signal="pressed" from="MarginContainer2/VBoxContainer/CloseSettingsButton" to="." method="_on_close_settings_button_pressed"]
-[connection signal="pressed" from="MarginContainer2/VBoxContainer/CloseSettingsButton" to="MarginContainer2/VBoxContainer/CloseSettingsButton" method="_on_pressed"]
-[connection signal="text_changed" from="MarginContainer2/VBoxContainer/GridContainer/LineEdit_SpawnRate" to="." method="_on_line_edit_spawn_rate_text_changed"]
-[connection signal="text_changed" from="MarginContainer2/VBoxContainer/GridContainer/LineEdit_EnemyHP" to="." method="_on_line_edit_enemy_hp_text_changed"]
-[connection signal="text_changed" from="MarginContainer2/VBoxContainer/GridContainer/LineEdit_BossHP" to="." method="_on_line_edit_boss_hp_text_changed"]
-[connection signal="text_changed" from="MarginContainer2/VBoxContainer/GridContainer/LineEdit_PlayerDamage" to="." method="_on_line_edit_player_damage_text_changed"]
-[connection signal="text_changed" from="MarginContainer2/VBoxContainer/GridContainer/LineEdit_PlayerRegen" to="." method="_on_line_edit_player_regen_text_changed"]
-[connection signal="text_changed" from="MarginContainer2/VBoxContainer/GridContainer/LineEdit_XPGain" to="." method="_on_line_edit_xp_gain_text_changed"]
+[connection signal="mouse_entered" from="MarginContainer2/PanelContainer/VBoxContainer/CloseSettingsButton" to="MarginContainer2/PanelContainer/VBoxContainer/CloseSettingsButton" method="_on_mouse_entered"]
+[connection signal="pressed" from="MarginContainer2/PanelContainer/VBoxContainer/CloseSettingsButton" to="." method="_on_close_settings_button_pressed"]
+[connection signal="pressed" from="MarginContainer2/PanelContainer/VBoxContainer/CloseSettingsButton" to="MarginContainer2/PanelContainer/VBoxContainer/CloseSettingsButton" method="_on_pressed"]
+[connection signal="text_changed" from="MarginContainer2/PanelContainer/VBoxContainer/GridContainer/LineEdit_SpawnRate" to="." method="_on_line_edit_spawn_rate_text_changed"]
+[connection signal="text_changed" from="MarginContainer2/PanelContainer/VBoxContainer/GridContainer/LineEdit_EnemyHP" to="." method="_on_line_edit_enemy_hp_text_changed"]
+[connection signal="text_changed" from="MarginContainer2/PanelContainer/VBoxContainer/GridContainer/LineEdit_BossHP" to="." method="_on_line_edit_boss_hp_text_changed"]
+[connection signal="text_changed" from="MarginContainer2/PanelContainer/VBoxContainer/GridContainer/LineEdit_PlayerDamage" to="." method="_on_line_edit_player_damage_text_changed"]
+[connection signal="text_changed" from="MarginContainer2/PanelContainer/VBoxContainer/GridContainer/LineEdit_PlayerRegen" to="." method="_on_line_edit_player_regen_text_changed"]
+[connection signal="text_changed" from="MarginContainer2/PanelContainer/VBoxContainer/GridContainer/LineEdit_XPGain" to="." method="_on_line_edit_xp_gain_text_changed"]
