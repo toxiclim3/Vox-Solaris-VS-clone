@@ -1,21 +1,22 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3 uid="uid://bqyefpmrqtpqr"]
 
-[ext_resource type="Script" path="res://Player/Attack/Glasslash/glasslash.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://p77xcp7r5qo2" path="res://Player/Attack/Glasslash/glasslash.gd" id="1_script"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(20, 150)
 
-[node name="Glasslash" type="Area2D" groups=["attack"]]
+[node name="Glasslash" type="Area2D" unique_id=590613504 groups=["attack"]]
 z_index = 2
+scale = Vector2(1, 0.7999995)
 collision_layer = 4
 collision_mask = 0
 script = ExtResource("1_script")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2143801963]
 position = Vector2(0, -75)
 shape = SubResource("RectangleShape2D_1")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="ColorRect" type="ColorRect" parent="." unique_id=615565401]
 offset_left = -2.0
 offset_top = -150.0
 offset_right = 2.0

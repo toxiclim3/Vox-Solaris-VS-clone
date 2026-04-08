@@ -26,10 +26,12 @@ func upgrade(upgrade_id: String):
 			level = 2
 			damage = 45
 			attack_speed = 2.0
+			shards_on_death = true
 		"glasslash3":
 			level = 3
 			damage = 65
 			attack_speed = 1.2
+			shards_on_death = true
 		"glasslash4":
 			level = 4
 			damage = 90

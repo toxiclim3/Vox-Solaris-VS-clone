@@ -24,13 +24,13 @@ func _ready():
 			attack_size = 1.0 * (1 + player.spell_size)
 		2:
 			speed = 225
-			attack_size = 1.1 * (1 + player.spell_size)
+			attack_size = 1.25 * (1 + player.spell_size)
 		3:
 			speed = 225
-			attack_size = 1.1 * (1 + player.spell_size)
+			attack_size = 1.25 * (1 + player.spell_size)
 		4:
 			speed = 225
-			attack_size = 1.1 * (1 + player.spell_size)
+			attack_size = 1.25 * (1 + player.spell_size)
 
 	var tween = create_tween()
 	tween.tween_property(self,"scale",Vector2(1,1)*attack_size,1).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)

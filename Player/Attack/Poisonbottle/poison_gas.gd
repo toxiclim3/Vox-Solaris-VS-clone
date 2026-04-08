@@ -30,7 +30,7 @@ func _ready():
 			slow_amount = 0.20
 			duration = 2.0
 		4:
-			damage = damage + 2.5
+			damage = damage + 5
 			slow_amount = 0.45
 			duration = 3.0
 			min_frame = 11

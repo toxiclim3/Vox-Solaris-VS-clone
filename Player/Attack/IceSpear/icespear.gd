@@ -20,25 +20,25 @@ func _ready():
 		1:
 			hp = 1
 			speed = 150
-			damage = 5
+			damage = 8
 			knockback_amount = 100
 			attack_size = 1.0 * (1 + player.spell_size)
 		2:
 			hp = 2
 			speed = 150
-			damage = 5
+			damage = 8
 			knockback_amount = 100
 			attack_size = 1.0 * (1 + player.spell_size)
 		3:
 			hp = 2
 			speed = 150
-			damage = 8
+			damage = 12
 			knockback_amount = 100
 			attack_size = 1.0 * (1 + player.spell_size)
 		4:
 			hp = 4
 			speed = 150
-			damage = 12
+			damage = 15
 			knockback_amount = 100
 			attack_size = 1.0 * (1 + player.spell_size)
 

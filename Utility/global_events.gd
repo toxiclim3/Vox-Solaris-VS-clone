@@ -35,8 +35,8 @@ const CHARACTERS: Dictionary = {
 		"starting_weapon": "icespear1",
 		"details": "char_mage_desc",
 		"base_stats": {},
-		"level_stats": {"spell_cooldown": -0.01},
-		"level_stats_cap": {"spell_cooldown": -0.30}
+		"level_stats": {"spell_cooldown": -0.005}, # 0.5% cooldown reduction per level
+		"level_stats_cap": {"spell_cooldown": -0.15} # Max 15% CDR
 	},
 	"plague_doctor": {
 		"displayname": "char_plague_doctor",
@@ -45,8 +45,8 @@ const CHARACTERS: Dictionary = {
 		"starting_weapon": "poisonbottle1",
 		"details": "char_plague_doctor_desc",
 		"base_stats": {},
-		"level_stats": {"spell_size": 0.05},
-		"level_stats_cap": {"spell_size": 1.50}
+		"level_stats": {"spell_size": 0.02}, # 2% spell size per level
+		"level_stats_cap": {"spell_size": 0.50} # Max 50% extra size
 	},
 	"occultist": {
 		"displayname": "char_occultist",
@@ -55,8 +55,8 @@ const CHARACTERS: Dictionary = {
 		"starting_weapon": "ritualcircle1",
 		"details": "char_occultist_desc",
 		"base_stats": {},
-		"level_stats": {"lifesteal": 0.05},
-		"level_stats_cap": {"lifesteal": 2.0}
+		"level_stats": {"lifesteal": 0.005}, # 0.005 HP per kill per level (0.05 at level 10)
+		"level_stats_cap": {"lifesteal": 0.20} # Max 0.2 HP per kill
 	}
 }
 

@@ -9,10 +9,14 @@ var last_movement = Vector2.UP
 var hasWon = false
 var time = 0
 var godmode = false
+var loggingEnabled = false
 
 var experience = 0
 var experience_level = 1
 var collected_experience = 0
+var total_collected_experience = 0.0
+var last_minute_total_experience = 0.0
+var last_logged_time = -1
 
 @export var hurtBadThreshold = 0.20
 var hurtBadTriggered = false
@@ -200,7 +204,9 @@ func _on_collect_area_area_entered(area):
 		calculate_experience(gem_exp)
 
 func calculate_experience(gem_exp):
-	collected_experience += (gem_exp * GlobalEvents.get_xp_gain_modifier())
+	var actual_exp = gem_exp * GlobalEvents.get_xp_gain_modifier()
+	collected_experience += actual_exp
+	total_collected_experience += actual_exp
 	var leveled_up = false
 	while true:
 		var exp_required = calculate_experiencecap()
@@ -222,16 +228,24 @@ func calculate_experience(gem_exp):
 	gui.set_expbar(experience, calculate_experiencecap())
 
 func calculate_experiencecap():
-	var exp_cap = experience_level
-	if experience_level < 20:
-		exp_cap = experience_level*5
-	elif experience_level < 40:
-		exp_cap = 95 + (experience_level-19)*8
+	var lvl = experience_level
+	if lvl == 1: return 10
+	elif lvl == 2: return 15
+	elif lvl == 3: return 20
+	elif lvl == 4: return 30
+	elif lvl == 5: return 50
+	elif lvl == 6: return 75
+	elif lvl == 7: return 110
+	elif lvl == 8: return 130
+	elif lvl == 9: return 150
+	elif lvl == 10: return 200
+	elif lvl < 20:
+		# Mid-game: Approx 2 levels/min instead of 1.5 (much smoother than previous +600)
+		return 200 + (lvl - 10) * 250
 	else:
-		exp_cap = 255 + (experience_level-39)*12
-		
-	return exp_cap
-		
+		# Late-game: Approx 1.5 levels/min instead of 1 (reduced steep scaling jump)
+		return 2700 + (lvl - 20) * 400
+
 
 
 ## Shows the next reward in queue (prioritize level-ups, then boss rewards)
@@ -257,7 +271,13 @@ func levelup():
 		var item = get_random_item()
 		if item != null:
 			options_list.append(item)
+		elif not options_list.has("food"):
+			options_list.append("food")
 		options += 1
+		
+	# Fallback if somehow empty
+	if options_list.size() == 0:
+		options_list.append("food")
 		
 	gui.show_levelup(options_list, current_visual_level)
 	get_tree().paused = true
@@ -397,6 +417,7 @@ func upgrade_character(upgrade):
 			if type == "item" and upgrade == "food":
 				hp += upgrade_data["stat_modifiers"]["hp"]
 				hp = clamp(hp, 0, maxhp)
+				healthBar.value = hp
 			else:
 				stat_modifiers[upgrade] = upgrade_data["stat_modifiers"]
 				apply_stat_modifiers()
@@ -475,6 +496,19 @@ func change_time(argtime = 0):
 	time = argtime
 	gui.update_timer(time)
 	
+	if loggingEnabled and time > 0 and time % 30 == 0 and time != last_logged_time:
+		_log_minute_data()
+		last_logged_time = time
+
+func _log_minute_data():
+	var current_second = time
+	var xp_this_interval = total_collected_experience - last_minute_total_experience
+	print("--- SECOND %d ---" % current_second)
+	print("Player Level: %d" % experience_level)
+	print("Total XP: %.2f (Level XP: %.2f / %d)" % [total_collected_experience, experience, calculate_experiencecap()])
+	print("XP this 30s: %.2f" % xp_this_interval)
+	last_minute_total_experience = total_collected_experience
+
 	
 
 
