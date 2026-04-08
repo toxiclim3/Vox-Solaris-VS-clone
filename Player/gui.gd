@@ -62,7 +62,8 @@ var tip_keys = [
 	"tips_try_mamasboy",
 	"tips_box_sleep",
 	"tips_green_person",
-	"tips_inspiration"
+	"tips_inspiration",
+	"tips_swag"
 ]
 
 func set_level_text(level: int) -> void:
