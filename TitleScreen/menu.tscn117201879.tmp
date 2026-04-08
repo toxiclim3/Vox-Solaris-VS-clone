@@ -1,0 +1,183 @@
+[gd_scene format=3 uid="uid://dcyka5e06knff"]
+
+[ext_resource type="Script" uid="uid://dkuevxic02mb7" path="res://TitleScreen/menu.gd" id="1_oi0p3"]
+[ext_resource type="FontFile" uid="uid://b160authcey27" path="res://Font/Palitura-Black.ttf" id="2_6q26e"]
+[ext_resource type="PackedScene" uid="uid://b7c7gsdx2rkjm" path="res://Utility/basic_button.tscn" id="3_kwsdd"]
+[ext_resource type="AudioStream" uid="uid://tien114vt1fv" path="res://Audio/SoundEffect/BackgroundNoise/WE Heavy Outside Rain 1.mp3" id="4_cxswi"]
+[ext_resource type="PackedScene" uid="uid://dyahivqch5l16" path="res://Utility/settings_menu.tscn" id="5_yf0qj"]
+[ext_resource type="PackedScene" uid="uid://c6j2y1p3m6q3y" path="res://Utility/stats_menu.tscn" id="6_stats"]
+[ext_resource type="PackedScene" uid="uid://cxw5k8g4y2f2p" path="res://Utility/custom_difficulty_menu.tscn" id="7_custom"]
+[ext_resource type="PackedScene" uid="uid://dfxw7xjk1r111" path="res://TitleScreen/play_menu.tscn" id="8_play"]
+
+[sub_resource type="Gradient" id="Gradient_t4alp"]
+offsets = PackedFloat32Array(0.11347517)
+colors = PackedColorArray(1, 0.56666666, 0, 0.38431373)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_cxswi"]
+gradient = SubResource("Gradient_t4alp")
+width = 1
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_yf0qj"]
+lifetime_randomness = 0.25
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(320, 1, 1)
+angle_min = -44.99999
+angle_max = 45.00001
+inherit_velocity_ratio = 0.65
+direction = Vector3(0, 1, 0)
+initial_velocity_max = 500.0
+gravity = Vector3(0, 200, 0)
+scale_max = 27.49
+hue_variation_min = -0.050000023
+hue_variation_max = 0.35999995
+turbulence_enabled = true
+turbulence_influence_min = 0.05
+
+[node name="Menu" type="Control" unique_id=1036348158]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_oi0p3")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=459374643]
+clip_children = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.572549, 0.207843, 0.168627, 1)
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="ColorRect" unique_id=959860407]
+position = Vector2(335.5, -33)
+amount = 20
+texture = SubResource("GradientTexture1D_cxswi")
+lifetime = 10.0
+speed_scale = 0.6
+randomness = 1.0
+fract_delta = false
+visibility_rect = Rect2(-320, 45, 640, 360)
+process_material = SubResource("ParticleProcessMaterial_yf0qj")
+
+[node name="Label" type="Label" parent="." unique_id=1550563422]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -320.0
+offset_top = 10.0
+offset_right = 320.0
+offset_bottom = 110.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("2_6q26e")
+theme_override_font_sizes/font_size = 46
+text = "ui_gameTitle"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=1705476647]
+stream = ExtResource("4_cxswi")
+volume_db = -20.0
+autoplay = true
+bus = &"Music"
+parameters/looping = true
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=470872525]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -31.5
+offset_top = -74.0
+offset_right = 31.5
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_bottom = 32
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1196240797]
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="btn_play" parent="MarginContainer/VBoxContainer" unique_id=1214550896 instance=ExtResource("3_kwsdd")]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+text = "ui_play"
+
+[node name="btn_how_to_play" parent="MarginContainer/VBoxContainer" unique_id=964057103 instance=ExtResource("3_kwsdd")]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+disabled = true
+text = "ui_howToPlay"
+
+[node name="btn_settings" parent="MarginContainer/VBoxContainer" unique_id=1384267404 instance=ExtResource("3_kwsdd")]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+text = "ui_settings"
+
+[node name="btn_stats" parent="MarginContainer/VBoxContainer" unique_id=1584267404 instance=ExtResource("3_kwsdd")]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+text = "ui_stats"
+
+[node name="btn_exit" parent="MarginContainer/VBoxContainer" unique_id=487451911 instance=ExtResource("3_kwsdd")]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+text = "ui_exit"
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=980280563]
+
+[node name="SettingsMenu" parent="CanvasLayer" unique_id=244721166 instance=ExtResource("5_yf0qj")]
+unique_name_in_owner = true
+visible = false
+
+[node name="StatsMenu" parent="CanvasLayer" unique_id=344721166 instance=ExtResource("6_stats")]
+unique_name_in_owner = true
+visible = false
+
+[node name="CustomDifficultyMenu" parent="CanvasLayer" unique_id=1392601329 instance=ExtResource("7_custom")]
+unique_name_in_owner = true
+visible = false
+
+[node name="PlayMenu" parent="CanvasLayer" unique_id=457851311 instance=ExtResource("8_play")]
+unique_name_in_owner = true
+visible = false
+
+[node name="VersionLabel" type="Label" parent="." unique_id=1984267404]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -148.0
+offset_top = -30.0
+offset_right = -8.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("2_6q26e")
+theme_override_font_sizes/font_size = 10
+text = "v0.0.0"
+horizontal_alignment = 2
+vertical_alignment = 2
+
+[connection signal="click_end" from="MarginContainer/VBoxContainer/btn_play" to="." method="_on_btn_play_click_end"]
+[connection signal="click_end" from="MarginContainer/VBoxContainer/btn_how_to_play" to="." method="_on_btn_how_to_play_click_end"]
+[connection signal="click_end" from="MarginContainer/VBoxContainer/btn_settings" to="." method="_on_btn_settings_click_end"]
+[connection signal="click_end" from="MarginContainer/VBoxContainer/btn_stats" to="." method="_on_btn_stats_click_end"]
+[connection signal="click_end" from="MarginContainer/VBoxContainer/btn_exit" to="." method="_on_btn_exit_click_end"]
+[connection signal="settings_closed" from="CanvasLayer/SettingsMenu" to="." method="_on_settings_menu_settings_closed"]
+[connection signal="stats_closed" from="CanvasLayer/StatsMenu" to="." method="_on_stats_menu_stats_closed"]
+[connection signal="difficulty_custom_closed" from="CanvasLayer/CustomDifficultyMenu" to="." method="_on_custom_difficulty_menu_closed"]
+[connection signal="edit_custom_requested" from="CanvasLayer/PlayMenu" to="." method="_on_play_menu_edit_custom_requested"]
+[connection signal="play_menu_closed" from="CanvasLayer/PlayMenu" to="." method="_on_play_menu_closed"]
+[connection signal="start_run_requested" from="CanvasLayer/PlayMenu" to="." method="_on_play_menu_start_run_requested"]

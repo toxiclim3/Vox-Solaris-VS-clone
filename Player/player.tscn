@@ -640,13 +640,6 @@ text = "ui_exitGame"
 
 [node name="SettingsMenu" parent="GUILayer/GUI" unique_id=244721166 instance=ExtResource("7_pisgm")]
 visible = false
-z_index = 2
-custom_minimum_size = Vector2(192, 224)
-layout_mode = 1
-offset_left = -96.0
-offset_top = -108.0
-offset_right = 96.0
-offset_bottom = 116.0
 
 [node name="DebugMenu" type="MarginContainer" parent="GUILayer/GUI" unique_id=1500833420]
 z_index = 2
@@ -861,7 +854,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("15_o28un")
+theme = ExtResource("16_noshadow")
 theme_override_colors/font_color = Color(0.541176, 0.121569, 0.0901961, 1)
 theme_override_font_sizes/font_size = 14
 text = "warning_boss_generic"

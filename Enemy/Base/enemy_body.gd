@@ -94,7 +94,7 @@ func _physics_process(delta):
 	elif direction.x < -0.1:
 		sprite.flip_h = false
 
-func death():
+func death(killer_source: String = ""):
 	emit_signal("remove_from_array",self)
 	
 	var enemy_death = death_anim.instantiate()
@@ -115,13 +115,15 @@ func death():
 	if isBoss:
 		GlobalEvents.boss_defeated.emit()
 	
+	GlobalEvents.enemy_died.emit(global_position, max_hp, killer_source)
+	
 	StatsManager.register_kill(isBoss)
 	queue_free()
 
-func _on_hurt_box_hurt(damage, angle, knockback_amount):
+func _on_hurt_box_hurt(damage, angle, knockback_amount, killer_source: String = ""):
 	hp -= (damage * GlobalEvents.get_player_damage_modifier())
 	knockback = angle * knockback_amount
 	if hp <= 0:
-		death()
+		death(killer_source)
 	else:
 		snd_hit.play()

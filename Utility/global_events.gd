@@ -9,6 +9,7 @@ signal boss_spawned(boss: EnemyBody)
 signal show_boss_warning(warning_text_key: String)
 signal queue_boss
 signal camera_shake(intensity: float, duration: float)
+signal enemy_died(death_position: Vector2, enemy_max_hp: float, killer_source: String)
 @warning_ignore_restore("unused_signal")
 
 var boss_warnings: Dictionary = {

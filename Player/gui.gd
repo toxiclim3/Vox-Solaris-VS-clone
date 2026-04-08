@@ -223,8 +223,7 @@ func _ready() -> void:
 	pause_menu.position.x = pause_hidden_x
 	pause_menu.hide()
 	
-	# Прячем настройки за правый край экрана
-	settings_menu.position.x = screen_width + gap
+	# Настройки теперь на отдельном CanvasLayer, позиционирование не требуется
 	settings_menu.hide()
 	setup_give_item_menu()
 	
@@ -279,47 +278,16 @@ func close_pause_menu() -> void:
 	tween.tween_property(pause_menu, "position:x", pause_hidden_x, transition_duration)
 	
 	if settings_menu.visible:
-		var screen_width: float = get_viewport_rect().size.x
-		tween.tween_property(settings_menu, "position:x", screen_width + gap, transition_duration)
-		tween.chain().tween_callback(settings_menu.hide)
+		settings_menu.hide()
 		
 	tween.chain().tween_callback(pause_menu.hide)
 
 
 func open_settings() -> void:
 	settings_menu.show()
-	
-	var screen_width: float = get_viewport_rect().size.x
-	var screen_center_x: float = screen_width / 2.0
-	
-	# 1. Считаем габариты всего визуального блока
-	var total_width: float = pause_menu.size.x + gap + settings_menu.size.x
-	
-	# 2. Находим координату X, откуда этот блок должен начинаться, чтобы быть в центре
-	var group_start_x: float = screen_center_x - (total_width / 2.0)
-	
-	# 3. Распределяем позиции
-	var pause_target_x: float = group_start_x
-	var settings_target_x: float = group_start_x + pause_menu.size.x + gap
-	
-	var tween: Tween = create_tween().set_parallel(true)
-	tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	
-	tween.tween_property(pause_menu, "position:x", pause_target_x, transition_duration)
-	tween.tween_property(settings_menu, "position:x", settings_target_x, transition_duration)
 
 func close_settings() -> void:
-	var tween: Tween = create_tween().set_parallel(true)
-	tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	
-	# Возвращаем меню паузы на его законное место слева
-	tween.tween_property(pause_menu, "position:x", pause_original_x, transition_duration)
-	
-	# Настройки снова улетают вправо за экран
-	var screen_width: float = get_viewport_rect().size.x
-	tween.tween_property(settings_menu, "position:x", screen_width + gap, transition_duration)
-	
-	tween.chain().tween_callback(settings_menu.hide)
+	settings_menu.hide()
 	
 #death menu buttons
 func _on_btn_menu_click_end() -> void:

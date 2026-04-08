@@ -163,6 +163,19 @@ func get_random_target():
 	else:
 		return Vector2.INF
 
+func get_closest_target():
+	if enemy_close.size() > 0:
+		var closest = enemy_close[0]
+		var min_dist = global_position.distance_squared_to(closest.global_position)
+		for enemy in enemy_close:
+			var dist = global_position.distance_squared_to(enemy.global_position)
+			if dist < min_dist:
+				min_dist = dist
+				closest = enemy
+		return closest.global_position
+	else:
+		return Vector2.INF
+
 
 func _on_enemy_detection_area_body_entered(body):
 	if not enemy_close.has(body):
@@ -312,7 +325,8 @@ func upgrade_character(upgrade):
 	
 	var type = upgrade_data["type"]
 	
-	if type == "weapon":
+	# Check if it's a weapon (can be either 'weapon' or 'bossitem' if it has a spawner)
+	if type == "weapon" or (type == "bossitem" and upgrade.begins_with("glasslash")):
 		var base_name = upgrade.rstrip("0123456789")
 		var folder_name = base_name.capitalize()
 		var file_name = base_name

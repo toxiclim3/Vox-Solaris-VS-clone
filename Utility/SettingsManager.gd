@@ -8,6 +8,9 @@ var sound_profile: String = "Full"
 var language: String = "en"
 var mouse_control: bool = false
 var screen_shake: bool = true
+var window_mode: int = 0 # 0: Windowed, 1: Fullscreen, 2: Borderless Maximized
+var vsync: bool = true
+var max_fps: int = 0 # 0 means unlimited
 
 const PROFILES = {
 	"Full": {
@@ -62,6 +65,15 @@ func loadSettings() -> void:
 	if config.has_section("controls"):
 		mouse_control = config.get_value("controls", "mouse_control", false)
 		screen_shake = config.get_value("controls", "screen_shake", true)
+	
+	if config.has_section("display"):
+		window_mode = config.get_value("display", "window_mode", 0)
+		vsync = config.get_value("display", "vsync", true)
+		max_fps = config.get_value("display", "max_fps", 0)
+	
+	apply_window_mode(window_mode)
+	apply_vsync(vsync)
+	apply_max_fps(max_fps)
 
 func set_language(lang: String) -> void:
 	language = lang
@@ -85,6 +97,24 @@ func set_screen_shake(value: bool) -> void:
 	config.set_value("controls", "screen_shake", value)
 	config.save(SAVE_PATH)
 
+func set_window_mode(mode: int) -> void:
+	window_mode = mode
+	config.set_value("display", "window_mode", mode)
+	config.save(SAVE_PATH)
+	apply_window_mode(mode)
+
+func set_vsync(value: bool) -> void:
+	vsync = value
+	config.set_value("display", "vsync", value)
+	config.save(SAVE_PATH)
+	apply_vsync(value)
+
+func set_max_fps(value: int) -> void:
+	max_fps = value
+	config.set_value("display", "max_fps", value)
+	config.save(SAVE_PATH)
+	apply_max_fps(value)
+
 func get_sound_profile_index() -> int:
 	if sound_profile == "Grindfest":
 		return 1
@@ -103,3 +133,24 @@ func applyBusVolume(busName: String, linearValue: float) -> void:
 	if busIndex != -1:
 		AudioServer.set_bus_volume_db(busIndex, linear_to_db(linearValue))
 		AudioServer.set_bus_mute(busIndex, linearValue < 0.01)
+
+func apply_window_mode(mode: int) -> void:
+	match mode:
+		0: # Windowed
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
+		1: # Fullscreen
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)
+		2: # Borderless Maximized
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, true)
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
+
+func apply_vsync(enabled: bool) -> void:
+	if enabled:
+		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
+	else:
+		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
+
+func apply_max_fps(fps: int) -> void:
+	Engine.max_fps = fps

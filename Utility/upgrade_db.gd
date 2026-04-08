@@ -370,7 +370,7 @@ const UPGRADES = {
 	},
 	"ritualcircle1": 
 	{
-		"icon": WEAPON_PATH + "ritual_circle.png", # Placeholder icon
+		"icon": WEAPON_PATH + "ritual_chalk.png",
 		"displayname": "item_ritualcircle",
 		"details": "ItemDesc_RitualCircle1",
 		"level": "item_level1",
@@ -379,7 +379,7 @@ const UPGRADES = {
 	},
 	"ritualcircle2": 
 	{
-		"icon": WEAPON_PATH + "ritual_circle.png",
+		"icon": WEAPON_PATH + "ritual_chalk.png",
 		"displayname": "item_ritualcircle",
 		"details": "ItemDesc_RitualCircle2",
 		"level": "item_level2",
@@ -388,7 +388,7 @@ const UPGRADES = {
 	},
 	"ritualcircle3": 
 	{
-		"icon": WEAPON_PATH + "ritual_circle.png",
+		"icon": WEAPON_PATH + "ritual_chalk.png",
 		"displayname": "item_ritualcircle",
 		"details": "ItemDesc_RitualCircle3",
 		"level": "item_level3",
@@ -397,7 +397,7 @@ const UPGRADES = {
 	},
 	"ritualcircle4": 
 	{
-		"icon": WEAPON_PATH + "ritual_circle.png",
+		"icon": WEAPON_PATH + "ritual_chalk.png",
 		"displayname": "item_ritualcircle",
 		"details": "ItemDesc_RitualCircle4",
 		"level": "item_level4",
@@ -413,5 +413,41 @@ const UPGRADES = {
 		"prerequisite": [],
 		"type": "item",
 		"stat_modifiers": {"hp": 20}
+	},
+	"glasslash1": 
+	{
+		"icon": WEAPON_PATH + "glass_lash.png", # Placeholder
+		"displayname": "item_glasslash",
+		"details": "ItemDesc_GlassLash1",
+		"level": "item_level1",
+		"prerequisite": [],
+		"type": "bossitem"
+	},
+	"glasslash2": 
+	{
+		"icon": WEAPON_PATH + "glass_lash.png",
+		"displayname": "item_glasslash",
+		"details": "ItemDesc_GlassLash2",
+		"level": "item_level2",
+		"prerequisite": ["glasslash1"],
+		"type": "bossitem"
+	},
+	"glasslash3": 
+	{
+		"icon": WEAPON_PATH + "glass_lash.png",
+		"displayname": "item_glasslash",
+		"details": "ItemDesc_GlassLash3",
+		"level": "item_level3",
+		"prerequisite": ["glasslash2"],
+		"type": "bossitem"
+	},
+	"glasslash4": 
+	{
+		"icon": WEAPON_PATH + "glass_lash.png",
+		"displayname": "item_glasslash",
+		"details": "ItemDesc_GlassLash4",
+		"level": "item_level4",
+		"prerequisite": ["glasslash3"],
+		"type": "bossitem"
 	}
 }

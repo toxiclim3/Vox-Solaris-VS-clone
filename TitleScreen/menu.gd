@@ -29,9 +29,9 @@ func _ready():
 	
 	var viewport_size = get_viewport_rect().size
 	
-	# Hide menus at top
-	settings_menu.position.y = -viewport_size.y
+	# Hide menus
 	settings_menu.hide()
+	
 	stats_menu.position.y = -viewport_size.y
 	stats_menu.hide()
 	custom_menu.position.y = -viewport_size.y
@@ -186,42 +186,9 @@ func close_play() -> void:
 
 func open_settings() -> void:
 	settings_menu.show()
-	
-	var screen_size = get_viewport_rect().size
-	var screen_center_x: float = screen_size.x / 2.0
-	var screen_center_y: float = screen_size.y / 2.0
-	
-	# Centering logic (identical to Player/gui.gd)
-	var total_width: float = main_menu_content.size.x + gap + settings_menu.size.x
-	var group_start_x: float = screen_center_x - (total_width / 2.0)
-	
-	var main_target_x: float = group_start_x
-	var settings_target_x: float = group_start_x + main_menu_content.size.x + gap
-	var bottom_y: float = main_menu_content.position.y + main_menu_content.size.y - 32.0
-	var settings_target_y: float = bottom_y - settings_menu.size.y
-	
-	# Initialize settings position for the slide if it's the first time or if it was closed
-	# We want it to slide from the TOP every time
-	settings_menu.position.x = settings_target_x
-	settings_menu.position.y = -settings_menu.size.y - 10
-	
-	var tween: Tween = create_tween().set_parallel(true)
-	tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	
-	tween.tween_property(main_menu_content, "position:x", main_target_x, transition_duration)
-	tween.tween_property(settings_menu, "position:y", settings_target_y, transition_duration)
 
 func close_settings() -> void:
-	var viewport_size = get_viewport_rect().size
-	
-	var tween: Tween = create_tween().set_parallel(true)
-	tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	
-	tween.tween_property(main_menu_content, "position:x", main_menu_original_x, transition_duration)
-	# Slide back to top
-	tween.tween_property(settings_menu, "position:y", -settings_menu.size.y - 50, transition_duration)
-	
-	tween.chain().tween_callback(settings_menu.hide)
+	settings_menu.hide()
 
 func open_stats() -> void:
 	stats_menu.update_stats()

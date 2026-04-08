@@ -1,166 +1,289 @@
 [gd_scene format=3 uid="uid://dyahivqch5l16"]
 
-[ext_resource type="Texture2D" uid="uid://bb2kcf2xvcy5y" path="res://Textures/GUI/close_x.png" id="1_1t2v0"]
-[ext_resource type="Script" uid="uid://c4q7sllda5x3h" path="res://Utility/settings_menu.gd" id="1_pfsr1"]
-[ext_resource type="StyleBox" uid="uid://pckkvhpg3ymk" path="res://Themes/Shadowpanel.tres" id="2_1rgld"]
-[ext_resource type="Texture2D" uid="uid://cuxlw7m6x5ojn" path="res://Textures/GUI/close_x_hover.png" id="2_pfsr1"]
-[ext_resource type="Script" uid="uid://cqqhkqs35l5w2" path="res://Utility/texture_button.gd" id="4_56o74"]
-[ext_resource type="Script" uid="uid://djswmy6caitni" path="res://Utility/volume_slider.gd" id="4_wf2ud"]
-[ext_resource type="AudioStream" uid="uid://bwahs2mtjus02" path="res://Audio/GUI/hover.wav" id="5_88pqv"]
-[ext_resource type="AudioStream" uid="uid://dobpqbspunihg" path="res://Audio/GUI/click.wav" id="6_hevq0"]
-[ext_resource type="Theme" uid="uid://bibrcd7ekt5bd" path="res://Themes/RegularText.tres" id="7_hevq0"]
-[ext_resource type="PackedScene" uid="uid://b7c7gsdx2rkjm" path="res://Utility/basic_button.tscn" id="8_bbttn"]
-[ext_resource type="Theme" uid="uid://dlpshatg4y1v3" path="res://Themes/Buttons_Dark.tres" id="11_ohw6q"]
-[ext_resource type="Theme" path="res://Themes/RegularText_NoShadow.tres" id="12_noshadow"]
+[ext_resource type="Script" uid="uid://c4q7sllda5x3h" path="res://Utility/settings_menu.gd" id="1_script"]
+[ext_resource type="Theme" uid="uid://ds5mdedn440wb" path="res://Themes/NinePatchUI.tres" id="2_theme"]
+[ext_resource type="Theme" uid="uid://bibrcd7ekt5bd" path="res://Themes/RegularText.tres" id="3_regtheme"]
+[ext_resource type="Theme" uid="uid://dg7yl74xayfwi" path="res://Themes/HeaderText.tres" id="4_headtheme"]
+[ext_resource type="Theme" uid="uid://dlpshatg4y1v3" path="res://Themes/Buttons_Dark.tres" id="5_darktheme"]
+[ext_resource type="Script" uid="uid://djswmy6caitni" path="res://Utility/volume_slider.gd" id="6_volscript"]
+[ext_resource type="PackedScene" uid="uid://b7c7gsdx2rkjm" path="res://Utility/basic_button.tscn" id="7_buttonscene"]
+[ext_resource type="StyleBox" uid="uid://pckkvhpg3ymk" path="res://Themes/Shadowpanel.tres" id="8_shadow"]
 
-[node name="SettingsMenu" type="PanelContainer" unique_id=244721166]
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_wf2ud"]
+color = Color(0.35686275, 0.22352941, 0.19607843, 1)
+thickness = 2
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_88pqv"]
+color = Color(0.35686275, 0.22352941, 0.19607843, 1)
+thickness = 2
+vertical = true
+
+[node name="SettingsMenu" type="CanvasLayer" unique_id=1704193115]
+layer = 100
+script = ExtResource("1_script")
+
+[node name="BackgroundDim" type="ColorRect" parent="." unique_id=182289888]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.627451)
+
+[node name="MainPanel" type="PanelContainer" parent="." unique_id=1923730319]
+custom_minimum_size = Vector2(480, 280)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -80.0
-offset_top = -67.5
-offset_right = 112.0
-offset_bottom = 67.5
+offset_left = -240.0
+offset_top = -140.0
+offset_right = 240.0
+offset_bottom = 140.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_pfsr1")
+theme = ExtResource("2_theme")
 
-[node name="MarginContainer2" type="MarginContainer" parent="." unique_id=2107670659]
+[node name="Margin" type="MarginContainer" parent="MainPanel" unique_id=353414255]
 layout_mode = 2
-theme_override_constants/margin_left = 8
+theme_override_constants/margin_left = 12
 theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
+theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 8
 
-[node name="PanelContainer" type="PanelContainer" parent="MarginContainer2" unique_id=2087672851]
+[node name="VBox" type="VBoxContainer" parent="MainPanel/Margin" unique_id=824922950]
 layout_mode = 2
-theme_override_styles/panel = ExtResource("2_1rgld")
+theme_override_constants/separation = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer2/PanelContainer" unique_id=2087672850]
+[node name="Title" type="Label" parent="MainPanel/Margin/VBox" unique_id=866817743]
 layout_mode = 2
-theme_override_constants/separation = 16
+theme = ExtResource("4_headtheme")
+text = "ui_settings"
+horizontal_alignment = 1
 
-[node name="CloseSettingsButton" type="TextureButton" parent="MarginContainer2/PanelContainer/VBoxContainer" unique_id=1820651584]
+[node name="HSeparator" type="HSeparator" parent="MainPanel/Margin/VBox" unique_id=1852061449]
 layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 0
-texture_normal = ExtResource("1_1t2v0")
-texture_hover = ExtResource("2_pfsr1")
-script = ExtResource("4_56o74")
+theme_override_styles/separator = SubResource("StyleBoxLine_wf2ud")
 
-[node name="snd_hover" type="AudioStreamPlayer" parent="MarginContainer2/PanelContainer/VBoxContainer/CloseSettingsButton" unique_id=82417648]
-stream = ExtResource("5_88pqv")
-bus = &"SFX"
-
-[node name="snd_click" type="AudioStreamPlayer" parent="MarginContainer2/PanelContainer/VBoxContainer/CloseSettingsButton" unique_id=965219706]
-stream = ExtResource("6_hevq0")
-bus = &"SFX"
-
-[node name="GridContainer" type="GridContainer" parent="MarginContainer2/PanelContainer/VBoxContainer" unique_id=1693703925]
+[node name="HBox" type="HBoxContainer" parent="MainPanel/Margin/VBox" unique_id=1688844439]
 layout_mode = 2
-theme_override_constants/h_separation = 16
-theme_override_constants/v_separation = 16
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="Tabs" type="VBoxContainer" parent="MainPanel/Margin/VBox/HBox" unique_id=155927672]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="AudioBtn" parent="MainPanel/Margin/VBox/HBox/Tabs" unique_id=1288496451 instance=ExtResource("7_buttonscene")]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("5_darktheme")
+text = "ui_audio_tab"
+
+[node name="GameplayBtn" parent="MainPanel/Margin/VBox/HBox/Tabs" unique_id=1956374565 instance=ExtResource("7_buttonscene")]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("5_darktheme")
+text = "ui_gameplay_tab"
+
+[node name="DisplayBtn" parent="MainPanel/Margin/VBox/HBox/Tabs" unique_id=54777579 instance=ExtResource("7_buttonscene")]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("5_darktheme")
+text = "ui_display_tab"
+
+[node name="VSeparator" type="VSeparator" parent="MainPanel/Margin/VBox/HBox" unique_id=1152327704]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_88pqv")
+
+[node name="Content" type="MarginContainer" parent="MainPanel/Margin/VBox/HBox" unique_id=1611810791]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AudioContentPanel" type="PanelContainer" parent="MainPanel/Margin/VBox/HBox/Content" unique_id=987654321]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/panel = ExtResource("8_shadow")
+
+[node name="AudioContent" type="VBoxContainer" parent="MainPanel/Margin/VBox/HBox/Content/AudioContentPanel" unique_id=1565255054]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Grid" type="GridContainer" parent="MainPanel/Margin/VBox/HBox/Content/AudioContentPanel/AudioContent" unique_id=221519028]
+layout_mode = 2
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 8
 columns = 2
 
-[node name="Label" type="Label" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=1895475832]
+[node name="VolLabel" type="Label" parent="MainPanel/Margin/VBox/HBox/Content/AudioContentPanel/AudioContent/Grid" unique_id=222084959]
 layout_mode = 2
-theme = ExtResource("12_noshadow")
+theme = ExtResource("3_regtheme")
 text = "ui_volume"
-vertical_alignment = 1
 
-[node name="HSlider" type="HSlider" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=755617098]
+[node name="VolSlider" type="HSlider" parent="MainPanel/Margin/VBox/HBox/Content/AudioContentPanel/AudioContent/Grid" unique_id=428032078]
 layout_mode = 2
 size_flags_horizontal = 3
-script = ExtResource("4_wf2ud")
+size_flags_vertical = 4
+script = ExtResource("6_volscript")
 busName = "Master"
 
-[node name="Label2" type="Label" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=442111478]
+[node name="MusicLabel" type="Label" parent="MainPanel/Margin/VBox/HBox/Content/AudioContentPanel/AudioContent/Grid" unique_id=504190477]
 layout_mode = 2
-theme = ExtResource("12_noshadow")
+theme = ExtResource("3_regtheme")
 text = "ui_music"
-vertical_alignment = 1
 
-[node name="HSlider2" type="HSlider" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=1724079725]
+[node name="MusicSlider" type="HSlider" parent="MainPanel/Margin/VBox/HBox/Content/AudioContentPanel/AudioContent/Grid" unique_id=1136382081]
 layout_mode = 2
 size_flags_horizontal = 3
-script = ExtResource("4_wf2ud")
+size_flags_vertical = 4
+script = ExtResource("6_volscript")
 
-[node name="Label3" type="Label" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=1478261467]
+[node name="SFXLabel" type="Label" parent="MainPanel/Margin/VBox/HBox/Content/AudioContentPanel/AudioContent/Grid" unique_id=1741340474]
 layout_mode = 2
-theme = ExtResource("12_noshadow")
+theme = ExtResource("3_regtheme")
 text = "ui_sfx"
-vertical_alignment = 1
 
-[node name="HSlider3" type="HSlider" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=27236900]
+[node name="SFXSlider" type="HSlider" parent="MainPanel/Margin/VBox/HBox/Content/AudioContentPanel/AudioContent/Grid" unique_id=206681474]
 layout_mode = 2
 size_flags_horizontal = 3
-script = ExtResource("4_wf2ud")
+size_flags_vertical = 4
+script = ExtResource("6_volscript")
 busName = "SFX"
 
-[node name="Label4" type="Label" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=647318269]
+[node name="ProfileLabel" type="Label" parent="MainPanel/Margin/VBox/HBox/Content/AudioContentPanel/AudioContent/Grid" unique_id=1217760121]
 layout_mode = 2
-theme = ExtResource("12_noshadow")
+theme = ExtResource("3_regtheme")
 text = "ui_soundProfile"
-vertical_alignment = 1
 
-[node name="ProfileButton" type="OptionButton" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=987216453]
+[node name="ProfileButton" type="OptionButton" parent="MainPanel/Margin/VBox/HBox/Content/AudioContentPanel/AudioContent/Grid" unique_id=120753235]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme = ExtResource("7_hevq0")
-allow_reselect = true
+theme = ExtResource("3_regtheme")
 
-[node name="MouseControlLabel" type="Label" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=301824155]
+[node name="GameplayContentPanel" type="PanelContainer" parent="MainPanel/Margin/VBox/HBox/Content" unique_id=987654322]
+unique_name_in_owner = true
+visible = false
 layout_mode = 2
-theme = ExtResource("12_noshadow")
-text = "ui_mouseControl"
-vertical_alignment = 1
+theme_override_styles/panel = ExtResource("8_shadow")
 
-[node name="MouseControlButton" type="CheckButton" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=21948712]
+[node name="GameplayContent" type="VBoxContainer" parent="MainPanel/Margin/VBox/HBox/Content/GameplayContentPanel" unique_id=1156265939]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("7_hevq0")
+theme_override_constants/separation = 10
 
-[node name="ScreenShakeLabel" type="Label" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=40291485]
+[node name="Grid" type="GridContainer" parent="MainPanel/Margin/VBox/HBox/Content/GameplayContentPanel/GameplayContent" unique_id=688304801]
 layout_mode = 2
-theme = ExtResource("12_noshadow")
-text = "ui_screenShake"
-vertical_alignment = 1
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 8
+columns = 2
 
-[node name="ScreenShakeButton" type="CheckButton" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=21948713]
-unique_name_in_owner = true
+[node name="LangLabel" type="Label" parent="MainPanel/Margin/VBox/HBox/Content/GameplayContentPanel/GameplayContent/Grid" unique_id=640843456]
 layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("7_hevq0")
-
-[node name="LanguageLabel" type="Label" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=1555064727]
-layout_mode = 2
-theme = ExtResource("12_noshadow")
+theme = ExtResource("3_regtheme")
 text = "ui_language"
-vertical_alignment = 1
 
-[node name="LanguageButton" type="OptionButton" parent="MarginContainer2/PanelContainer/VBoxContainer/GridContainer" unique_id=1073290354]
+[node name="LanguageButton" type="OptionButton" parent="MainPanel/Margin/VBox/HBox/Content/GameplayContentPanel/GameplayContent/Grid" unique_id=1233155279]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme = ExtResource("7_hevq0")
+theme = ExtResource("3_regtheme")
 
-[node name="btn_reset_stats" parent="MarginContainer2/PanelContainer/VBoxContainer" unique_id=651760695 instance=ExtResource("8_bbttn")]
+[node name="MouseLabel" type="Label" parent="MainPanel/Margin/VBox/HBox/Content/GameplayContentPanel/GameplayContent/Grid" unique_id=470399578]
+layout_mode = 2
+theme = ExtResource("3_regtheme")
+text = "ui_mouseControl"
+
+[node name="MouseControlButton" type="CheckButton" parent="MainPanel/Margin/VBox/HBox/Content/GameplayContentPanel/GameplayContent/Grid" unique_id=1551057241]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("3_regtheme")
+
+[node name="ShakeLabel" type="Label" parent="MainPanel/Margin/VBox/HBox/Content/GameplayContentPanel/GameplayContent/Grid" unique_id=83608296]
+layout_mode = 2
+theme = ExtResource("3_regtheme")
+text = "ui_screenShake"
+
+[node name="ScreenShakeButton" type="CheckButton" parent="MainPanel/Margin/VBox/HBox/Content/GameplayContentPanel/GameplayContent/Grid" unique_id=623758527]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("3_regtheme")
+
+[node name="Control" type="Control" parent="MainPanel/Margin/VBox/HBox/Content/GameplayContentPanel/GameplayContent" unique_id=1663033104]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="btn_reset_stats" parent="MainPanel/Margin/VBox/HBox/Content/GameplayContentPanel/GameplayContent" unique_id=401716842 instance=ExtResource("7_buttonscene")]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
-theme = ExtResource("11_ohw6q")
+theme = ExtResource("5_darktheme")
 text = "ui_resetStats"
 
-[node name="ConfirmationDialog" type="ConfirmationDialog" parent="." unique_id=1043388006]
+[node name="DisplayContentPanel" type="PanelContainer" parent="MainPanel/Margin/VBox/HBox/Content" unique_id=987654323]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_styles/panel = ExtResource("8_shadow")
+
+[node name="DisplayContent" type="VBoxContainer" parent="MainPanel/Margin/VBox/HBox/Content/DisplayContentPanel" unique_id=378074154]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Grid" type="GridContainer" parent="MainPanel/Margin/VBox/HBox/Content/DisplayContentPanel/DisplayContent" unique_id=474930301]
+layout_mode = 2
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="WindowLabel" type="Label" parent="MainPanel/Margin/VBox/HBox/Content/DisplayContentPanel/DisplayContent/Grid" unique_id=1993742447]
+layout_mode = 2
+theme = ExtResource("3_regtheme")
+text = "ui_window_mode"
+
+[node name="WindowModeButton" type="OptionButton" parent="MainPanel/Margin/VBox/HBox/Content/DisplayContentPanel/DisplayContent/Grid" unique_id=1267344536]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_regtheme")
+
+[node name="VsyncLabel" type="Label" parent="MainPanel/Margin/VBox/HBox/Content/DisplayContentPanel/DisplayContent/Grid" unique_id=957361497]
+layout_mode = 2
+theme = ExtResource("3_regtheme")
+text = "ui_vsync"
+
+[node name="VsyncButton" type="CheckButton" parent="MainPanel/Margin/VBox/HBox/Content/DisplayContentPanel/DisplayContent/Grid" unique_id=1354749974]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("3_regtheme")
+
+[node name="FpsLabel" type="Label" parent="MainPanel/Margin/VBox/HBox/Content/DisplayContentPanel/DisplayContent/Grid" unique_id=1670111515]
+layout_mode = 2
+theme = ExtResource("3_regtheme")
+text = "ui_max_fps"
+
+[node name="MaxFpsButton" type="OptionButton" parent="MainPanel/Margin/VBox/HBox/Content/DisplayContentPanel/DisplayContent/Grid" unique_id=1880206244]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_regtheme")
+
+[node name="Footer" type="HBoxContainer" parent="MainPanel/Margin/VBox" unique_id=10938867]
+layout_mode = 2
+alignment = 2
+
+[node name="CloseSettingsButton" parent="MainPanel/Margin/VBox/Footer" unique_id=673449830 instance=ExtResource("7_buttonscene")]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("5_darktheme")
+text = "ui_close"
+
+[node name="ConfirmationDialog" type="ConfirmationDialog" parent="." unique_id=1456453934]
+unique_name_in_owner = true
 title = "ui_confirmResetTitle"
 initial_position = 2
 dialog_text = "ui_confirmResetText"
-
-[connection signal="mouse_entered" from="MarginContainer2/PanelContainer/VBoxContainer/CloseSettingsButton" to="MarginContainer2/PanelContainer/VBoxContainer/CloseSettingsButton" method="_on_mouse_entered"]
-[connection signal="pressed" from="MarginContainer2/PanelContainer/VBoxContainer/CloseSettingsButton" to="." method="_on_close_settings_button_pressed"]
-[connection signal="pressed" from="MarginContainer2/PanelContainer/VBoxContainer/CloseSettingsButton" to="MarginContainer2/PanelContainer/VBoxContainer/CloseSettingsButton" method="_on_pressed"]
-[connection signal="click_end" from="MarginContainer2/PanelContainer/VBoxContainer/btn_reset_stats" to="." method="_on_btn_reset_stats_click_end"]
-[connection signal="confirmed" from="ConfirmationDialog" to="." method="_on_confirmation_dialog_confirmed"]
