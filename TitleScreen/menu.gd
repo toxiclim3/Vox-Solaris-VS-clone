@@ -7,6 +7,10 @@ var level = "res://World/world.tscn"
 @onready var play_menu = %PlayMenu
 @onready var main_menu_content = %MarginContainer
 @onready var title_label = get_node("Label")
+@onready var btn_play = %btn_play
+@onready var btn_settings = %btn_settings
+@onready var btn_stats = %btn_stats
+@onready var btn_exit = %btn_exit
 
 @export var transition_duration: float = 0.4
 @export var gap: float = 0.5 * 8 * 8
@@ -21,6 +25,8 @@ func _ready():
 	get_tree().paused = false
 	MusicController.setLooping(false)
 	MusicController.playSpecificTrack(MusicController.titleMusic)
+	
+	btn_play.grab_focus()
 	
 	%VersionLabel.text = "v" + str(ProjectSettings.get_setting("application/config/version"))
 	
@@ -56,6 +62,20 @@ func _ready():
 		# Refresh original X after intro to be safe
 		main_menu_original_x = main_menu_content.position.x
 	)
+
+func _input(event):
+	if event.is_action_pressed("ui_cancel"):
+		if is_settings_open:
+			if settings_menu.is_focus_in_content():
+				settings_menu.grab_initial_focus()
+			else:
+				toggle_settings()
+		elif is_stats_open:
+			toggle_stats()
+		elif is_custom_diff_open:
+			toggle_custom_diff()
+		elif is_play_open:
+			toggle_play()
 
 func _on_btn_play_click_end():
 	toggle_play()
@@ -103,6 +123,7 @@ func toggle_settings():
 		open_settings()
 	else:
 		close_settings()
+		btn_settings.call_deferred("grab_focus")
 
 func toggle_stats():
 	if is_settings_open:
@@ -119,6 +140,7 @@ func toggle_stats():
 		open_stats()
 	else:
 		close_stats()
+		btn_stats.call_deferred("grab_focus")
 
 func toggle_custom_diff():
 	if is_settings_open:
@@ -151,10 +173,12 @@ func toggle_play():
 		open_play()
 	else:
 		close_play()
+		btn_play.call_deferred("grab_focus")
 
 func open_play() -> void:
 	play_menu.show()
 	play_menu.update_menu_state()
+	play_menu.grab_initial_focus()
 	
 	var screen_size = get_viewport_rect().size
 	var screen_center_x: float = screen_size.x / 2.0
@@ -186,6 +210,7 @@ func close_play() -> void:
 
 func open_settings() -> void:
 	settings_menu.show()
+	settings_menu.grab_initial_focus()
 
 func close_settings() -> void:
 	settings_menu.hide()
@@ -193,6 +218,7 @@ func close_settings() -> void:
 func open_stats() -> void:
 	stats_menu.update_stats()
 	stats_menu.show()
+	stats_menu.grab_initial_focus()
 	
 	var screen_size = get_viewport_rect().size
 	var screen_center_x: float = screen_size.x / 2.0
@@ -229,6 +255,7 @@ func _on_btn_how_to_play_click_end() -> void:
 
 func open_custom_diff() -> void:
 	custom_menu.show()
+	custom_menu.grab_initial_focus()
 	
 	var screen_size = get_viewport_rect().size
 	var screen_center_x: float = screen_size.x / 2.0

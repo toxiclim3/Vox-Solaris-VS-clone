@@ -43,3 +43,6 @@ func _on_line_edit_player_regen_text_changed(new_text: String) -> void:
 func _on_line_edit_xp_gain_text_changed(new_text: String) -> void:
 	if new_text.is_valid_float():
 		GlobalEvents.custom_xp_gain_modifier = new_text.to_float()
+
+func grab_initial_focus() -> void:
+	%LineEdit_SpawnRate.grab_focus()

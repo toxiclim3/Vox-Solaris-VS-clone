@@ -194,27 +194,32 @@ layout_mode = 2
 theme_override_constants/separation = 8
 
 [node name="btn_play" parent="MarginContainer/VBoxContainer" unique_id=1214550896 instance=ExtResource("3_kwsdd")]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 text = "ui_play"
 
 [node name="btn_how_to_play" parent="MarginContainer/VBoxContainer" unique_id=964057103 instance=ExtResource("3_kwsdd")]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 disabled = true
 text = "ui_howToPlay"
 
 [node name="btn_settings" parent="MarginContainer/VBoxContainer" unique_id=1384267404 instance=ExtResource("3_kwsdd")]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 text = "ui_settings"
 
 [node name="btn_stats" parent="MarginContainer/VBoxContainer" unique_id=1584267404 instance=ExtResource("3_kwsdd")]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 text = "ui_stats"
 
 [node name="btn_exit" parent="MarginContainer/VBoxContainer" unique_id=487451911 instance=ExtResource("3_kwsdd")]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 text = "ui_exit"

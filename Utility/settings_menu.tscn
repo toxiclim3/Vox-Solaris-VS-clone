@@ -124,6 +124,7 @@ theme = ExtResource("3_regtheme")
 text = "ui_volume"
 
 [node name="VolSlider" type="HSlider" parent="MainPanel/Margin/VBox/HBox/Content/AudioContentPanel/AudioContent/Grid" unique_id=428032078]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -136,6 +137,7 @@ theme = ExtResource("3_regtheme")
 text = "ui_music"
 
 [node name="MusicSlider" type="HSlider" parent="MainPanel/Margin/VBox/HBox/Content/AudioContentPanel/AudioContent/Grid" unique_id=1136382081]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -147,6 +149,7 @@ theme = ExtResource("3_regtheme")
 text = "ui_sfx"
 
 [node name="SFXSlider" type="HSlider" parent="MainPanel/Margin/VBox/HBox/Content/AudioContentPanel/AudioContent/Grid" unique_id=206681474]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4

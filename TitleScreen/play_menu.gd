@@ -40,10 +40,13 @@ func _setup_character_grid() -> void:
 		style_btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		style_btn.expand_icon = true
 		style_btn.modulate = char_data.get("icon_color", Color(1, 1, 1))
+		style_btn.theme = preload("res://Themes/Buttons.tres")
 		
 		style_btn.pressed.connect(_on_character_button_pressed.bind(char_id))
 		style_btn.mouse_entered.connect(_on_character_hovered.bind(char_id))
 		style_btn.mouse_exited.connect(_on_character_hover_exited)
+		style_btn.focus_entered.connect(_on_character_hovered.bind(char_id))
+		style_btn.focus_exited.connect(_on_character_hover_exited)
 		
 		character_grid.add_child(style_btn)
 		character_buttons[char_id] = style_btn
@@ -55,6 +58,15 @@ func _setup_character_grid() -> void:
 		GlobalEvents.selected_character = start_char
 		
 	_update_selected_character_visuals(start_char)
+	
+	# Explicitly wire Left/Right internally to bypass overlap/spatial issues inside the grid
+	var chars = character_grid.get_children()
+	for i in range(chars.size()):
+		var btn = chars[i]
+		if i > 0:
+			btn.focus_neighbor_left = btn.get_path_to(chars[i - 1])
+		if i < chars.size() - 1:
+			btn.focus_neighbor_right = btn.get_path_to(chars[i + 1])
 
 func _on_character_button_pressed(char_id: String) -> void:
 	GlobalEvents.selected_character = char_id
@@ -108,3 +120,27 @@ func _on_btn_custom_difficulty_click_end() -> void:
 
 func _on_btn_start_run_click_end() -> void:
 	emit_signal("start_run_requested")
+
+func grab_initial_focus() -> void:
+	if %btn_start_run:
+		%btn_start_run.grab_focus()
+
+func _input(event: InputEvent) -> void:
+	if not visible: return
+	var focus_owner = get_viewport().gui_get_focus_owner()
+	
+	if focus_owner and character_grid and character_grid.is_ancestor_of(focus_owner):
+		if event.is_action_pressed("ui_left"):
+			var idx = focus_owner.get_index()
+			if idx > 0:
+				character_grid.get_child(idx - 1).grab_focus()
+				get_viewport().set_input_as_handled()
+		elif event.is_action_pressed("ui_right"):
+			var idx = focus_owner.get_index()
+			if idx < character_grid.get_child_count() - 1:
+				character_grid.get_child(idx + 1).grab_focus()
+				get_viewport().set_input_as_handled()
+			else:
+				if btn_difficulty:
+					btn_difficulty.grab_focus()
+					get_viewport().set_input_as_handled()

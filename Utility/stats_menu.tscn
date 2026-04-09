@@ -61,11 +61,13 @@ label_settings = SubResource("LabelSettings_0eg15")
 horizontal_alignment = 1
 
 [node name="CloseStatsButton" type="TextureButton" parent="MarginContainer/PanelContainer/VBoxContainer/Header" unique_id=1531038381]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
 texture_normal = ExtResource("1_1t2v0")
 texture_hover = ExtResource("2_pfsr1")
+texture_focused = ExtResource("2_pfsr1")
 script = ExtResource("4_56o74")
 
 [node name="snd_hover" type="AudioStreamPlayer" parent="MarginContainer/PanelContainer/VBoxContainer/Header/CloseStatsButton" unique_id=1930188114]

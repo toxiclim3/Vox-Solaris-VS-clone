@@ -2,7 +2,9 @@
 
 [ext_resource type="Texture2D" uid="uid://bu2son8g2konp" path="res://Textures/Items/Weapons/sword.png" id="1_583l0"]
 [ext_resource type="Script" uid="uid://b01bgp18xbw8a" path="res://Utility/item_option.gd" id="1_script"]
+[ext_resource type="AudioStream" uid="uid://bwahs2mtjus02" path="res://Audio/GUI/hover.wav" id="1_hover"]
 [ext_resource type="Theme" path="res://Themes/HeaderText_NoShadow.tres" id="2_header"]
+[ext_resource type="AudioStream" uid="uid://dobpqbspunihg" path="res://Audio/GUI/click.wav" id="2_click"]
 [ext_resource type="Theme" path="res://Themes/RegularText_NoShadow.tres" id="3_regular"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r6i4i"]
@@ -14,10 +16,29 @@ shadow_offset = Vector2(0, 3)
 [sub_resource type="Theme" id="Theme_empty"]
 PanelContainer/styles/panel = SubResource("StyleBoxFlat_r6i4i")
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_focus"]
+bg_color = Color(1, 1, 1, 0)
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+
 [node name="ItemOption" type="PanelContainer" unique_id=53943087]
 size_flags_horizontal = 3
 theme = SubResource("Theme_empty")
 script = ExtResource("1_script")
+
+[node name="FocusFrame" type="Panel" parent="." unique_id=12345678]
+visible = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_focus")
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=441372501]
 layout_mode = 2
@@ -25,6 +46,14 @@ theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
+
+[node name="snd_hover" type="AudioStreamPlayer" parent="MarginContainer" unique_id=685127909]
+stream = ExtResource("1_hover")
+bus = &"SFX"
+
+[node name="snd_click" type="AudioStreamPlayer" parent="MarginContainer" unique_id=1310888882]
+stream = ExtResource("2_click")
+bus = &"SFX"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=2093371394]
 layout_mode = 2

@@ -24,7 +24,10 @@ signal settings_closed
 enum Languages {en, ru, ua}
 enum Tabs {AUDIO, GAMEPLAY, DISPLAY}
 
+var current_tab_id: int = Tabs.AUDIO
+
 func _ready() -> void:
+	visibility_changed.connect(_on_visibility_changed)
 	# Tab switching
 	audio_btn.click_end.connect(_on_tab_pressed.bind(Tabs.AUDIO))
 	gameplay_btn.click_end.connect(_on_tab_pressed.bind(Tabs.GAMEPLAY))
@@ -88,6 +91,7 @@ func _ready() -> void:
 	confirmation_dialog.confirmed.connect(_on_confirmation_dialog_confirmed)
 
 func _on_tab_pressed(tab: int) -> void:
+	current_tab_id = tab
 	audio_content.visible = (tab == Tabs.AUDIO)
 	gameplay_content.visible = (tab == Tabs.GAMEPLAY)
 	display_content.visible = (tab == Tabs.DISPLAY)
@@ -97,6 +101,36 @@ func _on_tab_pressed(tab: int) -> void:
 	audio_btn.modulate = Color(1,1,1) if tab == Tabs.AUDIO else Color(0.7, 0.7, 0.7)
 	gameplay_btn.modulate = Color(1,1,1) if tab == Tabs.GAMEPLAY else Color(0.7, 0.7, 0.7)
 	display_btn.modulate = Color(1,1,1) if tab == Tabs.DISPLAY else Color(0.7, 0.7, 0.7)
+	
+	# Update focus neighbors
+	_update_focus_neighbors(tab)
+
+func _update_focus_neighbors(tab: int) -> void:
+	var first_item: Control = null
+	var items: Array[Control] = []
+	
+	match tab:
+		Tabs.AUDIO:
+			first_item = %VolSlider
+			items = [%VolSlider, %MusicSlider, %SFXSlider, %ProfileButton]
+		Tabs.GAMEPLAY:
+			first_item = %LanguageButton
+			items = [%LanguageButton, %MouseControlButton, %ScreenShakeButton, %btn_reset_stats]
+		Tabs.DISPLAY:
+			first_item = %WindowModeButton
+			items = [%WindowModeButton, %VsyncButton, %MaxFpsButton]
+	
+	# Current Tab -> Right -> First Item
+	var current_tab_btn: Button = null
+	match tab:
+		Tabs.AUDIO: current_tab_btn = audio_btn
+		Tabs.GAMEPLAY: current_tab_btn = gameplay_btn
+		Tabs.DISPLAY: current_tab_btn = display_btn
+	
+	if current_tab_btn and first_item:
+		current_tab_btn.focus_neighbor_right = current_tab_btn.get_path_to(first_item)
+		for item in items:
+			item.focus_neighbor_left = item.get_path_to(current_tab_btn)
 
 func _on_close_settings_button_pressed() -> void:
 	settings_closed.emit()
@@ -129,3 +163,38 @@ func _on_btn_reset_stats_click_end() -> void:
 
 func _on_confirmation_dialog_confirmed() -> void:
 	StatsManager.reset_stats()
+
+func grab_initial_focus() -> void:
+	if visible:
+		match current_tab_id:
+			Tabs.GAMEPLAY: gameplay_btn.grab_focus()
+			Tabs.DISPLAY: display_btn.grab_focus()
+			Tabs.AUDIO, _: audio_btn.grab_focus()
+
+func is_focus_in_content() -> bool:
+	var focused = get_viewport().gui_get_focus_owner()
+	if focused and focused is Control:
+		if %AudioContentPanel.is_ancestor_of(focused) or %GameplayContentPanel.is_ancestor_of(focused) or %DisplayContentPanel.is_ancestor_of(focused):
+			return true
+	return false
+
+func _on_visibility_changed() -> void:
+	grab_initial_focus()
+
+func _input(event: InputEvent) -> void:
+	if not visible:
+		return
+		
+	var is_cancel = false
+	if event.is_action_pressed("ui_cancel"):
+		is_cancel = true
+	elif event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
+		is_cancel = true
+		
+	if is_cancel:
+		if is_focus_in_content():
+			grab_initial_focus()
+			get_viewport().set_input_as_handled()
+		else:
+			_on_close_settings_button_pressed()
+			get_viewport().set_input_as_handled()

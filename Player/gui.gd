@@ -31,6 +31,8 @@ var titleMenu = "res://TitleScreen/menu.tscn"
 @onready var sndLose = get_node("%snd_lose")
 @onready var sndLevelUp = get_node("%snd_levelup")
 @onready var collectedWeapons = get_node("%CollectedWeapons")
+@onready var btnResume = get_node("PauseMenu/MarginContainer/PanelContainer/VBoxContainer2/VBoxContainer/btn_resume_run")
+@onready var btnSettings = get_node("PauseMenu/MarginContainer/PanelContainer/VBoxContainer2/VBoxContainer/btn_settings")
 @onready var collectedUpgrades = get_node("%CollectedUpgrades")
 @onready var collectedBossItems = get_node("%CollectedBossItems")
 @onready var itemOptions = preload("res://Utility/item_option.tscn")
@@ -136,6 +138,9 @@ func show_levelup(options_list: Array, current_visual_level: int) -> void:
 		var option_choice = itemOptions.instantiate()
 		option_choice.item = item
 		upgradeOptions.add_child(option_choice)
+	
+	if upgradeOptions.get_child_count() > 0:
+		upgradeOptions.get_child(0).grab_focus()
 		
 	# Await process_frame safely inside gui.gd!
 	await get_tree().process_frame
@@ -172,6 +177,9 @@ func show_boss_levelup(options_list: Array) -> void:
 		var option_choice = itemOptions.instantiate()
 		option_choice.item = item
 		bossUpgradeOptions.add_child(option_choice)
+		
+	if bossUpgradeOptions.get_child_count() > 0:
+		bossUpgradeOptions.get_child(0).grab_focus()
 		
 	await get_tree().process_frame
 	var children = bossUpgradeOptions.get_children()
@@ -247,6 +255,14 @@ func _input(event: InputEvent) -> void:
 		
 	if event.is_action_pressed("menu"):
 		toggle_menu()
+	elif event.is_action_pressed("ui_cancel") and pause_menu.visible:
+		if settings_menu.visible:
+			if settings_menu.is_focus_in_content():
+				settings_menu.grab_initial_focus()
+			else:
+				close_settings()
+		else:
+			close_pause_menu()
 		get_viewport().set_input_as_handled()
 
 
@@ -268,6 +284,8 @@ func open_pause_menu() -> void:
 	var tween: Tween = create_tween()
 	tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	tween.tween_property(pause_menu, "position:x", pause_original_x, transition_duration)
+	
+	btnResume.grab_focus()
 
 func close_pause_menu() -> void:
 	get_tree().paused = false
@@ -279,6 +297,7 @@ func close_pause_menu() -> void:
 	
 	if settings_menu.visible:
 		settings_menu.hide()
+		btnSettings.call_deferred("grab_focus")
 		
 	tween.chain().tween_callback(pause_menu.hide)
 
@@ -315,6 +334,7 @@ func _on_btn_settings_click_end() -> void:
 
 func _on_settings_menu_settings_closed() -> void:
 	close_settings()
+	btnSettings.call_deferred("grab_focus")
 
 # Give Item Menu Logic
 func setup_give_item_menu():

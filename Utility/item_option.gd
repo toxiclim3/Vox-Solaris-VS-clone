@@ -4,6 +4,7 @@ extends PanelContainer
 @onready var lblDescription = $MarginContainer/VBoxContainer/HBoxContainer2/lbl_description
 @onready var lblLevel = $MarginContainer/VBoxContainer/HBoxContainer/lbl_level
 @onready var itemIcon = $MarginContainer/VBoxContainer/HBoxContainer/ColorRect/ItemIcon
+@onready var focusFrame = $FocusFrame
 
 var mouse_over = false
 var item = null
@@ -17,7 +18,11 @@ var original_name_font_size: int = -1
 func _ready():
 	connect("mouse_entered", _on_mouse_entered)
 	connect("mouse_exited", _on_mouse_exited)
+	connect("focus_entered", _on_focus_entered)
+	connect("focus_exited", _on_focus_exited)
 	connect("selected_upgrade",Callable(player,"upgrade_character"))
+	
+	focus_mode = FOCUS_ALL
 	if item == null:
 		item = "food"
 	lblName.text = tr(UpgradeDb.UPGRADES[item]["displayname"])
@@ -68,3 +73,20 @@ func _on_mouse_entered():
 
 func _on_mouse_exited():
 	mouse_over = false
+
+func _on_focus_entered():
+	focusFrame.visible = true
+	# Optional: play hover sound if nodes are added
+	if has_node("snd_hover"):
+		get_node("snd_hover").play()
+
+func _on_focus_exited():
+	focusFrame.visible = false
+
+func _gui_input(event):
+	if event.is_action_pressed("ui_accept"):
+		if has_node("snd_click"):
+			var snd = get_node("snd_click")
+			snd.play()
+			await snd.finished
+		emit_signal("selected_upgrade", item)

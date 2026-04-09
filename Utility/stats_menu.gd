@@ -30,3 +30,6 @@ func update_stats() -> void:
 
 func _on_close_stats_button_pressed() -> void:
 	stats_closed.emit()
+
+func grab_initial_focus() -> void:
+	%CloseStatsButton.grab_focus()
