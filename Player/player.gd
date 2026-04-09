@@ -144,7 +144,7 @@ func _on_regen_timer_timeout(): #regens regenPerSecond percent of maxHp every re
 
 
 
-func _on_hurt_box_hurt(damage, _angle, _knockback):
+func _on_hurt_box_hurt(damage, _angle, _knockback, _killer_source = ""):
 	if godmode == false:
 		var actual_damage = clamp(damage-armor, 0.0, 999.0)
 		if actual_damage > 0:

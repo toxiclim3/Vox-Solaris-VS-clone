@@ -77,5 +77,5 @@ func _on_enemy_died(death_pos: Vector2, enemy_max_hp: float, killer_source: Stri
 			var shard = glassshard_scene.instantiate()
 			shard.global_position = death_pos
 			shard.damage = enemy_max_hp * 0.20 # 20% max HP damage
-			shard.direction = Vector2.RIGHT.rotated(randf_range(0, 2 * PI))
-			player.get_parent().add_child(shard)
+			shard.angle = Vector2.RIGHT.rotated(randf_range(0, 2 * PI))
+			player.get_parent().call_deferred("add_child", shard)

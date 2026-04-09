@@ -7,6 +7,8 @@ var angle = Vector2.ZERO # Direction vector for HurtBox
 var start_rotation = 0.0
 var sweep_angle = PI # Total arc size (180 degrees)
 var lifetime = 0.4 # Slightly longer for better visual
+var knockback_amount = 50.0
+var killer_source = "glasslash"
 var timer = 0.0
 
 @onready var player = get_tree().get_first_node_in_group("player")
@@ -40,7 +42,5 @@ func _on_area_entered(area):
 		if area.has_method("temp_disable"):
 			area.temp_disable()
 		
-		# Apply damage with kill attribution
-		if area.owner.has_method("_on_hurt_box_hurt"):
-			var knockback = global_position.direction_to(area.global_position)
-			area.owner._on_hurt_box_hurt(damage, knockback, 50, "glasslash")
+		# Damage is now handled automatically by the HurtBox system using our properties.
+		# This avoids the previous double-damage bug.
