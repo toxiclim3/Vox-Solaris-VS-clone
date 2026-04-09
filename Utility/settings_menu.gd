@@ -100,7 +100,7 @@ func _on_tab_pressed(tab: int) -> void:
 
 func _on_close_settings_button_pressed() -> void:
 	settings_closed.emit()
-	queue_free()
+	hide()
 
 func _on_profile_selected(index: int) -> void:
 	var profiles = ["Full", "Grindfest"]

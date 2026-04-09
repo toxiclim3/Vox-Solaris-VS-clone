@@ -8,31 +8,79 @@
 [ext_resource type="PackedScene" uid="uid://c6j2y1p3m6q3y" path="res://Utility/stats_menu.tscn" id="6_stats"]
 [ext_resource type="PackedScene" uid="uid://cxw5k8g4y2f2p" path="res://Utility/custom_difficulty_menu.tscn" id="7_custom"]
 [ext_resource type="PackedScene" uid="uid://dfxw7xjk1r111" path="res://TitleScreen/play_menu.tscn" id="8_play"]
+[ext_resource type="Script" uid="uid://b31pd6wlfiij0" path="res://TitleScreen/menu_background.gd" id="9_bgscript"]
+[ext_resource type="Texture2D" uid="uid://bscpnrlitm2k4" path="res://Textures/Titlescreen/menu_bg_sky.png" id="10_sky"]
+[ext_resource type="Texture2D" uid="uid://2iavhd581dor" path="res://Textures/Titlescreen/menu_bg_city.png" id="11_city"]
+[ext_resource type="Texture2D" uid="uid://dpx4618wam88q" path="res://Textures/Titlescreen/menu_bg_terrain.png" id="12_terrain"]
+[ext_resource type="Texture2D" uid="uid://cxwqh5hxgccyo" path="res://Textures/Titlescreen/menu_bg_foreground.png" id="13_foreground"]
 
-[sub_resource type="Gradient" id="Gradient_t4alp"]
-offsets = PackedFloat32Array(0.11347517)
-colors = PackedColorArray(1, 0.56666666, 0, 0.38431373)
+[sub_resource type="Gradient" id="FireGrad"]
+offsets = PackedFloat32Array(0, 0.3, 0.7, 1)
+colors = PackedColorArray(1, 0.95, 0.3, 0, 1, 0.65, 0.05, 0.85, 0.9, 0.2, 0, 0.6, 0.15, 0.08, 0, 0)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_cxswi"]
-gradient = SubResource("Gradient_t4alp")
-width = 1
+[sub_resource type="GradientTexture1D" id="FireTex"]
+gradient = SubResource("FireGrad")
+width = 32
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_yf0qj"]
-lifetime_randomness = 0.25
+[sub_resource type="ParticleProcessMaterial" id="FireMaterial"]
+particle_flag_disable_z = true
+emission_shape_scale = Vector3(1.97, 1, 1)
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 10.81
+emission_ring_radius = 50.02
+emission_ring_inner_radius = 0.0
+emission_ring_cone_angle = 90.0
+direction = Vector3(0, -1, 0)
+spread = 18.0
+initial_velocity_min = 30.0
+initial_velocity_max = 80.0
+gravity = Vector3(0, -250, 0)
+scale_min = 3.0
+scale_max = 7.0
+color_ramp = SubResource("FireTex")
+turbulence_enabled = true
+turbulence_noise_scale = 2.5
+turbulence_influence_min = 0.2
+turbulence_influence_max = 0.45
+
+[sub_resource type="Gradient" id="EmberGrad"]
+offsets = PackedFloat32Array(0, 0.6, 1)
+colors = PackedColorArray(1, 0.72, 0.05, 0.9, 1, 0.38, 0.02, 0.55, 1, 0.1, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="EmberTex"]
+gradient = SubResource("EmberGrad")
+width = 16
+
+[sub_resource type="ParticleProcessMaterial" id="EmberMaterial"]
 particle_flag_disable_z = true
 emission_shape = 3
-emission_box_extents = Vector3(320, 1, 1)
-angle_min = -44.99999
-angle_max = 45.00001
-inherit_velocity_ratio = 0.65
-direction = Vector3(0, 1, 0)
-initial_velocity_max = 500.0
-gravity = Vector3(0, 200, 0)
-scale_max = 27.49
-hue_variation_min = -0.050000023
-hue_variation_max = 0.35999995
+emission_box_extents = Vector3(90, 4, 1)
+direction = Vector3(0, -1, 0)
+spread = 28.0
+initial_velocity_min = 18.0
+initial_velocity_max = 55.0
+gravity = Vector3(-12, 0, 0)
+scale_min = 1.5
+scale_max = 3.5
+color_ramp = SubResource("EmberTex")
 turbulence_enabled = true
-turbulence_influence_min = 0.05
+turbulence_noise_scale = 3.0
+turbulence_influence_min = 0.12
+turbulence_influence_max = 0.3
+
+[sub_resource type="ParticleProcessMaterial" id="RainMaterial"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(380, 1, 1)
+direction = Vector3(0.18, 1, 0)
+spread = 0.0
+initial_velocity_min = 320.0
+initial_velocity_max = 420.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.6
+scale_max = 1.2
+color = Color(0.72, 0.78, 0.92, 0.28)
 
 [node name="Menu" type="Control" unique_id=1036348158]
 layout_mode = 3
@@ -43,26 +91,64 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_oi0p3")
 
-[node name="ColorRect" type="ColorRect" parent="." unique_id=459374643]
-clip_children = 2
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.572549, 0.207843, 0.168627, 1)
+[node name="Background" type="Node2D" parent="." unique_id=100000001]
+script = ExtResource("9_bgscript")
 
-[node name="GPUParticles2D" type="GPUParticles2D" parent="ColorRect" unique_id=959860407]
-position = Vector2(335.5, -33)
-amount = 20
-texture = SubResource("GradientTexture1D_cxswi")
-lifetime = 10.0
-speed_scale = 0.6
+[node name="Sky" type="TextureRect" parent="Background" unique_id=100000002]
+custom_minimum_size = Vector2(640, 360)
+texture = ExtResource("10_sky")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="City" type="TextureRect" parent="Background" unique_id=100000003]
+texture = ExtResource("11_city")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Terrain" type="TextureRect" parent="Background" unique_id=100000004]
+texture = ExtResource("12_terrain")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LightningOverlay" type="ColorRect" parent="Background" unique_id=100000006]
+offset_right = 640.0
+offset_bottom = 360.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0)
+
+[node name="FireParticles" type="GPUParticles2D" parent="Background" unique_id=100000008]
+position = Vector2(480.00003, 159.99998)
+rotation = -0.523598
+amount = 35
+lifetime = 1.8
+randomness = 0.6
+fract_delta = false
+visibility_rect = Rect2(-120, -160, 240, 160)
+process_material = SubResource("FireMaterial")
+
+[node name="EmberParticles" type="GPUParticles2D" parent="Background" unique_id=100000009]
+position = Vector2(456, 238)
+amount = 22
+lifetime = 5.0
+speed_scale = 0.7
 randomness = 1.0
 fract_delta = false
-visibility_rect = Rect2(-320, 45, 640, 360)
-process_material = SubResource("ParticleProcessMaterial_yf0qj")
+visibility_rect = Rect2(-200, -320, 400, 320)
+process_material = SubResource("EmberMaterial")
+
+[node name="Foreground" type="TextureRect" parent="Background" unique_id=100000005]
+texture = ExtResource("13_foreground")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="RainParticles" type="GPUParticles2D" parent="Background" unique_id=100000007]
+position = Vector2(320, -2)
+amount = 280
+lifetime = 1.2
+randomness = 0.4
+fract_delta = false
+visibility_rect = Rect2(-360, 0, 720, 380)
+process_material = SubResource("RainMaterial")
 
 [node name="Label" type="Label" parent="." unique_id=1550563422]
 layout_mode = 1
