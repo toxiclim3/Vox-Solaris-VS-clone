@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://pgas12345"]
 
 [ext_resource type="Script" uid="uid://bdukxs430gxo3" path="res://Player/Attack/Poisonbottle/poison_gas.gd" id="1_bdhjd"]
-[ext_resource type="Texture2D" uid="uid://1bnlatquut85" path="res://Textures/Effects/poison_gas_fx.png" id="2_txxbt"]
-[ext_resource type="Script" path="res://Utility/hit_box.gd" id="3_dmgbt"]
+[ext_resource type="Texture2D" uid="uid://c3w5bqdlhh1i0" path="res://Textures/Effects/poison_gas_fx.png" id="2_txxbt"]
+[ext_resource type="Script" uid="uid://w0bei0vicr84" path="res://Utility/hit_box.gd" id="3_dmgbt"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_pgas"]
 radius = 35.0
@@ -18,9 +18,9 @@ script = ExtResource("1_bdhjd")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=37792345]
 texture = ExtResource("2_txxbt")
-hframes = 11
+hframes = 12
 vframes = 9
-frame = 33
+frame = 36
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1029101927]
 shape = SubResource("CircleShape2D_pgas")

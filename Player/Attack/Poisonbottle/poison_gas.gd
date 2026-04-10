@@ -6,8 +6,7 @@ var damage = 2.5
 var slow_amount = 0
 var duration = 2.0
 
-var min_frame = 33
-var max_frame = 43
+var animator: PhasedAnimator
 
 @export var debug_red = false
 
@@ -33,14 +32,21 @@ func _ready():
 			damage = damage + 5
 			slow_amount = 0.45
 			duration = 3.0
-			min_frame = 11
-			max_frame = 21
+	
+	animator = PhasedAnimator.new()
+	add_child(animator)
+	
+	match level:
+		1, 2, 3:
+			animator.setup_variant(3, 0) # Row 3 (Greens)
+		4:
+			animator.setup_variant(1, 1) # Row 1, Column 1 (Index 13 - Purples)
 
 	var tween = create_tween()
 	tween.tween_property(self,"scale",Vector2(1,1)*attack_size,0.2).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
 	tween.play()
 	
-	sprite.frame = min_frame
+	# Initial frame setup handled by animator
 	
 	duration_timer.wait_time = duration
 	duration_timer.start()
@@ -52,10 +58,8 @@ func _ready():
 		sprite.modulate = Color(1.0, 0.0, 0.0, 0.7)
 
 func _on_animation_timer_timeout():
-	if sprite.frame < max_frame:
-		sprite.frame += 1
-	else:
-		sprite.frame = min_frame + 2
+	var is_expiring = duration_timer.time_left < duration_timer.wait_time * 0.2
+	animator.advance(is_expiring)
 
 func _on_pulse_timer_timeout():
 	if damage_box.has_signal("remove_from_array"):

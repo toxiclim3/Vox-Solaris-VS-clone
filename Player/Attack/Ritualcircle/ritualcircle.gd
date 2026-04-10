@@ -12,8 +12,7 @@ var velocity = Vector2.ZERO
 
 var attack_size = 1.0
 
-var min_frame = 11
-var max_frame = 20
+var animator: PhasedAnimator
 
 @onready var player = get_tree().get_first_node_in_group("player")
 @onready var damage_area = $Area2D
@@ -60,8 +59,16 @@ func _ready():
 	# Init UI
 	damage_area.monitoring = false
 	damage_collision.disabled = true
-	sprite.frame = min_frame
-	sprite.visible = false # Only show during Burst
+	animator = PhasedAnimator.new()
+	add_child(animator)
+	# Ritual circle uses Row 1, Column 1 (Index 11) to Row 2, Col 0?
+	# We set total frames to 10 to match the original 11-20 range.
+	animator.setup_variant(1, 1)
+	animator.total_frames = 10
+	animator.loop_start = 4 # Example looping middle
+	animator.loop_end = 6
+	
+	sprite.visible = false 
 	
 	draw_timer.start(1.0)
 
@@ -104,10 +111,11 @@ func get_closest_enemy():
 	return closest
 	
 func _on_animation_timer_timeout():
-	if sprite.frame < max_frame:
-		sprite.frame += 1
-	else:
-		sprite.frame = min_frame
+	if state != State.BURSTING:
+		return
+		
+	var is_expiring = burst_timer.time_left < burst_timer.wait_time * 0.2
+	animator.advance(is_expiring)
 
 func _on_draw_timer_timeout():
 	state = State.BURSTING

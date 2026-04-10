@@ -101,6 +101,10 @@ func _ready():
 				mat.set_shader_parameter("mix_saturation", false)
 				mat.set_shader_parameter("mix_value", false)
 				
+				# Disable hue shift for pure white to preserve original colors (Mage fix)
+				if char_data["icon_color"].r > 0.99 and char_data["icon_color"].g > 0.99 and char_data["icon_color"].b > 0.99:
+					mat.set_shader_parameter("mix_hue", false)
+				
 				# Apply optional shader configurations (e.g., mix_saturation for The Punished)
 				if char_data.has("shader_config"):
 					var config = char_data["shader_config"]

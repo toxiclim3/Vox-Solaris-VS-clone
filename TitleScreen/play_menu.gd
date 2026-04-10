@@ -37,10 +37,14 @@ func _setup_character_grid() -> void:
 			var icon_rect = TextureRect.new()
 			icon_rect.name = "Icon"
 			icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-			icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
-			icon_rect.custom_minimum_size = Vector2(32, 32)
+			icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			# Ensure it stays within the button
 			icon_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			icon_rect.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+			icon_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+			icon_rect.offset_left = 4
+			icon_rect.offset_top = 4
+			icon_rect.offset_right = -4
+			icon_rect.offset_bottom = -4
 			
 			var base_tex = load(char_data["icon"]) as Texture2D
 			if base_tex:
@@ -55,6 +59,10 @@ func _setup_character_grid() -> void:
 			
 			var target_color = char_data.get("icon_color", Color(1, 1, 1))
 			mat.set_shader_parameter("target_color", target_color)
+			
+			# Mage fix: disable hue shift for pure white
+			if target_color.r > 0.99 and target_color.g > 0.99 and target_color.b > 0.99:
+				mat.set_shader_parameter("mix_hue", false)
 			
 			# Apply character-specific shader configs
 			if char_data.has("shader_config"):
