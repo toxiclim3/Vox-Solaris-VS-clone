@@ -17,6 +17,16 @@ func _ready():
 	line_edit_player_regen.text = str(GlobalEvents.custom_player_regen_modifier)
 	line_edit_xp_gain.text = str(GlobalEvents.custom_xp_gain_modifier)
 
+func _input(event: InputEvent) -> void:
+	if not visible: return
+	
+	if event.is_action_pressed("ui_up") or event.is_action_pressed("ui_down") or \
+	   event.is_action_pressed("ui_left") or event.is_action_pressed("ui_right") or \
+	   event.is_action_pressed("ui_focus_next") or event.is_action_pressed("ui_focus_prev"):
+		if get_viewport().gui_get_focus_owner() == null:
+			grab_initial_focus()
+			get_viewport().set_input_as_handled()
+
 func _on_close_settings_button_pressed():
 	emit_signal("difficulty_custom_closed")
 

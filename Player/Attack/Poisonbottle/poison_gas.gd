@@ -66,7 +66,10 @@ func _on_pulse_timer_timeout():
 	damage_box.get_node("CollisionShape2D").set_deferred("disabled", true)
 
 func _on_duration_timer_timeout():
-	queue_free()
+	var tween = create_tween()
+	tween.tween_property(self, "modulate:a", 0.0, 0.4)
+	tween.tween_callback(queue_free)
+	tween.play()
 
 func _on_area_entered(area):
 	if area.name == "HurtBox":

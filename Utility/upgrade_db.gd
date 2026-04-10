@@ -449,5 +449,41 @@ const UPGRADES = {
 		"level": "item_level4",
 		"prerequisite": ["glasslash3"],
 		"type": "bossitem"
+	},
+	"vampireknives1": 
+	{
+		"icon": WEAPON_PATH + "Vampire_Knives.webp",
+		"displayname": "item_vampireknives",
+		"details": "ItemDesc_VampireKnives1",
+		"level": "item_level1",
+		"prerequisite": [],
+		"type": "bossitem"
+	},
+	"vampireknives2": 
+	{
+		"icon": WEAPON_PATH + "Vampire_Knives.webp",
+		"displayname": "item_vampireknives",
+		"details": "ItemDesc_VampireKnives2",
+		"level": "item_level2",
+		"prerequisite": ["vampireknives1"],
+		"type": "bossitem"
+	},
+	"vampireknives3": 
+	{
+		"icon": WEAPON_PATH + "Vampire_Knives.webp",
+		"displayname": "item_vampireknives",
+		"details": "ItemDesc_VampireKnives3",
+		"level": "item_level3",
+		"prerequisite": ["vampireknives2"],
+		"type": "bossitem"
+	},
+	"vampireknives4": 
+	{
+		"icon": WEAPON_PATH + "Vampire_Knives.webp",
+		"displayname": "item_vampireknives",
+		"details": "ItemDesc_VampireKnives4",
+		"level": "item_level4",
+		"prerequisite": ["vampireknives3"],
+		"type": "bossitem"
 	}
 }

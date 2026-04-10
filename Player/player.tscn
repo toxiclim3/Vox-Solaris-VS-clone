@@ -26,6 +26,7 @@
 [ext_resource type="Theme" path="res://Themes/RegularText_NoShadow.tres" id="22_8viyr"]
 [ext_resource type="AudioStream" uid="uid://bthqe0qhx0ik8" path="res://Audio/SoundEffect/Difficulty.wav" id="24_wdifc"]
 [ext_resource type="Script" uid="uid://b8kmo7xmbqafv" path="res://Player/boss_ui.gd" id="boss_ui_script"]
+[ext_resource type="Shader" path="res://Utility/recolor.gdshader" id="recolor_shader"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_dkpta"]
 
@@ -40,6 +41,13 @@ radius = 50.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6vwp8"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_recolor"]
+shader = ExtResource("recolor_shader")
+parameter/target_color = Color(1, 1, 1, 1)
+parameter/mix_hue = true
+parameter/mix_saturation = false
+parameter/mix_value = false
+
 [node name="Player" type="CharacterBody2D" unique_id=1361429612 groups=["player"]]
 motion_mode = 1
 script = ExtResource("1_37q80")
@@ -47,6 +55,7 @@ script = ExtResource("1_37q80")
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1264366194]
 z_index = 1
 texture_filter = 3
+material = SubResource("ShaderMaterial_recolor")
 position = Vector2(-1, 0)
 texture = ExtResource("1_jefax")
 hframes = 2

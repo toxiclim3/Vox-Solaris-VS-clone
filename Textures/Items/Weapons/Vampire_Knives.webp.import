@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://1bnlatquut85"
-path="res://.godot/imported/poison_gas_fx.png-cffe0f2cec40d759449a7c44e30f760e.ctex"
+uid="uid://cnpqx8wdssi7k"
+path="res://.godot/imported/Vampire_Knives.webp-448ab4e021ca8b467d690296d54f830e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Textures/Items/Weapons/poison_gas_fx.png"
-dest_files=["res://.godot/imported/poison_gas_fx.png-cffe0f2cec40d759449a7c44e30f760e.ctex"]
+source_file="res://Textures/Items/Weapons/Vampire_Knives.webp"
+dest_files=["res://.godot/imported/Vampire_Knives.webp-448ab4e021ca8b467d690296d54f830e.ctex"]
 
 [params]
 

@@ -139,8 +139,6 @@ func show_levelup(options_list: Array, current_visual_level: int) -> void:
 		option_choice.item = item
 		upgradeOptions.add_child(option_choice)
 	
-	if upgradeOptions.get_child_count() > 0:
-		upgradeOptions.get_child(0).grab_focus()
 		
 	# Await process_frame safely inside gui.gd!
 	await get_tree().process_frame
@@ -178,8 +176,6 @@ func show_boss_levelup(options_list: Array) -> void:
 		option_choice.item = item
 		bossUpgradeOptions.add_child(option_choice)
 		
-	if bossUpgradeOptions.get_child_count() > 0:
-		bossUpgradeOptions.get_child(0).grab_focus()
 		
 	await get_tree().process_frame
 	var children = bossUpgradeOptions.get_children()
@@ -233,6 +229,7 @@ func _ready() -> void:
 	
 	# Настройки теперь на отдельном CanvasLayer, позиционирование не требуется
 	settings_menu.hide()
+	hide_level_panels()
 	setup_give_item_menu()
 	
 
@@ -264,6 +261,14 @@ func _input(event: InputEvent) -> void:
 		else:
 			close_pause_menu()
 		get_viewport().set_input_as_handled()
+	
+	if event.is_action_pressed("ui_up") or event.is_action_pressed("ui_down") or \
+	   event.is_action_pressed("ui_left") or event.is_action_pressed("ui_right") or \
+	   event.is_action_pressed("ui_focus_next") or event.is_action_pressed("ui_focus_prev"):
+		if get_viewport().gui_get_focus_owner() == null:
+			if levelPanel.visible or bossLevelPanel.visible or pause_menu.visible:
+				_grab_context_focus()
+				get_viewport().set_input_as_handled()
 
 
 func toggle_menu():
@@ -285,7 +290,6 @@ func open_pause_menu() -> void:
 	tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	tween.tween_property(pause_menu, "position:x", pause_original_x, transition_duration)
 	
-	btnResume.grab_focus()
 
 func close_pause_menu() -> void:
 	get_tree().paused = false
@@ -297,7 +301,6 @@ func close_pause_menu() -> void:
 	
 	if settings_menu.visible:
 		settings_menu.hide()
-		btnSettings.call_deferred("grab_focus")
 		
 	tween.chain().tween_callback(pause_menu.hide)
 
@@ -334,7 +337,19 @@ func _on_btn_settings_click_end() -> void:
 
 func _on_settings_menu_settings_closed() -> void:
 	close_settings()
-	btnSettings.call_deferred("grab_focus")
+
+func _grab_context_focus() -> void:
+	if levelPanel.visible:
+		if upgradeOptions.get_child_count() > 0:
+			upgradeOptions.get_child(0).grab_focus()
+	elif bossLevelPanel.visible:
+		if bossUpgradeOptions.get_child_count() > 0:
+			bossUpgradeOptions.get_child(0).grab_focus()
+	elif pause_menu.visible:
+		if settings_menu.visible:
+			settings_menu.grab_initial_focus()
+		else:
+			btnResume.grab_focus()
 
 # Give Item Menu Logic
 func setup_give_item_menu():

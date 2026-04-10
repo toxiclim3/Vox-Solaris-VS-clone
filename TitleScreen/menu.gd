@@ -26,7 +26,6 @@ func _ready():
 	MusicController.setLooping(false)
 	MusicController.playSpecificTrack(MusicController.titleMusic)
 	
-	btn_play.grab_focus()
 	
 	%VersionLabel.text = "v" + str(ProjectSettings.get_setting("application/config/version"))
 	
@@ -76,6 +75,13 @@ func _input(event):
 			toggle_custom_diff()
 		elif is_play_open:
 			toggle_play()
+	
+	if event.is_action_pressed("ui_up") or event.is_action_pressed("ui_down") or \
+	   event.is_action_pressed("ui_left") or event.is_action_pressed("ui_right") or \
+	   event.is_action_pressed("ui_focus_next") or event.is_action_pressed("ui_focus_prev"):
+		if get_viewport().gui_get_focus_owner() == null:
+			_grab_context_focus()
+			get_viewport().set_input_as_handled()
 
 func _on_btn_play_click_end():
 	toggle_play()
@@ -123,7 +129,6 @@ func toggle_settings():
 		open_settings()
 	else:
 		close_settings()
-		btn_settings.call_deferred("grab_focus")
 
 func toggle_stats():
 	if is_settings_open:
@@ -140,7 +145,6 @@ func toggle_stats():
 		open_stats()
 	else:
 		close_stats()
-		btn_stats.call_deferred("grab_focus")
 
 func toggle_custom_diff():
 	if is_settings_open:
@@ -173,12 +177,10 @@ func toggle_play():
 		open_play()
 	else:
 		close_play()
-		btn_play.call_deferred("grab_focus")
 
 func open_play() -> void:
 	play_menu.show()
 	play_menu.update_menu_state()
-	play_menu.grab_initial_focus()
 	
 	var screen_size = get_viewport_rect().size
 	var screen_center_x: float = screen_size.x / 2.0
@@ -210,7 +212,6 @@ func close_play() -> void:
 
 func open_settings() -> void:
 	settings_menu.show()
-	settings_menu.grab_initial_focus()
 
 func close_settings() -> void:
 	settings_menu.hide()
@@ -218,7 +219,6 @@ func close_settings() -> void:
 func open_stats() -> void:
 	stats_menu.update_stats()
 	stats_menu.show()
-	stats_menu.grab_initial_focus()
 	
 	var screen_size = get_viewport_rect().size
 	var screen_center_x: float = screen_size.x / 2.0
@@ -255,7 +255,6 @@ func _on_btn_how_to_play_click_end() -> void:
 
 func open_custom_diff() -> void:
 	custom_menu.show()
-	custom_menu.grab_initial_focus()
 	
 	var screen_size = get_viewport_rect().size
 	var screen_center_x: float = screen_size.x / 2.0
@@ -286,3 +285,15 @@ func close_custom_diff() -> void:
 	tween.tween_property(custom_menu, "position:x", viewport_size.x + custom_menu.size.x + 50, transition_duration)
 	
 	tween.chain().tween_callback(custom_menu.hide)
+
+func _grab_context_focus() -> void:
+	if is_settings_open:
+		settings_menu.grab_initial_focus()
+	elif is_stats_open:
+		stats_menu.grab_initial_focus()
+	elif is_custom_diff_open:
+		custom_menu.grab_initial_focus()
+	elif is_play_open:
+		play_menu.grab_initial_focus()
+	else:
+		btn_play.grab_focus()

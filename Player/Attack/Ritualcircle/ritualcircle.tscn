@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://Player/Attack/Ritualcircle/ritualcircle.gd" id="1_r1tua"]
 [ext_resource type="Script" path="res://Player/Attack/Ritualcircle/ritual_hitbox.gd" id="2_hitbox"]
+[ext_resource type="Texture2D" uid="uid://ddccbbaa" path="res://Textures/Effects/ritual_circle_fx.png" id="3_fx"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_r1tua"]
 radius = 40.0
@@ -9,6 +10,12 @@ radius = 40.0
 [node name="RitualCircle" type="Node2D"]
 z_index = 1
 script = ExtResource("1_r1tua")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=7770001]
+texture = ExtResource("3_fx")
+hframes = 10
+vframes = 9
+frame = 11
 
 [node name="BurstSprite" type="Polygon2D" parent="."]
 visible = false
@@ -32,6 +39,12 @@ one_shot = true
 
 [node name="PulseTimer" type="Timer" parent="."]
 
+[node name="AnimationTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 0.1
+autostart = true
+
 [connection signal="timeout" from="DrawTimer" to="." method="_on_draw_timer_timeout"]
 [connection signal="timeout" from="BurstTimer" to="." method="_on_burst_timer_timeout"]
 [connection signal="timeout" from="PulseTimer" to="." method="_on_pulse_timer_timeout"]
+[connection signal="timeout" from="AnimationTimer" to="." method="_on_animation_timer_timeout"]

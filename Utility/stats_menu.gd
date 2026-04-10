@@ -28,6 +28,16 @@ func update_stats() -> void:
 	var s = time % 60
 	lbl_best_time.text = "%02d:%02d" % [m, s]
 
+func _input(event: InputEvent) -> void:
+	if not visible: return
+	
+	if event.is_action_pressed("ui_up") or event.is_action_pressed("ui_down") or \
+	   event.is_action_pressed("ui_left") or event.is_action_pressed("ui_right") or \
+	   event.is_action_pressed("ui_focus_next") or event.is_action_pressed("ui_focus_prev"):
+		if get_viewport().gui_get_focus_owner() == null:
+			grab_initial_focus()
+			get_viewport().set_input_as_handled()
+
 func _on_close_stats_button_pressed() -> void:
 	stats_closed.emit()
 

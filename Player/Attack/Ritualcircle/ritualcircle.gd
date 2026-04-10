@@ -12,10 +12,13 @@ var velocity = Vector2.ZERO
 
 var attack_size = 1.0
 
+var min_frame = 11
+var max_frame = 20
+
 @onready var player = get_tree().get_first_node_in_group("player")
 @onready var damage_area = $Area2D
 @onready var damage_collision = $Area2D/CollisionShape2D
-@onready var burst_sprite = $BurstSprite
+@onready var sprite = $Sprite2D
 @onready var draw_timer = $DrawTimer
 @onready var burst_timer = $BurstTimer
 @onready var pulse_timer = $PulseTimer
@@ -57,7 +60,8 @@ func _ready():
 	# Init UI
 	damage_area.monitoring = false
 	damage_collision.disabled = true
-	burst_sprite.visible = false
+	sprite.frame = min_frame
+	sprite.visible = false # Only show during Burst
 	
 	draw_timer.start(1.0)
 
@@ -78,7 +82,7 @@ func _physics_process(delta):
 		velocity = velocity.limit_length(current_max_speed)
 	
 	global_position += velocity * delta
-
+	
 	if state == State.DRAWING:
 		queue_redraw()
 
@@ -87,9 +91,6 @@ func _draw():
 		var progress = (1.0 - draw_timer.time_left / draw_timer.wait_time)
 		var angle = progress * PI * 2
 		draw_arc(Vector2.ZERO, 35, 0, angle, 32, Color(0.8, 0.4, 1.0), 3.0)
-	elif state == State.BURSTING:
-		# Draw the circle itself
-		draw_arc(Vector2.ZERO, 40, 0, PI * 2, 64, Color(0.6, 0.2, 0.8), 2.0)
 
 func get_closest_enemy():
 	var enemies = get_tree().get_nodes_in_group("enemy")
@@ -101,35 +102,35 @@ func get_closest_enemy():
 			min_dist = dist
 			closest = enemy
 	return closest
+	
+func _on_animation_timer_timeout():
+	if sprite.frame < max_frame:
+		sprite.frame += 1
+	else:
+		sprite.frame = min_frame
 
 func _on_draw_timer_timeout():
 	state = State.BURSTING
-	queue_redraw()
 	damage_area.set_deferred("monitoring", true)
-	# We keep the collision disabled initially and only enable it during the pulse.
 	damage_collision.set_deferred("disabled", true)
-	burst_sprite.visible = true
+	
+	# Transition to Spritesheet Burst
+	sprite.visible = true
+	sprite.modulate.a = 1.0
+	
 	burst_timer.start(duration)
 	pulse_timer.start(0.5)
 	
-	# Trigger the first pulse immediately
 	_on_pulse_timer_timeout()
-	
-	# Burst animation
-	var tween = create_tween()
-	tween.tween_property(burst_sprite, "scale", Vector2.ONE, 0.2).from(Vector2.ZERO).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
-	tween.play()
 
 func _on_pulse_timer_timeout():
 	if state != State.BURSTING:
 		pulse_timer.stop()
 		return
 	
-	# Clear the hit list for the next pulse
 	if damage_area.has_signal("remove_from_array"):
 		damage_area.emit_signal("remove_from_array", damage_area)
 	
-	# Momentarily enable the collision to deal damage at the exact pulse time
 	damage_collision.set_deferred("disabled", false)
 	await get_tree().create_timer(0.05).timeout
 	damage_collision.set_deferred("disabled", true)

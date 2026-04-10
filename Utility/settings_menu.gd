@@ -179,11 +179,18 @@ func is_focus_in_content() -> bool:
 	return false
 
 func _on_visibility_changed() -> void:
-	grab_initial_focus()
+	pass
 
 func _input(event: InputEvent) -> void:
 	if not visible:
 		return
+		
+	if event.is_action_pressed("ui_up") or event.is_action_pressed("ui_down") or \
+	   event.is_action_pressed("ui_left") or event.is_action_pressed("ui_right") or \
+	   event.is_action_pressed("ui_focus_next") or event.is_action_pressed("ui_focus_prev"):
+		if get_viewport().gui_get_focus_owner() == null:
+			grab_initial_focus()
+			get_viewport().set_input_as_handled()
 		
 	var is_cancel = false
 	if event.is_action_pressed("ui_cancel"):

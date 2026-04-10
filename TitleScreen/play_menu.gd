@@ -27,20 +27,46 @@ func _setup_character_grid() -> void:
 		var style_btn = Button.new()
 		style_btn.custom_minimum_size = Vector2(40, 40)
 		
+		style_btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		style_btn.expand_icon = true
+		style_btn.theme = preload("res://Themes/Buttons.tres")
+
+		# Use a child TextureRect for the icon so we can apply the recolor shader 
+		# without affecting the button's background/border.
 		if char_data.has("icon"):
+			var icon_rect = TextureRect.new()
+			icon_rect.name = "Icon"
+			icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
+			icon_rect.custom_minimum_size = Vector2(32, 32)
+			icon_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			icon_rect.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+			
 			var base_tex = load(char_data["icon"]) as Texture2D
 			if base_tex:
 				var atlas = AtlasTexture.new()
 				atlas.atlas = base_tex
-				# hframes = 2, frame = 1
 				var frame_width = base_tex.get_width() / 2
 				atlas.region = Rect2(frame_width, 0, frame_width, base_tex.get_height())
-				style_btn.icon = atlas
+				icon_rect.texture = atlas
 				
-		style_btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		style_btn.expand_icon = true
-		style_btn.modulate = char_data.get("icon_color", Color(1, 1, 1))
-		style_btn.theme = preload("res://Themes/Buttons.tres")
+			var mat = ShaderMaterial.new()
+			mat.shader = load("res://Utility/recolor.gdshader")
+			
+			var target_color = char_data.get("icon_color", Color(1, 1, 1))
+			mat.set_shader_parameter("target_color", target_color)
+			
+			# Apply character-specific shader configs
+			if char_data.has("shader_config"):
+				var config = char_data["shader_config"]
+				for key in config:
+					mat.set_shader_parameter(key, config[key])
+					
+			icon_rect.material = mat
+			style_btn.add_child(icon_rect)
+			
+			# Clear the standard icon
+			style_btn.icon = null
 		
 		style_btn.pressed.connect(_on_character_button_pressed.bind(char_id))
 		style_btn.mouse_entered.connect(_on_character_hovered.bind(char_id))
@@ -127,6 +153,15 @@ func grab_initial_focus() -> void:
 
 func _input(event: InputEvent) -> void:
 	if not visible: return
+	
+	if event.is_action_pressed("ui_up") or event.is_action_pressed("ui_down") or \
+	   event.is_action_pressed("ui_left") or event.is_action_pressed("ui_right") or \
+	   event.is_action_pressed("ui_focus_next") or event.is_action_pressed("ui_focus_prev"):
+		if get_viewport().gui_get_focus_owner() == null:
+			grab_initial_focus()
+			get_viewport().set_input_as_handled()
+			return
+
 	var focus_owner = get_viewport().gui_get_focus_owner()
 	
 	if focus_owner and character_grid and character_grid.is_ancestor_of(focus_owner):

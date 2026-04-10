@@ -57,6 +57,16 @@ const CHARACTERS: Dictionary = {
 		"base_stats": {},
 		"level_stats": {"lifesteal": 0.005}, # 0.005 HP per kill per level (0.05 at level 10)
 		"level_stats_cap": {"lifesteal": 0.20} # Max 0.2 HP per kill
+	},
+	"punished": {
+		"displayname": "char_punished",
+		"icon": "res://Textures/Player/player_sprite.png",
+		"icon_color": Color(0.2, 0.2, 0.2), # Dark grey
+		"starting_weapon": "",
+		"details": "char_punished_desc",
+		"base_stats": {},
+		"level_stats": {},
+		"shader_config": {"mix_hue": true, "mix_saturation": true}
 	}
 }
 

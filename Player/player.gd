@@ -83,8 +83,32 @@ func _ready():
 		var char_data = GlobalEvents.CHARACTERS[active_char]
 		if char_data.has("starting_weapon") and char_data["starting_weapon"] != "":
 			upgrade_character(char_data["starting_weapon"])
+			
+		# Load character texture if it exists
+		if char_data.has("icon"):
+			var tex = load(char_data["icon"])
+			if tex:
+				sprite.texture = tex
+				
+		# Apply color using shader to preserve shading and detail (Hue blend mode)
 		if char_data.has("icon_color"):
-			sprite.modulate = char_data["icon_color"]
+			var mat = sprite.material as ShaderMaterial
+			if mat:
+				mat.set_shader_parameter("target_color", char_data["icon_color"])
+				
+				# Reset all flags to defaults first
+				mat.set_shader_parameter("mix_hue", true)
+				mat.set_shader_parameter("mix_saturation", false)
+				mat.set_shader_parameter("mix_value", false)
+				
+				# Apply optional shader configurations (e.g., mix_saturation for The Punished)
+				if char_data.has("shader_config"):
+					var config = char_data["shader_config"]
+					for key in config:
+						mat.set_shader_parameter(key, config[key])
+			
+			# Reset self_modulate to default white to avoid double-tinting
+			sprite.self_modulate = Color.WHITE
 			
 	attack()
 	apply_stat_modifiers()
@@ -103,7 +127,7 @@ func movement():
 	if SettingsManager.mouse_control:
 		var target_pos = get_global_mouse_position()
 		var diff = target_pos - global_position
-		if diff.length() > 6: # Deadzone to prevent jitter
+		if diff.length() > 15 and not Input.is_action_pressed("click"): # Stop if close to player or holding LMB
 			mov = diff.normalized()
 	else:
 		var x_mov = Input.get_action_strength("right") - Input.get_action_strength("left")
@@ -396,7 +420,8 @@ func upgrade_character(upgrade):
 	var type = upgrade_data["type"]
 	
 	# Check if it's a weapon (can be either 'weapon' or 'bossitem' if it has a spawner)
-	if type == "weapon" or (type == "bossitem" and upgrade.begins_with("glasslash")):
+	var boss_weapons_with_spawner = ["glasslash", "vampireknives"]
+	if type == "weapon" or (type == "bossitem" and boss_weapons_with_spawner.has(upgrade.rstrip("0123456789"))):
 		var base_name = upgrade.rstrip("0123456789")
 		var folder_name = base_name.capitalize()
 		var file_name = base_name
@@ -571,7 +596,8 @@ func remove_upgrade(upgrade_id: String) -> void:
 	collected_upgrades.erase(upgrade_id)
 
 	var type = upgrade_data["type"]
-	if type == "weapon":
+	var boss_weapons_with_spawner = ["glasslash", "vampireknives"]
+	if type == "weapon" or (type == "bossitem" and boss_weapons_with_spawner.has(upgrade_id.rstrip("0123456789"))):
 		var base_name = upgrade_id.rstrip("0123456789")
 		var weapon_spawner = weapons.get_node_or_null(base_name)
 		# Check if there is still a collected level for this weapon

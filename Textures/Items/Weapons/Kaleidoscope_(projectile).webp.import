@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bt33k6p0f7x18"
-path="res://.godot/imported/ritual_circle_fx.png-a08e9bbb3d700917c3ae6464a20a8ba2.ctex"
+uid="uid://bpp2jalima8pr"
+path="res://.godot/imported/Kaleidoscope_(projectile).webp-c2f945b85ac05d2ce1671b15c175f7fe.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Textures/Items/Weapons/ritual_circle_fx.png"
-dest_files=["res://.godot/imported/ritual_circle_fx.png-a08e9bbb3d700917c3ae6464a20a8ba2.ctex"]
+source_file="res://Textures/Items/Weapons/Kaleidoscope_(projectile).webp"
+dest_files=["res://.godot/imported/Kaleidoscope_(projectile).webp-c2f945b85ac05d2ce1671b15c175f7fe.ctex"]
 
 [params]
 
