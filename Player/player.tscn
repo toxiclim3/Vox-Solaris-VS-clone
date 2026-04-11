@@ -26,7 +26,14 @@
 [ext_resource type="Theme" path="res://Themes/RegularText_NoShadow.tres" id="22_8viyr"]
 [ext_resource type="AudioStream" uid="uid://bthqe0qhx0ik8" path="res://Audio/SoundEffect/Difficulty.wav" id="24_wdifc"]
 [ext_resource type="Script" uid="uid://b8kmo7xmbqafv" path="res://Player/boss_ui.gd" id="boss_ui_script"]
-[ext_resource type="Shader" path="res://Utility/recolor.gdshader" id="recolor_shader"]
+[ext_resource type="Shader" uid="uid://d33y51s4lrshp" path="res://Utility/recolor.gdshader" id="recolor_shader"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_recolor"]
+shader = ExtResource("recolor_shader")
+shader_parameter/target_color = Color(1, 1, 1, 1)
+shader_parameter/mix_hue = true
+shader_parameter/mix_saturation = false
+shader_parameter/mix_value = false
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_dkpta"]
 
@@ -40,13 +47,6 @@ size = Vector2(640, 360)
 radius = 50.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6vwp8"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_recolor"]
-shader = ExtResource("recolor_shader")
-parameter/target_color = Color(1, 1, 1, 1)
-parameter/mix_hue = true
-parameter/mix_saturation = false
-parameter/mix_value = false
 
 [node name="Player" type="CharacterBody2D" unique_id=1361429612 groups=["player"]]
 motion_mode = 1
@@ -274,10 +274,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -41.0
-offset_top = -20.5
-offset_right = 41.0
-offset_bottom = 20.5
+offset_left = -112.0
+offset_top = -50.5
+offset_right = 112.0
+offset_bottom = 50.5
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -287,6 +287,7 @@ stream = ExtResource("7_wl7d2")
 volume_db = -10.0
 
 [node name="MarginContainer" type="MarginContainer" parent="GUILayer/GUI/LevelUp" unique_id=1812571992]
+clip_contents = true
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
@@ -306,17 +307,16 @@ vertical_alignment = 1
 
 [node name="UpgradeScroll" type="ScrollContainer" parent="GUILayer/GUI/LevelUp/MarginContainer/VBoxContainer" unique_id=826318036]
 unique_name_in_owner = true
+clip_contents = false
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_vertical = 3
-clip_contents = false
 
 [node name="UpgradeOptions" type="VBoxContainer" parent="GUILayer/GUI/LevelUp/MarginContainer/VBoxContainer/UpgradeScroll" unique_id=826318037]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
-clip_contents = false
 
 [node name="BossLevelUp" type="PanelContainer" parent="GUILayer/GUI" unique_id=1700000000]
 unique_name_in_owner = true

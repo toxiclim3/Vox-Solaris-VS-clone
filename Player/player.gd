@@ -257,9 +257,9 @@ func calculate_experience(gem_exp):
 
 func calculate_experiencecap():
 	var lvl = experience_level
-	if lvl == 1: return 10
-	elif lvl == 2: return 15
-	elif lvl == 3: return 20
+	if lvl == 1: return 5
+	elif lvl == 2: return 10
+	elif lvl == 3: return 15
 	elif lvl == 4: return 30
 	elif lvl == 5: return 50
 	elif lvl == 6: return 75

@@ -183,14 +183,14 @@ keys,en,ru,ua
 "ItemDesc_GlassLash2","Significantly reduced cooldown. Enemies die in a burst of shards.","Значительно уменьшенная перезарядка. Враги гибнут во вспышке осколков.","Значно зменшена перезарядка. Вороги гинуть у спалаху осколків."
 "ItemDesc_GlassLash3","Further increased damage and reduced cooldown.","Еще больше урона и еще меньше перезарядка.","Ще більше шкоди та ще менша перезарядка."
 "ItemDesc_GlassLash4","Maximum damage and minimum cooldown.","Максимальный урон и минимальная перезарядка.","Максимальна шкода та мінімальна перезарядка."
-char_mage,Mage,Маг,Маг
-char_plague_doctor,Plague Doctor,Чумной Доктор,Чумний Лікар
-char_occultist,Occultist,Оккультист,Окультист
-char_punished,The Punished,Наказанный,Покараний
-char_mage_desc,Lower Attack Cooldown based on level,Снижение перезарядки атак с уровнем,Зниження перезарядки атак з рівнем
-char_plague_doctor_desc,Bigger Attack Size based on level,Увеличение размера атак с уровнем,Збільшення розміру атак з рівнем
-char_occultist_desc,Gains Lifesteal based on level,Получает кражу здоровья с уровнем,Отримує крадіжку здоров'я з рівнем
-char_punished_desc,Debug: No starting weapon or passive,Отладка: Без оружия и пассивок,Налагодження: Без зброї та пасивок
+"char_mage","Mage","Маг","Маг"
+"char_plague_doctor","Plague Doctor","Чумной Доктор","Чумний Лікар"
+"char_occultist","Occultist","Оккультист","Окультист"
+"char_punished","The Punished","Наказанный","Покараний"
+"char_mage_desc","Lower Attack Cooldown based on level","Снижение перезарядки атак с уровнем","Зниження перезарядки атак з рівнем"
+"char_plague_doctor_desc","Bigger Attack Size based on level","Увеличение размера атак с уровнем","Збільшення розміру атак з рівнем"
+"char_occultist_desc","Gains Lifesteal based on level","Получает кражу здоровья с уровнем","Отримує крадіжку здоров'я з рівнем"
+"char_punished_desc","Condemed to die. No starting weapon or passive","Обречён на смерть. Без оружия и пассивых способностей","Приречений на смерть. Без зброї та пасивних здібностей"
 "item_vampireknives","Vampire Knives","Вампирские Кинжалы","Вампірські Кинджали"
 "ItemDesc_VampireKnives1","Throws a fan of 5 cursed knives that drain life with every hit.","Бросает веер из 5 проклятых кинжалов, высасывающих жизнь при попадании.","Кидає віяло з 5 проклятих кинджалів, що висотують життя при влученні."
 "ItemDesc_VampireKnives2","Throws 7 knives. More lifesteal per hit, reduced cooldown.","Бросает 7 кинжалов. Больше кражи жизни с удара, меньше перезарядка.","Кидає 7 кинджалів. Більше крадіжки здоров'я з удару, менша перезарядка."

@@ -1,11 +1,12 @@
 [gd_scene format=3 uid="uid://b4xujaakdsubi"]
 
 [ext_resource type="Texture2D" uid="uid://bu2son8g2konp" path="res://Textures/Items/Weapons/sword.png" id="1_583l0"]
-[ext_resource type="Script" uid="uid://b01bgp18xbw8a" path="res://Utility/item_option.gd" id="1_script"]
 [ext_resource type="AudioStream" uid="uid://bwahs2mtjus02" path="res://Audio/GUI/hover.wav" id="1_hover"]
-[ext_resource type="Theme" path="res://Themes/HeaderText_NoShadow.tres" id="2_header"]
+[ext_resource type="Script" uid="uid://b01bgp18xbw8a" path="res://Utility/item_option.gd" id="1_script"]
 [ext_resource type="AudioStream" uid="uid://dobpqbspunihg" path="res://Audio/GUI/click.wav" id="2_click"]
+[ext_resource type="Theme" path="res://Themes/HeaderText_NoShadow.tres" id="2_header"]
 [ext_resource type="Theme" path="res://Themes/RegularText_NoShadow.tres" id="3_regular"]
+[ext_resource type="Theme" uid="uid://crfiwpevxb7b2" path="res://Themes/NinePatchUI_Dark.tres" id="4_w0qxg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r6i4i"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -42,10 +43,10 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_focus")
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=441372501]
 layout_mode = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
 
 [node name="snd_hover" type="AudioStreamPlayer" parent="MarginContainer" unique_id=685127909]
 stream = ExtResource("1_hover")
@@ -63,22 +64,19 @@ theme_override_constants/separation = 8
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ColorRect" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=2021284775]
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=2120820264]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 size_flags_horizontal = 0
-size_flags_vertical = 0
-color = Color(0, 0, 0, 1)
+size_flags_vertical = 4
+theme = ExtResource("4_w0qxg")
 
-[node name="ItemIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/ColorRect" unique_id=1850822096]
+[node name="ItemIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer" unique_id=1850822096]
 texture_filter = 3
-layout_mode = 0
-offset_right = 32.0
-offset_bottom = 32.0
-scale = Vector2(0.75, 0.75)
+layout_mode = 2
 texture = ExtResource("1_583l0")
-stretch_mode = 6
 expand_mode = 1
+stretch_mode = 5
 
 [node name="lbl_name" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=845083178]
 layout_mode = 2

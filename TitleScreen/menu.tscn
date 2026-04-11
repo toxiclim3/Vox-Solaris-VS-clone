@@ -148,6 +148,10 @@ lifetime = 1.2
 randomness = 0.4
 fract_delta = false
 visibility_rect = Rect2(-360, 0, 720, 380)
+trail_enabled = true
+trail_lifetime = 0.01
+trail_sections = 2
+trail_section_subdivisions = 1
 process_material = SubResource("RainMaterial")
 
 [node name="Label" type="Label" parent="." unique_id=1550563422]

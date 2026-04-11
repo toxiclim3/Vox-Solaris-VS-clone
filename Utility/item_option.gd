@@ -3,7 +3,7 @@ extends PanelContainer
 @onready var lblName = $MarginContainer/VBoxContainer/HBoxContainer/lbl_name
 @onready var lblDescription = $MarginContainer/VBoxContainer/HBoxContainer2/lbl_description
 @onready var lblLevel = $MarginContainer/VBoxContainer/HBoxContainer/lbl_level
-@onready var itemIcon = $MarginContainer/VBoxContainer/HBoxContainer/ColorRect/ItemIcon
+@onready var itemIcon = $MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/ItemIcon
 @onready var focusFrame = $FocusFrame
 
 var mouse_over = false

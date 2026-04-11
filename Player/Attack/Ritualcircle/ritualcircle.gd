@@ -65,8 +65,8 @@ func _ready():
 	# We set total frames to 10 to match the original 11-20 range.
 	animator.setup_variant(1, 1)
 	animator.total_frames = 10
-	animator.loop_start = 4 # Example looping middle
-	animator.loop_end = 6
+	animator.loop_start = 0 # Example looping middle
+	animator.loop_end = 2
 	
 	sprite.visible = false 
 	
