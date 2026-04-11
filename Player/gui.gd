@@ -166,6 +166,8 @@ signal closeMenu()
 var pause_original_x: float
 var pause_hidden_x: float
 var is_menu_open: bool = false
+var pause_tween: Tween
+
 
 
 func _ready() -> void:
@@ -237,28 +239,36 @@ func toggle_menu():
 				close_pause_menu()
 
 func open_pause_menu() -> void:
+	if pause_tween:
+		pause_tween.kill()
+		
 	change_random_tip()
 	pause_menu.show()
 	get_tree().paused = true
 	MusicController.focusMusic(false)
 	
-	var tween: Tween = create_tween()
-	tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	tween.tween_property(pause_menu, "position:x", pause_original_x, transition_duration)
+	pause_tween = create_tween()
+	pause_tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	pause_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	pause_tween.tween_property(pause_menu, "position:x", pause_original_x, transition_duration)
 	
 
 func close_pause_menu() -> void:
+	if pause_tween:
+		pause_tween.kill()
+		
 	get_tree().paused = false
 	MusicController.focusMusic(true)
 	
-	var tween: Tween = create_tween().set_parallel(true)
-	tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	tween.tween_property(pause_menu, "position:x", pause_hidden_x, transition_duration)
+	pause_tween = create_tween().set_parallel(true)
+	pause_tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	pause_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	pause_tween.tween_property(pause_menu, "position:x", pause_hidden_x, transition_duration)
 	
 	if settings_menu.visible:
 		settings_menu.hide()
 		
-	tween.chain().tween_callback(pause_menu.hide)
+	pause_tween.chain().tween_callback(pause_menu.hide)
 
 
 func open_settings() -> void:
