@@ -416,7 +416,7 @@ const UPGRADES = {
 	},
 	"glasslash1": 
 	{
-		"icon": WEAPON_PATH + "glass_lash.png", # Placeholder
+		"icon": WEAPON_PATH + "Kaleidoscope.webp",
 		"displayname": "item_glasslash",
 		"details": "ItemDesc_GlassLash1",
 		"level": "item_level1",
@@ -425,7 +425,7 @@ const UPGRADES = {
 	},
 	"glasslash2": 
 	{
-		"icon": WEAPON_PATH + "glass_lash.png",
+		"icon": WEAPON_PATH + "Kaleidoscope.webp",
 		"displayname": "item_glasslash",
 		"details": "ItemDesc_GlassLash2",
 		"level": "item_level2",
@@ -434,7 +434,7 @@ const UPGRADES = {
 	},
 	"glasslash3": 
 	{
-		"icon": WEAPON_PATH + "glass_lash.png",
+		"icon": WEAPON_PATH + "Kaleidoscope.webp",
 		"displayname": "item_glasslash",
 		"details": "ItemDesc_GlassLash3",
 		"level": "item_level3",
@@ -443,7 +443,7 @@ const UPGRADES = {
 	},
 	"glasslash4": 
 	{
-		"icon": WEAPON_PATH + "glass_lash.png",
+		"icon": WEAPON_PATH + "Kaleidoscope.webp",
 		"displayname": "item_glasslash",
 		"details": "ItemDesc_GlassLash4",
 		"level": "item_level4",
