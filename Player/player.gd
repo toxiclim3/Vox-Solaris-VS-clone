@@ -49,8 +49,10 @@ const BASE_GRAB_RADIUS = 50.0
 # Track Stat Modifiers
 var stat_modifiers = {}
 
-# Lifesteal mechanic
+# Item mechanics
 var lifesteal: float = 0.0
+var armor_multiplier: float = 0.0
+var reflected_damage: float = 0.0
 
 # Javelin level tracked for global updates to Javelins
 var javelin_level = 0
@@ -172,7 +174,16 @@ func _on_regen_timer_timeout(): #regens regenPerSecond percent of maxHp every re
 
 
 
-func _on_hurt_box_hurt(damage, _angle, _knockback, _killer_source = ""):
+func _on_hurt_box_hurt(damage, _angle, _knockback, _killer_source = "", attacker_node = null):
+	if damage > 0:
+		GlobalEvents.player_took_damage.emit(damage, attacker_node)
+		
+		# Reflection logic (Thorn Ring)
+		if reflected_damage > 0 and attacker_node and attacker_node.has_method("_on_hurt_box_hurt"):
+			if loggingEnabled:
+				print("Thorn Ring: Reflecting %f damage to %s" % [reflected_damage, attacker_node.name])
+			attacker_node._on_hurt_box_hurt(reflected_damage, Vector2.ZERO, 0, "Thorn Ring", self)
+
 	if godmode == false:
 		var actual_damage = clamp(damage-armor, 0.0, 999.0)
 		if actual_damage > 0:
@@ -344,6 +355,8 @@ func apply_stat_modifiers():
 	var movement_speed_percent_total = 0.0
 	regenPerSecond = base_regenPerSecond
 	lifesteal = 0.0
+	armor_multiplier = 0.0
+	reflected_damage = 0.0
 	
 	for mod in stat_modifiers.values():
 		for stat_name in mod.keys():
@@ -357,6 +370,8 @@ func apply_stat_modifiers():
 				"regen": regenPerSecond += mod[stat_name]
 				"xp_range_percent": xp_range_percent_total += mod[stat_name]
 				"lifesteal": lifesteal += mod[stat_name]
+				"armor_multiplier": armor_multiplier += mod[stat_name]
+				"reflected_damage": reflected_damage += mod[stat_name]
 				
 	# Apply character specific stats based on experience_level
 	var active_char = GlobalEvents.selected_character
@@ -376,6 +391,8 @@ func apply_stat_modifiers():
 					"regen": regenPerSecond += val
 					"xp_range_percent": xp_range_percent_total += val
 					"lifesteal": lifesteal += val
+					"armor_multiplier": armor_multiplier += val
+					"reflected_damage": reflected_damage += val
 		# Scaled character stats based on levels above 1
 		if char_data.has("level_stats") and experience_level > 1:
 			var lvl_bonus = experience_level - 1
@@ -399,9 +416,14 @@ func apply_stat_modifiers():
 					"regen": regenPerSecond += val
 					"xp_range_percent": xp_range_percent_total += val
 					"lifesteal": lifesteal += val
+					"armor_multiplier": armor_multiplier += val
+					"reflected_damage": reflected_damage += val
 	
 	# Apply movement speed percent bonus
 	movement_speed = base_movement_speed * (1.0 + movement_speed_percent_total)
+	
+	# Apply armor multiplier
+	armor = int(armor * (1.0 + armor_multiplier))
 	
 	# Apply max HP percent bonus on top of base
 	var new_maxhp = int(base_maxhp * (1.0 + max_hp_percent_total))

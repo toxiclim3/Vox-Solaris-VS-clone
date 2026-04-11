@@ -120,7 +120,7 @@ func death(killer_source: String = ""):
 	StatsManager.register_kill(isBoss)
 	queue_free()
 
-func _on_hurt_box_hurt(damage, angle, knockback_amount, killer_source: String = ""):
+func _on_hurt_box_hurt(damage, angle, knockback_amount, killer_source: String = "", _attacker_node = null):
 	hp -= (damage * GlobalEvents.get_player_damage_modifier())
 	knockback = angle * knockback_amount
 	if hp <= 0:

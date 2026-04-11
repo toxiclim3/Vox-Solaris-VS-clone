@@ -196,3 +196,8 @@ keys,en,ru,ua
 "ItemDesc_VampireKnives2","Throws 7 knives. More lifesteal per hit, reduced cooldown.","Бросает 7 кинжалов. Больше кражи жизни с удара, меньше перезарядка.","Кидає 7 кинджалів. Більше крадіжки здоров'я з удару, менша перезарядка."
 "ItemDesc_VampireKnives3","Throws 9 knives. Each hit heals even more. Faster attack.","Бросает 9 кинжалов. Каждое попадание лечит ещё больше. Быстрее атака.","Кидає 9 кинджалів. Кожне влучення лікує ще більше. Швидша атака."
 "ItemDesc_VampireKnives4","Throws 12 knives in a deadly arc. Maximum lifesteal per hit.","Бросает 12 кинжалов смертоносной дугой. Максимальная кража жизни с удара.","Кидає 12 кинджалів у смертоносній дузі. Максимальна крадіжка здоров'я з удару."
+"item_thornring","Thorn Ring","Кольцо шипов","Кільце шипів"
+"ItemDesc_ThornRing1","Increases armor by 20% and reflects 10 damage to attackers.","Увеличивает броню на 20% и отражает 10 урона атакующим.","Збільшує броню на 20% і відбиває 10 шкоди атакуючим."
+"ItemDesc_ThornRing2","Reflects 20 damage to attackers.","Отражает 20 урона атакующим.","Відбиває 20 шкоди атакуючим."
+"ItemDesc_ThornRing3","Reflects 30 damage to attackers.","Отражает 30 урона атакующим.","Відбиває 30 шкоди атакуючим."
+"ItemDesc_ThornRing4","Reflects 45 damage to attackers.","Отражает 45 урона атакующим.","Відбиває 45 шкоди атакуючим."

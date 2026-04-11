@@ -485,5 +485,45 @@ const UPGRADES = {
 		"level": "item_level4",
 		"prerequisite": ["vampireknives3"],
 		"type": "bossitem"
+	},
+	"thornring1": 
+	{
+		"icon": "res://Textures/PLACEHOLDER.png",
+		"displayname": "item_thornring",
+		"details": "ItemDesc_ThornRing1",
+		"level": "item_level1",
+		"prerequisite": [],
+		"type": "upgrade",
+		"stat_modifiers": {"armor_multiplier": 0.20, "reflected_damage": 10}
+	},
+	"thornring2": 
+	{
+		"icon": "res://Textures/PLACEHOLDER.png",
+		"displayname": "item_thornring",
+		"details": "ItemDesc_ThornRing2",
+		"level": "item_level2",
+		"prerequisite": ["thornring1"],
+		"type": "upgrade",
+		"stat_modifiers": {"reflected_damage": 10}
+	},
+	"thornring3": 
+	{
+		"icon": "res://Textures/PLACEHOLDER.png",
+		"displayname": "item_thornring",
+		"details": "ItemDesc_ThornRing3",
+		"level": "item_level3",
+		"prerequisite": ["thornring2"],
+		"type": "upgrade",
+		"stat_modifiers": {"reflected_damage": 10}
+	},
+	"thornring4": 
+	{
+		"icon": "res://Textures/PLACEHOLDER.png",
+		"displayname": "item_thornring",
+		"details": "ItemDesc_ThornRing4",
+		"level": "item_level4",
+		"prerequisite": ["thornring3"],
+		"type": "upgrade",
+		"stat_modifiers": {"reflected_damage": 15}
 	}
 }
