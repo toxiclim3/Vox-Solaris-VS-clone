@@ -265,28 +265,30 @@ lifetime = 0.8
 one_shot = true
 explosiveness = 0.8
 
-[node name="LevelUp" type="PanelContainer" parent="GUILayer/GUI" unique_id=1699352669]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(224, 0)
+[node name="LUpMarginContainer" type="MarginContainer" parent="GUILayer/GUI" unique_id=1379863372]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -112.0
-offset_top = -50.5
-offset_right = 112.0
-offset_bottom = 50.5
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_bottom = 32
 
-[node name="snd_levelup" type="AudioStreamPlayer" parent="GUILayer/GUI/LevelUp" unique_id=9773351]
+[node name="LevelUp" type="PanelContainer" parent="GUILayer/GUI/LUpMarginContainer" unique_id=1699352669]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(224, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="snd_levelup" type="AudioStreamPlayer" parent="GUILayer/GUI/LUpMarginContainer/LevelUp" unique_id=9773351]
 unique_name_in_owner = true
 stream = ExtResource("7_wl7d2")
 volume_db = -10.0
 
-[node name="MarginContainer" type="MarginContainer" parent="GUILayer/GUI/LevelUp" unique_id=1812571992]
+[node name="MarginContainer" type="MarginContainer" parent="GUILayer/GUI/LUpMarginContainer/LevelUp" unique_id=1812571992]
 clip_contents = true
 layout_mode = 2
 theme_override_constants/margin_left = 8
@@ -294,73 +296,74 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="GUILayer/GUI/LevelUp/MarginContainer" unique_id=403045324]
+[node name="VBoxContainer" type="VBoxContainer" parent="GUILayer/GUI/LUpMarginContainer/LevelUp/MarginContainer" unique_id=403045324]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="lbl_LevelUP" type="Label" parent="GUILayer/GUI/LevelUp/MarginContainer/VBoxContainer" unique_id=1449850959]
+[node name="lbl_LevelUP" type="Label" parent="GUILayer/GUI/LUpMarginContainer/LevelUp/MarginContainer/VBoxContainer" unique_id=1449850959]
 layout_mode = 2
 theme = ExtResource("16_noshadow")
 text = "ui_levelUp"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="UpgradeScroll" type="ScrollContainer" parent="GUILayer/GUI/LevelUp/MarginContainer/VBoxContainer" unique_id=826318036]
+[node name="UpgradeScroll" type="ScrollContainer" parent="GUILayer/GUI/LUpMarginContainer/LevelUp/MarginContainer/VBoxContainer" unique_id=826318036]
 unique_name_in_owner = true
 clip_contents = false
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="UpgradeOptions" type="VBoxContainer" parent="GUILayer/GUI/LevelUp/MarginContainer/VBoxContainer/UpgradeScroll" unique_id=826318037]
+[node name="UpgradeOptions" type="VBoxContainer" parent="GUILayer/GUI/LUpMarginContainer/LevelUp/MarginContainer/VBoxContainer/UpgradeScroll" unique_id=826318037]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
 
-[node name="BossLevelUp" type="PanelContainer" parent="GUILayer/GUI" unique_id=1700000000]
+[node name="BLUpMarginContainer" type="MarginContainer" parent="GUILayer/GUI" unique_id=124367374]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_bottom = 32
+
+[node name="BossLevelUp" type="PanelContainer" parent="GUILayer/GUI/BLUpMarginContainer" unique_id=1700000000]
 unique_name_in_owner = true
 visible = false
 self_modulate = Color(1, 0.843137, 0, 1)
 custom_minimum_size = Vector2(192, 0)
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -41.0
-offset_top = -20.5
-offset_right = 41.0
-offset_bottom = 20.5
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
+size_flags_horizontal = 4
 
-[node name="MarginContainer" type="MarginContainer" parent="GUILayer/GUI/BossLevelUp" unique_id=1700000001]
+[node name="MarginContainer" type="MarginContainer" parent="GUILayer/GUI/BLUpMarginContainer/BossLevelUp" unique_id=1700000001]
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="GUILayer/GUI/BossLevelUp/MarginContainer" unique_id=1700000002]
+[node name="VBoxContainer" type="VBoxContainer" parent="GUILayer/GUI/BLUpMarginContainer/BossLevelUp/MarginContainer" unique_id=1700000002]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="lbl_BossReward" type="Label" parent="GUILayer/GUI/BossLevelUp/MarginContainer/VBoxContainer" unique_id=1700000003]
+[node name="lbl_BossReward" type="Label" parent="GUILayer/GUI/BLUpMarginContainer/BossLevelUp/MarginContainer/VBoxContainer" unique_id=1700000003]
 layout_mode = 2
 theme = ExtResource("16_noshadow")
 text = "ui_bossReward"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="BossUpgradeScroll" type="ScrollContainer" parent="GUILayer/GUI/BossLevelUp/MarginContainer/VBoxContainer" unique_id=1700000004]
+[node name="BossUpgradeScroll" type="ScrollContainer" parent="GUILayer/GUI/BLUpMarginContainer/BossLevelUp/MarginContainer/VBoxContainer" unique_id=1700000004]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="BossUpgradeOptions" type="VBoxContainer" parent="GUILayer/GUI/BossLevelUp/MarginContainer/VBoxContainer/BossUpgradeScroll" unique_id=1700000005]
+[node name="BossUpgradeOptions" type="VBoxContainer" parent="GUILayer/GUI/BLUpMarginContainer/BossLevelUp/MarginContainer/VBoxContainer/BossUpgradeScroll" unique_id=1700000005]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -561,6 +564,7 @@ mouse_filter = 2
 columns = 12
 
 [node name="PauseMenu" type="PanelContainer" parent="GUILayer/GUI" unique_id=1300825726]
+unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(192, 224)
 layout_mode = 1
@@ -650,9 +654,11 @@ theme = ExtResource("18_hshwv")
 text = "ui_exitGame"
 
 [node name="SettingsMenu" parent="GUILayer/GUI" unique_id=244721166 instance=ExtResource("7_pisgm")]
+unique_name_in_owner = true
 visible = false
 
 [node name="DebugMenu" type="MarginContainer" parent="GUILayer/GUI" unique_id=1500833420]
+unique_name_in_owner = true
 z_index = 2
 layout_mode = 1
 anchors_preset = 11

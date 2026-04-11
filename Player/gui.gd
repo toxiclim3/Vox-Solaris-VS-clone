@@ -2,12 +2,12 @@ extends Control
 
 var titleMenu = "res://TitleScreen/menu.tscn"
 
-@onready var settings_menu = get_node("SettingsMenu")
-@onready var pause_menu = get_node("PauseMenu")
-@onready var debug_menu = get_node("DebugMenu")
-@onready var levelup_menu = get_node("LevelUp")
+@onready var settings_menu = get_node("%SettingsMenu")
+@onready var pause_menu = get_node("%PauseMenu")
+@onready var debug_menu = get_node("%DebugMenu")
+@onready var levelup_menu = get_node("%LevelUp")
 
-@onready var giveItemMenu = get_node("GiveItemMenu")
+@onready var giveItemMenu = get_node("%GiveItemMenu")
 @onready var giveItemMainGrid = get_node("GiveItemMenu/ScrollContainer/VBoxContainer/MainGrid")
 @onready var giveItemSubGrid = get_node("GiveItemMenu/ScrollContainer/VBoxContainer/SubGrid")
 @onready var player = get_tree().get_first_node_in_group("player")
@@ -138,31 +138,7 @@ func show_levelup(options_list: Array, current_visual_level: int) -> void:
 		var option_choice = itemOptions.instantiate()
 		option_choice.item = item
 		upgradeOptions.add_child(option_choice)
-	
-		
-	# Await process_frame safely inside gui.gd!
-	await get_tree().process_frame
-	var children = upgradeOptions.get_children()
-	var max_width: float = 0.0
-	for child in children:
-		max_width = max(max_width, child.get_combined_minimum_size().x)
-	for child in children:
-		child.custom_minimum_size.x = max_width
-	
-	var desired_scroll_h = upgradeOptions.get_combined_minimum_size().y
-	var vp_h = get_viewport_rect().size.y
-	var max_scroll_h = vp_h * 0.65
-	upgradeScroll.custom_minimum_size.y = min(desired_scroll_h, max_scroll_h)
-	
-	await get_tree().process_frame
-	levelPanel.reset_size()
-	var vp_size = get_viewport_rect().size
-	var half_w = min(levelPanel.size.x, vp_size.x * 0.95) / 2.0
-	var half_h = min(levelPanel.size.y, vp_size.y * 0.95) / 2.0
-	levelPanel.offset_left = -half_w
-	levelPanel.offset_right = half_w
-	levelPanel.offset_top = -half_h
-	levelPanel.offset_bottom = half_h
+	# Native Godot UI layout will now automatically handle width and full-screen margins!
 
 func show_boss_levelup(options_list: Array) -> void:
 	sndLevelUp.play()
@@ -175,30 +151,7 @@ func show_boss_levelup(options_list: Array) -> void:
 		var option_choice = itemOptions.instantiate()
 		option_choice.item = item
 		bossUpgradeOptions.add_child(option_choice)
-		
-		
-	await get_tree().process_frame
-	var children = bossUpgradeOptions.get_children()
-	var max_width: float = 0.0
-	for child in children:
-		max_width = max(max_width, child.get_combined_minimum_size().x)
-	for child in children:
-		child.custom_minimum_size.x = max_width
-		
-	var desired_scroll_h = bossUpgradeOptions.get_combined_minimum_size().y
-	var vp_h = get_viewport_rect().size.y
-	var max_scroll_h = vp_h * 0.65
-	bossUpgradeScroll.custom_minimum_size.y = min(desired_scroll_h, max_scroll_h)
-	
-	await get_tree().process_frame
-	bossLevelPanel.reset_size()
-	var vp_size = get_viewport_rect().size
-	var half_w = min(bossLevelPanel.size.x, vp_size.x * 0.95) / 2.0
-	var half_h = min(bossLevelPanel.size.y, vp_size.y * 0.95) / 2.0
-	bossLevelPanel.offset_left = -half_w
-	bossLevelPanel.offset_right = half_w
-	bossLevelPanel.offset_top = -half_h
-	bossLevelPanel.offset_bottom = half_h
+	# Native Godot UI layout will now automatically handle width and full-screen margins!
 
 @export var transition_duration: float = 0.4
 @export var gap: float = 0.5 * 8 * 8 # Расстояние между окнами
@@ -269,6 +222,9 @@ func _input(event: InputEvent) -> void:
 			if levelPanel.visible or bossLevelPanel.visible or pause_menu.visible:
 				_grab_context_focus()
 				get_viewport().set_input_as_handled()
+	if event.is_action_pressed("FreezeeverythingNOW!!!"):
+		get_tree().paused = !get_tree().paused
+		get_viewport().set_input_as_handled()
 
 
 func toggle_menu():

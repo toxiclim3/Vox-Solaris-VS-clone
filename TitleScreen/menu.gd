@@ -32,6 +32,9 @@ func _ready():
 	# Initial positions
 	main_menu_original_x = main_menu_content.position.x
 	
+	# Shader Pre-heating (Oven)
+	_start_shader_preheating()
+	
 	var viewport_size = get_viewport_rect().size
 	
 	# Hide menus
@@ -188,13 +191,19 @@ func open_play() -> void:
 	var total_width: float = main_menu_content.size.x + gap + play_menu.size.x
 	var group_start_x: float = screen_center_x - (total_width / 2.0)
 	
+	var margin_v: float = 32.0
+	var play_target_y: float = margin_v
+	var play_height: float = screen_size.y - (margin_v * 2.0)
+	
 	var main_target_x: float = group_start_x
 	var play_target_x: float = group_start_x + main_menu_content.size.x + gap
-	var bottom_y: float = main_menu_content.position.y + main_menu_content.size.y - 32.0
-	var play_target_y: float = bottom_y - play_menu.size.y
+	var play_width: float = screen_size.x - gap - play_target_x
 	
 	play_menu.position.x = screen_size.x + play_menu.size.x + 50
 	play_menu.position.y = play_target_y
+	
+	# Force size to fill the allocated space
+	play_menu.set_deferred("size", Vector2(play_width, play_height))
 	
 	var tween: Tween = create_tween().set_parallel(true)
 	tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
@@ -297,3 +306,30 @@ func _grab_context_focus() -> void:
 		play_menu.grab_initial_focus()
 	else:
 		btn_play.grab_focus()
+
+
+func _start_shader_preheating() -> void:
+	var preheat_res = load("res://Utility/PreheatMaterials.tres")
+	if not preheat_res:
+		return
+		
+	var ui_scene = load("res://Utility/shader_prewarmer_ui.tscn")
+	if not ui_scene:
+		return
+		
+	var ui = ui_scene.instantiate()
+	add_child(ui)
+	
+	# Disable play button during pre-heating
+	btn_play.disabled = true
+	btn_play.modulate.a = 0.5
+	
+	ui.start(preheat_res.materials)
+	
+	# Find the prewarmer node inside the UI to connect to its finished signal
+	if not ui.is_connected("tree_exited", _on_shader_warming_finished):
+		ui.tree_exited.connect(_on_shader_warming_finished)
+
+func _on_shader_warming_finished() -> void:
+	btn_play.disabled = false
+	btn_play.modulate.a = 1.0

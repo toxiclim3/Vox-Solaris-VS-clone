@@ -20,27 +20,27 @@ func upgrade(upgrade_id: String):
 		"vampireknives1":
 			level = 1
 			knife_count = 5
-			damage = 5
+			damage = 10
 			attack_speed = 2.0
-			lifesteal_per_hit = 0.5
+			lifesteal_per_hit = 1
 		"vampireknives2":
 			level = 2
 			knife_count = 7
-			damage = 7
+			damage = 12
 			attack_speed = 1.8
-			lifesteal_per_hit = 0.7
+			lifesteal_per_hit = 1.3
 		"vampireknives3":
 			level = 3
 			knife_count = 9
-			damage = 9
+			damage = 14
 			attack_speed = 1.5
-			lifesteal_per_hit = 1.0
+			lifesteal_per_hit = 1.5
 		"vampireknives4":
 			level = 4
 			knife_count = 12
-			damage = 12
+			damage = 15
 			attack_speed = 1.2
-			lifesteal_per_hit = 1.5
+			lifesteal_per_hit = 2
 
 	attack()
 

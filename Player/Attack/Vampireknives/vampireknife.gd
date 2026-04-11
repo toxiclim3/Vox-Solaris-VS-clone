@@ -1,6 +1,6 @@
 extends Area2D
 
-var damage = 5
+var damage = 8
 var knockback_amount = 50.0
 var speed = 350.0
 var direction = Vector2.ZERO

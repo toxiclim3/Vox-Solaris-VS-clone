@@ -525,5 +525,41 @@ const UPGRADES = {
 		"prerequisite": ["thornring3"],
 		"type": "upgrade",
 		"stat_modifiers": {"reflected_damage": 15}
+	},
+	"whip1": 
+	{
+		"icon": WEAPON_PATH + "Leather_Whip.webp",
+		"displayname": "item_whip",
+		"details": "ItemDesc_Whip1",
+		"level": "item_level1",
+		"prerequisite": [],
+		"type": "weapon"
+	},
+	"whip2": 
+	{
+		"icon": WEAPON_PATH + "Leather_Whip.webp",
+		"displayname": "item_whip",
+		"details": "ItemDesc_Whip2",
+		"level": "item_level2",
+		"prerequisite": ["whip1"],
+		"type": "weapon"
+	},
+	"whip3": 
+	{
+		"icon": WEAPON_PATH + "Leather_Whip.webp",
+		"displayname": "item_whip",
+		"details": "ItemDesc_Whip3",
+		"level": "item_level3",
+		"prerequisite": ["whip2"],
+		"type": "weapon"
+	},
+	"whip4": 
+	{
+		"icon": WEAPON_PATH + "Leather_Whip.webp",
+		"displayname": "item_whip",
+		"details": "ItemDesc_Whip4",
+		"level": "item_level4",
+		"prerequisite": ["whip3"],
+		"type": "weapon"
 	}
 }

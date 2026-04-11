@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://t2lj0todwtba" path="res://Player/Attack/Poisonbottle/poisonbottle.gd" id="1_bdhjd"]
 [ext_resource type="Texture2D" uid="uid://bq3t6184nv83o" path="res://Textures/Items/Weapons/poison_gas.png" id="2_txxbt"]
-[ext_resource type="AudioStream" uid="uid://cl3g2vts3nyt0" path="res://Audio/SoundEffect/ice.wav" id="3_sndbt"]
+[ext_resource type="AudioStream" uid="uid://cn17evk2iapk4" path="res://Audio/SoundEffect/Item_1.wav" id="3_vn0lj"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pbott"]
 
@@ -24,7 +24,7 @@ one_shot = true
 autostart = true
 
 [node name="snd_play" type="AudioStreamPlayer" parent="." unique_id=283340530]
-stream = ExtResource("3_sndbt")
+stream = ExtResource("3_vn0lj")
 volume_db = -10.0
 autoplay = true
 bus = &"MiscUnimportant"

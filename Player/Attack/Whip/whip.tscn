@@ -1,0 +1,57 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://Player/Attack/Whip/whip.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://Textures/Items/Weapons/Leather_Whip_(projectile).webp" id="2_texture"]
+[ext_resource type="Shader" path="res://Utility/whip_3slice.gdshader" id="3_shader"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(14, 100)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1"]
+shader = ExtResource("3_shader")
+shader_parameter/start_margin = 30.0
+shader_parameter/end_margin = 26.0
+shader_parameter/total_length = 100.0
+shader_parameter/texture_size = Vector2(92, 10)
+shader_parameter/tile_middle = false
+shader_parameter/hide_caps = true
+
+[node name="Whip" type="Area2D" groups=["attack"]]
+z_index = 2
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("1_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -50)
+shape = SubResource("RectangleShape2D_1")
+
+[node name="Line2D" type="Line2D" parent="."]
+texture_filter = 1
+texture_repeat = 2
+material = SubResource("ShaderMaterial_1")
+points = PackedVector2Array(0, 0, 0, -10, 0, -20, 0, -30, 0, -40, 0, -50, 0, -60, 0, -70, 0, -80, 0, -90, 0, -100)
+width = 7.0
+texture = ExtResource("2_texture")
+texture_mode = 2
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+
+[node name="HandleSprite" type="Sprite2D" parent="."]
+texture_filter = 1
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("2_texture")
+centered = false
+offset = Vector2(0, -5)
+region_enabled = true
+region_rect = Rect2(0, 0, 30, 10)
+
+[node name="TipSprite" type="Sprite2D" parent="."]
+texture_filter = 1
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("2_texture")
+centered = false
+offset = Vector2(-26, -5)
+region_enabled = true
+region_rect = Rect2(66, 0, 26, 10)

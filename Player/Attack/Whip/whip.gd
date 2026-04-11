@@ -1,6 +1,6 @@
 extends Area2D
 
-var damage = 30
+var damage = 8
 var level = 1
 var target_pos = Vector2.ZERO
 var angle = Vector2.ZERO
@@ -8,7 +8,7 @@ var start_rotation = 0.0
 var sweep_angle = PI
 var lifetime = 0.4
 var knockback_amount = 50.0
-var killer_source = "glasslash"
+var killer_source = "whip"
 var timer = 0.0
 
 @onready var player = get_tree().get_first_node_in_group("player")

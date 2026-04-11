@@ -1,0 +1,54 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://Utility/shader_prewarmer_ui.gd" id="1_script"]
+[ext_resource type="Theme" uid="uid://ds5mdedn440wb" path="res://Themes/NinePatchUI.tres" id="2_theme"]
+
+[node name="ShaderPrewarmerUI" type="CanvasLayer"]
+script = ExtResource("1_script")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ToastPanel" type="PanelContainer" parent="Control"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -64.0
+offset_right = 240.0
+offset_bottom = -16.0
+grow_vertical = 0
+theme = ExtResource("2_theme")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/ToastPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/ToastPanel/MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="StatusLabel" type="Label" parent="Control/ToastPanel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "ui_preheating_shaders"
+horizontal_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="Control/ToastPanel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+value = 50.0
+show_percentage = false
