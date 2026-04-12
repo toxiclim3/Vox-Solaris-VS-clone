@@ -206,7 +206,8 @@ func _connect_debug_signals():
 	# Find debug buttons and connect them if they aren't already
 	var grid = get_node_or_null("%DebugMenu/Padded container/VBoxContainer/GridContainer")
 	if grid:
-		var btn_map = {
+		# 1. Buttons that connect to Player functions
+		var player_btn_map = {
 			"btn_end_run": player._on_btn_end_run_click_end,
 			"btn_exit_game": player._on_btn_exit_game_click_end,
 			"btn_give_xp": player._on_btn_give_xp_click_end,
@@ -220,13 +221,30 @@ func _connect_debug_signals():
 			"btn_timer_1m": player._on_btn_timer_1m_click_end,
 			"btn_timer_5m": player._on_btn_timer_5m_click_end,
 		}
-		for btn_name in btn_map:
+		
+		# 2. Buttons that connect to GUI (Self) functions
+		var gui_btn_map = {
+			"btn_give_item": _on_btn_give_item_click_end,
+			"btn_remove_item": _on_btn_remove_item_click_end,
+			"btn_show_warning": _on_btn_show_warning_click_end,
+			"btn_spawn_boss": _on_btn_spawn_boss_click_end,
+		}
+
+		# Connect player-based buttons
+		for btn_name in player_btn_map:
 			var btn = grid.get_node_or_null(btn_name)
 			if btn and btn.has_signal("click_end"):
-				if not btn.click_end.is_connected(btn_map[btn_name]):
-					btn.click_end.connect(btn_map[btn_name])
+				if not btn.click_end.is_connected(player_btn_map[btn_name]):
+					btn.click_end.connect(player_btn_map[btn_name])
 		
-		# Toggle buttons
+		# Connect gui-based buttons
+		for btn_name in gui_btn_map:
+			var btn = grid.get_node_or_null(btn_name)
+			if btn and btn.has_signal("click_end"):
+				if not btn.click_end.is_connected(gui_btn_map[btn_name]):
+					btn.click_end.connect(gui_btn_map[btn_name])
+		
+		# Toggle buttons (mostly player-based)
 		var god = grid.get_node_or_null("btn_toggle_godmode")
 		if god and not god.toggled.is_connected(player._on_btn_toggle_godmode_toggled):
 			god.toggled.connect(player._on_btn_toggle_godmode_toggled)
@@ -368,18 +386,15 @@ func _grab_context_focus() -> void:
 func setup_give_item_menu():
 	var items = {}
 	for i in UpgradeDb.UPGRADES:
-		var base_name = i.rstrip("0123456789")
-		if not items.has(base_name):
-			items[base_name] = []
-		items[base_name].append(i)
+		var dname = UpgradeDb.UPGRADES[i].get("displayname", i)
+		if not items.has(dname):
+			items[dname] = []
+		items[dname].append(i)
 		
-	for base_name in items.keys():
+	for dname in items.keys():
 		var btn = Button.new()
-		var first_id = items[base_name][0]
-		var dname = UpgradeDb.UPGRADES[first_id].get("displayname", base_name)
 		btn.text = tr(dname)
-		btn.custom_minimum_size = Vector2(180, 40)
-		btn.pressed.connect(func(b_name=base_name):
+		btn.pressed.connect(func(name_key=dname):
 			giveItemMainGrid.hide()
 			giveItemSubGrid.show()
 			for child in giveItemSubGrid.get_children():
@@ -394,7 +409,7 @@ func setup_give_item_menu():
 			)
 			giveItemSubGrid.add_child(back_btn)
 			
-			for lvl_id in items[b_name]:
+			for lvl_id in items[name_key]:
 				var lvl_btn = Button.new()
 				var lvl_text = str(tr(UpgradeDb.UPGRADES[lvl_id].get("level", lvl_id)))
 				lvl_btn.text = lvl_text

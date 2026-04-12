@@ -15,7 +15,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="SurvivorsClone"
-config/version="0.7.6"
+config/version="0.8.3"
 run/main_scene="res://TitleScreen/menu.tscn"
 config/features=PackedStringArray("4.6", "Mobile")
 config/icon="res://icon.svg"

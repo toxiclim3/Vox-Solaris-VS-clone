@@ -103,7 +103,7 @@ func apply_elite_settings() -> void:
 	# DLSS (Joke) - Adds to the placebo vibe
 	apply_max_fps(max_fps) # Refresh normal FPS first
 	if raytracing_enabled:
-		Engine.max_fps = 120 # Cinematic 10fps
+		Engine.max_fps = 10 # Cinematic 10fps
 	
 	shadow_settings_changed.emit(shadows_enabled)
 	raytracing_settings_changed.emit(raytracing_enabled)

@@ -24,11 +24,3 @@ This file tracks known bugs, mathematical quirks, or engine-level limitations th
   2. Character grid buttons have themes manually assigned for visual feedback.
   3. Strict `_input` overrides catch `ui_cancel` (B/Escape) to facilitate navigation back to categories.
   
-### Sub-Viewport Blurring / "Cursed" Filtering
-- **Status:** Deferred / Investigating
-- **Description:** After migrating the HUD and game world into a `SubViewport` structure, the game exhibits persistent "softness" or blurriness on sprites (specifically enemies). This occurs even when filtering is set to `Nearest` project-wide and on the nodes themselves. The blur often "breaks" or flickers during movemenet, suggesting a sub-pixel alignment issue between the `SubViewport`'s 640x360 buffer and the root window's upscale pass.
-- **Why it was deferred:** Standard Godot 4 fixes (disabling `BILINEAR` scaling modes, setting `texture_filter = 1`, and forcing 1.0x scale) have not fully restored the raw 1:1 pixel clarity of previous versions. Enabling `snap_2d_transforms_to_pixel` to solve the flicker resulted in unacceptable jitter and vibrating sprites.
-- **Current Mitigation:** 
-  1. `SubViewportContainer` and `GameViewport` are explicitly set to `Nearest` (1) filter in the scene file.
-  2. The `ElitePostProcessLayer` is physically hidden when TAA/FSR are off to prevent any shader-pass softening.
-  3. `scaling_3d_mode` is set to `OFF` in the settings manager to bypass engine-level interpolation.

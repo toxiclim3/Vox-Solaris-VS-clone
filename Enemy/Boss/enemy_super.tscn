@@ -63,7 +63,7 @@ hframes = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=515531833]
 shape = SubResource("CircleShape2D_6gwvv")
-disabled = true
+disabled = false
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=221754932]
 libraries/ = SubResource("AnimationLibrary_6gwvv")

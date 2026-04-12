@@ -210,8 +210,8 @@ keys,en,ru,ua
 "item_level_endless","Endless","Бесконечный","Нескінченний"
 "item_level_endless_details","Continuous scaling for this item.","Бесконечное улучшение этого предмета.","Постійне покращення цього предмета."
 item_relicdrone,Relic Drone,Дрон-реликвия,Дрон-реліквія
-ItemDesc_RelicDrone1,A companion that fires homing rockets when you deal damage (2% Proc chance).,Дрон-помощник, запускающий самонаводящиеся ракеты при нанесении урона (шанс 2%).,Дрон-помічник, що запускає самонавідні ракети при нанесенні шкоди (шанс 2%).
-ItemDesc_RelicDrone2,Increases proc chance to 4% and rocket damage by 50%.,Увеличивает шанс прока до 4% и урон ракет на 50%.,Збільшує шанс проку до 4% та шкоду ракет на 50%.
+ItemDesc_RelicDrone1,A companion that fires homing rockets when you deal damage (20% Proc chance).,Дрон-помощник, запускающий самонаводящиеся ракеты при нанесении урона (шанс 20%).,Дрон-помічник, що запускає самонавідні ракети при нанесенні шкоди (шанс 20%).
+ItemDesc_RelicDrone2,Increases proc chance to 30% and rocket damage by 50%.,Увеличивает шанс прока до 30% и урон ракет на 50%.,Збільшує шанс проку до 30% та шкоду ракет на 50%.
 ui_elite_tab,Elite,Элитные,Елітні
 ui_taa,"TAA (Temporal Anti-Aliasing)","TAA (Временное сглаживание)","TAA (Тимчасове згладжування)"
 ui_fsr,"FSR 1.0 (Super Resolution)","FSR 1.0 (Супер-разрешение)","FSR 1.0 (Супер-роздільна здатність)"

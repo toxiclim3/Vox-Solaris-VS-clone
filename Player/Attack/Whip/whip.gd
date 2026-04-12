@@ -32,7 +32,7 @@ func _ready():
 	# Calculate start rotation so the sweep is centered on target
 	var target_dir = global_position.direction_to(target_pos)
 	angle = target_dir
-	start_rotation = target_dir.angle() - (sweep_angle / 2.0)
+	start_rotation = target_dir.angle() + PI/2.0 - (sweep_angle / 2.0)
 	rotation = start_rotation
 	
 	# Scale based on player spell size

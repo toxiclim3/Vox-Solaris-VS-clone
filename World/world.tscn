@@ -7,33 +7,31 @@
 [ext_resource type="Script" uid="uid://cixj7hojfeitd" path="res://Player/gui.gd" id="4_gu6f8"]
 [ext_resource type="Texture2D" uid="uid://dx7xx6vfahxlq" path="res://Textures/GUI/exp_background.png" id="4_pbpj5"]
 [ext_resource type="Script" uid="uid://b88gb022b3qno" path="res://Utility/spawn_info.gd" id="5_jj7s8"]
-[ext_resource type="Texture2D" uid="uid://dlx33roiu0vlj" path="res://Textures/GUI/exp_progress.png" id="5_p5o4e"]
 [ext_resource type="PackedScene" uid="uid://dyahivqch5l16" path="res://Utility/settings_menu.tscn" id="7_pisgm"]
 [ext_resource type="AudioStream" uid="uid://ul8hunj8tl2t" path="res://Audio/SoundEffect/levelup.ogg" id="7_wl7d2"]
-[ext_resource type="AudioStream" uid="uid://bnv76nm5171dn" path="res://Audio/SoundEffect/Victory.wav" id="11_p5o4e"]
+[ext_resource type="Theme" uid="uid://dg7yl74xayfwi" path="res://Themes/HeaderText.tres" id="8_koyeq"]
+[ext_resource type="FontFile" uid="uid://bsxgsqnu51ihf" path="res://Font/OpenSans-Bold.ttf" id="9_3ql07"]
+[ext_resource type="AudioStream" uid="uid://dncwwdnm7g3n1" path="res://Audio/SoundEffect/win.ogg" id="9_s5a7k"]
+[ext_resource type="AudioStream" uid="uid://dt01f8kjva8hs" path="res://Audio/SoundEffect/magic_crumple2.ogg" id="10_koyeq"]
 [ext_resource type="PackedScene" uid="uid://b7c7gsdx2rkjm" path="res://Utility/basic_button.tscn" id="12_i8esf"]
-[ext_resource type="AudioStream" uid="uid://ca6physj6mqei" path="res://Audio/SoundEffect/Lose.ogg" id="12_p5o4e"]
 [ext_resource type="Theme" uid="uid://kvmf0od5c6rf" path="res://Themes/DebugButtons.tres" id="15_dkpta"]
 [ext_resource type="Script" uid="uid://eq8qugfbk7vl" path="res://Player/debugmenu.gd" id="15_lfmf2"]
 [ext_resource type="Theme" path="res://Themes/RegularText_White.tres" id="15_o28un"]
-[ext_resource type="Theme" path="res://Themes/HeaderText_Black.tres" id="16_7emwf"]
-[ext_resource type="Theme" path="res://Themes/HeaderText_Brick.tres" id="16_noshadow"]
-[ext_resource type="Theme" uid="uid://ds5mdedn440wb" path="res://Themes/NinePatchUI.tres" id="18_hshwv"]
+[ext_resource type="Theme" uid="uid://pdkwv2mcndsq" path="res://Themes/HeaderText_Brick.tres" id="16_noshadow"]
 [ext_resource type="StyleBox" uid="uid://pckkvhpg3ymk" path="res://Themes/Shadowpanel.tres" id="21_8viyr"]
-[ext_resource type="Theme" path="res://Themes/RegularText_Black.tres" id="22_8viyr"]
 [ext_resource type="AudioStream" uid="uid://bthqe0qhx0ik8" path="res://Audio/SoundEffect/Difficulty.wav" id="24_wdifc"]
 [ext_resource type="Script" uid="uid://b8kmo7xmbqafv" path="res://Player/boss_ui.gd" id="boss_ui_script"]
-[ext_resource type="Shader" uid="uid://3dv3hmh21cm7" path="res://Utility/elite_graphics.gdshader" id="shader_elite"]
-[ext_resource type="Texture2D" uid="uid://2e6c0h52rqvc" path="res://Textures/GUI/exp_progress_alt2.png" id="exp_progress_alt2"]
-[ext_resource type="Theme" path="res://Themes/HeaderText_White.tres" id="header_white_theme"]
 [ext_resource type="Theme" uid="uid://dlpshatg4y1v3" path="res://Themes/Buttons_Dark.tres" id="buttons_dark_theme"]
-[ext_resource type="PackedScene" uid="uid://p4n2byek3hf6" path="res://Enemy/Minions/enemy_kobold_weak.tscn" id="enemy_kobold_weak"]
-[ext_resource type="PackedScene" uid="uid://f27gfkx355ha" path="res://Enemy/Minions/enemy_kobold_strong.tscn" id="enemy_kobold_strong"]
-[ext_resource type="Script" uid="uid://c1m16auiseqlg" path="res://Enemy/Base/enemy.gd" id="enemy_script"]
+[ext_resource type="Texture2D" uid="uid://b4tu8mxdnvsy1" path="res://Textures/Enemy/cyclops.png" id="cyclops_tex"]
 [ext_resource type="PackedScene" uid="uid://ndk3tlufsxr8" path="res://Enemy/Base/EnemyBase.tscn" id="enemy_base_scene"]
 [ext_resource type="PackedScene" uid="uid://hcjnrdsb563h" path="res://Enemy/Minions/enemy_juggernaut.tscn" id="enemy_juggernaut"]
-[ext_resource type="Texture2D" uid="uid://b4tu8mxdnvsy1" path="res://Textures/Enemy/cyclops.png" id="cyclops_tex"]
+[ext_resource type="PackedScene" uid="uid://f27gfkx355ha" path="res://Enemy/Minions/enemy_kobold_strong.tscn" id="enemy_kobold_strong"]
+[ext_resource type="PackedScene" uid="uid://p4n2byek3hf6" path="res://Enemy/Minions/enemy_kobold_weak.tscn" id="enemy_kobold_weak"]
+[ext_resource type="Script" uid="uid://c1m16auiseqlg" path="res://Enemy/Base/enemy.gd" id="enemy_script"]
 [ext_resource type="PackedScene" uid="uid://btf7clk4jja87" path="res://Enemy/Boss/enemy_super.tscn" id="enemy_super"]
+[ext_resource type="Texture2D" uid="uid://2e6c0h52rqvc" path="res://Textures/GUI/exp_progress_alt2.png" id="exp_progress_alt2"]
+[ext_resource type="Theme" uid="uid://bfqnier0lheft" path="res://Themes/HeaderText_White.tres" id="header_white_theme"]
+[ext_resource type="Shader" uid="uid://3dv3hmh21cm7" path="res://Utility/elite_graphics.gdshader" id="shader_elite"]
 
 [sub_resource type="Resource" id="Resource_EASY"]
 script = ExtResource("5_jj7s8")
@@ -102,6 +100,7 @@ shader = ExtResource("shader_elite")
 shader_parameter/ghosting_strength = 0.0
 shader_parameter/blur_strength = 0.0
 shader_parameter/motion_offset = Vector2(0, 0)
+shader_parameter/trail_mode = 2
 
 [node name="World" type="Node2D" unique_id=73796557]
 script = ExtResource("1_awrha")
@@ -169,7 +168,6 @@ text = "00:00"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-
 [node name="LUpMarginContainer" type="MarginContainer" parent="GUILayer/GUI" unique_id=1379863372]
 layout_mode = 1
 anchors_preset = 15
@@ -226,7 +224,6 @@ size_flags_horizontal = 3
 theme_override_constants/separation = 8
 
 [node name="BLUpMarginContainer" type="MarginContainer" parent="GUILayer/GUI" unique_id=124367374]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -239,6 +236,7 @@ theme_override_constants/margin_bottom = 32
 
 [node name="BossLevelUp" type="PanelContainer" parent="GUILayer/GUI/BLUpMarginContainer" unique_id=1700000000]
 unique_name_in_owner = true
+visible = false
 self_modulate = Color(1, 0.843137, 0, 1)
 custom_minimum_size = Vector2(192, 0)
 layout_mode = 2
@@ -258,7 +256,7 @@ theme_override_constants/separation = 8
 
 [node name="lbl_BossReward" type="Label" parent="GUILayer/GUI/BLUpMarginContainer/BossLevelUp/MarginContainer/VBoxContainer" unique_id=1700000003]
 layout_mode = 2
-theme = ExtResource("16_noshadow")
+theme = ExtResource("header_white_theme")
 text = "ui_bossReward"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -406,39 +404,40 @@ unique_name_in_owner = true
 layout_mode = 0
 offset_right = 200.0
 offset_bottom = 50.0
-theme = ExtResource("15_o28un")
+theme = ExtResource("8_koyeq")
+theme_override_fonts/font = ExtResource("9_3ql07")
 text = "ui_result"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="snd_victory" type="AudioStreamPlayer" parent="GUILayer/GUI/DeathPanel" unique_id=903870957]
 unique_name_in_owner = true
-stream = ExtResource("11_p5o4e")
+stream = ExtResource("9_s5a7k")
 volume_db = -10.0
 bus = &"SFX"
 
 [node name="snd_lose" type="AudioStreamPlayer" parent="GUILayer/GUI/DeathPanel" unique_id=1169289820]
 unique_name_in_owner = true
-stream = ExtResource("12_p5o4e")
+stream = ExtResource("10_koyeq")
 volume_db = -10.0
 bus = &"SFX"
 
 [node name="btn_menu" parent="GUILayer/GUI/DeathPanel" unique_id=964057103 instance=ExtResource("12_i8esf")]
 layout_mode = 0
 offset_left = 58.0
-offset_top = 194.0
+offset_top = 210.0
 offset_right = 138.0
-offset_bottom = 226.0
-theme = ExtResource("18_hshwv")
+offset_bottom = 229.0
+theme = ExtResource("buttons_dark_theme")
 text = "ui_menu"
 
 [node name="btn_restart" parent="GUILayer/GUI/DeathPanel" unique_id=1864663429 instance=ExtResource("12_i8esf")]
 layout_mode = 0
 offset_left = 58.0
-offset_top = 154.0
+offset_top = 186.0
 offset_right = 138.0
-offset_bottom = 186.0
-theme = ExtResource("18_hshwv")
+offset_bottom = 205.0
+theme = ExtResource("buttons_dark_theme")
 text = "ui_newRun"
 
 [node name="CollectedItemContainer" type="VBoxContainer" parent="GUILayer/GUI" unique_id=1077747811]
@@ -758,36 +757,44 @@ focus_mode = 0
 theme = ExtResource("15_dkpta")
 text = "debug_spawnBoss"
 
-[node name="BossBarContainer" type="VBoxContainer" parent="GUILayer/GUI" unique_id=2025092305]
+[node name="BossBarContainer" type="Control" parent="GUILayer/GUI" unique_id=2025092305]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -100.0
-offset_top = 40.0
-offset_right = 100.0
-offset_bottom = 80.0
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = -40.0
+offset_bottom = -17.0
 grow_horizontal = 2
 script = ExtResource("boss_ui_script")
 
-[node name="BossNameLabel" type="Label" parent="GUILayer/GUI/BossBarContainer" unique_id=2025092306]
-unique_name_in_owner = true
-layout_mode = 2
-theme = ExtResource("header_white_theme")
-text = "Boss Name"
-horizontal_alignment = 1
-
 [node name="BossBarProgress" type="TextureProgressBar" parent="GUILayer/GUI/BossBarContainer" unique_id=2025092307]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(200, 10)
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 value = 50.0
 nine_patch_stretch = true
 texture_under = ExtResource("4_pbpj5")
 texture_progress = ExtResource("exp_progress_alt2")
 tint_progress = Color(0.8, 0, 0, 1)
+
+[node name="BossNameLabel" type="Label" parent="GUILayer/GUI/BossBarContainer/BossBarProgress" unique_id=2025092306]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("header_white_theme")
+theme_override_font_sizes/font_size = 12
+text = "Boss Name"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="BossWarning" type="ColorRect" parent="GUILayer/GUI" unique_id=1286608518]
 unique_name_in_owner = true
@@ -852,8 +859,8 @@ spawns_super = Array[ExtResource("5_jj7s8")]([SubResource("Resource_SUPER")])
 [node name="Loot" type="Node2D" parent="." unique_id=2025092302 groups=["loot"]]
 
 [node name="ElitePostProcessLayer" type="CanvasLayer" parent="." unique_id=2025092303]
-visible = false
 layer = 50
+visible = false
 
 [node name="PostProcess" type="ColorRect" parent="ElitePostProcessLayer" unique_id=2025092304]
 unique_name_in_owner = true

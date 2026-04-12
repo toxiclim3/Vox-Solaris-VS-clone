@@ -12,7 +12,7 @@ var lifetime = 3.0
 var proc_coefficient = 0.0 # Proc items shouldn't proc themselves
 
 @onready var player = get_tree().get_first_node_in_group("player")
-@onready var sprite = $Sprite2D
+@onready var sprite = $ColorRect
 @onready var particles = $CPUParticles2D
 @onready var snd_launch = $AudioStreamPlayer2D
 

@@ -131,6 +131,7 @@ func _ready():
 	gui.set_level_text(experience_level)
 	_on_hurt_box_hurt(0,0,0)
 	GlobalEvents.enemy_died.connect(_on_enemy_died)
+	GlobalEvents.boss_defeated.connect(_on_boss_defeated)
 	
 	# Ray Tracing (Elite)
 	_setup_rt_light()
@@ -524,7 +525,7 @@ func upgrade_character(upgrade):
 		if weapon_spawner:
 			weapon_spawner.upgrade(upgrade)
 			
-	elif type == "upgrade" or type == "item":
+	elif type == "upgrade" or type == "item" or type == "bossitem":
 		if upgrade_data.has("stat_modifiers"):
 			if type == "item" and upgrade == "food":
 				hp += upgrade_data["stat_modifiers"]["hp"]

@@ -52,8 +52,8 @@ void fragment() {
         // Mode 2: The "Rainbow" Chromatic Aberration Trail
         else if (trail_mode == 2) {
             for (int i = 1; i <= 20; i++) {
-                float weight = 1.0 / float(i + 1);
-                vec2 trail_uv = uv + (motion_offset * float(i) * 0.1); 
+                float weight = 2.0 / float(i + 1);
+                vec2 trail_uv = uv + (motion_offset * float(i) * 0.05); 
                 vec3 chromatic;
                 chromatic.r = texture(screen_texture, trail_uv + vec2(0.003, 0.0)).r;
                 chromatic.g = texture(screen_texture, trail_uv).g;
