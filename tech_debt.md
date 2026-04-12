@@ -24,3 +24,8 @@ This file tracks known bugs, mathematical quirks, or engine-level limitations th
   2. Character grid buttons have themes manually assigned for visual feedback.
   3. Strict `_input` overrides catch `ui_cancel` (B/Escape) to facilitate navigation back to categories.
   
+### Swarm MultiMesh Animation & Spritesheet Splicing
+- **Status:** Known Cursed Issue
+- **Description:** Rendering the new `SwarmManager` entities via `MultiMeshInstance2D` while natively slicing an Atlas/Spritesheet via a custom CanvasItem shader currently causes aggressively mangled, flattened, or "squished" geometry. This is likely a Godot 4 specific pixel-bleeding mismatch between `QuadMesh`/`ArrayMesh` custom UV generation and the 2D rendering pipeline utilizing Nearest Neighbor filtering (`texture_filter = 1`), alongside uniform caching problems.
+- **Why it was deferred:** The collision and separation math is functional, but fully un-corrupting the shader requires dedicating time to writing a specialized vertex-perfect CanvasItem Shader or altering how the Godot 4 Renderer binds `TEXTURE` sampling across arrays.
+- **Current Mitigation:** Deferred to a later optimization pass.

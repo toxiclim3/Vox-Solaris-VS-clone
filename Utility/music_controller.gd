@@ -33,9 +33,16 @@ var restartable = true
 # Состояние паузы музыки (не путать с get_tree().paused)
 var isMusicMuted: bool = false
 var is_music_locked: bool = false
+var is_audio_functional: bool = false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	
+	if AudioServer.get_bus_count() > 0:
+		is_audio_functional = true
+	else:
+		push_warning("MusicController: AudioServer failed to initialize buses. Music is disabled.")
+		return # Bailing out early
 	
 	if OS.has_feature("lite_audio"):
 		normalMusicDir = normalMusicDir.replace("Music", "Music_Lite")
@@ -68,6 +75,9 @@ var trackCache: Dictionary = {}
 
 # Запуск конкретного файла с кэшированием
 func playSpecificTrack(filePath: String,crossfade: bool = 1) -> void:
+	if not is_audio_functional:
+		return
+		
 	if is_music_locked and filePath != winMusic and filePath != titleMusic:
 		return
 		
@@ -103,6 +113,9 @@ func clearMusicCache() -> void:
 	trackCache.clear()
 
 func playNext(type: MusicType) -> void:
+	if not is_audio_functional:
+		return
+		
 	if is_music_locked and type != MusicType.BOSS:
 		return
 		

@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://b8d3f1bac4d2e"]
+
+[ext_resource type="Script" uid="uid://c0qq84k57laea" path="res://Utility/swarm_manager.gd" id="1_swarm"]
+
+[node name="SwarmManager" type="Node2D" unique_id=589605651]
+script = ExtResource("1_swarm")

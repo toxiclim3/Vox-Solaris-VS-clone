@@ -18,6 +18,7 @@ var fsr_enabled: bool = false
 var dlss_enabled: bool = false
 var raytracing_enabled: bool = false
 var shadows_enabled: bool = false # Enabled by default for "Next-Gen" feel
+var is_audio_functional: bool = false
 
 signal shadow_settings_changed(enabled: bool)
 signal raytracing_settings_changed(enabled: bool)
@@ -42,6 +43,12 @@ const PROFILES = {
 }
 
 func _ready() -> void:
+	# Check if audio is functional (dummy driver or no buses means it's not)
+	if AudioServer.get_bus_count() > 0:
+		is_audio_functional = true
+	else:
+		push_warning("SettingsManager: AudioServer failed to initialize buses. Audio is disabled.")
+		
 	loadSettings()
 
 # Сохранение значения громкости
@@ -192,6 +199,9 @@ func applySoundProfile(profile: String) -> void:
 
 # Вспомогательная функция для применения громкости к AudioServer
 func applyBusVolume(busName: String, linearValue: float) -> void:
+	if not is_audio_functional:
+		return
+		
 	var busIndex = AudioServer.get_bus_index(busName)
 	if busIndex != -1:
 		AudioServer.set_bus_volume_db(busIndex, linear_to_db(linearValue))

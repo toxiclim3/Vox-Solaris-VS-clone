@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://btf7clk4jja87"]
 
-[ext_resource type="Script" uid="uid://btfjk177jkdk6" path="res://Enemy/Boss/boss.gd" id="1_friak"]
+[ext_resource type="Script" uid="uid://b7rk3k1hu240w" path="res://Enemy/Boss/boss.gd" id="1_friak"]
 [ext_resource type="PackedScene" uid="uid://ndk3tlufsxr8" path="res://Enemy/Base/EnemyBase.tscn" id="2_aji1p"]
 [ext_resource type="Texture2D" uid="uid://ce0hue7fwpa3a" path="res://Textures/Enemy/giant_amoeba_new.png" id="2_f58yx"]
 
@@ -57,13 +57,12 @@ isBoss = 1
 
 [node name="EnemyBase" parent="." unique_id=978387467 instance=ExtResource("2_aji1p")]
 
-[node name="Sprite2D" parent="EnemyBase" index="0" unique_id=1348046775]
+[node name="Sprite2D" parent="EnemyBase" index="1" unique_id=1348046775]
 texture = ExtResource("2_f58yx")
 hframes = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=515531833]
 shape = SubResource("CircleShape2D_6gwvv")
-disabled = false
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=221754932]
 libraries/ = SubResource("AnimationLibrary_6gwvv")

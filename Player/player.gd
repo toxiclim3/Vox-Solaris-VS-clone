@@ -243,23 +243,43 @@ func _on_hurt_box_hurt(damage, _angle, _knockback, _killer_source = "", attacker
 
 #enemy related logic
 func get_random_target():
-	if enemy_close.size() > 0:
-		return enemy_close.pick_random().global_position
+	var targets = []
+	for body in enemy_close:
+		if is_instance_valid(body):
+			targets.append(body.global_position)
+	
+	var swarm = get_tree().get_first_node_in_group("swarm_manager")
+	if swarm:
+		for enemy in swarm.swarm_data:
+			if not enemy.is_dead and enemy.position.distance_squared_to(global_position) < 160000: # approx 400px radius
+				targets.append(enemy.position)
+				
+	if targets.size() > 0:
+		return targets.pick_random()
 	else:
 		return Vector2.INF
 
 func get_closest_target():
-	if enemy_close.size() > 0:
-		var closest = enemy_close[0]
-		var min_dist = global_position.distance_squared_to(closest.global_position)
-		for enemy in enemy_close:
-			var dist = global_position.distance_squared_to(enemy.global_position)
+	var closest_pos = Vector2.INF
+	var min_dist = INF
+	
+	for body in enemy_close:
+		if is_instance_valid(body):
+			var dist = global_position.distance_squared_to(body.global_position)
 			if dist < min_dist:
 				min_dist = dist
-				closest = enemy
-		return closest.global_position
-	else:
-		return Vector2.INF
+				closest_pos = body.global_position
+				
+	var swarm = get_tree().get_first_node_in_group("swarm_manager")
+	if swarm:
+		for enemy in swarm.swarm_data:
+			if not enemy.is_dead:
+				var dist = global_position.distance_squared_to(enemy.position)
+				if dist < min_dist and dist < 160000:
+					min_dist = dist
+					closest_pos = enemy.position
+					
+	return closest_pos
 
 
 func _on_enemy_detection_area_body_entered(body):

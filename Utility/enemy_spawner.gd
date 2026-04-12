@@ -32,12 +32,18 @@ var upcoming_boss: Spawn_info = null
 
 signal changetime(time)
 
+var swarm_manager_scene = preload("res://Utility/swarm_manager.tscn")
+var swarm_manager = null
+
 func _ready():
 	startTimer()
 	connect("changetime",Callable(player,"change_time"))
 	GlobalEvents.enableSpawns.connect(enableSpawns)
 	GlobalEvents.disableSpawns.connect(disableSpawns)
 	GlobalEvents.queue_boss.connect(force_queue_boss)
+	
+	swarm_manager = swarm_manager_scene.instantiate()
+	add_child(swarm_manager)
 
 func enableSpawns():
 	isSpawningActive = true
@@ -186,25 +192,62 @@ func spawn_enemy_group(enemy_info: Spawn_info, pool_type: String) -> void:
 	if enemy_info.enemy_num > 0 and spawn_count < 1:
 		spawn_count = 1
 		
+	var is_swarm = (pool_type == "easy" or pool_type == "normal")
+	
 	var max_allowed = (soft_limit - current_enemies) + 5
+	if is_swarm:
+		max_allowed = (3000 - (swarm_manager.swarm_data.size() if swarm_manager else 0)) + 5
+		
 	if spawn_count > max_allowed and max_allowed > 0:
 		spawn_count = max_allowed
 		
 	var counter = 0
-	while counter < spawn_count:
+	
+	if is_swarm and swarm_manager:
 		if enemy_info.enemy == null:
 			printerr("EnemySpawner: Wave entry missing enemy resource! Skipping.")
-			continue
-		var enemy_spawn = enemy_info.enemy.instantiate()
+			return
 		
-		# Apply generic Enemy HP modifier
+		# Instantiate template once
+		var template = enemy_info.enemy.instantiate()
+		var p_sprite = template.get_node_or_null("EnemyBase/Sprite2D")
+		var tex = null
+		var radius = 12.0
+		var hframes = 1
+		var vframes = 1
+		
+		if p_sprite: 
+			tex = p_sprite.texture
+			hframes = p_sprite.hframes
+			vframes = p_sprite.vframes
+			
+		var type_id = swarm_manager.register_enemy_type(tex, radius, hframes, vframes)
+		
 		var hp_mod = GlobalEvents.get_enemy_hp_modifier()
-		if hp_mod != 1.0:
-			enemy_spawn.hp = int(enemy_spawn.hp * hp_mod)
+		var final_hp = int(template.hp * hp_mod)
+		var spd = float(template.get("movement_speed"))
+		if spd <= 0.0: spd = 45.0
 		
-		enemy_spawn.global_position = get_random_position()
-		add_child(enemy_spawn)
-		counter += 1
+		while counter < spawn_count:
+			swarm_manager.add_enemy(get_random_position(), final_hp, final_hp, spd, template.experience, template.enemy_damage, type_id)
+			counter += 1
+			
+		template.queue_free()
+	else:
+		while counter < spawn_count:
+			if enemy_info.enemy == null:
+				printerr("EnemySpawner: Wave entry missing enemy resource! Skipping.")
+				continue
+			var enemy_spawn = enemy_info.enemy.instantiate()
+			
+			# Apply generic Enemy HP modifier
+			var hp_mod = GlobalEvents.get_enemy_hp_modifier()
+			if hp_mod != 1.0:
+				enemy_spawn.hp = int(enemy_spawn.hp * hp_mod)
+			
+			enemy_spawn.global_position = get_random_position()
+			add_child(enemy_spawn)
+			counter += 1
 	
 	emit_signal("changetime",GlobalEvents.time)
 
