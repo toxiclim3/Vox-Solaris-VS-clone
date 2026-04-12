@@ -9,6 +9,7 @@ var sweep_angle = PI
 var lifetime = 0.4
 var knockback_amount = 50.0
 var killer_source = "glasslash"
+var proc_coefficient = 1.0
 var timer = 0.0
 
 @onready var player = get_tree().get_first_node_in_group("player")

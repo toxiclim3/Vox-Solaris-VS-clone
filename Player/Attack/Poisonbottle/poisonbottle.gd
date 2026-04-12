@@ -1,6 +1,7 @@
 extends Area2D
 
 var level = 1
+var endless_level = 0
 var hp = 1
 var speed = 225
 var damage = 0 # Damage is dealt by the explosion, not the bottle itself
@@ -55,6 +56,7 @@ func spawn_gas():
 	var gas = poison_gas_scene.instantiate()
 	gas.global_position = global_position
 	gas.level = level
+	gas.endless_level = endless_level
 	# Pass attack size to scale the gas too
 	gas.attack_size = attack_size
 	get_parent().call_deferred("add_child", gas)

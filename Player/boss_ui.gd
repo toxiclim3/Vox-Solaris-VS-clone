@@ -1,13 +1,13 @@
 extends Control
 
-@onready var boss_warning_panel = get_node("../BossWarning")
-@onready var boss_warning_label = get_node("../BossWarning/Label")
-@onready var snd_boss_warning = get_node("../BossWarning/snd_boss_warning")
+@onready var boss_warning_panel = get_node("%BossWarning")
+@onready var boss_warning_label = get_node("%lbl_boss_warning")
+@onready var snd_boss_warning = get_node("%snd_boss_warning")
 
 # Boss Bar
-@onready var boss_bar_progress = get_node("BossBarProgress")
-@onready var boss_name_label = get_node("BossNameLabel")
-@onready var boss_bar_particles = get_node("BossBarParticles")
+@onready var boss_bar_progress = get_node("%BossBarProgress")
+@onready var boss_name_label = get_node("%BossNameLabel")
+@onready var boss_bar_particles = get_node("%BossBarParticles")
 
 var current_boss = null
 var boss_warning_tween: Tween

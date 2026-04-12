@@ -207,3 +207,15 @@ keys,en,ru,ua
 "ItemDesc_Whip3","Damage increased to 16 and attack rate is now 1.0s.","Урон увеличен до 16, скорость атаки теперь 1.0 сек.","Шкода збільшена до 16, швидкість атаки тепер 1.0 сек."
 "ItemDesc_Whip4","Damage increased to 20 and attack rate is now 0.8s.","Урон увеличен до 20, скорость атаки теперь 0.8 сек.","Шкода збільшена до 20, швидкість атаки тепер 0.8 сек."
 "ui_preheating_shaders","Pre-heating Shaders...","Прогрев шейдеров...","Прогрів шейдерів..."
+"item_level_endless","Endless","Бесконечный","Нескінченний"
+"item_level_endless_details","Continuous scaling for this item.","Бесконечное улучшение этого предмета.","Постійне покращення цього предмета."
+item_relicdrone,Relic Drone,Дрон-реликвия,Дрон-реліквія
+ItemDesc_RelicDrone1,A companion that fires homing rockets when you deal damage (2% Proc chance).,Дрон-помощник, запускающий самонаводящиеся ракеты при нанесении урона (шанс 2%).,Дрон-помічник, що запускає самонавідні ракети при нанесенні шкоди (шанс 2%).
+ItemDesc_RelicDrone2,Increases proc chance to 4% and rocket damage by 50%.,Увеличивает шанс прока до 4% и урон ракет на 50%.,Збільшує шанс проку до 4% та шкоду ракет на 50%.
+ui_elite_tab,Elite,Элитные,Елітні
+ui_taa,"TAA (Temporal Anti-Aliasing)","TAA (Временное сглаживание)","TAA (Тимчасове згладжування)"
+ui_fsr,"FSR 1.0 (Super Resolution)","FSR 1.0 (Супер-разрешение)","FSR 1.0 (Супер-роздільна здатність)"
+ui_dlss,"DLSS 3.5 (Requires RTX 9090)","DLSS 3.5 (Нужна RTX 9090)","DLSS 3.5 (Потрібна RTX 9090)"
+ui_raytracing,"Ray Tracing (RTX ON)","Трассировка лучей (RTX ON)","Трасування променів (RTX ON)"
+ui_enemy_shadows,"Enemy Shadows (Next-Gen)","Тени врагов (Next-Gen)","Тіні ворогів (Next-Gen)"
+ui_dlss_denied,"Hardware not found. Contact NVIDIA for a sponsorship.","Оборудование не найдено. Свяжитесь с NVIDIA для спонсорства.","Обладнання не знайдено. Зв'яжіться з NVIDIA для спонсорства."

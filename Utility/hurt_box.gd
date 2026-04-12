@@ -5,7 +5,7 @@ extends Area2D
 @onready var collision = $CollisionShape2D
 @onready var disableTimer = $DisableTimer
 
-signal hurt(damage, angle, knockback, killer_source, attacker_node)
+signal hurt(damage, angle, knockback, killer_source, attacker_node, proc_coefficient)
 
 var hit_once_array = []
 
@@ -48,7 +48,11 @@ func _on_area_entered(area):
 					break
 				current = current.get_parent()
 				
-			emit_signal("hurt", damage, angle, knockback, killer_source, attacker_node)
+			var proc_coefficient = 1.0
+			if not area.get("proc_coefficient") == null:
+				proc_coefficient = area.proc_coefficient
+				
+			emit_signal("hurt", damage, angle, knockback, killer_source, attacker_node, proc_coefficient)
 			if area.has_method("enemy_hit"):
 				area.enemy_hit(1)
 

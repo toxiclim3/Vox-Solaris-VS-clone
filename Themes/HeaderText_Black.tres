@@ -1,9 +1,9 @@
-[gd_resource type="Theme" format=3]
+[gd_resource type="Theme" format=3 uid="uid://bcfs0cxmu46ko"]
 
-[ext_resource type="FontFile" uid="uid://dkatxtvn4e35l" path="res://Font/morana.otf" id="1_morana"]
+[ext_resource type="FontFile" uid="uid://bu0ii1qpo4542" path="res://Font/Palitura-SemiBold.ttf" id="1_7bxhd"]
 
 [resource]
-default_font = ExtResource("1_morana")
+default_font = ExtResource("1_7bxhd")
 default_font_size = 14
 Label/colors/font_color = Color(0, 0, 0, 1)
 RichTextLabel/colors/default_color = Color(0, 0, 0, 1)

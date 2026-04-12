@@ -27,7 +27,14 @@ func _ready():
 		item = "food"
 	lblName.text = tr(UpgradeDb.UPGRADES[item]["displayname"])
 	lblDescription.text = tr(UpgradeDb.UPGRADES[item]["details"])
-	lblLevel.text = tr(UpgradeDb.UPGRADES[item]["level"])
+	
+	if item.ends_with("_endless"):
+		var base_name = item.trim_suffix("_endless")
+		var count = player.collected_endless.get(base_name, 0) + 1
+		lblLevel.text = "∞ (+" + str(count) + ")"
+	else:
+		lblLevel.text = tr(UpgradeDb.UPGRADES[item]["level"])
+
 	itemIcon.texture = load(UpgradeDb.UPGRADES[item]["icon"])
 	
 	if lblName.has_theme_font_size_override("font_size"):

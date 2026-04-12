@@ -1,6 +1,7 @@
 extends Node2D
 
 var level = 0
+var endless_level = 0
 var attack_speed = 1.3
 var damage = 8
 
@@ -31,6 +32,10 @@ func upgrade(upgrade_id: String):
 			level = 4
 			damage = 20
 			attack_speed = 0.8
+		"whip_endless":
+			endless_level += 1
+			damage += 1
+
 	
 	attack()
 
@@ -41,18 +46,23 @@ func attack():
 			timer.start()
 
 func _on_timer_timeout():
+	var extra_attacks = int(player.additional_attacks)
+	if randf() < (player.additional_attacks - extra_attacks):
+		extra_attacks += 1
+		
 	var target_pos = player.get_closest_target()
 	if target_pos == Vector2.INF:
 		# If no enemy, just swing in last movement direction
 		target_pos = player.global_position + player.last_movement * 50
 	
-	var attack_burst = 1 + player.additional_attacks
+	var attack_burst = 1 + extra_attacks
 	for i in range(attack_burst):
 		var whip = whip_scene.instantiate()
 		whip.global_position = player.global_position
 		whip.target_pos = target_pos
 		whip.damage = damage * GlobalEvents.get_player_damage_modifier()
 		whip.level = level
+
 		
 		# Slightly randomize angle for additional attacks
 		if i > 0:

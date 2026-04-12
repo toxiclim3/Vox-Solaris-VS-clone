@@ -4,6 +4,7 @@ enum State { DRAWING, BURSTING, DISSOLVING }
 var state = State.DRAWING
 
 var level = 1
+var endless_level = 0
 var damage = 30.0
 var duration = 3.0
 var max_speed = 60.0
@@ -11,6 +12,7 @@ var steering_force = 150.0
 var velocity = Vector2.ZERO
 
 var attack_size = 1.0
+var proc_coefficient = 0.5
 
 var animator: PhasedAnimator
 
@@ -45,6 +47,10 @@ func _ready():
 			duration = 2.5
 			max_speed = 100.0
 			steering_force = 300.0
+			
+	# Apply Endless Scaling
+	damage += endless_level * 1.0
+
 
 	attack_size = 1.0 * (1 + player.spell_size)
 	scale = Vector2.ONE * attack_size
@@ -55,6 +61,7 @@ func _ready():
 	damage_area.damage = damage
 	damage_area.angle = Vector2.ZERO
 	damage_area.knockback_amount = 0
+	damage_area.proc_coefficient = proc_coefficient
 	
 	# Init UI
 	damage_area.monitoring = false

@@ -94,6 +94,12 @@ layout_mode = 2
 theme = ExtResource("5_darktheme")
 text = "ui_display_tab"
 
+[node name="EliteBtn" parent="MainPanel/Margin/VBox/HBox/Tabs" unique_id=1122334455 instance=ExtResource("7_buttonscene")]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("5_darktheme")
+text = "ui_elite_tab"
+
 [node name="VSeparator" type="VSeparator" parent="MainPanel/Margin/VBox/HBox" unique_id=1152327704]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_88pqv")
@@ -275,6 +281,73 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("3_regtheme")
 
+[node name="EliteContentPanel" type="PanelContainer" parent="MainPanel/Margin/VBox/HBox/Content" unique_id=987654324]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_styles/panel = ExtResource("8_shadow")
+
+[node name="EliteContent" type="VBoxContainer" parent="MainPanel/Margin/VBox/HBox/Content/EliteContentPanel" unique_id=1156265940]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Grid" type="GridContainer" parent="MainPanel/Margin/VBox/HBox/Content/EliteContentPanel/EliteContent" unique_id=688304802]
+layout_mode = 2
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="TaaLabel" type="Label" parent="MainPanel/Margin/VBox/HBox/Content/EliteContentPanel/EliteContent/Grid" unique_id=200000001]
+layout_mode = 2
+theme = ExtResource("3_regtheme")
+text = "ui_taa"
+
+[node name="TaaButton" type="CheckButton" parent="MainPanel/Margin/VBox/HBox/Content/EliteContentPanel/EliteContent/Grid" unique_id=200000002]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("3_regtheme")
+
+[node name="FsrLabel" type="Label" parent="MainPanel/Margin/VBox/HBox/Content/EliteContentPanel/EliteContent/Grid" unique_id=200000003]
+layout_mode = 2
+theme = ExtResource("3_regtheme")
+text = "ui_fsr"
+
+[node name="FsrButton" type="CheckButton" parent="MainPanel/Margin/VBox/HBox/Content/EliteContentPanel/EliteContent/Grid" unique_id=200000004]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("3_regtheme")
+
+[node name="DlssLabel" type="Label" parent="MainPanel/Margin/VBox/HBox/Content/EliteContentPanel/EliteContent/Grid" unique_id=200000005]
+layout_mode = 2
+theme = ExtResource("3_regtheme")
+text = "ui_dlss"
+
+[node name="DlssButton" type="CheckButton" parent="MainPanel/Margin/VBox/HBox/Content/EliteContentPanel/EliteContent/Grid" unique_id=200000006]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("3_regtheme")
+
+[node name="RtLabel" type="Label" parent="MainPanel/Margin/VBox/HBox/Content/EliteContentPanel/EliteContent/Grid" unique_id=200000007]
+layout_mode = 2
+theme = ExtResource("3_regtheme")
+text = "ui_raytracing"
+
+[node name="RtButton" type="CheckButton" parent="MainPanel/Margin/VBox/HBox/Content/EliteContentPanel/EliteContent/Grid" unique_id=200000008]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("3_regtheme")
+
+[node name="ShadowLabel" type="Label" parent="MainPanel/Margin/VBox/HBox/Content/EliteContentPanel/EliteContent/Grid" unique_id=200000009]
+layout_mode = 2
+theme = ExtResource("3_regtheme")
+text = "ui_enemy_shadows"
+
+[node name="ShadowButton" type="CheckButton" parent="MainPanel/Margin/VBox/HBox/Content/EliteContentPanel/EliteContent/Grid" unique_id=200000010]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("3_regtheme")
+
 [node name="Footer" type="HBoxContainer" parent="MainPanel/Margin/VBox" unique_id=10938867]
 layout_mode = 2
 alignment = 2
@@ -290,3 +363,9 @@ unique_name_in_owner = true
 title = "ui_confirmResetTitle"
 initial_position = 2
 dialog_text = "ui_confirmResetText"
+
+[node name="DlssDeniedDialog" type="AcceptDialog" parent="." unique_id=1456453935]
+unique_name_in_owner = true
+title = "DLSS 3.5 Error"
+initial_position = 2
+dialog_text = "ui_dlss_denied"

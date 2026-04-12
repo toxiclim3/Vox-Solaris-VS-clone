@@ -1,6 +1,7 @@
 extends Node2D
 
 var level = 0
+var endless_level = 0
 var knife_count = 5    # Number of knives per volley
 var damage = 5
 var attack_speed = 2.0  # Seconds between volleys
@@ -41,6 +42,11 @@ func upgrade(upgrade_id: String):
 			damage = 15
 			attack_speed = 1.2
 			lifesteal_per_hit = 2
+		"vampireknives_endless":
+			endless_level += 1
+			damage += 1
+			lifesteal_per_hit += 0.1
+
 
 	attack()
 
@@ -57,6 +63,10 @@ func _on_timer_timeout():
 
 func _throw_fan():
 	# Spread knives in a fan toward the nearest enemy (or last movement direction)
+	var extra_attacks = int(player.additional_attacks)
+	if randf() < (player.additional_attacks - extra_attacks):
+		extra_attacks += 1
+		
 	var target_pos = player.get_closest_target()
 	var base_dir: Vector2
 	if target_pos == Vector2.INF:
@@ -64,7 +74,9 @@ func _throw_fan():
 	else:
 		base_dir = player.global_position.direction_to(target_pos)
 
-	var total_knives = knife_count + player.additional_attacks
+	var total_knives = knife_count + extra_attacks
+
+
 	# Fan spread angle in radians
 	var spread = deg_to_rad(60.0) # 60 degree total arc
 

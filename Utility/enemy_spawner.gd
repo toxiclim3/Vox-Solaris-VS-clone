@@ -192,6 +192,9 @@ func spawn_enemy_group(enemy_info: Spawn_info, pool_type: String) -> void:
 		
 	var counter = 0
 	while counter < spawn_count:
+		if enemy_info.enemy == null:
+			printerr("EnemySpawner: Wave entry missing enemy resource! Skipping.")
+			continue
 		var enemy_spawn = enemy_info.enemy.instantiate()
 		
 		# Apply generic Enemy HP modifier

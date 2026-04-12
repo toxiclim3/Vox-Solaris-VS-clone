@@ -7,6 +7,7 @@ var damage = 10
 var knockback_amount = 100
 var paths = 1
 var attack_size = 1.0
+var proc_coefficient = 1.0
 var attack_speed = 5.0
 
 var target = Vector2.ZERO
@@ -68,8 +69,12 @@ func update_javelin():
 			attack_size = 1.0 * (1 + player.spell_size)
 			attack_speed = 5.0 * (1-player.spell_cooldown)
 			
+	# Apply Endless Scaling
+	var e_level = player.javelin_endless_level
+	damage += e_level * 1.0
 	
 	scale = Vector2(1.0,1.0) * attack_size
+
 	attackTimer.wait_time = attack_speed
 
 func _physics_process(delta):

@@ -11,7 +11,7 @@ signal queue_boss
 signal camera_shake(intensity: float, duration: float)
 signal enemy_died(death_position: Vector2, enemy_max_hp: float, killer_source: String)
 signal player_took_damage(amount: float, attacker_node: Node)
-signal player_dealt_damage(amount: float, target_node: Node)
+signal player_dealt_damage(amount: float, target_node: Node, proc_coefficient: float)
 @warning_ignore_restore("unused_signal")
 
 var boss_warnings: Dictionary = {
@@ -146,6 +146,17 @@ func get_xp_gain_modifier() -> float:
 		Difficulty.HARD: return 0.8
 		Difficulty.CUSTOM: return custom_xp_gain_modifier
 	return 1.0
+
+func get_max_weapon_slots() -> int:
+	match current_difficulty:
+		Difficulty.HARD: return 5
+	return 6
+
+func get_max_upgrade_slots() -> int:
+	match current_difficulty:
+		Difficulty.HARD: return 6
+	return 8
+
 
 func restart_run() -> void:
 	MusicController.fadeOutToSilence()

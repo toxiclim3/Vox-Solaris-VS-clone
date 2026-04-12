@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://xy3cvpwdy828" path="res://Utility/hurt_box.tscn" id="2_30goa"]
 [ext_resource type="PackedScene" uid="uid://uhr6mtuisqm1" path="res://Utility/hit_box.tscn" id="3_yonyt"]
 [ext_resource type="AudioStream" uid="uid://bi7t7cjthnhhc" path="res://Audio/SoundEffect/enemy_hit.ogg" id="4_u3dbg"]
+[ext_resource type="Texture2D" uid="uid://drewk5ll6a167" path="res://Textures/GUI/blob_shadow.png" id="5_shadow"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_clyw4"]
 size = Vector2(28, 31)
@@ -12,8 +13,16 @@ size = Vector2(19, 25)
 
 [node name="EnemyBase" type="Node2D" unique_id=978387467]
 
+[node name="Shadow" type="Sprite2D" parent="." unique_id=804207814]
+unique_name_in_owner = true
+z_index = 1
+texture_filter = 1
+position = Vector2(0, 10)
+texture = ExtResource("5_shadow")
+
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1348046775]
 z_index = 2
+texture_filter = 1
 hframes = 2
 
 [node name="HurtBox" parent="." unique_id=778034887 instance=ExtResource("2_30goa")]
@@ -21,7 +30,7 @@ collision_layer = 4
 collision_mask = 4
 HurtBoxType = 1
 
-[node name="CollisionShape2D" parent="HurtBox" index="0"]
+[node name="CollisionShape2D" parent="HurtBox" index="0" unique_id=931685760]
 position = Vector2(0, 0.5)
 shape = SubResource("RectangleShape2D_clyw4")
 

@@ -6,11 +6,21 @@ var config = ConfigFile.new()
 
 var sound_profile: String = "Full"
 var language: String = "en"
-var mouse_control: bool = false
 var screen_shake: bool = true
+var mouse_control: bool = false
 var window_mode: int = 0 # 0: Windowed, 1: Fullscreen, 2: Borderless Maximized
 var vsync: bool = true
 var max_fps: int = 0 # 0 means unlimited
+
+# Elite Settings (The "Funny Moment" Update)
+var taa_enabled: bool = false
+var fsr_enabled: bool = false
+var dlss_enabled: bool = false
+var raytracing_enabled: bool = false
+var shadows_enabled: bool = false # Enabled by default for "Next-Gen" feel
+
+signal shadow_settings_changed(enabled: bool)
+signal raytracing_settings_changed(enabled: bool)
 
 const PROFILES = {
 	"Full": {
@@ -74,6 +84,59 @@ func loadSettings() -> void:
 	apply_window_mode(window_mode)
 	apply_vsync(vsync)
 	apply_max_fps(max_fps)
+	
+	if config.has_section("elite"):
+		taa_enabled = config.get_value("elite", "taa_enabled", false)
+		fsr_enabled = config.get_value("elite", "fsr_enabled", false)
+		dlss_enabled = config.get_value("elite", "dlss_enabled", false)
+		raytracing_enabled = config.get_value("elite", "raytracing_enabled", false)
+		shadows_enabled = config.get_value("elite", "shadows_enabled", true)
+	
+	apply_elite_settings()
+
+func apply_elite_settings() -> void:
+	var viewport = get_viewport()
+	if not viewport: return
+	
+	# 3D Scaling commands removed for mobile compatibility
+	# Ray Tracing (Joke) - Hidden 10 FPS limit
+	# DLSS (Joke) - Adds to the placebo vibe
+	apply_max_fps(max_fps) # Refresh normal FPS first
+	if raytracing_enabled:
+		Engine.max_fps = 120 # Cinematic 10fps
+	
+	shadow_settings_changed.emit(shadows_enabled)
+	raytracing_settings_changed.emit(raytracing_enabled)
+
+func set_taa(value: bool) -> void:
+	taa_enabled = value
+	config.set_value("elite", "taa_enabled", value)
+	config.save(SAVE_PATH)
+	apply_elite_settings()
+
+func set_fsr(value: bool) -> void:
+	fsr_enabled = value
+	config.set_value("elite", "fsr_enabled", value)
+	config.save(SAVE_PATH)
+	apply_elite_settings()
+
+func set_dlss(value: bool) -> void:
+	dlss_enabled = value
+	config.set_value("elite", "dlss_enabled", value)
+	config.save(SAVE_PATH)
+	apply_elite_settings()
+
+func set_raytracing(value: bool) -> void:
+	raytracing_enabled = value
+	config.set_value("elite", "raytracing_enabled", value)
+	config.save(SAVE_PATH)
+	apply_elite_settings()
+
+func set_shadows(value: bool) -> void:
+	shadows_enabled = value
+	config.set_value("elite", "shadows_enabled", value)
+	config.save(SAVE_PATH)
+	apply_elite_settings()
 
 func set_language(lang: String) -> void:
 	language = lang

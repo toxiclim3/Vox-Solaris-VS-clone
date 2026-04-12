@@ -5,8 +5,10 @@ var knockback_amount = 50.0
 var speed = 350.0
 var direction = Vector2.ZERO
 var killer_source = "vampireknife"
-var lifetime = 1.5
+var attack_size = 1.0
+var proc_coefficient = 0.5
 var timer = 0.0
+var lifetime = 1.5
 
 # Piercing limit (hp)
 var hp = 1

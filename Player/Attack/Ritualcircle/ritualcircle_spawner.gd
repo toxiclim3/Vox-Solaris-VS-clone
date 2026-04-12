@@ -4,6 +4,7 @@ var ammo = 0
 var baseammo = 0
 var attackspeed = 10
 var level = 0
+var endless_level = 0
 
 var ritualCircle = preload("res://Player/Attack/Ritualcircle/ritualcircle.tscn")
 @onready var player = get_tree().get_first_node_in_group("player")
@@ -30,6 +31,9 @@ func upgrade(upgrade_id: String):
 		"ritualcircle4":
 			level = 4
 			baseammo += 1
+		"ritualcircle_endless":
+			endless_level += 1
+
 	
 	attack()
 
@@ -40,10 +44,14 @@ func attack():
 			timer.start()
 
 func _on_timer_timeout():
-	var attack_burst = baseammo + player.additional_attacks
+	var extra_attacks = int(player.additional_attacks)
+	if randf() < (player.additional_attacks - extra_attacks):
+		extra_attacks += 1
+	var attack_burst = baseammo + extra_attacks
 	if ammo < attack_burst:
 		ammo = attack_burst
 	attackTimer.start()
+
 
 func _on_attack_timer_timeout():
 	if ammo > 0:
@@ -52,6 +60,7 @@ func _on_attack_timer_timeout():
 			var ritual_attack = ritualCircle.instantiate()
 			ritual_attack.global_position = target
 			ritual_attack.level = level
+			ritual_attack.endless_level = endless_level
 			# Add to main scene tree
 			player.get_parent().add_child(ritual_attack)
 			ammo -= 1

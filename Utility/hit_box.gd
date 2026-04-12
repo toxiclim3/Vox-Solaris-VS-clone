@@ -1,6 +1,7 @@
 extends Area2D
 
 @export var damage = 1
+var proc_coefficient = 1.0
 @onready var collision = $CollisionShape2D
 @onready var disableTimer = get_node_or_null("DisableHitBoxTimer")
 

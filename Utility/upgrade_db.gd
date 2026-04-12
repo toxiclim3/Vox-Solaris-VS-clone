@@ -561,5 +561,174 @@ const UPGRADES = {
 		"level": "item_level4",
 		"prerequisite": ["whip3"],
 		"type": "weapon"
+	},
+	"icespear_endless": 
+	{
+		"icon": WEAPON_PATH + "ice_spear.png",
+		"displayname": "item_icespear",
+		"details": "item_level_endless_details",
+		"level": "item_level_endless",
+		"prerequisite": ["icespear4"],
+		"type": "endless"
+	},
+	"javelin_endless": 
+	{
+		"icon": WEAPON_PATH + "javelin_3_new_attack.png",
+		"displayname": "item_javelin",
+		"details": "item_level_endless_details",
+		"level": "item_level_endless",
+		"prerequisite": ["javelin4"],
+		"type": "endless"
+	},
+	"tornado_endless": 
+	{
+		"icon": WEAPON_PATH + "tornado.png",
+		"displayname": "item_tornado",
+		"details": "item_level_endless_details",
+		"level": "item_level_endless",
+		"prerequisite": ["tornado4"],
+		"type": "endless"
+	},
+	"poisonbottle_endless": 
+	{
+		"icon": WEAPON_PATH + "poison_gas.png",
+		"displayname": "item_poisonbottle",
+		"details": "item_level_endless_details",
+		"level": "item_level_endless",
+		"prerequisite": ["poisonbottle4"],
+		"type": "endless"
+	},
+	"ritualcircle_endless": 
+	{
+		"icon": WEAPON_PATH + "ritual_chalk.png",
+		"displayname": "item_ritualcircle",
+		"details": "item_level_endless_details",
+		"level": "item_level_endless",
+		"prerequisite": ["ritualcircle4"],
+		"type": "endless"
+	},
+	"glasslash_endless": 
+	{
+		"icon": WEAPON_PATH + "Kaleidoscope.webp",
+		"displayname": "item_glasslash",
+		"details": "item_level_endless_details",
+		"level": "item_level_endless",
+		"prerequisite": ["glasslash4"],
+		"type": "endless"
+	},
+	"vampireknives_endless": 
+	{
+		"icon": WEAPON_PATH + "Vampire_Knives.webp",
+		"displayname": "item_vampireknives",
+		"details": "item_level_endless_details",
+		"level": "item_level_endless",
+		"prerequisite": ["vampireknives4"],
+		"type": "endless"
+	},
+	"whip_endless": 
+	{
+		"icon": WEAPON_PATH + "Leather_Whip.webp",
+		"displayname": "item_whip",
+		"details": "item_level_endless_details",
+		"level": "item_level_endless",
+		"prerequisite": ["whip4"],
+		"type": "endless"
+	},
+	"armor_endless": 
+	{
+		"icon": ICON_PATH + "helmet_1.png",
+		"displayname": "item_armor",
+		"details": "item_level_endless_details",
+		"level": "item_level_endless",
+		"prerequisite": ["armor4"],
+		"type": "endless",
+		"stat_modifiers": {"armor": 1}
+	},
+	"speed_endless": 
+	{
+		"icon": ICON_PATH + "boots_4_green.png",
+		"displayname": "item_speed",
+		"details": "item_level_endless_details",
+		"level": "item_level_endless",
+		"prerequisite": ["speed4"],
+		"type": "endless",
+		"stat_modifiers": {"movement_speed_percent": 0.02}
+	},
+	"tome_endless": 
+	{
+		"icon": ICON_PATH + "thick_new.png",
+		"displayname": "item_tome",
+		"details": "item_level_endless_details",
+		"level": "item_level_endless",
+		"prerequisite": ["tome4"],
+		"type": "endless",
+		"stat_modifiers": {"spell_size": 0.02}
+	},
+	"scroll_endless": 
+	{
+		"icon": ICON_PATH + "scroll_old.png",
+		"displayname": "item_scroll",
+		"details": "item_level_endless_details",
+		"level": "item_level_endless",
+		"prerequisite": ["scroll4"],
+		"type": "endless",
+		"stat_modifiers": {"spell_cooldown": 0.02}
+	},
+	"ring_endless": 
+	{
+		"icon": ICON_PATH + "urand_mage.png",
+		"displayname": "item_ring",
+		"details": "item_level_endless_details",
+		"level": "item_level_endless",
+		"prerequisite": ["ring2"],
+		"type": "endless"
+	},
+	"ringofrejuvenation_endless": 
+	{
+		"icon": ICON_PATH + "icon26.png",
+		"displayname": "item_ringofrejuvenation",
+		"details": "item_level_endless_details",
+		"level": "item_level_endless",
+		"prerequisite": ["ringofrejuvenation2"],
+		"type": "endless",
+		"stat_modifiers": {"hp": 5}
+	},
+	"ringofaffinity_endless": 
+	{
+		"icon": ICON_PATH + "icon25.png",
+		"displayname": "item_ringofaffinity",
+		"details": "item_level_endless_details",
+		"level": "item_level_endless",
+		"prerequisite": ["ringofaffinity2"],
+		"type": "endless",
+		"stat_modifiers": {"xp_range_percent": 0.05}
+	},
+	"thornring_endless": 
+	{
+		"icon": "res://Textures/PLACEHOLDER.png",
+		"displayname": "item_thornring",
+		"details": "item_level_endless_details",
+		"level": "item_level_endless",
+		"prerequisite": ["thornring4"],
+		"type": "endless",
+		"stat_modifiers": {"reflected_damage": 5}
+	},
+	"relicdrone1": 
+	{
+		"icon": ICON_PATH + "relic_drone.png",
+		"displayname": "item_relicdrone",
+		"details": "ItemDesc_RelicDrone1",
+		"level": "item_level1",
+		"prerequisite": [],
+		"type": "bossitem"
+	},
+	"relicdrone2": 
+	{
+		"icon": ICON_PATH + "relic_drone.png",
+		"displayname": "item_relicdrone",
+		"details": "ItemDesc_RelicDrone2",
+		"level": "item_level2",
+		"prerequisite": ["relicdrone1"],
+		"type": "bossitem"
 	}
 }

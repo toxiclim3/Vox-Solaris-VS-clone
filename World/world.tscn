@@ -1,27 +1,49 @@
-[gd_scene format=3 uid="uid://du6qbgqucaqov"]
+[gd_scene format=3 uid="uid://dxl64hm4aqsyh"]
 
 [ext_resource type="Script" uid="uid://df444ip3tw6x3" path="res://World/world.gd" id="1_awrha"]
 [ext_resource type="PackedScene" uid="uid://b8xi15cvq56om" path="res://World/background.tscn" id="1_lo5ox"]
-[ext_resource type="PackedScene" uid="uid://dncgepmkc4jf4" path="res://Player/player.tscn" id="2_40uwv"]
+[ext_resource type="PackedScene" path="res://Player/player.tscn" id="2_40uwv"]
 [ext_resource type="PackedScene" uid="uid://ba2claihwes2y" path="res://Utility/enemy_spawner.tscn" id="3_p01g4"]
-[ext_resource type="PackedScene" uid="uid://p4n2byek3hf6" path="res://Enemy/Minions/enemy_kobold_weak.tscn" id="4_ee8bm"]
+[ext_resource type="Script" uid="uid://cixj7hojfeitd" path="res://Player/gui.gd" id="4_gu6f8"]
+[ext_resource type="Texture2D" uid="uid://dx7xx6vfahxlq" path="res://Textures/GUI/exp_background.png" id="4_pbpj5"]
 [ext_resource type="Script" uid="uid://b88gb022b3qno" path="res://Utility/spawn_info.gd" id="5_jj7s8"]
-[ext_resource type="PackedScene" uid="uid://f27gfkx355ha" path="res://Enemy/Minions/enemy_kobold_strong.tscn" id="6_rumbx"]
-[ext_resource type="Script" uid="uid://c1m16auiseqlg" path="res://Enemy/Base/enemy.gd" id="7_0wqet"]
-[ext_resource type="PackedScene" uid="uid://ndk3tlufsxr8" path="res://Enemy/Base/EnemyBase.tscn" id="8_awrha"]
-[ext_resource type="PackedScene" uid="uid://hcjnrdsb563h" path="res://Enemy/Minions/enemy_juggernaut.tscn" id="8_ltymd"]
-[ext_resource type="Texture2D" uid="uid://b4tu8mxdnvsy1" path="res://Textures/Enemy/cyclops.png" id="9_f23eu"]
-[ext_resource type="PackedScene" uid="uid://btf7clk4jja87" path="res://Enemy/Boss/enemy_super.tscn" id="9_xs42h"]
+[ext_resource type="Texture2D" uid="uid://dlx33roiu0vlj" path="res://Textures/GUI/exp_progress.png" id="5_p5o4e"]
+[ext_resource type="PackedScene" uid="uid://dyahivqch5l16" path="res://Utility/settings_menu.tscn" id="7_pisgm"]
+[ext_resource type="AudioStream" uid="uid://ul8hunj8tl2t" path="res://Audio/SoundEffect/levelup.ogg" id="7_wl7d2"]
+[ext_resource type="AudioStream" uid="uid://bnv76nm5171dn" path="res://Audio/SoundEffect/Victory.wav" id="11_p5o4e"]
+[ext_resource type="PackedScene" uid="uid://b7c7gsdx2rkjm" path="res://Utility/basic_button.tscn" id="12_i8esf"]
+[ext_resource type="AudioStream" uid="uid://ca6physj6mqei" path="res://Audio/SoundEffect/Lose.ogg" id="12_p5o4e"]
+[ext_resource type="Theme" uid="uid://kvmf0od5c6rf" path="res://Themes/DebugButtons.tres" id="15_dkpta"]
+[ext_resource type="Script" uid="uid://eq8qugfbk7vl" path="res://Player/debugmenu.gd" id="15_lfmf2"]
+[ext_resource type="Theme" path="res://Themes/RegularText_White.tres" id="15_o28un"]
+[ext_resource type="Theme" path="res://Themes/HeaderText_Black.tres" id="16_7emwf"]
+[ext_resource type="Theme" path="res://Themes/HeaderText_Brick.tres" id="16_noshadow"]
+[ext_resource type="Theme" uid="uid://ds5mdedn440wb" path="res://Themes/NinePatchUI.tres" id="18_hshwv"]
+[ext_resource type="StyleBox" uid="uid://pckkvhpg3ymk" path="res://Themes/Shadowpanel.tres" id="21_8viyr"]
+[ext_resource type="Theme" path="res://Themes/RegularText_Black.tres" id="22_8viyr"]
+[ext_resource type="AudioStream" uid="uid://bthqe0qhx0ik8" path="res://Audio/SoundEffect/Difficulty.wav" id="24_wdifc"]
+[ext_resource type="Script" uid="uid://b8kmo7xmbqafv" path="res://Player/boss_ui.gd" id="boss_ui_script"]
+[ext_resource type="Shader" uid="uid://3dv3hmh21cm7" path="res://Utility/elite_graphics.gdshader" id="shader_elite"]
+[ext_resource type="Texture2D" uid="uid://2e6c0h52rqvc" path="res://Textures/GUI/exp_progress_alt2.png" id="exp_progress_alt2"]
+[ext_resource type="Theme" path="res://Themes/HeaderText_White.tres" id="header_white_theme"]
+[ext_resource type="Theme" uid="uid://dlpshatg4y1v3" path="res://Themes/Buttons_Dark.tres" id="buttons_dark_theme"]
+[ext_resource type="PackedScene" uid="uid://p4n2byek3hf6" path="res://Enemy/Minions/enemy_kobold_weak.tscn" id="enemy_kobold_weak"]
+[ext_resource type="PackedScene" uid="uid://f27gfkx355ha" path="res://Enemy/Minions/enemy_kobold_strong.tscn" id="enemy_kobold_strong"]
+[ext_resource type="Script" uid="uid://c1m16auiseqlg" path="res://Enemy/Base/enemy.gd" id="enemy_script"]
+[ext_resource type="PackedScene" uid="uid://ndk3tlufsxr8" path="res://Enemy/Base/EnemyBase.tscn" id="enemy_base_scene"]
+[ext_resource type="PackedScene" uid="uid://hcjnrdsb563h" path="res://Enemy/Minions/enemy_juggernaut.tscn" id="enemy_juggernaut"]
+[ext_resource type="Texture2D" uid="uid://b4tu8mxdnvsy1" path="res://Textures/Enemy/cyclops.png" id="cyclops_tex"]
+[ext_resource type="PackedScene" uid="uid://btf7clk4jja87" path="res://Enemy/Boss/enemy_super.tscn" id="enemy_super"]
 
 [sub_resource type="Resource" id="Resource_EASY"]
 script = ExtResource("5_jj7s8")
-enemy = ExtResource("4_ee8bm")
+enemy = ExtResource("enemy_kobold_weak")
 enemy_num = 1
 enemy_spawn_delay = 1
 
 [sub_resource type="Resource" id="Resource_NORMAL"]
 script = ExtResource("5_jj7s8")
-enemy = ExtResource("6_rumbx")
+enemy = ExtResource("enemy_kobold_strong")
 enemy_num = 1
 enemy_spawn_delay = 1
 
@@ -43,7 +65,7 @@ _data = {
 &"walk": SubResource("Animation_w8hns")
 }
 
-[sub_resource type="PackedScene" id="PackedScene_oeat8"]
+[sub_resource type="PackedScene" id="PackedScene_cyclops"]
 _bundled = {
 "conn_count": 0,
 "conns": PackedInt32Array(),
@@ -54,29 +76,767 @@ _bundled = {
 "node_ids": PackedInt32Array(70363022, 978387467, 1348046775, 2020963889, 1250673040),
 "node_paths": [NodePath("."), NodePath("./EnemyBase"), NodePath("."), NodePath(".")],
 "nodes": PackedInt32Array(-1, -1, 1, 0, -1, 9, 2, 0, 3, 1, 4, 2, 5, 3, 6, 4, 7, 5, 8, 6, 9, 7, 10, 8, 0, 1073741824, 0, 2147483647, 11, 9, 0, 0, 1073741825, -1, 2147483647, 262156, -1, 1, 13, 10, 0, 1073741826, 0, 15, 14, -1, 1, 16, 11, 0, 1073741827, 0, 18, 17, -1, 1, 19, 12, 0),
-"variants": [5, 5, 1, ExtResource("7_0wqet"), 26.0, 100, 10.0, 5, 5, ExtResource("8_awrha"), ExtResource("9_f23eu"), SubResource("CapsuleShape2D_24u87"), SubResource("AnimationLibrary_regpg")],
+"variants": [5, 5, 1, ExtResource("enemy_script"), 26.0, 100, 10.0, 5, 5, ExtResource("enemy_base_scene"), ExtResource("cyclops_tex"), SubResource("CapsuleShape2D_24u87"), SubResource("AnimationLibrary_regpg")],
 "version": 3
 }
 
 [sub_resource type="Resource" id="Resource_HARD_CYCLOPS"]
 script = ExtResource("5_jj7s8")
-enemy = SubResource("PackedScene_oeat8")
+enemy = SubResource("PackedScene_cyclops")
 enemy_num = 1
 enemy_spawn_delay = 2
 
 [sub_resource type="Resource" id="Resource_HARD_JUGG"]
 script = ExtResource("5_jj7s8")
-enemy = ExtResource("8_ltymd")
+enemy = ExtResource("enemy_juggernaut")
 enemy_num = 1
 enemy_spawn_delay = 2
 
 [sub_resource type="Resource" id="Resource_SUPER"]
 script = ExtResource("5_jj7s8")
-enemy = ExtResource("9_xs42h")
+enemy = ExtResource("enemy_super")
 enemy_num = 1
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_elite"]
+shader = ExtResource("shader_elite")
+shader_parameter/ghosting_strength = 0.0
+shader_parameter/blur_strength = 0.0
+shader_parameter/motion_offset = Vector2(0, 0)
 
 [node name="World" type="Node2D" unique_id=73796557]
 script = ExtResource("1_awrha")
+
+[node name="GUILayer" type="CanvasLayer" parent="." unique_id=1336760669]
+process_mode = 3
+layer = 100
+
+[node name="GUI" type="Control" parent="GUILayer" unique_id=783179294 groups=["gui"]]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("4_gu6f8")
+
+[node name="ExperienceBar" type="TextureProgressBar" parent="GUILayer/GUI" unique_id=2083831736]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 20.0
+grow_horizontal = 2
+fill_mode = 6
+nine_patch_stretch = true
+texture_over = ExtResource("4_pbpj5")
+texture_progress = ExtResource("exp_progress_alt2")
+
+[node name="lbl_level" type="Label" parent="GUILayer/GUI/ExperienceBar" unique_id=1453449074]
+unique_name_in_owner = true
+auto_translate_mode = 1
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -50.0
+offset_top = 2.0
+offset_right = 50.0
+offset_bottom = 18.0
+grow_horizontal = 2
+theme = ExtResource("header_white_theme")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 12
+text = "Level 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="lblTimer" type="Label" parent="GUILayer/GUI" unique_id=1431122012]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -83.5
+offset_top = 20.0
+offset_right = 83.5
+offset_bottom = 43.0
+grow_horizontal = 2
+theme = ExtResource("header_white_theme")
+text = "00:00"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+
+[node name="LUpMarginContainer" type="MarginContainer" parent="GUILayer/GUI" unique_id=1379863372]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_bottom = 32
+
+[node name="LevelUp" type="PanelContainer" parent="GUILayer/GUI/LUpMarginContainer" unique_id=1699352669]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(224, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="snd_levelup" type="AudioStreamPlayer" parent="GUILayer/GUI/LUpMarginContainer/LevelUp" unique_id=9773351]
+unique_name_in_owner = true
+stream = ExtResource("7_wl7d2")
+volume_db = -10.0
+
+[node name="MarginContainer" type="MarginContainer" parent="GUILayer/GUI/LUpMarginContainer/LevelUp" unique_id=1812571992]
+clip_contents = true
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GUILayer/GUI/LUpMarginContainer/LevelUp/MarginContainer" unique_id=403045324]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="lbl_LevelUP" type="Label" parent="GUILayer/GUI/LUpMarginContainer/LevelUp/MarginContainer/VBoxContainer" unique_id=1449850959]
+layout_mode = 2
+theme = ExtResource("header_white_theme")
+text = "ui_levelUp"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="UpgradeScroll" type="ScrollContainer" parent="GUILayer/GUI/LUpMarginContainer/LevelUp/MarginContainer/VBoxContainer" unique_id=826318036]
+unique_name_in_owner = true
+clip_contents = false
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="UpgradeOptions" type="VBoxContainer" parent="GUILayer/GUI/LUpMarginContainer/LevelUp/MarginContainer/VBoxContainer/UpgradeScroll" unique_id=826318037]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="BLUpMarginContainer" type="MarginContainer" parent="GUILayer/GUI" unique_id=124367374]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_bottom = 32
+
+[node name="BossLevelUp" type="PanelContainer" parent="GUILayer/GUI/BLUpMarginContainer" unique_id=1700000000]
+unique_name_in_owner = true
+self_modulate = Color(1, 0.843137, 0, 1)
+custom_minimum_size = Vector2(192, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="MarginContainer" type="MarginContainer" parent="GUILayer/GUI/BLUpMarginContainer/BossLevelUp" unique_id=1700000001]
+clip_contents = true
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GUILayer/GUI/BLUpMarginContainer/BossLevelUp/MarginContainer" unique_id=1700000002]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="lbl_BossReward" type="Label" parent="GUILayer/GUI/BLUpMarginContainer/BossLevelUp/MarginContainer/VBoxContainer" unique_id=1700000003]
+layout_mode = 2
+theme = ExtResource("16_noshadow")
+text = "ui_bossReward"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BossUpgradeScroll" type="ScrollContainer" parent="GUILayer/GUI/BLUpMarginContainer/BossLevelUp/MarginContainer/VBoxContainer" unique_id=1700000004]
+unique_name_in_owner = true
+clip_contents = false
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BossUpgradeOptions" type="VBoxContainer" parent="GUILayer/GUI/BLUpMarginContainer/BossLevelUp/MarginContainer/VBoxContainer/BossUpgradeScroll" unique_id=1700000005]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="GiveItemMenu" type="Panel" parent="GUILayer/GUI" unique_id=739812498]
+unique_name_in_owner = true
+process_mode = 2
+visible = false
+z_index = 4
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="GUILayer/GUI/GiveItemMenu" unique_id=987654321]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GUILayer/GUI/GiveItemMenu/ScrollContainer" unique_id=123456789]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MainGrid" type="GridContainer" parent="GUILayer/GUI/GiveItemMenu/ScrollContainer/VBoxContainer" unique_id=345678901]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 3
+
+[node name="SubGrid" type="GridContainer" parent="GUILayer/GUI/GiveItemMenu/ScrollContainer/VBoxContainer" unique_id=456789012]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 3
+
+[node name="btn_close_give_item" type="Button" parent="GUILayer/GUI/GiveItemMenu" unique_id=567890123]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -50.0
+offset_top = -45.0
+offset_right = 50.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "ui_close"
+
+[node name="RemoveItemMenu" type="Panel" parent="GUILayer/GUI" unique_id=739812499]
+unique_name_in_owner = true
+process_mode = 2
+visible = false
+z_index = 4
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="GUILayer/GUI/RemoveItemMenu" unique_id=987654390]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GUILayer/GUI/RemoveItemMenu/ScrollContainer" unique_id=123456790]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MainGrid" type="GridContainer" parent="GUILayer/GUI/RemoveItemMenu/ScrollContainer/VBoxContainer" unique_id=345678902]
+layout_mode = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 3
+
+[node name="SubGrid" type="GridContainer" parent="GUILayer/GUI/RemoveItemMenu/ScrollContainer/VBoxContainer" unique_id=456789013]
+visible = false
+layout_mode = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 3
+
+[node name="btn_close_remove_item" type="Button" parent="GUILayer/GUI/RemoveItemMenu" unique_id=567890124]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -50.0
+offset_top = -45.0
+offset_right = 50.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "ui_close"
+
+[node name="DeathPanel" type="Panel" parent="GUILayer/GUI" unique_id=266401415]
+unique_name_in_owner = true
+process_mode = 2
+visible = false
+layout_mode = 0
+offset_left = 230.0
+offset_top = -266.0
+offset_right = 430.0
+offset_bottom = -16.0
+
+[node name="lbl_Result" type="Label" parent="GUILayer/GUI/DeathPanel" unique_id=1096271283]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 50.0
+theme = ExtResource("15_o28un")
+text = "ui_result"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="snd_victory" type="AudioStreamPlayer" parent="GUILayer/GUI/DeathPanel" unique_id=903870957]
+unique_name_in_owner = true
+stream = ExtResource("11_p5o4e")
+volume_db = -10.0
+bus = &"SFX"
+
+[node name="snd_lose" type="AudioStreamPlayer" parent="GUILayer/GUI/DeathPanel" unique_id=1169289820]
+unique_name_in_owner = true
+stream = ExtResource("12_p5o4e")
+volume_db = -10.0
+bus = &"SFX"
+
+[node name="btn_menu" parent="GUILayer/GUI/DeathPanel" unique_id=964057103 instance=ExtResource("12_i8esf")]
+layout_mode = 0
+offset_left = 58.0
+offset_top = 194.0
+offset_right = 138.0
+offset_bottom = 226.0
+theme = ExtResource("18_hshwv")
+text = "ui_menu"
+
+[node name="btn_restart" parent="GUILayer/GUI/DeathPanel" unique_id=1864663429 instance=ExtResource("12_i8esf")]
+layout_mode = 0
+offset_left = 58.0
+offset_top = 154.0
+offset_right = 138.0
+offset_bottom = 186.0
+theme = ExtResource("18_hshwv")
+text = "ui_newRun"
+
+[node name="CollectedItemContainer" type="VBoxContainer" parent="GUILayer/GUI" unique_id=1077747811]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 24.0
+offset_right = 248.0
+offset_bottom = 100.0
+mouse_filter = 2
+
+[node name="CollectedWeapons" type="GridContainer" parent="GUILayer/GUI/CollectedItemContainer" unique_id=1077747810]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+mouse_filter = 2
+columns = 12
+
+[node name="CollectedUpgrades" type="GridContainer" parent="GUILayer/GUI/CollectedItemContainer" unique_id=2075942441]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+mouse_filter = 2
+columns = 12
+
+[node name="CollectedBossItems" type="GridContainer" parent="GUILayer/GUI/CollectedItemContainer" unique_id=2075942442]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+mouse_filter = 2
+columns = 12
+
+[node name="PauseMenu" type="PanelContainer" parent="GUILayer/GUI" unique_id=1300825726]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(192, 224)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = -108.0
+offset_right = 80.0
+offset_bottom = 116.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="GUILayer/GUI/PauseMenu" unique_id=1607646797]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="PanelContainer" type="PanelContainer" parent="GUILayer/GUI/PauseMenu/MarginContainer" unique_id=1549249058]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("21_8viyr")
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer" unique_id=4575288]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Label" type="Label" parent="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2" unique_id=96015178]
+layout_mode = 2
+size_flags_vertical = 0
+theme = ExtResource("header_white_theme")
+text = "ui_paused"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="filler1" type="Control" parent="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2" unique_id=565688035]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+
+[node name="lblTips" type="RichTextLabel" parent="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2" unique_id=448275699]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme = ExtResource("15_o28un")
+text = "tips_runInCircles"
+scroll_active = false
+
+[node name="filler2" type="Control" parent="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2" unique_id=1438850757]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2" unique_id=1158111951]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="btn_resume_run" parent="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2/VBoxContainer" unique_id=1844249941 instance=ExtResource("12_i8esf")]
+z_index = 1
+custom_minimum_size = Vector2(96, 24)
+layout_mode = 2
+theme = ExtResource("buttons_dark_theme")
+text = "ui_resumeRun"
+
+[node name="btn_settings" parent="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2/VBoxContainer" unique_id=268518607 instance=ExtResource("12_i8esf")]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme = ExtResource("buttons_dark_theme")
+text = "ui_settings"
+
+[node name="btn_end_run" parent="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2/VBoxContainer" unique_id=1741874230 instance=ExtResource("12_i8esf")]
+z_index = 1
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme = ExtResource("buttons_dark_theme")
+text = "ui_endRun"
+
+[node name="btn_exit_game" parent="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2/VBoxContainer" unique_id=604014048 instance=ExtResource("12_i8esf")]
+z_index = 1
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme = ExtResource("buttons_dark_theme")
+text = "ui_exitGame"
+
+[node name="SettingsMenu" parent="GUILayer/GUI" unique_id=244721166 instance=ExtResource("7_pisgm")]
+unique_name_in_owner = true
+visible = false
+
+[node name="DebugMenu" type="MarginContainer" parent="GUILayer/GUI" unique_id=1500833420]
+unique_name_in_owner = true
+z_index = 2
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -144.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_constants/margin_right = 0
+script = ExtResource("15_lfmf2")
+
+[node name="background" type="Panel" parent="GUILayer/GUI/DebugMenu" unique_id=1650127741]
+modulate = Color(0.30112115, 0.9912104, 7.70092e-07, 1)
+self_modulate = Color(1, 1, 1, 0.8901961)
+show_behind_parent = true
+z_index = -1
+layout_mode = 2
+theme = ExtResource("15_dkpta")
+
+[node name="Padded container" type="MarginContainer" parent="GUILayer/GUI/DebugMenu" unique_id=1475646517]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GUILayer/GUI/DebugMenu/Padded container" unique_id=225952374]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer" unique_id=1014688637]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "ui_debug"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GridContainer" type="GridContainer" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer" unique_id=1198252385]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="btn_end_run" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=486226472 instance=ExtResource("12_i8esf")]
+z_index = 1
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("15_dkpta")
+text = "ui_endRun"
+
+[node name="btn_exit_game" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=821377785 instance=ExtResource("12_i8esf")]
+z_index = 1
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("15_dkpta")
+text = "ui_exitGame"
+
+[node name="btn_give_xp" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=1062571127 instance=ExtResource("12_i8esf")]
+z_index = 1
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("15_dkpta")
+text = "debug_giveXP"
+
+[node name="btn_give_level" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=760045520 instance=ExtResource("12_i8esf")]
+z_index = 1
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("15_dkpta")
+text = "debug_giveLevel"
+
+[node name="btn_give_item" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=760045521 instance=ExtResource("12_i8esf")]
+z_index = 1
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("15_dkpta")
+text = "debug_giveItem"
+
+[node name="btn_remove_item" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=99461217 instance=ExtResource("12_i8esf")]
+z_index = 1
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("15_dkpta")
+text = "debug_removeItem"
+
+[node name="btn_kill_player" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=1404436878 instance=ExtResource("12_i8esf")]
+z_index = 1
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("15_dkpta")
+text = "debug_killPlayer"
+
+[node name="btn_damage_player" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=1416143240 instance=ExtResource("12_i8esf")]
+z_index = 1
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("15_dkpta")
+text = "debug_damageSelf"
+
+[node name="btn_toggle_godmode" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=283840757 instance=ExtResource("12_i8esf")]
+z_index = 1
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("15_dkpta")
+toggle_mode = true
+text = "debug_godmode"
+
+[node name="btn_toggle_spawns" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=1717811240 instance=ExtResource("12_i8esf")]
+z_index = 1
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("15_dkpta")
+toggle_mode = true
+text = "debug_toggleSpawns"
+
+[node name="btn_next_normal_track" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=587350050 instance=ExtResource("12_i8esf")]
+z_index = 1
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("15_dkpta")
+text = "debug_nextNormalTrack"
+
+[node name="btn_next_boss_track" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=1447930104 instance=ExtResource("12_i8esf")]
+z_index = 1
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("15_dkpta")
+text = "debug_nextBossTrack"
+
+[node name="btn_pause_music" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=1520240956 instance=ExtResource("12_i8esf")]
+z_index = 1
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("15_dkpta")
+text = "debug_pauseMusic"
+
+[node name="btn_unpause_music" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=1724961784 instance=ExtResource("12_i8esf")]
+z_index = 1
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("15_dkpta")
+text = "debug_unpauseMusic"
+
+[node name="btn_timer_1m" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=1284255928 instance=ExtResource("12_i8esf")]
+z_index = 1
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("15_dkpta")
+text = "debug_advanceTimer1m"
+
+[node name="btn_timer_5m" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=1731754616 instance=ExtResource("12_i8esf")]
+z_index = 1
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("15_dkpta")
+text = "debug_advanceTimer5m"
+
+[node name="btn_show_warning" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=1194648786 instance=ExtResource("12_i8esf")]
+z_index = 1
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("15_dkpta")
+text = "debug_showBossWarning"
+
+[node name="btn_spawn_boss" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=565666093 instance=ExtResource("12_i8esf")]
+z_index = 1
+custom_minimum_size = Vector2(56, 16)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("15_dkpta")
+text = "debug_spawnBoss"
+
+[node name="BossBarContainer" type="VBoxContainer" parent="GUILayer/GUI" unique_id=2025092305]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 40.0
+offset_right = 100.0
+offset_bottom = 80.0
+grow_horizontal = 2
+script = ExtResource("boss_ui_script")
+
+[node name="BossNameLabel" type="Label" parent="GUILayer/GUI/BossBarContainer" unique_id=2025092306]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("header_white_theme")
+text = "Boss Name"
+horizontal_alignment = 1
+
+[node name="BossBarProgress" type="TextureProgressBar" parent="GUILayer/GUI/BossBarContainer" unique_id=2025092307]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 10)
+layout_mode = 2
+value = 50.0
+nine_patch_stretch = true
+texture_under = ExtResource("4_pbpj5")
+texture_progress = ExtResource("exp_progress_alt2")
+tint_progress = Color(0.8, 0, 0, 1)
+
+[node name="BossWarning" type="ColorRect" parent="GUILayer/GUI" unique_id=1286608518]
+unique_name_in_owner = true
+visible = false
+z_index = 5
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = -32.0
+grow_horizontal = 2
+color = Color(1, 0.317647, 0.27451, 1)
+
+[node name="lbl_boss_warning" type="Label" parent="GUILayer/GUI/BossWarning" unique_id=1286608519]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("16_noshadow")
+theme_override_colors/font_color = Color(0.541176, 0.121569, 0.0901961, 1)
+theme_override_font_sizes/font_size = 14
+text = "warning_boss_generic"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="snd_boss_warning" type="AudioStreamPlayer" parent="GUILayer/GUI/BossWarning" unique_id=1286608520]
+unique_name_in_owner = true
+stream = ExtResource("24_wdifc")
+bus = &"MiscImportant"
+
+[node name="btn_warning_dismiss" type="Button" parent="GUILayer/GUI/BossWarning" unique_id=1286608521]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="BossBarParticles" type="GPUParticles2D" parent="GUILayer" unique_id=1500000004]
+unique_name_in_owner = true
+position = Vector2(0, 12)
+emitting = false
+amount = 24
+lifetime = 0.8
+one_shot = true
+explosiveness = 0.8
 
 [node name="Background" parent="." unique_id=953020722 instance=ExtResource("1_lo5ox")]
 z_index = -2
@@ -91,3 +851,29 @@ spawns_super = Array[ExtResource("5_jj7s8")]([SubResource("Resource_SUPER")])
 
 [node name="Loot" type="Node2D" parent="." unique_id=2025092302 groups=["loot"]]
 
+[node name="ElitePostProcessLayer" type="CanvasLayer" parent="." unique_id=2025092303]
+visible = false
+layer = 50
+
+[node name="PostProcess" type="ColorRect" parent="ElitePostProcessLayer" unique_id=2025092304]
+unique_name_in_owner = true
+visible = false
+material = SubResource("ShaderMaterial_elite")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[connection signal="closeMenu" from="GUILayer/GUI" to="GUILayer/GUI/DebugMenu" method="_on_gui_close_menu"]
+[connection signal="openMenu" from="GUILayer/GUI" to="GUILayer/GUI/DebugMenu" method="_on_gui_open_menu"]
+[connection signal="pressed" from="GUILayer/GUI/GiveItemMenu/btn_close_give_item" to="GUILayer/GUI" method="_on_btn_close_give_item_pressed"]
+[connection signal="pressed" from="GUILayer/GUI/RemoveItemMenu/btn_close_remove_item" to="GUILayer/GUI" method="_on_btn_close_remove_item_pressed"]
+[connection signal="click_end" from="GUILayer/GUI/DeathPanel/btn_menu" to="GUILayer/GUI" method="_on_btn_menu_click_end"]
+[connection signal="click_end" from="GUILayer/GUI/DeathPanel/btn_restart" to="GUILayer/GUI" method="_on_btn_restart_click_end"]
+[connection signal="click_end" from="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2/VBoxContainer/btn_resume_run" to="GUILayer/GUI" method="_on_btn_resume_run_click_end"]
+[connection signal="click_end" from="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2/VBoxContainer/btn_settings" to="GUILayer/GUI" method="_on_btn_settings_click_end"]
+[connection signal="click_end" from="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2/VBoxContainer/btn_end_run" to="GUILayer/GUI" method="_on_btn_end_run_click_end"]
+[connection signal="click_end" from="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2/VBoxContainer/btn_exit_game" to="GUILayer/GUI" method="_on_btn_exit_game_click_end"]
+[connection signal="settings_closed" from="GUILayer/GUI/SettingsMenu" to="GUILayer/GUI" method="_on_settings_menu_settings_closed"]

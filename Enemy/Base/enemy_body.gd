@@ -17,6 +17,7 @@ var knockback = Vector2.ZERO
 @onready var hitBox = $EnemyBase/HitBox
 @onready var hurtBox = $EnemyBase/HurtBox
 @onready var collision = $CollisionShape2D
+@onready var shadow = $EnemyBase/Shadow
 
 @onready var player = get_tree().get_first_node_in_group("player")
 @onready var loot_base = get_tree().get_first_node_in_group("loot")
@@ -41,6 +42,13 @@ func _ready():
 	screen_size = get_viewport_rect().size
 	hurtBox.connect("hurt",Callable(self,"_on_hurt_box_hurt"))
 	proc_offset = randi_range(0, 9) # Randomize update frame
+	
+	# Elite Shadows
+	shadow.visible = SettingsManager.shadows_enabled
+	SettingsManager.shadow_settings_changed.connect(_on_shadow_settings_changed)
+
+func _on_shadow_settings_changed(enabled: bool):
+	shadow.visible = enabled
 	
 func _physics_process(delta):
 	knockback = knockback.move_toward(Vector2.ZERO, knockback_recovery)
@@ -93,8 +101,11 @@ func _physics_process(delta):
 		sprite.flip_h = true
 	elif direction.x < -0.1:
 		sprite.flip_h = false
+var is_dying = false
 
 func death(killer_source: String = ""):
+	if is_dying: return
+	is_dying = true
 	emit_signal("remove_from_array",self)
 	
 	var enemy_death = death_anim.instantiate()
@@ -120,9 +131,12 @@ func death(killer_source: String = ""):
 	StatsManager.register_kill(isBoss)
 	queue_free()
 
-func _on_hurt_box_hurt(damage, angle, knockback_amount, killer_source: String = "", _attacker_node = null):
+func _on_hurt_box_hurt(damage, angle, knockback_amount, killer_source: String = "", attacker_node = null, proc_coefficient = 1.0):
 	hp -= (damage * GlobalEvents.get_player_damage_modifier())
 	knockback = angle * knockback_amount
+	
+	GlobalEvents.player_dealt_damage.emit(damage, self, proc_coefficient)
+	
 	if hp <= 0:
 		death(killer_source)
 	else:

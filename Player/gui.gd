@@ -87,6 +87,14 @@ func update_timer(time_seconds: int) -> void:
 	lblTimer.text = str_m + ":" + str_s
 
 func adjust_gui_collection(upgrade: String) -> void:
+	if not player or not is_instance_valid(player):
+		player = get_tree().get_first_node_in_group("player")
+		
+	if not player: 
+		# This can happen during early initialization when upgrading characters. 
+		# If the player is still Nil, we should wait until it registers in the group.
+		return
+		
 	var get_upgraded_displayname = UpgradeDb.UPGRADES[upgrade]["displayname"]
 	var get_type = UpgradeDb.UPGRADES[upgrade]["type"]
 	if get_type != "item":
@@ -187,6 +195,45 @@ func _ready() -> void:
 	hide_level_panels()
 	setup_give_item_menu()
 	
+	# Connect debug signals in code so they survive movement to World.tscn root
+	call_deferred("_connect_debug_signals")
+
+func _connect_debug_signals():
+	if not player or not is_instance_valid(player): 
+		player = get_tree().get_first_node_in_group("player")
+	if not player: return
+	
+	# Find debug buttons and connect them if they aren't already
+	var grid = get_node_or_null("%DebugMenu/Padded container/VBoxContainer/GridContainer")
+	if grid:
+		var btn_map = {
+			"btn_end_run": player._on_btn_end_run_click_end,
+			"btn_exit_game": player._on_btn_exit_game_click_end,
+			"btn_give_xp": player._on_btn_give_xp_click_end,
+			"btn_give_level": player._on_btn_give_level_click_end,
+			"btn_kill_player": player._on_btn_kill_player_click_end,
+			"btn_damage_player": player._on_btn_damage_player_click_end,
+			"btn_next_normal_track": player._on_btn_next_normal_track_click_end,
+			"btn_next_boss_track": player._on_btn_next_boss_track_click_end,
+			"btn_pause_music": player._on_btn_pause_music_click_end,
+			"btn_unpause_music": player._on_btn_unpause_music_click_end,
+			"btn_timer_1m": player._on_btn_timer_1m_click_end,
+			"btn_timer_5m": player._on_btn_timer_5m_click_end,
+		}
+		for btn_name in btn_map:
+			var btn = grid.get_node_or_null(btn_name)
+			if btn and btn.has_signal("click_end"):
+				if not btn.click_end.is_connected(btn_map[btn_name]):
+					btn.click_end.connect(btn_map[btn_name])
+		
+		# Toggle buttons
+		var god = grid.get_node_or_null("btn_toggle_godmode")
+		if god and not god.toggled.is_connected(player._on_btn_toggle_godmode_toggled):
+			god.toggled.connect(player._on_btn_toggle_godmode_toggled)
+			
+		var spawn = grid.get_node_or_null("btn_toggle_spawns")
+		if spawn and not spawn.toggled.is_connected(player._on_btn_toggle_spawns_toggled):
+			spawn.toggled.connect(player._on_btn_toggle_spawns_toggled)
 
 
 

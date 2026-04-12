@@ -1,6 +1,6 @@
 [gd_resource type="Theme" format=3 uid="uid://dg7yl74xayfwi"]
 
-[ext_resource type="FontFile" uid="uid://bdv40ddce10pj" path="res://Font/Palitura-Medium.ttf" id="1_6rux6"]
+[ext_resource type="FontFile" uid="uid://bu0ii1qpo4542" path="res://Font/Palitura-SemiBold.ttf" id="1_6rux6"]
 
 [resource]
 default_font = ExtResource("1_6rux6")

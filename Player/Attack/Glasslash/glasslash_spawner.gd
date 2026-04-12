@@ -1,6 +1,7 @@
 extends Node2D
 
 var level = 0
+var endless_level = 0
 var attack_speed = 2.5
 var damage = 30
 var shards_on_death = false
@@ -37,6 +38,10 @@ func upgrade(upgrade_id: String):
 			damage = 90
 			attack_speed = 1.0
 			shards_on_death = true
+		"glasslash_endless":
+			endless_level += 1
+			damage += 5
+
 	
 	attack()
 
@@ -47,18 +52,23 @@ func attack():
 			timer.start()
 
 func _on_timer_timeout():
+	var extra_attacks = int(player.additional_attacks)
+	if randf() < (player.additional_attacks - extra_attacks):
+		extra_attacks += 1
+		
 	var target_pos = player.get_closest_target()
 	if target_pos == Vector2.INF:
 		# If no enemy, just swing in last movement direction
 		target_pos = player.global_position + player.last_movement * 50
 	
-	var attack_burst = 1 + player.additional_attacks
+	var attack_burst = 1 + extra_attacks
 	for i in range(attack_burst):
 		var lash = glasslash_scene.instantiate()
 		lash.global_position = player.global_position
 		lash.target_pos = target_pos
 		lash.damage = damage * GlobalEvents.get_player_damage_modifier()
 		lash.level = level
+
 		# Slightly randomize angle for additional attacks
 		if i > 0:
 			var angle_offset = randf_range(-0.3, 0.3)

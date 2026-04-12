@@ -4,6 +4,7 @@ var ammo = 0
 var baseammo = 1
 var attackspeed = 3	
 var level = 0
+var endless_level = 0
 
 var poisonBottle = preload("res://Player/Attack/Poisonbottle/poisonbottle.tscn")
 @onready var player = get_tree().get_first_node_in_group("player")
@@ -28,6 +29,9 @@ func upgrade(upgrade_id: String):
 			level = 3
 		"poisonbottle4":
 			level = 4
+		"poisonbottle_endless":
+			endless_level += 1
+
 	
 	attack()
 
@@ -38,10 +42,15 @@ func attack():
 			timer.start()
 
 func _on_timer_timeout():
-	var attack_burst = baseammo + player.additional_attacks
+	var extra_attacks = int(player.additional_attacks)
+	if randf() < (player.additional_attacks - extra_attacks):
+		extra_attacks += 1
+	var attack_burst = baseammo + extra_attacks
 	if ammo < attack_burst:
 		ammo = attack_burst
 	attackTimer.start()
+
+
 
 func _on_attack_timer_timeout():
 	if ammo > 0:
@@ -51,6 +60,7 @@ func _on_attack_timer_timeout():
 			bottle_attack.position = player.position
 			bottle_attack.target = target
 			bottle_attack.level = level
+			bottle_attack.endless_level = endless_level
 			# Add to main scene tree or to a projectiles node so they don't move with player
 			player.get_parent().add_child(bottle_attack)
 			ammo -= 1

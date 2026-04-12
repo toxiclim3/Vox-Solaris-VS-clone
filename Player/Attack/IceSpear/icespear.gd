@@ -1,11 +1,13 @@
 extends Area2D
 
 var level = 1
+var endless_level = 0
 var hp = 1
 var speed = 150
 var damage = 5
 var knockback_amount = 100
 var attack_size = 1.0
+var proc_coefficient = 1.0
 
 var target = Vector2.ZERO
 var angle = Vector2.ZERO
@@ -41,6 +43,9 @@ func _ready():
 			damage = 15
 			knockback_amount = 100
 			attack_size = 1.0 * (1 + player.spell_size)
+			
+	# Apply Endless Scaling (approx 5% per level)
+	damage += endless_level * 1.0
 
 	
 	var tween = create_tween()

@@ -25,7 +25,7 @@ config/icon="res://icon.svg"
 UpgradeDb="*res://Utility/upgrade_db.tscn"
 GlobalEvents="*uid://cfmtka6m73iiv"
 MusicController="*uid://b8x5a6sgnm38g"
-SettingsManager="*uid://bf4lvmyjbidka"
+SettingsManager="*uid://dafqqanwiwjho"
 StatsManager="*res://Utility/StatsManager.gd"
 
 [display]
@@ -157,4 +157,4 @@ textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="mobile"
 textures/vram_compression/import_s3tc_bptc=true
 textures/vram_compression/import_etc2_astc=true
-2d/canvas_textures/default_texture_filter=3
+2d/canvas_textures/default_texture_filter=0

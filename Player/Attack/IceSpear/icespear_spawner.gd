@@ -4,6 +4,7 @@ var ammo = 0
 var baseammo = 0
 var attackspeed = 1.5
 var level = 0
+var endless_level = 0
 
 var iceSpear = preload("res://Player/Attack/Icespear/icespear.tscn")
 @onready var player = get_tree().get_first_node_in_group("player")
@@ -31,6 +32,9 @@ func upgrade(upgrade_id: String):
 		"icespear4":
 			level = 4
 			baseammo += 2
+		"icespear_endless":
+			endless_level += 1
+
 	
 	attack()
 
@@ -41,10 +45,14 @@ func attack():
 			timer.start()
 
 func _on_timer_timeout():
-	var attack_burst = baseammo + player.additional_attacks
+	var extra_attacks = int(player.additional_attacks)
+	if randf() < (player.additional_attacks - extra_attacks):
+		extra_attacks += 1
+	var attack_burst = baseammo + extra_attacks
 	if ammo < attack_burst:
 		ammo = attack_burst
 	attackTimer.start()
+
 
 func _on_attack_timer_timeout():
 	if ammo > 0:
@@ -54,8 +62,10 @@ func _on_attack_timer_timeout():
 			icespear_attack.position = player.position
 			icespear_attack.target = target
 			icespear_attack.level = level
+			icespear_attack.endless_level = endless_level
 			# Add to main scene tree or to a projectiles node so they don't move with player
 			player.get_parent().add_child(icespear_attack)
+
 			ammo -= 1
 		
 		if ammo > 0:

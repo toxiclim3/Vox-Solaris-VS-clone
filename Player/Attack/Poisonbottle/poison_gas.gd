@@ -1,6 +1,7 @@
 extends Area2D
 
 var level = 1
+var endless_level = 0
 var attack_size = 1.0
 var damage = 2.5
 var slow_amount = 0
@@ -48,11 +49,17 @@ func _ready():
 	
 	# Initial frame setup handled by animator
 	
+	# Apply Endless scaling
+	damage += endless_level * 1.0
+	duration += endless_level * 0.2
+	
 	duration_timer.wait_time = duration
 	duration_timer.start()
 	
 	damage_box.damage = damage
+	damage_box.proc_coefficient = 0.2
 	damage_box.get_node("CollisionShape2D").disabled = true
+
 	
 	if debug_red:
 		sprite.modulate = Color(1.0, 0.0, 0.0, 0.7)

@@ -1,11 +1,13 @@
 extends Area2D
 
 var level = 1
+var endless_level = 0
 var hp = 9999
 var speed = 150.0
 var damage = 5
 var attack_size = 1.0
 var knockback_amount = 100
+var proc_coefficient = 0.5
 
 var last_movement = Vector2.ZERO
 var angle = Vector2.ZERO
@@ -42,6 +44,10 @@ func _ready():
 			damage = 5
 			knockback_amount = 125
 			attack_size = 1.0 * (1 + player.spell_size)
+			
+	# Apply Endless Scaling (approx 5% per level)
+	attack_size += endless_level * 0.05
+
 
 			
 	# Generate swerve targets by rotating the base movement direction.

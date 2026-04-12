@@ -9,6 +9,9 @@ signal settings_closed
 @onready var audio_btn = %AudioBtn
 @onready var gameplay_btn = %GameplayBtn
 @onready var display_btn = %DisplayBtn
+@onready var elite_btn = %EliteBtn
+
+@onready var elite_content = %EliteContentPanel
 
 @onready var profile_button = %ProfileButton
 @onready var language_button = %LanguageButton
@@ -22,7 +25,7 @@ signal settings_closed
 @onready var confirmation_dialog = %ConfirmationDialog
 
 enum Languages {en, ru, ua}
-enum Tabs {AUDIO, GAMEPLAY, DISPLAY}
+enum Tabs {AUDIO, GAMEPLAY, DISPLAY, ELITE}
 
 var current_tab_id: int = Tabs.AUDIO
 
@@ -32,9 +35,26 @@ func _ready() -> void:
 	audio_btn.click_end.connect(_on_tab_pressed.bind(Tabs.AUDIO))
 	gameplay_btn.click_end.connect(_on_tab_pressed.bind(Tabs.GAMEPLAY))
 	display_btn.click_end.connect(_on_tab_pressed.bind(Tabs.DISPLAY))
+	elite_btn.click_end.connect(_on_tab_pressed.bind(Tabs.ELITE))
 	
 	# Initial tab
 	_on_tab_pressed(Tabs.AUDIO)
+	
+	# Elite settings init
+	%TaaButton.button_pressed = SettingsManager.taa_enabled
+	%TaaButton.toggled.connect(SettingsManager.set_taa)
+	
+	%FsrButton.button_pressed = SettingsManager.fsr_enabled
+	%FsrButton.toggled.connect(SettingsManager.set_fsr)
+	
+	%DlssButton.button_pressed = SettingsManager.dlss_enabled
+	%DlssButton.toggled.connect(_on_dlss_toggled)
+	
+	%RtButton.button_pressed = SettingsManager.raytracing_enabled
+	%RtButton.toggled.connect(SettingsManager.set_raytracing)
+	
+	%ShadowButton.button_pressed = SettingsManager.shadows_enabled
+	%ShadowButton.toggled.connect(SettingsManager.set_shadows)
 	
 	# Audio Profile
 	profile_button.add_item("Full")
@@ -95,12 +115,14 @@ func _on_tab_pressed(tab: int) -> void:
 	audio_content.visible = (tab == Tabs.AUDIO)
 	gameplay_content.visible = (tab == Tabs.GAMEPLAY)
 	display_content.visible = (tab == Tabs.DISPLAY)
+	elite_content.visible = (tab == Tabs.ELITE)
 	
 	# Visual feedback for buttons (optional, can be done with button groups/themes)
 	# For now just simple toggle
 	audio_btn.modulate = Color(1,1,1) if tab == Tabs.AUDIO else Color(0.7, 0.7, 0.7)
 	gameplay_btn.modulate = Color(1,1,1) if tab == Tabs.GAMEPLAY else Color(0.7, 0.7, 0.7)
 	display_btn.modulate = Color(1,1,1) if tab == Tabs.DISPLAY else Color(0.7, 0.7, 0.7)
+	elite_btn.modulate = Color(1,1,1) if tab == Tabs.ELITE else Color(0.7, 0.7, 0.7)
 	
 	# Update focus neighbors
 	_update_focus_neighbors(tab)
@@ -119,6 +141,9 @@ func _update_focus_neighbors(tab: int) -> void:
 		Tabs.DISPLAY:
 			first_item = %WindowModeButton
 			items = [%WindowModeButton, %VsyncButton, %MaxFpsButton]
+		Tabs.ELITE:
+			first_item = %TaaButton
+			items = [%TaaButton, %FsrButton, %DlssButton, %RtButton, %ShadowButton]
 	
 	# Current Tab -> Right -> First Item
 	var current_tab_btn: Button = null
@@ -126,6 +151,7 @@ func _update_focus_neighbors(tab: int) -> void:
 		Tabs.AUDIO: current_tab_btn = audio_btn
 		Tabs.GAMEPLAY: current_tab_btn = gameplay_btn
 		Tabs.DISPLAY: current_tab_btn = display_btn
+		Tabs.ELITE: current_tab_btn = elite_btn
 	
 	if current_tab_btn and first_item:
 		current_tab_btn.focus_neighbor_right = current_tab_btn.get_path_to(first_item)
@@ -164,17 +190,26 @@ func _on_btn_reset_stats_click_end() -> void:
 func _on_confirmation_dialog_confirmed() -> void:
 	StatsManager.reset_stats()
 
+func _on_dlss_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		%DlssDeniedDialog.popup_centered()
+		# Force toggle back off after a moment
+		await get_tree().create_timer(0.1).timeout
+		%DlssButton.button_pressed = false
+	SettingsManager.set_dlss(false) # Always false for now, it's a joke
+
 func grab_initial_focus() -> void:
 	if visible:
 		match current_tab_id:
 			Tabs.GAMEPLAY: gameplay_btn.grab_focus()
 			Tabs.DISPLAY: display_btn.grab_focus()
+			Tabs.ELITE: elite_btn.grab_focus()
 			Tabs.AUDIO, _: audio_btn.grab_focus()
 
 func is_focus_in_content() -> bool:
 	var focused = get_viewport().gui_get_focus_owner()
 	if focused and focused is Control:
-		if %AudioContentPanel.is_ancestor_of(focused) or %GameplayContentPanel.is_ancestor_of(focused) or %DisplayContentPanel.is_ancestor_of(focused):
+		if %AudioContentPanel.is_ancestor_of(focused) or %GameplayContentPanel.is_ancestor_of(focused) or %DisplayContentPanel.is_ancestor_of(focused) or %EliteContentPanel.is_ancestor_of(focused):
 			return true
 	return false
 

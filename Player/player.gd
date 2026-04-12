@@ -30,6 +30,7 @@ var collected_upgrades = []
 var upgrade_options = []
 var pending_levelups = 0  # Queue of level-ups waiting to be shown
 var pending_boss_rewards = 0 # Queue of boss rewards waiting to be shown
+var collected_endless = {} # Dictionary of "base_name" -> int count
 
 # Base Stats
 var base_armor = 0
@@ -40,11 +41,15 @@ var base_spell_cooldown = 0.0
 var spell_cooldown = 0.0
 var base_spell_size = 0.0
 var spell_size = 0.0
-var base_additional_attacks = 0
-var additional_attacks = 0
+var base_additional_attacks = 0.0
+var additional_attacks = 0.0
 
 # XP gem grab range
 const BASE_GRAB_RADIUS = 50.0
+
+# Slot limits
+var max_weapon_slots = 6
+var max_upgrade_slots = 8
 
 # Track Stat Modifiers
 var stat_modifiers = {}
@@ -56,6 +61,11 @@ var reflected_damage: float = 0.0
 
 # Javelin level tracked for global updates to Javelins
 var javelin_level = 0
+var javelin_endless_level = 0
+var relic_drone_node = null
+
+#Elite Graphics
+var rt_light: PointLight2D = null
 
 #Enemy Related
 var enemy_close = []
@@ -68,13 +78,12 @@ var enemy_close = []
 @onready var weapons = get_node("%Weapons") # Dynamic weapons container
 
 #GUI
-@onready var gui = get_node("GUILayer/GUI")
+@onready var gui = get_tree().get_first_node_in_group("gui")
 @onready var healthBar = get_node("%HealthBar")
 @onready var sndHurt = get_node("%snd_hurt")
 @onready var sndHurtBad = get_node("%snd_hurt_bad")
 
-@onready var pauseMenu = get_node("GUILayer/GUI/PauseMenu")
-@onready var debugMenu = get_node("GUILayer/GUI/DebugMenu")
+
 
 #Signal
 signal playerdeath
@@ -121,8 +130,29 @@ func _ready():
 	gui.set_expbar(experience, calculate_experiencecap())
 	gui.set_level_text(experience_level)
 	_on_hurt_box_hurt(0,0,0)
-	GlobalEvents.boss_defeated.connect(_on_boss_defeated)
 	GlobalEvents.enemy_died.connect(_on_enemy_died)
+	
+	# Ray Tracing (Elite)
+	_setup_rt_light()
+	SettingsManager.raytracing_settings_changed.connect(_on_rt_settings_changed)
+	
+	# Set slot limits based on difficulty
+	max_weapon_slots = GlobalEvents.get_max_weapon_slots()
+	max_upgrade_slots = GlobalEvents.get_max_upgrade_slots()
+
+func _setup_rt_light():
+	if rt_light == null:
+		rt_light = PointLight2D.new()
+		rt_light.texture = load("res://Textures/GUI/light_gradient.png")
+		rt_light.energy = 2.0
+		rt_light.texture_scale = 2.0
+		rt_light.color = Color(1.0, 0.9, 0.7) # Warm "Premium" light
+		add_child(rt_light)
+	rt_light.visible = SettingsManager.raytracing_enabled
+
+func _on_rt_settings_changed(enabled: bool):
+	if rt_light:
+		rt_light.visible = enabled
 
 
 func _physics_process(_delta):
@@ -174,7 +204,7 @@ func _on_regen_timer_timeout(): #regens regenPerSecond percent of maxHp every re
 
 
 
-func _on_hurt_box_hurt(damage, _angle, _knockback, _killer_source = "", attacker_node = null):
+func _on_hurt_box_hurt(damage, _angle, _knockback, _killer_source = "", attacker_node = null, _proc_coefficient = 1.0):
 	if damage > 0:
 		GlobalEvents.player_took_damage.emit(damage, attacker_node)
 		
@@ -185,8 +215,15 @@ func _on_hurt_box_hurt(damage, _angle, _knockback, _killer_source = "", attacker
 			attacker_node._on_hurt_box_hurt(reflected_damage, Vector2.ZERO, 0, "Thorn Ring", self)
 
 	if godmode == false:
-		var actual_damage = clamp(damage-armor, 0.0, 999.0)
+		# Armor rework: Percentage reduction with diminishing returns (DR = Armor / (Armor + 40))
+		var dr = float(armor) / (armor + 40.0)
+		var actual_damage = damage * (1.0 - dr)
+		
+		# Ensure we don't heal from damage, and at least 0.1 damage is taken if hit (optional, keeping it simple for now)
+		actual_damage = clamp(actual_damage, 0.0, 999.0)
+		
 		if actual_damage > 0:
+
 			if (hp >= (maxhp * hurtBadThreshold)) or hurtBadTriggered:
 				sndHurt.play()
 				GlobalEvents.camera_shake.emit(2.0, 0.2)
@@ -418,6 +455,21 @@ func apply_stat_modifiers():
 					"lifesteal": lifesteal += val
 					"armor_multiplier": armor_multiplier += val
 					"reflected_damage": reflected_damage += val
+					
+	# Apply Endless Stat Modifiers
+	for base_name in collected_endless:
+		var count = collected_endless[base_name]
+		match base_name:
+			"speed": movement_speed_percent_total += 0.02 * count
+			"tome": spell_size += 0.02 * count # Relative to base
+			"scroll": spell_cooldown += 0.02 * count
+			"armor": armor += 1 * count
+			"ringofaffinity": xp_range_percent_total += 0.05 * count
+			"thornring": reflected_damage += 5 * count
+			"ring": # Multiplication (chance based)
+				additional_attacks += 0.05 * count
+			"thornring": reflected_damage += 5 * count
+
 	
 	# Apply movement speed percent bonus
 	movement_speed = base_movement_speed * (1.0 + movement_speed_percent_total)
@@ -447,7 +499,16 @@ func upgrade_character(upgrade):
 	
 	# Check if it's a weapon (can be either 'weapon' or 'bossitem' if it has a spawner)
 	var boss_weapons_with_spawner = ["glasslash", "vampireknives"]
-	if type == "weapon" or (type == "bossitem" and boss_weapons_with_spawner.has(upgrade.rstrip("0123456789"))):
+	
+	if upgrade.begins_with("relicdrone"):
+		if not relic_drone_node:
+			relic_drone_node = preload("res://Player/Attack/RelicDrone/RelicDrone.tscn").instantiate()
+			add_child(relic_drone_node)
+		
+		var relic_lvl = int(upgrade.replace("relicdrone", ""))
+		relic_drone_node.level = relic_lvl
+		relic_drone_node.update_stats()
+	elif type == "weapon" or (type == "bossitem" and boss_weapons_with_spawner.has(upgrade.rstrip("0123456789"))):
 		var base_name = upgrade.rstrip("0123456789")
 		var folder_name = base_name.capitalize()
 		var file_name = base_name
@@ -472,11 +533,25 @@ func upgrade_character(upgrade):
 			else:
 				stat_modifiers[upgrade] = upgrade_data["stat_modifiers"]
 				apply_stat_modifiers()
+	elif type == "endless":
+		var base_name = upgrade.trim_suffix("_endless")
+		if not collected_endless.has(base_name):
+			collected_endless[base_name] = 0
+		collected_endless[base_name] += 1
+		
+		# Update weapon spawner if it exists
+		var weapon_spawner = weapons.get_node_or_null(base_name)
+		if weapon_spawner and weapon_spawner.has_method("upgrade"):
+			weapon_spawner.upgrade(upgrade)
+			
+		apply_stat_modifiers()
+
 				
 	gui.adjust_gui_collection(upgrade)
 	attack()
 	upgrade_options.clear()
-	collected_upgrades.append(upgrade)
+	if not upgrade in collected_upgrades:
+		collected_upgrades.append(upgrade)
 	gui.hide_level_panels()
 	# Get the level that we just finished upgrading
 	var current_visual_level = experience_level - pending_levelups
@@ -490,18 +565,48 @@ func upgrade_character(upgrade):
 	calculate_experience(0)
 	
 	if current_visual_level % GlobalEvents.musicInterval == 0:
-		MusicController.playNext(MusicController.MusicType.NORMAL)	
-	
+		MusicController.playNext(MusicController.MusicType.NORMAL)
+
+
+func _get_effective_type(upgrade_id: String) -> String:
+	var item = UpgradeDb.UPGRADES.get(upgrade_id)
+	if not item: return ""
+	if item["type"] == "endless":
+		if item["prerequisite"].size() > 0:
+			var prereq_id = item["prerequisite"][0]
+			var prereq_item = UpgradeDb.UPGRADES.get(prereq_id)
+			if prereq_item:
+				return prereq_item["type"]
+	return item["type"]
+
+
 func get_random_item():
 	var dblist = []
+	
+	# Calculate current unique weapons and upgrades
+	var unique_weapons = []
+	var unique_upgrades = []
+	for collected in collected_upgrades:
+		var type = _get_effective_type(collected)
+		var displayname = UpgradeDb.UPGRADES[collected]["displayname"]
+		if type == "weapon" and not displayname in unique_weapons:
+			unique_weapons.append(displayname)
+		elif type == "upgrade" and not displayname in unique_upgrades:
+			unique_upgrades.append(displayname)
+	
 	for i in UpgradeDb.UPGRADES:
 		if i in collected_upgrades: #Find already collected upgrades
-			pass
-		elif i in upgrade_options: #If the upgrade is already an option
-			pass
-		elif UpgradeDb.UPGRADES[i]["type"] == "item" or UpgradeDb.UPGRADES[i]["type"] == "bossitem": #Don't pick food or boss items
-			pass
-		elif UpgradeDb.UPGRADES[i]["prerequisite"].size() > 0: #Check for PreRequisites
+			if UpgradeDb.UPGRADES[i]["type"] != "endless":
+				continue
+		
+		if i in upgrade_options: #If the upgrade is already an option
+			continue
+			
+		var type = _get_effective_type(i)
+		if type == "item" or type == "bossitem": #Don't pick food or boss items in regular pool
+			continue
+			
+		if UpgradeDb.UPGRADES[i]["prerequisite"].size() > 0: #Check for PreRequisites
 			var to_add = true
 			for n in UpgradeDb.UPGRADES[i]["prerequisite"]:
 				if not n in collected_upgrades:
@@ -509,7 +614,15 @@ func get_random_item():
 			if to_add:
 				dblist.append(i)
 		else:
+			# This is a new item (level 1)
+			if type == "weapon" and unique_weapons.size() >= max_weapon_slots:
+				continue
+			if type == "upgrade" and unique_upgrades.size() >= max_upgrade_slots:
+				continue
+				
 			dblist.append(i)
+
+			
 	if dblist.size() > 0:
 		var randomitem = dblist.pick_random()
 		upgrade_options.append(randomitem)
@@ -517,16 +630,22 @@ func get_random_item():
 	else:
 		return null
 
+
 func get_random_boss_item():
 	var dblist = []
 	for i in UpgradeDb.UPGRADES:
 		if i in collected_upgrades:
-			pass
-		elif i in upgrade_options:
-			pass
-		elif UpgradeDb.UPGRADES[i]["type"] != "bossitem":
-			pass
-		elif UpgradeDb.UPGRADES[i]["prerequisite"].size() > 0:
+			if UpgradeDb.UPGRADES[i]["type"] != "endless":
+				continue
+		
+		if i in upgrade_options:
+			continue
+			
+		var type = _get_effective_type(i)
+		if type != "bossitem":
+			continue
+			
+		if UpgradeDb.UPGRADES[i]["prerequisite"].size() > 0:
 			var to_add = true
 			for n in UpgradeDb.UPGRADES[i]["prerequisite"]:
 				if not n in collected_upgrades:
@@ -535,12 +654,15 @@ func get_random_boss_item():
 				dblist.append(i)
 		else:
 			dblist.append(i)
+			
 	if dblist.size() > 0:
 		var randomitem = dblist.pick_random()
 		upgrade_options.append(randomitem)
 		return randomitem
 	else:
 		return null
+
+
 
 #timer
 func change_time(argtime = 0):
