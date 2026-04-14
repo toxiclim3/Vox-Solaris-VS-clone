@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://c6j2y1p3m6q3y" path="res://Utility/stats_menu.tscn" id="6_stats"]
 [ext_resource type="PackedScene" uid="uid://cxw5k8g4y2f2p" path="res://Utility/custom_difficulty_menu.tscn" id="7_custom"]
 [ext_resource type="PackedScene" uid="uid://dfxw7xjk1r111" path="res://TitleScreen/play_menu.tscn" id="8_play"]
+[ext_resource type="PackedScene" uid="uid://htp_main_menu" path="res://TitleScreen/how_to_play_menu.tscn" id="9_htp"]
 [ext_resource type="Script" uid="uid://b31pd6wlfiij0" path="res://TitleScreen/menu_background.gd" id="9_bgscript"]
 [ext_resource type="Texture2D" uid="uid://bscpnrlitm2k4" path="res://Textures/Titlescreen/menu_bg_sky.png" id="10_sky"]
 [ext_resource type="Texture2D" uid="uid://2iavhd581dor" path="res://Textures/Titlescreen/menu_bg_city.png" id="11_city"]
@@ -207,7 +208,6 @@ text = "ui_play"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
-disabled = true
 text = "ui_howToPlay"
 
 [node name="btn_settings" parent="MarginContainer/VBoxContainer" unique_id=1384267404 instance=ExtResource("3_kwsdd")]
@@ -246,6 +246,10 @@ visible = false
 unique_name_in_owner = true
 visible = false
 
+[node name="HowToPlayMenu" parent="CanvasLayer" unique_id=557851311 instance=ExtResource("9_htp")]
+unique_name_in_owner = true
+visible = false
+
 [node name="VersionLabel" type="Label" parent="." unique_id=1984267404]
 unique_name_in_owner = true
 layout_mode = 1
@@ -276,3 +280,4 @@ vertical_alignment = 2
 [connection signal="edit_custom_requested" from="CanvasLayer/PlayMenu" to="." method="_on_play_menu_edit_custom_requested"]
 [connection signal="play_menu_closed" from="CanvasLayer/PlayMenu" to="." method="_on_play_menu_closed"]
 [connection signal="start_run_requested" from="CanvasLayer/PlayMenu" to="." method="_on_play_menu_start_run_requested"]
+[connection signal="how_to_play_closed" from="CanvasLayer/HowToPlayMenu" to="." method="_on_how_to_play_menu_how_to_play_closed"]

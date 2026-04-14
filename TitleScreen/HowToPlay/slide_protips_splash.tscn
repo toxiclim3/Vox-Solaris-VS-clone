@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://htp_ps"]
+
+[ext_resource type="Script" path="res://TitleScreen/HowToPlay/slide_protips_splash.gd" id="1_script"]
+
+[node name="slide_protips_splash" type="Node2D"]
+script = ExtResource("1_script")

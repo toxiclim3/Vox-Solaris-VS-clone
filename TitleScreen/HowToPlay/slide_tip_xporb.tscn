@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://htp_xo"]
+
+[ext_resource type="Script" path="res://TitleScreen/HowToPlay/slide_tip_xporb.gd" id="1_script"]
+
+[node name="slide_tip_xporb" type="Node2D"]
+script = ExtResource("1_script")

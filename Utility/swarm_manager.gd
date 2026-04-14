@@ -13,6 +13,7 @@ class SwarmEnemy:
 	var is_dead: bool = false
 	var swarm_manager_ref = null
 	var separation: Vector2 = Vector2.ZERO
+	var anim_offset: float = 0.0
 
 	func _on_hurt_box_hurt(dmg, angle, kb, source, attacker_node):
 		hp -= dmg
@@ -39,6 +40,7 @@ var player_damage_cooldown = 0.0
 var exp_gem_scene = preload("res://Objects/experience_gem.tscn")
 var xp_orb_scene = preload("res://Objects/xp_orb.tscn")
 var death_anim = preload("res://Enemy/Base/explosion.tscn")
+@export var explosion_chance: float = 0.5
 # Sound might need a pool, but for now we skip hit sounds for swarms to save audio channels, or play them globally rarely.
 
 var screen_size = Vector2(640, 360)
@@ -47,7 +49,7 @@ func _ready():
 	add_to_group("swarm_manager")
 	screen_size = get_viewport_rect().size
 
-func register_enemy_type(texture: Texture2D, radius: float, hframes: int = 1, vframes: int = 1) -> int:
+func register_enemy_type(texture: Texture2D, radius: float, hframes: int = 1, vframes: int = 1, anim_fps: float = 3) -> int:
 	for id in enemy_type_cache.keys():
 		if enemy_type_cache[id].texture == texture:
 			return id
@@ -58,38 +60,17 @@ func register_enemy_type(texture: Texture2D, radius: float, hframes: int = 1, vf
 	var mm = MultiMesh.new()
 	mm.transform_format = MultiMesh.TRANSFORM_2D
 	mm.use_colors = true
+	mm.use_custom_data = true
 	
-	var arr_mesh = ArrayMesh.new()
-	var w = 12.0
-	var h = 12.0
+	var quad_mesh = QuadMesh.new()
+	var w = 24.0
+	var h = 24.0
 	if texture:
-		w = (texture.get_width() / float(hframes)) / 2.0
-		h = (texture.get_height() / float(vframes)) / 2.0
+		w = texture.get_width() / float(hframes)
+		h = texture.get_height() / float(vframes)
 		
-	var vertices = PackedVector2Array([
-		Vector2(-w, -h), # Top Left
-		Vector2(w, -h),  # Top Right
-		Vector2(w, h),   # Bottom Right
-		Vector2(-w, h)   # Bottom Left
-	])
-	
-	var uvs = PackedVector2Array([
-		Vector2(0, 0),
-		Vector2(1, 0),
-		Vector2(1, 1),
-		Vector2(0, 1)
-	])
-	
-	var indices = PackedInt32Array([0, 1, 2, 0, 2, 3])
-	
-	var arr = []
-	arr.resize(Mesh.ARRAY_MAX)
-	arr[Mesh.ARRAY_VERTEX] = vertices
-	arr[Mesh.ARRAY_TEX_UV] = uvs
-	arr[Mesh.ARRAY_INDEX] = indices
-	arr_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arr)
-	
-	mm.mesh = arr_mesh
+	quad_mesh.size = Vector2(w, h)
+	mm.mesh = quad_mesh
 	
 	mm.instance_count = 0
 	
@@ -106,23 +87,23 @@ func register_enemy_type(texture: Texture2D, radius: float, hframes: int = 1, vf
 	shader_type canvas_item;
 	const int HFRAMES = %d;
 	const int VFRAMES = %d;
+	const float FPS = %f;
 	uniform float time = 0.0;
 	
-	varying float custom_offset;
-	
 	void vertex() {
-		// Hardware INSTANCE_ID provides a stable pseudo-random offset
-		custom_offset = float(INSTANCE_ID %% 100);
-	}
-	
-	void fragment() {
-		int current_frame = int(mod((time + custom_offset) * 5.0, float(HFRAMES))); 
+		// INSTANCE_CUSTOM is reliably available in the vertex pipeline across all Godot 4 renderers
+		// even OpenGL Compatibility mode on old machines.
+		
+		int current_frame = int(mod((time + INSTANCE_CUSTOM.r) * FPS, float(HFRAMES))); 
+		
 		vec2 frame_size = vec2(1.0 / float(HFRAMES), 1.0 / float(VFRAMES));
 		vec2 uv_offset = vec2(float(current_frame) * frame_size.x, 0.0);
-		vec4 tex = texture(TEXTURE, (UV * frame_size) + uv_offset);
-		COLOR = tex * COLOR;
+		
+		// Let the GPU natively scale the Quad's UV vertices instead of fragment-hacking.
+		// Native nearest-neighbor sampling works perfectly with this approach.
+		UV = (UV * frame_size) + uv_offset;
 	}
-	""" % [hframes, vframes]
+	""" % [hframes, vframes, anim_fps]
 	
 	mat.shader = shader
 	mmi.material = mat
@@ -147,6 +128,7 @@ func add_enemy(pos: Vector2, max_hp: float, hp: float, speed: float, experience:
 	enemy.damage = damage
 	enemy.type_id = type_id
 	enemy.swarm_manager_ref = self
+	enemy.anim_offset = randf() * 100.0
 	swarm_data.append(enemy)
 
 func _physics_process(delta):
@@ -349,7 +331,7 @@ func _handle_death(enemy: SwarmEnemy):
 			current_loot_base.call_deferred("add_child", new_xp_orb)
 		
 	# Death Animation (too many will lag, so we only spawn explicitly if we are below a threshold, or just rely on hit flashes)
-	if randf() < 0.2: # Only spawn visual explosion for 20% to save frames
+	if randf() <= explosion_chance: 
 		var d = death_anim.instantiate()
 		d.global_position = enemy.position
 		get_parent().call_deferred("add_child", d)
@@ -388,8 +370,12 @@ func _update_multimeshes():
 		
 		var p_pos = player.global_position
 		var flip = -1.0 if enemy.position.x < p_pos.x else 1.0
-		var t = Transform2D(0, enemy.position).scaled_local(Vector2(flip, 1.0))
-			
+		
+		# Smooth float transforms paired with snapped-UV shader achieves perfect pixel art swarms.
+		# Multiply Y-scale by -1.0 because Godot 3D QuadMeshes project upside-down in the 2D space.
+		var t = Transform2D(0, enemy.position).scaled_local(Vector2(flip, -1.0))
+		
 		mm.set_instance_transform_2d(current_idx[idx], t)
 		mm.set_instance_color(current_idx[idx], color)
+		mm.set_instance_custom_data(current_idx[idx], Color(enemy.anim_offset, 0, 0, 0))
 		current_idx[idx] += 1

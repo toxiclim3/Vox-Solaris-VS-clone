@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://htp_df"]
+
+[ext_resource type="Script" path="res://TitleScreen/HowToPlay/slide_difficulty.gd" id="1_script"]
+
+[node name="slide_difficulty" type="Node2D"]
+script = ExtResource("1_script")

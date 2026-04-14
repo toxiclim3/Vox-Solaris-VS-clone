@@ -1,0 +1,11 @@
+[gd_resource type="Theme" format=3 uid="uid://htp_cursive_header"]
+
+[ext_resource type="FontFile" uid="uid://b12345cursive" path="res://Font/morana.otf" id="1_cursive"]
+
+[resource]
+default_font = ExtResource("1_cursive")
+default_font_size = 28
+Label/colors/font_shadow_color = Color(0.4, 0.1, 0.6, 0.7)
+Label/constants/shadow_offset_x = 3
+Label/constants/shadow_offset_y = 3
+Label/constants/shadow_outline_size = 3

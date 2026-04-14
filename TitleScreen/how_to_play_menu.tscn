@@ -1,0 +1,140 @@
+[gd_scene format=3 uid="uid://htp_main_menu"]
+
+[ext_resource type="Script" path="res://TitleScreen/how_to_play_menu.gd" id="1_script"]
+[ext_resource type="Theme" path="res://Themes/NinePatchUI.tres" id="2_np"]
+[ext_resource type="Theme" path="res://Themes/HeaderText_White.tres" id="3_headerw"]
+[ext_resource type="Theme" path="res://Themes/RegularText_White.tres" id="4_regw"]
+[ext_resource type="Theme" path="res://Themes/Buttons_Dark.tres" id="5_darkbtn"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dot_on"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_left = 3
+corner_radius_bottom_right = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dot_off"]
+bg_color = Color(0.4, 0.4, 0.4, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_left = 3
+corner_radius_bottom_right = 3
+
+[node name="HowToPlayMenu" type="CanvasLayer"]
+unique_name_in_owner = true
+layer = 90
+script = ExtResource("1_script")
+
+[node name="BackgroundDim" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.627451)
+
+[node name="MainPanel" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(560, 420)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = -210.0
+offset_right = 280.0
+offset_bottom = 210.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_np")
+
+[node name="Margin" type="MarginContainer" parent="MainPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="MainPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="HeaderRow" type="HBoxContainer" parent="MainPanel/Margin/VBox"]
+layout_mode = 2
+
+[node name="LabelTitle" type="Label" parent="MainPanel/Margin/VBox/HeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_headerw")
+text = "ui_howToPlay"
+horizontal_alignment = 1
+
+[node name="BtnClose" type="Button" parent="MainPanel/Margin/VBox/HeaderRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(28, 24)
+theme = ExtResource("5_darkbtn")
+text = "X"
+
+[node name="HSep" type="HSeparator" parent="MainPanel/Margin/VBox"]
+layout_mode = 2
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="MainPanel/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+custom_minimum_size = Vector2(320, 180)
+stretch = true
+texture_filter = 5
+
+[node name="SlideViewport" type="SubViewport" parent="MainPanel/Margin/VBox/SubViewportContainer"]
+unique_name_in_owner = true
+size = Vector2i(320, 180)
+canvas_item_default_texture_filter = 1
+
+[node name="TextArea" type="VBoxContainer" parent="MainPanel/Margin/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 60)
+theme_override_constants/separation = 4
+
+[node name="LabelSlideTitle" type="Label" parent="MainPanel/Margin/VBox/TextArea"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("3_headerw")
+text = ""
+autowrap_mode = 2
+
+[node name="LabelSlideDesc" type="Label" parent="MainPanel/Margin/VBox/TextArea"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("4_regw")
+text = ""
+autowrap_mode = 3
+
+[node name="NavRow" type="HBoxContainer" parent="MainPanel/Margin/VBox"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 8
+
+[node name="BtnPrev" type="Button" parent="MainPanel/Margin/VBox/NavRow"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(36, 28)
+theme = ExtResource("5_darkbtn")
+text = "←"
+disabled = true
+
+[node name="PageDots" type="HBoxContainer" parent="MainPanel/Margin/VBox/NavRow"]
+unique_name_in_owner = true
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 6
+
+[node name="BtnNext" type="Button" parent="MainPanel/Margin/VBox/NavRow"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(36, 28)
+theme = ExtResource("5_darkbtn")
+text = "→"
+
+[connection signal="pressed" from="MainPanel/Margin/VBox/HeaderRow/BtnClose" to="." method="_on_btn_close_pressed"]
+[connection signal="pressed" from="MainPanel/Margin/VBox/NavRow/BtnPrev" to="." method="_on_btn_prev_pressed"]
+[connection signal="pressed" from="MainPanel/Margin/VBox/NavRow/BtnNext" to="." method="_on_btn_next_pressed"]

@@ -25,7 +25,7 @@ This file tracks known bugs, mathematical quirks, or engine-level limitations th
   3. Strict `_input` overrides catch `ui_cancel` (B/Escape) to facilitate navigation back to categories.
   
 ### Swarm MultiMesh Animation & Spritesheet Splicing
-- **Status:** Known Cursed Issue
+- **Status:** Fixed
 - **Description:** Rendering the new `SwarmManager` entities via `MultiMeshInstance2D` while natively slicing an Atlas/Spritesheet via a custom CanvasItem shader currently causes aggressively mangled, flattened, or "squished" geometry. This is likely a Godot 4 specific pixel-bleeding mismatch between `QuadMesh`/`ArrayMesh` custom UV generation and the 2D rendering pipeline utilizing Nearest Neighbor filtering (`texture_filter = 1`), alongside uniform caching problems.
 - **Why it was deferred:** The collision and separation math is functional, but fully un-corrupting the shader requires dedicating time to writing a specialized vertex-perfect CanvasItem Shader or altering how the Godot 4 Renderer binds `TEXTURE` sampling across arrays.
-- **Current Mitigation:** Deferred to a later optimization pass.
+- **Current Mitigation:** Resolved by using `texelFetch` in the CanvasItem shader to query exact pixel indices, preventing floating point UV bleeding. Additionally, enemy positions correctly snap to integers via `round()` before building the Transform2D, eliminating sub-pixel crushed multi-mesh rendering.

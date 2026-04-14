@@ -5,12 +5,14 @@ var level = "res://World/world.tscn"
 @onready var stats_menu = %StatsMenu
 @onready var custom_menu = %CustomDifficultyMenu
 @onready var play_menu = %PlayMenu
+@onready var how_to_play_menu = %HowToPlayMenu
 @onready var main_menu_content = %MarginContainer
 @onready var title_label = get_node("Label")
 @onready var btn_play = %btn_play
 @onready var btn_settings = %btn_settings
 @onready var btn_stats = %btn_stats
 @onready var btn_exit = %btn_exit
+@onready var btn_how_to_play = %btn_how_to_play
 
 @export var transition_duration: float = 0.4
 @export var gap: float = 0.5 * 8 * 8
@@ -20,6 +22,7 @@ var is_settings_open: bool = false
 var is_stats_open: bool = false
 var is_custom_diff_open: bool = false
 var is_play_open: bool = false
+var is_how_to_play_open: bool = false
 
 func _ready():
 	get_tree().paused = false
@@ -46,6 +49,7 @@ func _ready():
 	custom_menu.hide()
 	play_menu.position.y = -viewport_size.y
 	play_menu.hide()
+	how_to_play_menu.hide()
 	
 	# Intro animation: slide in from top
 	var original_title_y = title_label.position.y
@@ -76,6 +80,8 @@ func _input(event):
 			toggle_stats()
 		elif is_custom_diff_open:
 			toggle_custom_diff()
+		elif is_how_to_play_open:
+			toggle_how_to_play()
 		elif is_play_open:
 			toggle_play()
 	
@@ -260,7 +266,39 @@ func close_stats() -> void:
 	tween.chain().tween_callback(stats_menu.hide)
 
 func _on_btn_how_to_play_click_end() -> void:
-	MusicController.playSpecificTrack(MusicController.tutorialMusic,0)
+	toggle_how_to_play()
+
+func _on_how_to_play_menu_how_to_play_closed() -> void:
+	toggle_how_to_play()
+
+func toggle_how_to_play() -> void:
+	if is_settings_open:
+		close_settings()
+		is_settings_open = false
+	if is_stats_open:
+		close_stats()
+		is_stats_open = false
+	if is_custom_diff_open:
+		close_custom_diff()
+		is_custom_diff_open = false
+	if is_play_open:
+		close_play()
+		is_play_open = false
+	is_how_to_play_open = !is_how_to_play_open
+	if is_how_to_play_open:
+		open_how_to_play()
+	else:
+		close_how_to_play()
+
+func open_how_to_play() -> void:
+	how_to_play_menu.show()
+	how_to_play_menu.grab_initial_focus()
+	MusicController.playSpecificTrack(MusicController.tutorialMusic, 0)
+
+func close_how_to_play() -> void:
+	how_to_play_menu.hide()
+	MusicController.playSpecificTrack(MusicController.titleMusic, 1)
+
 
 func open_custom_diff() -> void:
 	custom_menu.show()
@@ -302,6 +340,8 @@ func _grab_context_focus() -> void:
 		stats_menu.grab_initial_focus()
 	elif is_custom_diff_open:
 		custom_menu.grab_initial_focus()
+	elif is_how_to_play_open:
+		how_to_play_menu.grab_initial_focus()
 	elif is_play_open:
 		play_menu.grab_initial_focus()
 	else:
