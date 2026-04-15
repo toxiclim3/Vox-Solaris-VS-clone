@@ -34,16 +34,16 @@ grow_vertical = 2
 color = Color(0, 0, 0, 0.627451)
 
 [node name="MainPanel" type="PanelContainer" parent="."]
-custom_minimum_size = Vector2(560, 420)
+custom_minimum_size = Vector2(560, 330)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -280.0
-offset_top = -210.0
+offset_top = -165.0
 offset_right = 280.0
-offset_bottom = 210.0
+offset_bottom = 165.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_np")
@@ -81,13 +81,12 @@ layout_mode = 2
 [node name="SubViewportContainer" type="SubViewportContainer" parent="MainPanel/Margin/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
-custom_minimum_size = Vector2(320, 180)
 stretch = true
-texture_filter = 5
+stretch_shrink = 1
 
 [node name="SlideViewport" type="SubViewport" parent="MainPanel/Margin/VBox/SubViewportContainer"]
 unique_name_in_owner = true
-size = Vector2i(320, 180)
+size = Vector2i(536, 180)
 canvas_item_default_texture_filter = 1
 
 [node name="TextArea" type="VBoxContainer" parent="MainPanel/Margin/VBox"]

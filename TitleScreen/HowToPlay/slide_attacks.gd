@@ -2,29 +2,37 @@
 ## Diorama: Player in centre, 3 strong kobolds in a triangle.
 ## Ice Spear fires at each kobold in sequence; kobold flashes red then fades.
 ## After all 3 die, 2s pause, all reset and loop.
+## Viewport: 536x180, sprite scale 1.5x
 extends Node2D
 
-const BG_COLOR    := Color(0.08, 0.06, 0.12)
 const PLAYER_TEX  := "res://Textures/Player/player_sprite.png"
 const KOBOLD_TEX  := "res://Textures/Enemy/kolbold_strong.png"
 const SPEAR_TEX   := "res://Textures/Items/Weapons/ice_spear.png"
-const SCALE       := Vector2(2, 2)
-const CENTER      := Vector2(160, 95)
-const RADIUS      := 60.0
+const SHADOW_TEX  := "res://Textures/GUI/blob_shadow.png"
+
+const SCALE       := Vector2(1.5, 1.5)
+const CENTER      := Vector2(268, 90)   # centre of 536x180
+const RADIUS      := 110.0
 const RESET_DELAY := 2.0
 
+var _bg: Node
 var _player:  Sprite2D
 var _kobolds: Array[Sprite2D] = []
+var _kob_shadows: Array[Sprite2D] = []
+
 var _looping: bool = false
+var _walk_time: float = 0.0
 
 func _ready() -> void:
 	_build_scene()
 
 func _build_scene() -> void:
-	var bg := ColorRect.new()
-	bg.color = BG_COLOR
-	bg.size  = Vector2(320, 180)
-	add_child(bg)
+	_bg = preload("res://World/background.tscn").instantiate()
+	_bg.pixel_scale = 2.0
+	add_child(_bg)
+
+	var p_shadow = _make_shadow(CENTER)
+	add_child(p_shadow)
 
 	_player = Sprite2D.new()
 	_player.texture = load(PLAYER_TEX)
@@ -34,18 +42,42 @@ func _build_scene() -> void:
 	_player.position = CENTER
 	add_child(_player)
 
-	# Three kobolds in a triangle
 	var kobold_tex = load(KOBOLD_TEX)
+	var shadow_tex = load(SHADOW_TEX)
 	for i in 3:
 		var angle := (-PI / 2.0) + (TAU / 3.0) * i
+		var pos = CENTER + Vector2(cos(angle), sin(angle)) * RADIUS
+
+		var k_shadow = _make_shadow(pos)
+		add_child(k_shadow)
+		_kob_shadows.append(k_shadow)
+
 		var kob := Sprite2D.new()
 		kob.texture  = kobold_tex
 		kob.hframes  = 2
 		kob.frame    = 0
 		kob.scale    = SCALE
-		kob.position = CENTER + Vector2(cos(angle), sin(angle)) * RADIUS
+		kob.position = pos
+		kob.flip_h   = cos(angle) > 0
 		add_child(kob)
 		_kobolds.append(kob)
+
+func _make_shadow(pos: Vector2) -> Sprite2D:
+	var s = Sprite2D.new()
+	s.texture  = load(SHADOW_TEX)
+	s.scale    = SCALE
+	s.position = pos + Vector2(0, 8 * SCALE.y)
+	return s
+
+func _process(delta: float) -> void:
+	if not _looping: return
+	_walk_time += delta
+	if _walk_time > 0.3:
+		_walk_time -= 0.3
+		_player.frame = 1 if _player.frame == 0 else 0
+		for kob in _kobolds:
+			if kob.visible:
+				kob.frame = _player.frame
 
 func start_loop() -> void:
 	_looping = true
@@ -56,13 +88,14 @@ func stop_loop() -> void:
 
 func _attack_loop() -> void:
 	while _looping:
-		# Reset kobolds
-		for kob in _kobolds:
-			kob.visible  = true
-			kob.modulate = Color.WHITE
-			kob.scale    = SCALE
+		# Reset
+		for i in _kobolds.size():
+			_kobolds[i].visible      = true
+			_kobolds[i].modulate     = Color.WHITE
+			_kobolds[i].scale        = SCALE
+			_kob_shadows[i].visible  = true
+			_kob_shadows[i].modulate = Color.WHITE
 
-		# Attack each kobold in sequence
 		var alive := [0, 1, 2]
 		alive.shuffle()
 		for idx in alive:
@@ -70,7 +103,6 @@ func _attack_loop() -> void:
 			await _fire_spear(idx)
 			await get_tree().create_timer(0.3).timeout
 
-		# Pause before reset
 		await get_tree().create_timer(RESET_DELAY).timeout
 
 func _fire_spear(kob_idx: int) -> void:
@@ -78,28 +110,27 @@ func _fire_spear(kob_idx: int) -> void:
 	var start_pos := CENTER
 	var end_pos   := kob.position
 
-	# Spear sprite
 	var spear := Sprite2D.new()
 	spear.texture  = load(SPEAR_TEX)
 	spear.scale    = SCALE * 0.8
 	spear.position = start_pos
-	spear.rotation = start_pos.angle_to_point(end_pos)
+	spear.rotation = start_pos.angle_to_point(end_pos) + deg_to_rad(135)
 	add_child(spear)
 
-	# Fly to kobold
 	var tw := create_tween()
 	tw.tween_property(spear, "position", end_pos, 0.22).set_ease(Tween.EASE_IN)
 	await tw.finished
 	spear.queue_free()
 
-	# Hit flash
 	var flash := create_tween()
 	flash.tween_property(kob, "modulate", Color(1, 0.3, 0.3), 0.07)
 	flash.tween_property(kob, "modulate", Color.WHITE,         0.07)
 	await flash.finished
 
-	# Fade out (death)
-	var fade := create_tween()
-	fade.tween_property(kob, "modulate:a", 0.0, 0.25)
+	# Fade out — also fade shadow
+	var fade := create_tween().set_parallel(true)
+	fade.tween_property(kob,                         "modulate:a", 0.0, 0.25)
+	fade.tween_property(_kob_shadows[kob_idx],        "modulate:a", 0.0, 0.25)
 	await fade.finished
-	kob.visible = false
+	kob.visible                    = false
+	_kob_shadows[kob_idx].visible  = false
