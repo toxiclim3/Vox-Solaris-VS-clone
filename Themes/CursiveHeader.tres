@@ -1,9 +1,9 @@
-[gd_resource type="Theme" format=3 uid="uid://htp_cursive_header"]
+[gd_resource type="Theme" format=3 uid="uid://cr8dy6bc2cn7g"]
 
-[ext_resource type="FontFile" uid="uid://b12345cursive" path="res://Font/morana.otf" id="1_cursive"]
+[ext_resource type="FontFile" uid="uid://craqgl7txvsfe" path="res://Font/GreatVibes-Regular.ttf" id="1_7dx84"]
 
 [resource]
-default_font = ExtResource("1_cursive")
+default_font = ExtResource("1_7dx84")
 default_font_size = 28
 Label/colors/font_shadow_color = Color(0.4, 0.1, 0.6, 0.7)
 Label/constants/shadow_offset_x = 3

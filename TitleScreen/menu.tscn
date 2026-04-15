@@ -8,8 +8,8 @@
 [ext_resource type="PackedScene" uid="uid://c6j2y1p3m6q3y" path="res://Utility/stats_menu.tscn" id="6_stats"]
 [ext_resource type="PackedScene" uid="uid://cxw5k8g4y2f2p" path="res://Utility/custom_difficulty_menu.tscn" id="7_custom"]
 [ext_resource type="PackedScene" uid="uid://dfxw7xjk1r111" path="res://TitleScreen/play_menu.tscn" id="8_play"]
-[ext_resource type="PackedScene" uid="uid://htp_main_menu" path="res://TitleScreen/how_to_play_menu.tscn" id="9_htp"]
 [ext_resource type="Script" uid="uid://b31pd6wlfiij0" path="res://TitleScreen/menu_background.gd" id="9_bgscript"]
+[ext_resource type="PackedScene" path="res://TitleScreen/how_to_play_menu.tscn" id="9_htp"]
 [ext_resource type="Texture2D" uid="uid://bscpnrlitm2k4" path="res://Textures/Titlescreen/menu_bg_sky.png" id="10_sky"]
 [ext_resource type="Texture2D" uid="uid://2iavhd581dor" path="res://Textures/Titlescreen/menu_bg_city.png" id="11_city"]
 [ext_resource type="Texture2D" uid="uid://dpx4618wam88q" path="res://Textures/Titlescreen/menu_bg_terrain.png" id="12_terrain"]
@@ -247,7 +247,6 @@ unique_name_in_owner = true
 visible = false
 
 [node name="HowToPlayMenu" parent="CanvasLayer" unique_id=557851311 instance=ExtResource("9_htp")]
-unique_name_in_owner = true
 visible = false
 
 [node name="VersionLabel" type="Label" parent="." unique_id=1984267404]
