@@ -8,6 +8,7 @@ var killer_source = "vampireknife"
 var attack_size = 1.0
 var proc_coefficient = 0.5
 var timer = 0.0
+var hit_once_array = []
 var lifetime = 1.5
 
 # Piercing limit (hp)

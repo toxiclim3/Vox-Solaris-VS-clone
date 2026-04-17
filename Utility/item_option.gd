@@ -26,13 +26,20 @@ func _ready():
 	if item == null:
 		item = "food"
 	lblName.text = tr(UpgradeDb.UPGRADES[item]["displayname"])
-	lblDescription.text = tr(UpgradeDb.UPGRADES[item]["details"])
 	
 	if item.ends_with("_endless"):
 		var base_name = item.trim_suffix("_endless")
 		var count = player.collected_endless.get(base_name, 0) + 1
 		lblLevel.text = "∞ (+" + str(count) + ")"
+		
+		# Display specific scaling info
+		var scaling_info = _get_stat_description(UpgradeDb.UPGRADES[item].get("stat_modifiers", {}))
+		if scaling_info != "":
+			lblDescription.text = tr("ui_scaling_prefix") + " " + scaling_info
+		else:
+			lblDescription.text = tr(UpgradeDb.UPGRADES[item]["details"])
 	else:
+		lblDescription.text = tr(UpgradeDb.UPGRADES[item]["details"])
 		lblLevel.text = tr(UpgradeDb.UPGRADES[item]["level"])
 
 	itemIcon.texture = load(UpgradeDb.UPGRADES[item]["icon"])
@@ -46,6 +53,30 @@ func _ready():
 			original_name_font_size = 16
 			
 	scale_name_to_fit()
+
+func _get_stat_description(stat_modifiers: Dictionary) -> String:
+	var descriptions = []
+	for stat_name in stat_modifiers:
+		var val = stat_modifiers[stat_name]
+		# Normalize stat name for translation keys
+		var clean_name = stat_name.replace("_percent", "")
+		var label = tr("stat_" + clean_name)
+		var val_str = ""
+		
+		# Detect percentages (anything between -1.0 and 1.0 that isn't 0 and is float)
+		if typeof(val) == TYPE_FLOAT and abs(val) < 1.0 and val != 0:
+			val_str = "+" + str(int(val * 100)) + "%"
+		else:
+			val_str = "+" + str(val)
+			
+		descriptions.append(val_str + " " + label)
+	
+	var result = ""
+	for i in range(descriptions.size()):
+		result += descriptions[i]
+		if i < descriptions.size() - 1:
+			result += ", "
+	return result
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_TRANSLATION_CHANGED:
@@ -70,10 +101,7 @@ func scale_name_to_fit():
 		
 	lblName.add_theme_font_size_override("font_size", current_size)
 	
-func _input(event):
-	if event.is_action("click") and event.is_pressed():
-		if mouse_over:
-			emit_signal("selected_upgrade",item)
+
 
 func _on_mouse_entered():
 	mouse_over = true
@@ -91,7 +119,7 @@ func _on_focus_exited():
 	focusFrame.visible = false
 
 func _gui_input(event):
-	if event.is_action_pressed("ui_accept"):
+	if event.is_action_pressed("ui_accept") or (event.is_action_pressed("click")):
 		if has_node("snd_click"):
 			var snd = get_node("snd_click")
 			snd.play()

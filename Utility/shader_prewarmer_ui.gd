@@ -1,5 +1,7 @@
 extends CanvasLayer
 
+signal finished
+
 @onready var toast_panel = %ToastPanel
 @onready var status_label = %StatusLabel
 @onready var progress_bar = %ProgressBar
@@ -37,6 +39,7 @@ func _on_progress_updated(current: int, total: int) -> void:
 	status_label.text = tr("ui_preheating_shaders") + " (" + str(current) + "/" + str(total) + ")"
 
 func _on_warming_finished() -> void:
+	finished.emit()
 	# Fade out
 	var tween = create_tween().set_parallel(true).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
 	tween.tween_property(toast_panel, "modulate:a", 0.0, 0.8)

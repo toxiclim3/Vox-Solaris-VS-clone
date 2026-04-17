@@ -21,6 +21,7 @@ signal settings_closed
 @onready var window_mode_button = %WindowModeButton
 @onready var vsync_button = %VsyncButton
 @onready var max_fps_button = %MaxFpsButton
+@onready var zoom_slider = %ZoomSlider
 
 @onready var confirmation_dialog = %ConfirmationDialog
 
@@ -28,6 +29,9 @@ enum Languages {en, ru, ua}
 enum Tabs {AUDIO, GAMEPLAY, DISPLAY, ELITE}
 
 var current_tab_id: int = Tabs.AUDIO
+var secret_buffer: String = ""
+var rtx_click_count: int = 0
+const MAX_SECRET_BUFFER = 32
 
 func _ready() -> void:
 	visibility_changed.connect(_on_visibility_changed)
@@ -52,6 +56,7 @@ func _ready() -> void:
 	
 	%RtButton.button_pressed = SettingsManager.raytracing_enabled
 	%RtButton.toggled.connect(SettingsManager.set_raytracing)
+	%RtButton.pressed.connect(_on_rt_button_pressed)
 	
 	%ShadowButton.button_pressed = SettingsManager.shadows_enabled
 	%ShadowButton.toggled.connect(SettingsManager.set_shadows)
@@ -93,7 +98,7 @@ func _ready() -> void:
 	
 	max_fps_button.add_item("ui_fps_unlimited")
 	max_fps_button.set_item_metadata(0, 0)
-	var fps_options = [30, 60, 120, 144, 240]
+	var fps_options = [30, 60, 90, 120, 144, 240]
 	for fps in fps_options:
 		max_fps_button.add_item(str(fps))
 		max_fps_button.set_item_metadata(max_fps_button.get_item_count() - 1, fps)
@@ -104,6 +109,29 @@ func _ready() -> void:
 			max_fps_button.select(i)
 			break
 	max_fps_button.item_selected.connect(_on_max_fps_selected)
+	
+	# Scaling slider
+	%ScalingSlider.value = SettingsManager.gui_scale
+	%ScalingSlider.value_changed.connect(_on_scaling_slider_changed)
+	
+	# Zoom slider
+	zoom_slider.value = SettingsManager.camera_zoom
+	zoom_slider.value_changed.connect(SettingsManager.set_camera_zoom)
+		
+	# Hide PC-only settings on mobile
+	if OS.get_name() in ["Android", "iOS"]:
+		# Wait until tree is ready to navigate parents
+		call_deferred("_hide_mobile_irrelevant_settings")
+		call_deferred("_apply_mobile_settings_touch_targets")
+		
+		# Mobile "Fullscreen Override" for Settings Menu
+		var main_panel = get_node_or_null("%MainPanel")
+		if main_panel:
+			main_panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+			
+		# Enlarge tab buttons for easier mobile switching
+		for btn in [audio_btn, gameplay_btn, display_btn, elite_btn]:
+			if btn: btn.custom_minimum_size.y = 40
 	
 	# Footer
 	%CloseSettingsButton.click_end.connect(_on_close_settings_button_pressed)
@@ -184,6 +212,9 @@ func _on_vsync_toggled(toggled_on: bool) -> void:
 func _on_max_fps_selected(index: int) -> void:
 	SettingsManager.set_max_fps(max_fps_button.get_item_metadata(index))
 
+func _on_scaling_slider_changed(value: float) -> void:
+	SettingsManager.set_gui_scale(value)
+
 func _on_btn_reset_stats_click_end() -> void:
 	confirmation_dialog.popup_centered()
 
@@ -197,6 +228,15 @@ func _on_dlss_toggled(toggled_on: bool) -> void:
 		await get_tree().create_timer(0.1).timeout
 		%DlssButton.button_pressed = false
 	SettingsManager.set_dlss(false) # Always false for now, it's a joke
+
+func _on_rt_button_pressed() -> void:
+	rtx_click_count += 1
+	if rtx_click_count >= 5:
+		# Trigger the 'frames' secret directly
+		SettingsManager.process_secret_keyword("frames")
+		rtx_click_count = 0
+		# Visual feedback? Maybe toggle button back and forth?
+		# For now, print is in SettingsManager
 
 func grab_initial_focus() -> void:
 	if visible:
@@ -226,6 +266,18 @@ func _input(event: InputEvent) -> void:
 		if get_viewport().gui_get_focus_owner() == null:
 			grab_initial_focus()
 			get_viewport().set_input_as_handled()
+	
+	# Capture characters for secret keywords
+	if event is InputEventKey and event.pressed:
+		var c = char(event.unicode)
+		if c != "":
+			secret_buffer += c
+			if secret_buffer.length() > MAX_SECRET_BUFFER:
+				secret_buffer = secret_buffer.right(MAX_SECRET_BUFFER)
+			
+			if SettingsManager.process_secret_keyword(secret_buffer):
+				secret_buffer = ""
+				# Visual/Audio feedback could be added here
 		
 	var is_cancel = false
 	if event.is_action_pressed("ui_cancel"):
@@ -240,3 +292,39 @@ func _input(event: InputEvent) -> void:
 		else:
 			_on_close_settings_button_pressed()
 			get_viewport().set_input_as_handled()
+
+func _hide_mobile_irrelevant_settings() -> void:
+	# Hide Window Mode
+	if is_instance_valid(window_mode_button):
+		var parent = window_mode_button.get_parent()
+		if parent.has_node("WindowLabel"):
+			parent.get_node("WindowLabel").hide()
+		window_mode_button.hide()
+	
+	# Hide Mouse Control
+	if is_instance_valid(mouse_control_button):
+		var parent = mouse_control_button.get_parent()
+		if parent.has_node("MouseLabel"):
+			parent.get_node("MouseLabel").hide()
+		mouse_control_button.hide()
+		
+	# Hide Vsync (usually not togglable on mobile)
+	if is_instance_valid(vsync_button):
+		var parent = vsync_button.get_parent()
+		if parent.has_node("VsyncLabel"):
+			parent.get_node("VsyncLabel").hide()
+		vsync_button.hide()
+
+func _apply_mobile_settings_touch_targets() -> void:
+	# Enlarge sliders, option buttons, and toggles inside settings content panels
+	# so they're easy to hit on a touchscreen without a mouse cursor.
+	var content_panels = [audio_content, gameplay_content, display_content, elite_content]
+	for panel in content_panels:
+		if not is_instance_valid(panel):
+			continue
+		var controls: Array = []
+		controls.append_array(panel.find_children("", "HSlider", true, false))
+		controls.append_array(panel.find_children("", "OptionButton", true, false))
+		controls.append_array(panel.find_children("", "CheckButton", true, false))
+		for ctrl in controls:
+			ctrl.custom_minimum_size.y = 32

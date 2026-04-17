@@ -6,6 +6,29 @@
 .import/
 export.cfg
 export_credentials.cfg
+# Android & Build specific ignores
+android/build/build/
+android/build/.gradle/
+android/build/local.properties
+android/build/src/**/assets/
+android/build/src/**/libs/
+android/build/libs/
+android/build/gradle/
+android/build/gradlew
+android/build/gradlew.bat
+android/build/outputs/
+**/build/
+**/outputs/
+*.keystore
+*.apk
+*.aab
+*.aar
+*.jar
+.vs/
+.idea/
+*.suo
+*.user
+
 
 # Imported translations (automatically generated from CSV files)
 *.translation

@@ -90,7 +90,8 @@ func _physics_process(delta):
 	# Steering tracking
 	var target = get_closest_enemy()
 	if target:
-		var target_vel = (target.global_position - global_position).normalized() * current_max_speed
+		var target_pos = target.position if not "global_position" in target else target.global_position
+		var target_vel = (target_pos - global_position).normalized() * current_max_speed
 		var steer = (target_vel - velocity) * steering_force * delta
 		velocity += steer
 		velocity = velocity.limit_length(current_max_speed)
@@ -110,11 +111,25 @@ func get_closest_enemy():
 	var enemies = get_tree().get_nodes_in_group("enemy")
 	var closest = null
 	var min_dist = INF
+	
+	# Check standard enemies
 	for enemy in enemies:
 		var dist = global_position.distance_to(enemy.global_position)
 		if dist < min_dist:
 			min_dist = dist
 			closest = enemy
+			
+	# Check swarm enemies
+	var sm = get_tree().get_first_node_in_group("swarm_manager")
+	if sm:
+		for s_enemy in sm.swarm_data:
+			if s_enemy.is_dead: continue
+			var dist = global_position.distance_to(s_enemy.position)
+			if dist < min_dist:
+				min_dist = dist
+				closest = s_enemy # Note: This is a SwarmEnemy object, not a Node2D. 
+				# Wait, SwarmEnemy has .position, but get_closest_enemy callers might expect .global_position.
+	
 	return closest
 	
 func _on_animation_timer_timeout():
@@ -145,6 +160,9 @@ func _on_pulse_timer_timeout():
 	
 	if damage_area.has_signal("remove_from_array"):
 		damage_area.emit_signal("remove_from_array", damage_area)
+	
+	if "hit_once_array" in damage_area:
+		damage_area.hit_once_array.clear()
 	
 	damage_collision.set_deferred("disabled", false)
 	await get_tree().create_timer(0.05).timeout

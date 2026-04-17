@@ -15,10 +15,18 @@ var angle_less = Vector2.ZERO
 var angle_more = Vector2.ZERO
 
 signal remove_from_array(object)
+var hit_once_array = []
+var pulse_timer: Timer
 
 @onready var player = get_tree().get_first_node_in_group("player")
 
 func _ready():
+	pulse_timer = Timer.new()
+	pulse_timer.wait_time = 0.2
+	pulse_timer.autostart = true
+	pulse_timer.timeout.connect(_on_pulse)
+	add_child(pulse_timer)
+	
 	match level:
 		1:
 			hp = 9999
@@ -87,6 +95,9 @@ func _ready():
 
 func _physics_process(delta):
 	position += angle*speed*delta
+
+func _on_pulse():
+	hit_once_array.clear()
 
 func _on_timer_timeout():
 	emit_signal("remove_from_array",self)

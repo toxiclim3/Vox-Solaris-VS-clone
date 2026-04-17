@@ -21,6 +21,9 @@ func _ready() -> void:
 		s.region_enabled = true
 		s.centered = false # Начинаем отрисовку от угла для точности региона
 	
+	get_viewport().size_changed.connect(_on_viewport_size_changed)
+	repeat_times = 3 # Ensure enough copies to cover viewport during movement
+	
 	load_backgrounds_from_folder()
 	GlobalEvents.advanceBackground.connect(advance_background)
 	
@@ -41,7 +44,6 @@ func load_backgrounds_from_folder() -> void:
 						backgrounds.append(tex)
 			file_name = dir.get_next()
 		backgrounds.shuffle()
-	print("Загружено фонов для Parallax: ", backgrounds.size())
 
 func advance_background() -> void:
 	if backgrounds.is_empty(): return
@@ -67,8 +69,11 @@ func _start_transition(new_tex: Texture2D) -> void:
 	current_sprite.texture = new_tex
 	fade_sprite.modulate.a = 0.0
 
-## Новая логика для тайлинга (замощения)
-func _setup_tiling_region(_tex: Texture2D) -> void:
+func _on_viewport_size_changed() -> void:
+	_setup_tiling_region()
+
+## Логика для тайлинга (замощения), адаптированная под размер экрана
+func _setup_tiling_region(_tex: Texture2D = null) -> void:
 	var view_size = get_viewport_rect().size
 	
 	# Учитываем масштаб (если хочешь сделать пиксели крупнее)
@@ -88,3 +93,6 @@ func _setup_tiling_region(_tex: Texture2D) -> void:
 	# Важно для Parallax2D: repeat_size теперь равен размеру экрана, 
 	# так как спрайт уже заполняет весь экран.
 	repeat_size = view_size
+	
+	# Стримим обновление, если это вызвано ресайзом
+	queue_redraw()

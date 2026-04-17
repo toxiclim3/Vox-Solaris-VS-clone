@@ -6,8 +6,8 @@ var attack_speed = 2.5
 var damage = 30
 var shards_on_death = false
 
-var glasslash_scene = preload("res://Player/Attack/Glasslash/glasslash.tscn")
-var glassshard_scene = preload("res://Player/Attack/Glasslash/glassshard.tscn")
+var glasslash_scene = preload("res://Player/Attack/glasslash/glasslash.tscn")
+var glassshard_scene = preload("res://Player/Attack/glasslash/glassshard.tscn")
 
 @onready var player = get_tree().get_first_node_in_group("player")
 @onready var timer = Timer.new()

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://7x2bcd138gop"
-path="res://.godot/imported/relic_drone_sheet.png-65d974a4003990485d9591b817873beb.ctex"
+uid="uid://dypdvxwfpwtnt"
+path="res://.godot/imported/relic_drone_sheet.png-a04fb4c83ad49328bc099d3d5bd03280.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Player/Attack/RelicDrone/relic_drone_sheet.png"
-dest_files=["res://.godot/imported/relic_drone_sheet.png-65d974a4003990485d9591b817873beb.ctex"]
+source_file="res://Player/Attack/relicdrone/relic_drone_sheet.png"
+dest_files=["res://.godot/imported/relic_drone_sheet.png-a04fb4c83ad49328bc099d3d5bd03280.ctex"]
 
 [params]
 

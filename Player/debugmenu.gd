@@ -13,14 +13,12 @@ var is_open: bool = false
 
 func _ready() -> void:
 	menu_width = self.get_rect().size.x
-	# 1. Задаем фиксированную ширину меню
-	#menu_width *= largeGridSize * smallGridSize
-	#custom_minimum_size.x = menu_width
 	
-	# 2. Прячем меню при старте (сдвигаем влево за край экрана)
-	# Мы используем отрицательный margin_left, равный ширине меню
-	add_theme_constant_override("margin_left", menu_width+smallGridSize)
-	add_theme_constant_override("margin_right", -menu_width-smallGridSize)
+	# Initial state: hidden 8px off-screen
+	_set_menu_margin(menu_width + smallGridSize)
+	self.visible = false
+	
+	get_viewport().size_changed.connect(_on_window_resized)
 
 # Функция для переключения состояния меню
 func toggle_menu() -> void:
@@ -33,8 +31,8 @@ func open_menu() -> void:
 	var tween: Tween = create_tween()
 	tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	
-	# Анимируем отступ к 0 (край экрана)
-	tween.tween_method(_set_menu_margin, menu_width, 0.0, slide_duration)
+	# Animate from hidden (+8px) to flush (0px)
+	tween.tween_method(_set_menu_margin, menu_width + smallGridSize, 0.0, slide_duration)
 	is_open = true	
 	self.visible = is_open
 
@@ -42,8 +40,8 @@ func close_menu() -> void:
 	var tween: Tween = create_tween()
 	tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	
-	# Анимируем отступ обратно за экран
-	tween.tween_method(_set_menu_margin, 0.0, menu_width, slide_duration)
+	# Animate from flush (0px) to hidden (+8px)
+	tween.tween_method(_set_menu_margin, 0.0, menu_width + smallGridSize, slide_duration)
 	is_open = false
 	await tween.finished
 	self.visible = is_open
@@ -52,6 +50,20 @@ func close_menu() -> void:
 func _set_menu_margin(value: float) -> void:
 	add_theme_constant_override("margin_left", int(value))
 	add_theme_constant_override("margin_right", int(-value))
+	# Force zero on top/bottom to prevent theme interference
+	add_theme_constant_override("margin_top", 0)
+	add_theme_constant_override("margin_bottom", 0)
+
+
+func _on_window_resized() -> void:
+	# Wait a frame for Godot to update its rects based on new window size
+	await get_tree().process_frame
+	menu_width = self.get_rect().size.x
+	
+	if is_open:
+		_set_menu_margin(0)
+	else:
+		_set_menu_margin(menu_width + smallGridSize)
 
 
 func _on_gui_open_menu() -> void:

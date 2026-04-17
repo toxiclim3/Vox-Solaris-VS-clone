@@ -38,7 +38,7 @@ shader_parameter/mix_value = false
 [sub_resource type="CircleShape2D" id="CircleShape2D_dkpta"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yfi4i"]
-size = Vector2(12, 20)
+size = Vector2(24, 28)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_screen"]
 size = Vector2(640, 360)

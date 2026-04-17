@@ -6,7 +6,7 @@ var attackspeed = 10
 var level = 0
 var endless_level = 0
 
-var ritualCircle = preload("res://Player/Attack/Ritualcircle/ritualcircle.tscn")
+var ritualCircle = preload("res://Player/Attack/ritualcircle/ritualcircle.tscn")
 @onready var player = get_tree().get_first_node_in_group("player")
 
 @onready var timer = Timer.new()

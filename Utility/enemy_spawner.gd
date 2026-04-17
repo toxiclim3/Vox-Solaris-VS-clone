@@ -65,8 +65,6 @@ func force_queue_boss() -> void:
 	var multiplier = get_boss_hp_multiplier()
 	var original_hp = boss_spawn.hp
 	boss_spawn.hp = int(original_hp * multiplier)
-	if enable_boss_debug_logging:
-		print("[Boss Spawner] Forced Spawn: %s | Time: %d sec | Multiplier: %.2f | HP: %d (was %d)" % [boss_spawn.name, GlobalEvents.time, multiplier, boss_spawn.hp, original_hp])
 		
 	boss_spawn.global_position = get_random_position()
 	add_child(boss_spawn)
@@ -116,8 +114,6 @@ func _on_timer_timeout():
 				var multiplier = get_boss_hp_multiplier()
 				var original_hp = boss_spawn.hp
 				boss_spawn.hp = int(original_hp * multiplier)
-				if enable_boss_debug_logging:
-					print("[Boss Spawner] Scheduled Spawn: %s | Time: %d sec | Multiplier: %.2f | HP: %d (was %d)" % [boss_spawn.name, GlobalEvents.time, multiplier, boss_spawn.hp, original_hp])
 
 				boss_spawn.global_position = get_random_position()
 				add_child(boss_spawn)

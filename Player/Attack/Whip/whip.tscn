@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3]
 
-[ext_resource type="Script" path="res://Player/Attack/Whip/whip.gd" id="1_script"]
+[ext_resource type="Script" path="res://Player/Attack/whip/whip.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://Textures/Items/Weapons/Leather_Whip_(projectile).webp" id="2_texture"]
 [ext_resource type="Shader" path="res://Utility/whip_3slice.gdshader" id="3_shader"]
 

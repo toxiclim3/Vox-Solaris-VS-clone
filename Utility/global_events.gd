@@ -11,7 +11,7 @@ signal queue_boss
 signal camera_shake(intensity: float, duration: float)
 signal enemy_died(death_position: Vector2, enemy_max_hp: float, killer_source: String)
 signal player_took_damage(amount: float, attacker_node: Node)
-signal player_dealt_damage(amount: float, target_node: Node, proc_coefficient: float)
+signal player_dealt_damage(amount: float, target_node: Object, proc_coefficient: float)
 @warning_ignore_restore("unused_signal")
 
 var boss_warnings: Dictionary = {
@@ -37,8 +37,8 @@ const CHARACTERS: Dictionary = {
 		"starting_weapon": "icespear1",
 		"details": "char_mage_desc",
 		"base_stats": {},
-		"level_stats": {"spell_cooldown": -0.005}, # 0.5% cooldown reduction per level
-		"level_stats_cap": {"spell_cooldown": -0.15} # Max 15% CDR
+		"scaling_stats": {"spell_cooldown": -0.15}, # Goal: -15% CDR
+		"scaling_max_level": 20
 	},
 	"plague_doctor": {
 		"displayname": "char_plague_doctor",
@@ -47,8 +47,8 @@ const CHARACTERS: Dictionary = {
 		"starting_weapon": "poisonbottle1",
 		"details": "char_plague_doctor_desc",
 		"base_stats": {},
-		"level_stats": {"spell_size": 0.02}, # 2% spell size per level
-		"level_stats_cap": {"spell_size": 0.50} # Max 50% extra size
+		"scaling_stats": {"spell_size": 0.50}, # Goal: +50% Size
+		"scaling_max_level": 20
 	},
 	"occultist": {
 		"displayname": "char_occultist",
@@ -57,8 +57,8 @@ const CHARACTERS: Dictionary = {
 		"starting_weapon": "ritualcircle1",
 		"details": "char_occultist_desc",
 		"base_stats": {},
-		"level_stats": {"lifesteal": 0.005}, # 0.005 HP per kill per level (0.05 at level 10)
-		"level_stats_cap": {"lifesteal": 0.20} # Max 0.2 HP per kill
+		"scaling_stats": {"lifesteal": 0.02}, # Goal: 2% Damage Lifesteal
+		"scaling_max_level": 20
 	},
 	"punished": {
 		"displayname": "char_punished",
@@ -67,7 +67,8 @@ const CHARACTERS: Dictionary = {
 		"starting_weapon": "",
 		"details": "char_punished_desc",
 		"base_stats": {},
-		"level_stats": {},
+		"scaling_stats": {},
+		"scaling_max_level": 20,
 		"shader_config": {"mix_hue": true, "mix_saturation": true}
 	}
 }

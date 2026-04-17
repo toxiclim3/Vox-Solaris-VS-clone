@@ -12,6 +12,7 @@ var killer_source = "whip"
 var attack_size = 1.0
 var proc_coefficient = 1.0
 var timer = 0.0
+var hit_once_array = []
 
 @onready var player = get_tree().get_first_node_in_group("player")
 @onready var line = $Line2D
@@ -113,5 +114,8 @@ func _process(delta):
 
 func _on_area_entered(area):
 	if area.is_in_group("hurtbox"):
-		if area.has_method("temp_disable"):
-			area.temp_disable()
+		# Standard HurtBox handling is done via the HurtBox's own area_entered signal.
+		# We don't need to manually disable anything here, but we can ensure
+		# the HitOnce array is populated if the HurtBox is in HitOnce mode.
+		if not hit_once_array.has(area):
+			hit_once_array.append(area)

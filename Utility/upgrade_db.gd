@@ -569,7 +569,8 @@ const UPGRADES = {
 		"details": "item_level_endless_details",
 		"level": "item_level_endless",
 		"prerequisite": ["icespear4"],
-		"type": "endless"
+		"type": "endless",
+		"stat_modifiers": {"damage": 1}
 	},
 	"javelin_endless": 
 	{
@@ -578,7 +579,8 @@ const UPGRADES = {
 		"details": "item_level_endless_details",
 		"level": "item_level_endless",
 		"prerequisite": ["javelin4"],
-		"type": "endless"
+		"type": "endless",
+		"stat_modifiers": {"damage": 1}
 	},
 	"tornado_endless": 
 	{
@@ -587,7 +589,8 @@ const UPGRADES = {
 		"details": "item_level_endless_details",
 		"level": "item_level_endless",
 		"prerequisite": ["tornado4"],
-		"type": "endless"
+		"type": "endless",
+		"stat_modifiers": {"damage": 1}
 	},
 	"poisonbottle_endless": 
 	{
@@ -596,7 +599,8 @@ const UPGRADES = {
 		"details": "item_level_endless_details",
 		"level": "item_level_endless",
 		"prerequisite": ["poisonbottle4"],
-		"type": "endless"
+		"type": "endless",
+		"stat_modifiers": {"damage": 1}
 	},
 	"ritualcircle_endless": 
 	{
@@ -605,7 +609,8 @@ const UPGRADES = {
 		"details": "item_level_endless_details",
 		"level": "item_level_endless",
 		"prerequisite": ["ritualcircle4"],
-		"type": "endless"
+		"type": "endless",
+		"stat_modifiers": {"damage": 1}
 	},
 	"glasslash_endless": 
 	{
@@ -614,7 +619,8 @@ const UPGRADES = {
 		"details": "item_level_endless_details",
 		"level": "item_level_endless",
 		"prerequisite": ["glasslash4"],
-		"type": "endless"
+		"type": "endless",
+		"stat_modifiers": {"damage": 1}
 	},
 	"vampireknives_endless": 
 	{
@@ -623,7 +629,8 @@ const UPGRADES = {
 		"details": "item_level_endless_details",
 		"level": "item_level_endless",
 		"prerequisite": ["vampireknives4"],
-		"type": "endless"
+		"type": "endless",
+		"stat_modifiers": {"damage": 1}
 	},
 	"whip_endless": 
 	{
@@ -632,7 +639,8 @@ const UPGRADES = {
 		"details": "item_level_endless_details",
 		"level": "item_level_endless",
 		"prerequisite": ["whip4"],
-		"type": "endless"
+		"type": "endless",
+		"stat_modifiers": {"damage": 1}
 	},
 	"armor_endless": 
 	{
@@ -681,7 +689,8 @@ const UPGRADES = {
 		"details": "item_level_endless_details",
 		"level": "item_level_endless",
 		"prerequisite": ["ring2"],
-		"type": "endless"
+		"type": "endless",
+		"stat_modifiers": {"additional_attacks": 0.05}
 	},
 	"ringofrejuvenation_endless": 
 	{

@@ -32,6 +32,7 @@ expand_margin_bottom = 2.0
 
 [node name="ItemOption" type="PanelContainer" unique_id=53943087]
 size_flags_horizontal = 3
+mouse_filter = 1
 theme = SubResource("Theme_empty")
 script = ExtResource("1_script")
 

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://pbottle12345"]
 
-[ext_resource type="Script" uid="uid://t2lj0todwtba" path="res://Player/Attack/Poisonbottle/poisonbottle.gd" id="1_bdhjd"]
+[ext_resource type="Script" uid="uid://t2lj0todwtba" path="res://Player/Attack/poisonbottle/poisonbottle.gd" id="1_bdhjd"]
 [ext_resource type="Texture2D" uid="uid://bq3t6184nv83o" path="res://Textures/Items/Weapons/poison_gas.png" id="2_txxbt"]
 [ext_resource type="AudioStream" uid="uid://cn17evk2iapk4" path="res://Audio/SoundEffect/Item_1.wav" id="3_vn0lj"]
 

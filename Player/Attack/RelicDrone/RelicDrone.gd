@@ -1,9 +1,9 @@
 extends Node2D
 
-@export var relic_rocket_scene = preload("res://Player/Attack/RelicDrone/RelicRocket.tscn")
+@export var relic_rocket_scene = preload("res://Player/Attack/relicdrone/relicrocket.tscn")
 
 var level = 0
-var proc_chance = 0.20 # 20% base
+var proc_chance = 0.10 # 10% base
 var damage_mult = 2.0 # 200% base
 
 @onready var player = get_tree().get_first_node_in_group("player")
@@ -43,7 +43,7 @@ func _physics_process(delta):
 	elif player.last_movement.x < 0:
 		sprite.flip_h = true
 
-func _on_player_dealt_damage(amount, target_node, coefficient):
+func _on_player_dealt_damage(amount, target_node: Object, coefficient):
 	# Check if player has the drone (managed by player.gd upgrade system)
 	if level <= 0: return
 	
@@ -66,8 +66,8 @@ func update_stats():
 	# Sync stats from Level
 	match level:
 		1:
-			proc_chance = 0.20
+			proc_chance = 0.10
 			damage_mult = 2.0
 		2:
-			proc_chance = 0.30
+			proc_chance = 0.15
 			damage_mult = 3.0

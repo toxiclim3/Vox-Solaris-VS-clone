@@ -29,6 +29,8 @@ var titleMenu = "res://TitleScreen/menu.tscn"
 @onready var lblResult = get_node("%lbl_Result")
 @onready var sndVictory = get_node("%snd_victory")
 @onready var sndLose = get_node("%snd_lose")
+@onready var btnRestart = get_node("%btn_restart")
+@onready var btnMenu = get_node("%btn_menu")
 @onready var sndLevelUp = get_node("%snd_levelup")
 @onready var collectedWeapons = get_node("%CollectedWeapons")
 @onready var btnResume = get_node("PauseMenu/MarginContainer/PanelContainer/VBoxContainer2/VBoxContainer/btn_resume_run")
@@ -38,6 +40,7 @@ var titleMenu = "res://TitleScreen/menu.tscn"
 @onready var itemOptions = preload("res://Utility/item_option.tscn")
 @onready var itemContainer = preload("res://Player/GUI/item_container.tscn")
 @onready var lblTips = get_node("%lblTips")
+@onready var btnPauseMobile = get_node_or_null("%btn_pause_mobile")
 
 var tip_timer = 0.0
 const TIP_ROTATION_TIME = 10.0
@@ -67,6 +70,8 @@ var tip_keys = [
 	"tips_inspiration",
 	"tips_swag"
 ]
+
+var _last_tip_key: String = ""
 
 func set_level_text(level: int) -> void:
 	lblLevel.text = str(tr("ui_level"), level)
@@ -116,8 +121,17 @@ func show_death_panel(hasWon: bool) -> void:
 	if deathPanel.visible:
 		return
 	deathPanel.visible = true
+	if btnPauseMobile:
+		btnPauseMobile.visible = false
+	var is_mobile = OS.get_name() in ["Android", "iOS"]
 	var vp_size = get_viewport_rect().size
-	var target_pos = (vp_size - deathPanel.size) / 2.0
+	var target_pos: Vector2
+	
+	if is_mobile:
+		target_pos = Vector2.ZERO # Full rect anchors mean (0,0) is centered fill
+	else:
+		target_pos = (vp_size - deathPanel.size) / 2.0
+		
 	var start_pos = Vector2(target_pos.x, -deathPanel.size.y)
 	deathPanel.position = start_pos
 	var tween = deathPanel.create_tween()
@@ -179,24 +193,120 @@ var pause_tween: Tween
 
 
 func _ready() -> void:
-	# Запоминаем, где меню паузы стоит по умолчанию
-	pause_original_x = pause_menu.position.x
+	# Initial Scale
+	apply_gui_scale(SettingsManager.gui_scale)
 	
-	# Используем размер экрана, как и в SettingsMenu, чтобы не запрашивать size.x до компоновки интерфейса
-	var screen_width: float = get_viewport_rect().size.x
-	pause_hidden_x = -screen_width
+	# Mobile Pause & Visibility
+	var is_mobile = OS.get_name() in ["Android", "iOS"]
 	
-	# Прячем меню паузы за левый край экрана
-	pause_menu.position.x = pause_hidden_x
-	pause_menu.hide()
+	if is_mobile:
+		_apply_mobile_layout_overrides()
 	
-	# Настройки теперь на отдельном CanvasLayer, позиционирование не требуется
+	if btnPauseMobile:
+		btnPauseMobile.visible = is_mobile
+		btnPauseMobile.pressed.connect(toggle_menu)
+	
+	# Connect Death Panel buttons
+	if btnRestart:
+		btnRestart.click_end.connect(_on_btn_restart_click_end)
+	if btnMenu:
+		btnMenu.click_end.connect(_on_btn_menu_click_end)
+	
+	var mobile_joy = get_node_or_null("%VirtualJoystick")
+	if mobile_joy:
+		mobile_joy.visible = false # Managed by touch
+
+	# Defer positioning until scaling and anchors have settled
+	call_deferred("_initialize_pause_menu_position")
+	
+	# Handle window resizing
+	get_viewport().size_changed.connect(_on_window_resized)
+	
+	# Remaining UI init
 	settings_menu.hide()
 	hide_level_panels()
 	setup_give_item_menu()
 	
 	# Connect debug signals in code so they survive movement to World.tscn root
 	call_deferred("_connect_debug_signals")
+
+func _apply_mobile_layout_overrides():
+	# Reduce margins for level up screens
+	var lup_mc = get_node_or_null("%LUpMarginContainer")
+	if lup_mc:
+		lup_mc.add_theme_constant_override("margin_top", 8)
+		lup_mc.add_theme_constant_override("margin_bottom", 8)
+		
+	var blup_mc = get_node_or_null("%BLUpMarginContainer")
+	if blup_mc:
+		blup_mc.add_theme_constant_override("margin_top", 8)
+		blup_mc.add_theme_constant_override("margin_bottom", 8)
+
+	# Expand Pause Menu and Death Panel width
+	# On mobile, we want them nearly full width (100% per user request)
+	if pause_menu:
+		pause_menu.custom_minimum_size.x = 280 # Full-ish width on 320 effective width
+		pause_menu.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		
+		# Enlarge all buttons in Pause Menu
+		var pause_buttons = pause_menu.find_children("", "Button", true, false)
+		for btn in pause_buttons:
+			btn.custom_minimum_size.y = 40
+		
+	if deathPanel:
+		deathPanel.custom_minimum_size.x = 280
+		deathPanel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		
+		# Enlarge all buttons in Death Panel and make them fill full width
+		var death_buttons = deathPanel.find_children("", "Button", true, false)
+		for btn in death_buttons:
+			btn.custom_minimum_size.y = 48
+			btn.size_flags_horizontal = Control.SIZE_FILL
+			
+		# On mobile, center the content within the full-screen panel
+		var m_container = deathPanel.get_node_or_null("M")
+		if m_container:
+			var v_box = m_container.get_node_or_null("V")
+			if v_box:
+				v_box.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+				v_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+				v_box.custom_minimum_size.x = 200
+	
+	# Fix tip text alignment: RichTextLabel text defaults to left-aligned.
+	# Enable BBCode so we can wrap content in [center] tags.
+	if lblTips:
+		lblTips.size_flags_horizontal = Control.SIZE_FILL
+		lblTips.fit_content = false
+		lblTips.bbcode_enabled = true
+	
+	# Bump HUD font sizes — 12px is hard to read at a glance on a real phone
+	if lblTimer:
+		lblTimer.add_theme_font_size_override("font_size", 16)
+	if lblLevel:
+		lblLevel.add_theme_font_size_override("font_size", 14)
+
+func _on_window_resized():
+	apply_gui_scale(SettingsManager.gui_scale)
+	_initialize_pause_menu_position()
+
+func _initialize_pause_menu_position():
+	# Force show briefly to ensure anchors and containers calculate final rects
+	var was_visible = pause_menu.visible
+	pause_menu.show()
+	# This is necessary because Godot doesn't calculate position for hidden anchored nodes correctly in _ready
+	await get_tree().process_frame
+	
+	pause_original_x = pause_menu.position.x
+	# The menu should be 8px off-screen when hidden. 
+	# Since it's a child of the scaled GUI node, 0 is the left edge.
+	pause_hidden_x = -pause_menu.size.x - 8
+	
+	if is_menu_open:
+		pause_menu.position.x = pause_original_x
+	else:
+		pause_menu.position.x = pause_hidden_x
+		pause_menu.visible = was_visible
+
 
 func _connect_debug_signals():
 	if not player or not is_instance_valid(player): 
@@ -355,6 +465,7 @@ func _on_btn_exit_game_click_end() -> void:
 	get_tree().quit()
 
 func _on_btn_end_run_click_end() -> void:
+	player.death()
 	var _level = get_tree().change_scene_to_file(titleMenu)
 
 func _on_btn_resume_run_click_end() -> void:
@@ -532,13 +643,27 @@ func _process(delta: float) -> void:
 			change_random_tip()
 
 func change_random_tip() -> void:
-	var current_text = lblTips.text
 	var available_keys = []
 	for key in tip_keys:
-		if tr(key) != current_text:
+		if key != _last_tip_key:
 			available_keys.append(key)
 	
 	if available_keys.size() > 0:
 		var new_key = available_keys.pick_random()
-		lblTips.text = tr(new_key)
+		_last_tip_key = new_key
+		var tip_text = tr(new_key)
+		if lblTips.bbcode_enabled:
+			lblTips.text = "[center]" + tip_text + "[/center]"
+		else:
+			lblTips.text = tip_text
 		tip_timer = 0.0
+
+func apply_gui_scale(value: float) -> void:
+	scale = Vector2(value, value)
+	
+	# Detach from full-rect anchors to stop engine warnings about overriding size
+	anchor_right = 0.0
+	anchor_bottom = 0.0
+	
+	var vp_size = get_viewport_rect().size
+	set_deferred("size", vp_size / value)

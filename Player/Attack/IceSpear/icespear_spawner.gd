@@ -6,7 +6,7 @@ var attackspeed = 1.5
 var level = 0
 var endless_level = 0
 
-var iceSpear = preload("res://Player/Attack/Icespear/icespear.tscn")
+var iceSpear = preload("res://Player/Attack/icespear/icespear.tscn")
 @onready var player = get_tree().get_first_node_in_group("player")
 
 @onready var timer = Timer.new()

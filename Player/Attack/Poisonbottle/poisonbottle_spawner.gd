@@ -6,7 +6,7 @@ var attackspeed = 3
 var level = 0
 var endless_level = 0
 
-var poisonBottle = preload("res://Player/Attack/Poisonbottle/poisonbottle.tscn")
+var poisonBottle = preload("res://Player/Attack/poisonbottle/poisonbottle.tscn")
 @onready var player = get_tree().get_first_node_in_group("player")
 
 @onready var timer = Timer.new()

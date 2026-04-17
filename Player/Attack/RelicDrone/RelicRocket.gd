@@ -34,8 +34,9 @@ func _physics_process(delta):
 		explode()
 		return
 
-	if is_instance_valid(target_node):
-		var target_dir = global_position.direction_to(target_node.global_position)
+	if is_target_valid(target_node):
+		var t_pos = target_node.position if not "global_position" in target_node else target_node.global_position
+		var target_dir = global_position.direction_to(t_pos)
 		var desired_velocity = target_dir * max_speed
 		var steer = (desired_velocity - velocity).normalized() * steer_force
 		velocity += steer
@@ -49,16 +50,32 @@ func _physics_process(delta):
 	rotation = velocity.angle()
 	global_position += velocity * delta
 
+func is_target_valid(t) -> bool:
+	if t == null: return false
+	if "is_dead" in t: return not t.is_dead
+	return is_instance_valid(t)
+
 func find_new_target():
-	var enemies = get_tree().get_nodes_in_group("enemy")
 	var closest_dist = INF
 	var closest_enemy = null
 	
+	# Check standard groups
+	var enemies = get_tree().get_nodes_in_group("enemy")
 	for enemy in enemies:
 		var dist = global_position.distance_to(enemy.global_position)
 		if dist < closest_dist:
 			closest_dist = dist
 			closest_enemy = enemy
+			
+	# Check swarm manager
+	var sm = get_tree().get_first_node_in_group("swarm_manager")
+	if sm:
+		for s_enemy in sm.swarm_data:
+			if s_enemy.is_dead: continue
+			var dist = global_position.distance_to(s_enemy.position)
+			if dist < closest_dist:
+				closest_dist = dist
+				closest_enemy = s_enemy
 	
 	target_node = closest_enemy
 

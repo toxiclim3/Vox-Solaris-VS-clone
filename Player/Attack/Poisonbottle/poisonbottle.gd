@@ -14,7 +14,7 @@ var angle = Vector2.ZERO
 @onready var player = get_tree().get_first_node_in_group("player")
 signal remove_from_array(object)
 
-var poison_gas_scene = preload("res://Player/Attack/Poisonbottle/poison_gas.tscn")
+var poison_gas_scene = preload("res://Player/Attack/poisonbottle/poison_gas.tscn")
 
 func _ready():
 	angle = global_position.direction_to(target)

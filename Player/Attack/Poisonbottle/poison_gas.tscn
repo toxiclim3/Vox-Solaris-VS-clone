@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://pgas12345"]
 
-[ext_resource type="Script" uid="uid://bdukxs430gxo3" path="res://Player/Attack/Poisonbottle/poison_gas.gd" id="1_bdhjd"]
+[ext_resource type="Script" uid="uid://bdukxs430gxo3" path="res://Player/Attack/poisonbottle/poison_gas.gd" id="1_bdhjd"]
 [ext_resource type="Texture2D" uid="uid://c3w5bqdlhh1i0" path="res://Textures/Effects/poison_gas_fx.png" id="2_txxbt"]
 [ext_resource type="Script" uid="uid://w0bei0vicr84" path="res://Utility/hit_box.gd" id="3_dmgbt"]
 

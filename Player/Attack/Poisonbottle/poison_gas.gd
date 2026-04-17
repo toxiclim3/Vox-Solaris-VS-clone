@@ -72,6 +72,9 @@ func _on_pulse_timer_timeout():
 	if damage_box.has_signal("remove_from_array"):
 		damage_box.emit_signal("remove_from_array", damage_box)
 	
+	if "hit_once_array" in damage_box:
+		damage_box.hit_once_array.clear()
+	
 	damage_box.get_node("CollisionShape2D").set_deferred("disabled", false)
 	await get_tree().create_timer(0.05).timeout
 	damage_box.get_node("CollisionShape2D").set_deferred("disabled", true)

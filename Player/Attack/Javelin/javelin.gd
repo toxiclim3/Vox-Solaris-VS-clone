@@ -12,6 +12,7 @@ var attack_speed = 5.0
 
 var target = Vector2.ZERO
 var target_array = []
+var hit_once_array = []
 
 var angle = Vector2.ZERO
 var reset_pos = Vector2.ZERO
@@ -93,6 +94,7 @@ func add_paths():
 	snd_attack.play()
 	emit_signal("remove_from_array",self)
 	target_array.clear()
+	hit_once_array.clear()
 	var counter = 0
 	while counter < paths:
 		var new_path = player.get_random_target()

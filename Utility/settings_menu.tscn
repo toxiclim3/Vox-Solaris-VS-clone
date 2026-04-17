@@ -281,6 +281,36 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("3_regtheme")
 
+[node name="ZoomLabel" type="Label" parent="MainPanel/Margin/VBox/HBox/Content/DisplayContentPanel/DisplayContent/Grid" unique_id=987654111]
+layout_mode = 2
+theme = ExtResource("3_regtheme")
+text = "ui_camera_zoom"
+
+[node name="ZoomSlider" type="HSlider" parent="MainPanel/Margin/VBox/HBox/Content/DisplayContentPanel/DisplayContent/Grid" unique_id=987654112]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = 0.5
+max_value = 2.0
+step = 0.1
+value = 1.0
+
+[node name="ScalingLabel" type="Label" parent="MainPanel/Margin/VBox/HBox/Content/DisplayContentPanel/DisplayContent/Grid" unique_id=1670111516]
+layout_mode = 2
+theme = ExtResource("3_regtheme")
+text = "ui_gui_scale"
+
+[node name="ScalingSlider" type="HSlider" parent="MainPanel/Margin/VBox/HBox/Content/DisplayContentPanel/DisplayContent/Grid" unique_id=1880206245]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = 0.5
+max_value = 2.0
+step = 0.1
+value = 1.0
+
 [node name="EliteContentPanel" type="PanelContainer" parent="MainPanel/Margin/VBox/HBox/Content" unique_id=987654324]
 unique_name_in_owner = true
 visible = false

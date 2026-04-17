@@ -7,7 +7,7 @@ var damage = 5
 var attack_speed = 2.0  # Seconds between volleys
 var lifesteal_per_hit = 0.5  # HP healed per knife hit
 
-var knife_scene = preload("res://Player/Attack/Vampireknives/vampireknife.tscn")
+var knife_scene = preload("res://Player/Attack/vampireknives/vampireknife.tscn")
 
 @onready var player = get_tree().get_first_node_in_group("player")
 @onready var timer = Timer.new()

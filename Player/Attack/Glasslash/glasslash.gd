@@ -11,6 +11,7 @@ var knockback_amount = 50.0
 var killer_source = "glasslash"
 var proc_coefficient = 1.0
 var timer = 0.0
+var hit_once_array = []
 
 @onready var player = get_tree().get_first_node_in_group("player")
 @onready var line = $Line2D
@@ -112,5 +113,7 @@ func _process(delta):
 
 func _on_area_entered(area):
 	if area.is_in_group("hurtbox"):
-		if area.has_method("temp_disable"):
-			area.temp_disable()
+		if not hit_once_array.has(area):
+			hit_once_array.append(area)
+			if area.has_method("temp_disable"):
+				area.temp_disable()

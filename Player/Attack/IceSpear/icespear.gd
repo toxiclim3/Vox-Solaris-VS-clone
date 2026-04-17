@@ -8,6 +8,7 @@ var damage = 5
 var knockback_amount = 100
 var attack_size = 1.0
 var proc_coefficient = 1.0
+var hit_once_array = []
 
 var target = Vector2.ZERO
 var angle = Vector2.ZERO

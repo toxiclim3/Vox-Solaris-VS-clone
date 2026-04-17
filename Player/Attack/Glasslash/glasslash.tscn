@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bqyefpmrqtpqr"]
 
-[ext_resource type="Script" uid="uid://p77xcp7r5qo2" path="res://Player/Attack/Glasslash/glasslash.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://p77xcp7r5qo2" path="res://Player/Attack/glasslash/glasslash.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://bpp2jalima8pr" path="res://Textures/Items/Weapons/Kaleidoscope_(projectile).webp" id="2_texture"]
 [ext_resource type="Shader" uid="uid://bemyjjrt8o2hh" path="res://Utility/whip_3slice.gdshader" id="3_shader"]
 

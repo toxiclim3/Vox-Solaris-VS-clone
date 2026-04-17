@@ -63,6 +63,7 @@ var reflected_damage: float = 0.0
 var javelin_level = 0
 var javelin_endless_level = 0
 var relic_drone_node = null
+var joystick_vector := Vector2.ZERO
 
 #Elite Graphics
 var rt_light: PointLight2D = null
@@ -132,10 +133,20 @@ func _ready():
 	_on_hurt_box_hurt(0,0,0)
 	GlobalEvents.enemy_died.connect(_on_enemy_died)
 	GlobalEvents.boss_defeated.connect(_on_boss_defeated)
+	GlobalEvents.player_dealt_damage.connect(_on_player_dealt_damage)
 	
 	# Ray Tracing (Elite)
 	_setup_rt_light()
 	SettingsManager.raytracing_settings_changed.connect(_on_rt_settings_changed)
+	
+	# Camera Zoom
+	SettingsManager.camera_zoom_changed.connect(_on_camera_zoom_changed)
+	_on_camera_zoom_changed(SettingsManager.camera_zoom)
+	
+	# Connect Virtual Joystick
+	var joy = get_tree().get_first_node_in_group("gui_layer").get_node_or_null("%VirtualJoystick")
+	if joy:
+		joy.joystick_vector.connect(func(v): joystick_vector = v)
 	
 	# Set slot limits based on difficulty
 	max_weapon_slots = GlobalEvents.get_max_weapon_slots()
@@ -155,6 +166,10 @@ func _on_rt_settings_changed(enabled: bool):
 	if rt_light:
 		rt_light.visible = enabled
 
+func _on_camera_zoom_changed(zoom_val: float):
+	var cam = get_node_or_null("Camera2D")
+	if cam:
+		cam.zoom = Vector2(zoom_val, zoom_val)
 
 func _physics_process(_delta):
 	movement()
@@ -170,6 +185,10 @@ func movement():
 		var x_mov = Input.get_action_strength("right") - Input.get_action_strength("left")
 		var y_mov = Input.get_action_strength("down") - Input.get_action_strength("up")
 		mov = Vector2(x_mov,y_mov)
+		
+		# Overlay joystick movement if no keyboard input is present
+		if mov == Vector2.ZERO and joystick_vector != Vector2.ZERO:
+			mov = joystick_vector
 
 	if mov.x > 0:
 		sprite.flip_h = true
@@ -211,8 +230,6 @@ func _on_hurt_box_hurt(damage, _angle, _knockback, _killer_source = "", attacker
 		
 		# Reflection logic (Thorn Ring)
 		if reflected_damage > 0 and attacker_node and attacker_node.has_method("_on_hurt_box_hurt"):
-			if loggingEnabled:
-				print("Thorn Ring: Reflecting %f damage to %s" % [reflected_damage, attacker_node.name])
 			attacker_node._on_hurt_box_hurt(reflected_damage, Vector2.ZERO, 0, "Thorn Ring", self)
 
 	if godmode == false:
@@ -451,19 +468,14 @@ func apply_stat_modifiers():
 					"lifesteal": lifesteal += val
 					"armor_multiplier": armor_multiplier += val
 					"reflected_damage": reflected_damage += val
-		# Scaled character stats based on levels above 1
-		if char_data.has("level_stats") and experience_level > 1:
-			var lvl_bonus = experience_level - 1
-			for stat_name in char_data["level_stats"].keys():
-				var val = char_data["level_stats"][stat_name] * lvl_bonus
-				# Apply cap if defined
-				if char_data.has("level_stats_cap") and char_data["level_stats_cap"].has(stat_name):
-					var cap = char_data["level_stats_cap"][stat_name]
-					# Support both positive matching cap and negative matching cap
-					if val > 0 and val > cap and cap > 0:
-						val = cap
-					elif val < 0 and val < cap and cap < 0:
-						val = cap
+		# Scaled character stats based on progression towards scaling_max_level
+		if char_data.has("scaling_stats") and experience_level > 1:
+			var max_lvl = char_data.get("scaling_max_level", 20)
+			# Fraction of completion from 0.0 (lvl 1) to 1.0 (lvl max_lvl)
+			var progress = float(min(experience_level, max_lvl) - 1) / (max_lvl - 1)
+			
+			for stat_name in char_data["scaling_stats"].keys():
+				var val = char_data["scaling_stats"][stat_name] * progress
 				match stat_name:
 					"armor": armor += val
 					"movement_speed_percent": movement_speed_percent_total += val
@@ -486,10 +498,10 @@ func apply_stat_modifiers():
 			"scroll": spell_cooldown += 0.02 * count
 			"armor": armor += 1 * count
 			"ringofaffinity": xp_range_percent_total += 0.05 * count
-			"thornring": reflected_damage += 5 * count
 			"ring": # Multiplication (chance based)
 				additional_attacks += 0.05 * count
 			"thornring": reflected_damage += 5 * count
+			"ringofrejuvenation": max_hp_percent_total += 0.05 * count # Scales max HP% by 5% per stack
 
 	
 	# Apply movement speed percent bonus
@@ -523,7 +535,7 @@ func upgrade_character(upgrade):
 	
 	if upgrade.begins_with("relicdrone"):
 		if not relic_drone_node:
-			relic_drone_node = preload("res://Player/Attack/RelicDrone/RelicDrone.tscn").instantiate()
+			relic_drone_node = preload("res://Player/Attack/relicdrone/relicdrone.tscn").instantiate()
 			add_child(relic_drone_node)
 		
 		var relic_lvl = int(upgrade.replace("relicdrone", ""))
@@ -531,8 +543,8 @@ func upgrade_character(upgrade):
 		relic_drone_node.update_stats()
 	elif type == "weapon" or (type == "bossitem" and boss_weapons_with_spawner.has(upgrade.rstrip("0123456789"))):
 		var base_name = upgrade.rstrip("0123456789")
-		var folder_name = base_name.capitalize()
-		var file_name = base_name
+		var folder_name = base_name.to_lower()
+		var file_name = base_name.to_lower()
 		
 		var weapon_spawner = weapons.get_node_or_null(base_name)
 		if weapon_spawner == null:
@@ -697,10 +709,6 @@ func change_time(argtime = 0):
 func _log_minute_data():
 	var current_second = time
 	var xp_this_interval = total_collected_experience - last_minute_total_experience
-	print("--- SECOND %d ---" % current_second)
-	print("Player Level: %d" % experience_level)
-	print("Total XP: %.2f (Level XP: %.2f / %d)" % [total_collected_experience, experience, calculate_experiencecap()])
-	print("XP this 30s: %.2f" % xp_this_interval)
 	last_minute_total_experience = total_collected_experience
 
 	
@@ -730,9 +738,13 @@ func _on_boss_defeated():
 		_show_next_reward()
 
 func _on_enemy_died(_pos: Vector2, _enemy_max_hp: float, _killer: String):
+	pass
+
+func _on_player_dealt_damage(damage: float, _target: Object, proc_coefficient: float):
 	if hp > 0 and lifesteal > 0.0:
-		# Heal by lifesteal amount
-		hp = clamp(hp + lifesteal, 0, maxhp)
+		# Heal by percentage of damage dealt, scaled by proc coefficient
+		var heal_amount = damage * lifesteal * proc_coefficient
+		hp = clamp(hp + heal_amount, 0, maxhp)
 		healthBar.value = hp
 
 

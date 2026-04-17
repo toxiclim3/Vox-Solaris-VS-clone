@@ -113,6 +113,7 @@ func register_enemy_type(texture: Texture2D, radius: float, hframes: int = 1, vf
 	enemy_type_cache[id] = {
 		"texture": texture,
 		"multimesh_idx": multimeshes.size() - 1,
+		"radius": radius,
 		"radius_sq": radius * radius
 	}
 	
@@ -166,9 +167,9 @@ func _physics_process(delta):
 		
 		# Look for a collision shape
 		var cs = atk.get_node_or_null("CollisionShape2D")
-		if cs == null or cs.shape == null:
+		if cs == null or cs.shape == null or cs.disabled:
 			continue
-			
+				
 		var shape_type = 0 # 1 = circle, 2 = rect
 		var r_sq = 0.0
 		var extents = Vector2.ZERO
@@ -186,6 +187,11 @@ func _physics_process(delta):
 		var kb = atk.get("knockback_amount")
 		if kb == null: kb = 0
 		
+		var hit_list = atk.get("hit_once_array")
+		if hit_list == null:
+			# Fallback to checking the parent if the hitbox doesn't have the array itself
+			hit_list = atk.owner.get("hit_once_array") if atk.owner else null
+		
 		attack_data.append({
 			"node": atk,
 			"cs_node": cs,
@@ -194,11 +200,12 @@ func _physics_process(delta):
 			"extents": extents,
 			"damage": dmg,
 			"knockback_amount": kb,
-			"hit_enemies": atk.get("hit_once_array") if atk.get("hit_once_array") != null else [],
+			"hit_enemies": hit_list if hit_list != null else [],
 			"has_enemy_hit": atk.has_method("enemy_hit")
 		})
 	
 	var i = 0
+	var player_push_sum = Vector2.ZERO
 	while i < swarm_data.size():
 		var enemy = swarm_data[i]
 		
@@ -238,7 +245,7 @@ func _physics_process(delta):
 				# Proc coefficient and stats
 				var proc_co = atk.node.get("proc_coefficient")
 				if proc_co == null: proc_co = 1.0
-				GlobalEvents.player_dealt_damage.emit(atk.damage, null, proc_co)
+				GlobalEvents.player_dealt_damage.emit(atk.damage, enemy, proc_co)
 				
 				if atk.has_enemy_hit:
 					atk.node.enemy_hit(1)
@@ -295,22 +302,34 @@ func _physics_process(delta):
 		enemy.position += velocity * delta
 		
 		# Player Soft Collision and Damage
+		var type_info = enemy_type_cache[enemy.type_id]
+		var contact_dist = type_info.radius + 10.0 # 10.0 is approx player radius
+		var contact_dist_sq = contact_dist * contact_dist
+		
 		var dist_to_p_sq = enemy.position.distance_squared_to(p_pos)
-		if dist_to_p_sq < 400.0: # ~20 range overlap
+		if dist_to_p_sq < contact_dist_sq:
 			var push_dir = enemy.position.direction_to(p_pos)
 			if dist_to_p_sq > 0.1:
-				var overlap = 1.0 - (dist_to_p_sq / 400.0)
-				# Dynamic solid push: deeper overlaps push drastically harder
-				player.global_position += push_dir * 180.0 * overlap * delta
+				var overlap = 1.0 - (dist_to_p_sq / contact_dist_sq)
+				# Accumulate push on player to moderate forces
+				player_push_sum += push_dir * 180.0 * overlap
+				
 				# Push the enemy backward so they cluster slightly instead of overlapping player perfectly
 				enemy.position -= push_dir * 40.0 * overlap * delta
 				
-			if player_damage_cooldown <= 0.0 and dist_to_p_sq < 225.0: # ~15 range damage
+			if player_damage_cooldown <= 0.0:
 				if player.has_method("_on_hurt_box_hurt"):
 					player._on_hurt_box_hurt(enemy.damage, -push_dir, 0, "Swarm", enemy)
-					player_damage_cooldown = 0.5 # 0.5 sec iframe for swarm
+					player_damage_cooldown = 0.4 # Slightly reduced for better threat feel
 				
 		i += 1 # Critical: Increment the loop!
+
+	# Apply accumulated and capped push to the player to allow blocking without "force fields"
+	if player_push_sum.length_squared() > 1.0:
+		var max_push = 300.0 # Enough to strongly block player (spd 75) but not launch them
+		if player_push_sum.length() > max_push:
+			player_push_sum = player_push_sum.normalized() * max_push
+		player.global_position += player_push_sum * delta
 
 	_update_multimeshes()
 

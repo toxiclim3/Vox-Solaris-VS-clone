@@ -367,8 +367,8 @@ func _start_shader_preheating() -> void:
 	ui.start(preheat_res.materials)
 	
 	# Find the prewarmer node inside the UI to connect to its finished signal
-	if not ui.is_connected("tree_exited", _on_shader_warming_finished):
-		ui.tree_exited.connect(_on_shader_warming_finished)
+	if not ui.is_connected("finished", _on_shader_warming_finished):
+		ui.finished.connect(_on_shader_warming_finished)
 
 func _on_shader_warming_finished() -> void:
 	btn_play.disabled = false

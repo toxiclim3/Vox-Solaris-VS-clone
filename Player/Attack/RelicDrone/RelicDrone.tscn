@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://c7p5r8x2w3y1v"]
 
-[ext_resource type="Script" path="res://Player/Attack/RelicDrone/RelicDrone.gd" id="1_drone"]
-[ext_resource type="Texture2D" path="res://Player/Attack/RelicDrone/relic_drone_sheet.png" id="2_sheet"]
+[ext_resource type="Script" path="res://Player/Attack/relicdrone/relicdrone.gd" id="1_drone"]
+[ext_resource type="Texture2D" path="res://Player/Attack/relicdrone/relic_drone_sheet.png" id="2_sheet"]
 
 [sub_resource type="Animation" id="Animation_idle"]
 resource_name = "idle"

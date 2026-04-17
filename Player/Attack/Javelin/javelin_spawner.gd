@@ -4,7 +4,7 @@ var ammo = 0
 var level = 0
 var endless_level = 0
 
-var javelin = preload("res://Player/Attack/Javelin/javelin.tscn")
+var javelin = preload("res://Player/Attack/javelin/javelin.tscn")
 @onready var player = get_tree().get_first_node_in_group("player")
 
 func upgrade(upgrade_id: String):

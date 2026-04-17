@@ -6,7 +6,7 @@ var attackspeed = 3.0
 var level = 0
 var endless_level = 0
 
-var tornado = preload("res://Player/Attack/Tornado/tornado.tscn")
+var tornado = preload("res://Player/Attack/tornado/tornado.tscn")
 @onready var player = get_tree().get_first_node_in_group("player")
 
 @onready var timer = Timer.new()

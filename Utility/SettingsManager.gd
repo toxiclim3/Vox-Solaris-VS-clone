@@ -8,7 +8,7 @@ var sound_profile: String = "Full"
 var language: String = "en"
 var screen_shake: bool = true
 var mouse_control: bool = false
-var window_mode: int = 0 # 0: Windowed, 1: Fullscreen, 2: Borderless Maximized
+var window_mode: int = 1 # 0: Windowed, 1: Fullscreen, 2: Borderless Maximized
 var vsync: bool = true
 var max_fps: int = 0 # 0 means unlimited
 
@@ -19,7 +19,19 @@ var dlss_enabled: bool = false
 var raytracing_enabled: bool = false
 var shadows_enabled: bool = false # Enabled by default for "Next-Gen" feel
 var is_audio_functional: bool = false
+var gui_scale: float = 1.0
+var camera_zoom: float = 1.0
+var unlimit_rtx: bool = false # Secret toggle for RTX FPS limit
 
+# Modular Secret System
+var active_secrets: Dictionary = {
+	"frames": func(): 
+		unlimit_rtx = !unlimit_rtx
+		apply_elite_settings()
+		print("Secret activated: RTX FPS Limit toggled")
+}
+
+signal camera_zoom_changed(zoom: float)
 signal shadow_settings_changed(enabled: bool)
 signal raytracing_settings_changed(enabled: bool)
 
@@ -87,6 +99,11 @@ func loadSettings() -> void:
 		window_mode = config.get_value("display", "window_mode", 0)
 		vsync = config.get_value("display", "vsync", true)
 		max_fps = config.get_value("display", "max_fps", 0)
+		camera_zoom = config.get_value("display", "camera_zoom", 1.0)
+	
+	# Force immersive fullscreen on mobile despite saved desktop settings
+	if OS.get_name() in ["Android", "iOS"]:
+		window_mode = 1 
 	
 	apply_window_mode(window_mode)
 	apply_vsync(vsync)
@@ -99,6 +116,9 @@ func loadSettings() -> void:
 		raytracing_enabled = config.get_value("elite", "raytracing_enabled", false)
 		shadows_enabled = config.get_value("elite", "shadows_enabled", true)
 	
+	if config.has_section("gui"):
+		gui_scale = config.get_value("gui", "gui_scale", 1.0)
+	
 	apply_elite_settings()
 
 func apply_elite_settings() -> void:
@@ -110,7 +130,10 @@ func apply_elite_settings() -> void:
 	# DLSS (Joke) - Adds to the placebo vibe
 	apply_max_fps(max_fps) # Refresh normal FPS first
 	if raytracing_enabled:
-		Engine.max_fps = 10 # Cinematic 10fps
+		if unlimit_rtx:
+			apply_max_fps(max_fps)
+		else:
+			Engine.max_fps = 10 # Cinematic 10fps
 	
 	shadow_settings_changed.emit(shadows_enabled)
 	raytracing_settings_changed.emit(raytracing_enabled)
@@ -184,6 +207,29 @@ func set_max_fps(value: int) -> void:
 	config.set_value("display", "max_fps", value)
 	config.save(SAVE_PATH)
 	apply_max_fps(value)
+
+func set_camera_zoom(zoom: float) -> void:
+	camera_zoom = zoom
+	config.set_value("display", "camera_zoom", camera_zoom)
+	config.save(SAVE_PATH)
+	camera_zoom_changed.emit(camera_zoom)
+
+func set_gui_scale(value: float) -> void:
+	gui_scale = value
+	config.set_value("gui", "gui_scale", value)
+	config.save(SAVE_PATH)
+	# Logic to apply will be handled by listening to this change or central update
+	var gui = get_tree().get_first_node_in_group("gui")
+	if gui and gui.has_method("apply_gui_scale"):
+		gui.apply_gui_scale(value)
+
+func process_secret_keyword(buffer: String) -> bool:
+	var lower_buffer = buffer.to_lower()
+	for keyword in active_secrets.keys():
+		if lower_buffer.ends_with(keyword):
+			active_secrets[keyword].call()
+			return true
+	return false
 
 func get_sound_profile_index() -> int:
 	if sound_profile == "Grindfest":

@@ -5,7 +5,7 @@ var endless_level = 0
 var attack_speed = 1.3
 var damage = 8
 
-var whip_scene = preload("res://Player/Attack/Whip/whip.tscn")
+var whip_scene = preload("res://Player/Attack/whip/whip.tscn")
 
 @onready var player = get_tree().get_first_node_in_group("player")
 @onready var timer = Timer.new()

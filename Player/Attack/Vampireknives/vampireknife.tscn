@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://vampireknife001"]
 
-[ext_resource type="Script" path="res://Player/Attack/Vampireknives/vampireknife.gd" id="1_script"]
+[ext_resource type="Script" path="res://Player/Attack/vampireknives/vampireknife.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://Textures/Items/Weapons/Vampire_Knife_(projectile).webp" id="2_tex"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
