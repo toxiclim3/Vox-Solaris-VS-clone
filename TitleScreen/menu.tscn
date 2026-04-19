@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://dyahivqch5l16" path="res://Utility/settings_menu.tscn" id="5_yf0qj"]
 [ext_resource type="PackedScene" uid="uid://c6j2y1p3m6q3y" path="res://Utility/stats_menu.tscn" id="6_stats"]
 [ext_resource type="PackedScene" uid="uid://cxw5k8g4y2f2p" path="res://Utility/custom_difficulty_menu.tscn" id="7_custom"]
+[ext_resource type="LabelSettings" uid="uid://c3js4g0a7313l" path="res://Themes/TitleLabel.tres" id="7_vr0tc"]
 [ext_resource type="PackedScene" uid="uid://dfxw7xjk1r111" path="res://TitleScreen/play_menu.tscn" id="8_play"]
 [ext_resource type="Script" uid="uid://b31pd6wlfiij0" path="res://TitleScreen/menu_background.gd" id="9_bgscript"]
 [ext_resource type="PackedScene" path="res://TitleScreen/how_to_play_menu.tscn" id="9_htp"]
@@ -128,13 +129,13 @@ visibility_rect = Rect2(-120, -160, 240, 160)
 process_material = SubResource("FireMaterial")
 
 [node name="EmberParticles" type="GPUParticles2D" parent="Background" unique_id=100000009]
-position = Vector2(456, 238)
+position = Vector2(328, 56)
 amount = 22
 lifetime = 5.0
 speed_scale = 0.7
 randomness = 1.0
 fract_delta = false
-visibility_rect = Rect2(-200, -320, 400, 320)
+visibility_rect = Rect2(-200, -80, 400, 130)
 process_material = SubResource("EmberMaterial")
 
 [node name="Foreground" type="TextureRect" parent="Background" unique_id=100000005]
@@ -161,13 +162,12 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -320.0
-offset_top = 10.0
+offset_top = 16.0
 offset_right = 320.0
-offset_bottom = 110.0
+offset_bottom = 112.0
 grow_horizontal = 2
-theme_override_fonts/font = ExtResource("2_6q26e")
-theme_override_font_sizes/font_size = 46
 text = "ui_gameTitle"
+label_settings = ExtResource("7_vr0tc")
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -257,8 +257,8 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -148.0
-offset_top = -30.0
+offset_left = -72.0
+offset_top = -24.0
 offset_right = -8.0
 grow_horizontal = 0
 grow_vertical = 0

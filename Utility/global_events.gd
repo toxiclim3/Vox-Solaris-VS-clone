@@ -16,11 +16,13 @@ signal player_dealt_damage(amount: float, target_node: Object, proc_coefficient:
 
 var boss_warnings: Dictionary = {
 	"generic": "warning_boss_generic",
-	"res://Enemy/Boss/enemy_super.tscn": "warning_boss_super"
+	"res://Enemy/Boss/enemy_super.tscn": "warning_boss_super",
+	"res://Enemy/Boss/dr_franklin.tscn": "warning_boss_franklin"
 }
 
 var boss_names: Dictionary = {
-	"res://Enemy/Boss/enemy_super.tscn": "boss_name_super"
+	"res://Enemy/Boss/enemy_super.tscn": "boss_name_super",
+	"res://Enemy/Boss/dr_franklin.tscn": "boss_name_franklin"
 }
 
 @export var backgroundInterval = 5

@@ -58,7 +58,19 @@ var tip_keys = [
 	"tips_poisonbottle",
 	"tips_ritualcircle",
 	"tips_icespear_pierce",
+	"tips_javelin",
+	"tips_tornado",
+	"tips_whip",
+	"tips_ring_projectiles",
+	"tips_ring_rejuvenation",
+	"tips_ring_affinity",
+	"tips_thornring",
+	"tips_glasslash",
+	"tips_vampireknives",
+	"tips_relicdrone",
+	"tips_food",
 	"tips_amoeba_boss",
+	"tips_franklin_boss",
 	"tips_surrounded_graze",
 	"tips_vibecoded",
 	"tips_ror_promo",
@@ -124,13 +136,13 @@ func show_death_panel(hasWon: bool) -> void:
 	if btnPauseMobile:
 		btnPauseMobile.visible = false
 	var is_mobile = OS.get_name() in ["Android", "iOS"]
-	var vp_size = get_viewport_rect().size
 	var target_pos: Vector2
 	
 	if is_mobile:
 		target_pos = Vector2.ZERO # Full rect anchors mean (0,0) is centered fill
 	else:
-		target_pos = (vp_size - deathPanel.size) / 2.0
+		# Use local size (which is vp_size / gui_scale) to center correctly
+		target_pos = (size - deathPanel.size) / 2.0
 		
 	var start_pos = Vector2(target_pos.x, -deathPanel.size.y)
 	deathPanel.position = start_pos
@@ -288,6 +300,14 @@ func _apply_mobile_layout_overrides():
 func _on_window_resized():
 	apply_gui_scale(SettingsManager.gui_scale)
 	_initialize_pause_menu_position()
+	
+	if deathPanel.visible:
+		var is_mobile = OS.get_name() in ["Android", "iOS"]
+		if is_mobile:
+			deathPanel.position = Vector2.ZERO
+		else:
+			# Update position to new center if screen resolution changed
+			deathPanel.position = (size - deathPanel.size) / 2.0
 
 func _initialize_pause_menu_position():
 	# Force show briefly to ensure anchors and containers calculate final rects

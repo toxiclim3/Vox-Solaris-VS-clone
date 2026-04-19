@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://drfrankl1n001"]
+
+[ext_resource type="Script" uid="uid://cfebwtfj16nuy" path="res://Enemy/Boss/dr_franklin.gd" id="1_drgd"]
+[ext_resource type="PackedScene" uid="uid://ndk3tlufsxr8" path="res://Enemy/Base/EnemyBase.tscn" id="2_base"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_frank"]
+
+[sub_resource type="Animation" id="Animation_reset"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("EnemyBase/Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_walk"]
+resource_name = "walk"
+length = 0.03333667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("EnemyBase/Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_frank"]
+_data = {
+&"RESET": SubResource("Animation_reset"),
+&"walk": SubResource("Animation_walk")
+}
+
+[node name="dr_franklin" type="CharacterBody2D" unique_id=1811207112]
+scale = Vector2(2, 2)
+collision_layer = 5
+motion_mode = 1
+script = ExtResource("1_drgd")
+movement_speed = 68.0
+hp = 500
+knockback_recovery = 10.0
+experience = 100
+enemy_damage = 30
+isBoss = 1
+
+[node name="EnemyBase" parent="." unique_id=978387468 instance=ExtResource("2_base")]
+
+[node name="Sprite2D" parent="EnemyBase" index="1" unique_id=1348046775]
+hframes = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=515531834]
+shape = SubResource("CircleShape2D_frank")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=221754933]
+libraries/ = SubResource("AnimationLibrary_frank")
+
+[editable path="EnemyBase"]
+[editable path="EnemyBase/HurtBox"]
+[editable path="EnemyBase/HitBox"]

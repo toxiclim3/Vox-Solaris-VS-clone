@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://dft8rek4abc12"]
+
+[ext_resource type="Script" path="res://Enemy/Base/franklin_telegraph_rect.gd" id="1_ftele"]
+
+[node name="FranklinTelegraphRect" type="Area2D" groups=["attack"]]
+script = ExtResource("1_ftele")

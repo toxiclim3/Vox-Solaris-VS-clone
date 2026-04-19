@@ -1,0 +1,14 @@
+[gd_resource type="LabelSettings" format=3 uid="uid://c3js4g0a7313l"]
+
+[ext_resource type="FontFile" uid="uid://b160authcey27" path="res://Font/Palitura-Black.ttf" id="1_g364f"]
+
+[resource]
+font = ExtResource("1_g364f")
+font_size = 48
+stacked_shadow_count = 2
+stacked_shadow_0/offset = Vector2(1, 1)
+stacked_shadow_0/color = Color(0.7372549, 0, 0, 1)
+stacked_shadow_0/outline_size = 1
+stacked_shadow_1/offset = Vector2(2, 2)
+stacked_shadow_1/color = Color(0.2, 0, 0, 1)
+stacked_shadow_1/outline_size = 9

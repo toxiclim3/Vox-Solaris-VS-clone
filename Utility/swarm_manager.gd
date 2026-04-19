@@ -169,6 +169,12 @@ func _physics_process(delta):
 		var cs = atk.get_node_or_null("CollisionShape2D")
 		if cs == null or cs.shape == null or cs.disabled:
 			continue
+			
+		# Filter: ONLY player-side attacks should hit swarms.
+		# Layer 3 (Value 4) is for Enemies, so player weapons are on this layer to hit them.
+		# Enemy contact HitBoxes are on Layer 2 (Value 2).
+		if not (atk.collision_layer & 4):
+			continue
 				
 		var shape_type = 0 # 1 = circle, 2 = rect
 		var r_sq = 0.0
