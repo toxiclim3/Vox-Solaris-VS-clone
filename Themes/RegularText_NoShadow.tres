@@ -1,9 +1,9 @@
 [gd_resource type="Theme" format=3]
 
-[ext_resource type="FontFile" uid="uid://b0s4gbyeyrex1" path="res://Font/OpenSans-Regular.ttf" id="1_1jl60"]
+[ext_resource type="FontVariation" path="res://Themes/Font_OpenSans_Emoji.tres" id="1_opensans_emoji"]
 
 [resource]
-default_font = ExtResource("1_1jl60")
+default_font = ExtResource("1_opensans_emoji")
 default_font_size = 8
 Label/colors/font_color = Color(1, 1, 1, 1)
 RichTextLabel/colors/default_color = Color(1, 1, 1, 1)

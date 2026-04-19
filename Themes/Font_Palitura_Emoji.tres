@@ -1,0 +1,8 @@
+[gd_resource type="FontVariation" load_steps=3 format=3]
+
+[ext_resource type="FontFile" uid="uid://bu0ii1qpo4542" path="res://Font/Palitura-SemiBold.ttf" id="1_palitura"]
+[ext_resource type="FontFile" path="res://Themes/EmojiFallback.tres" id="2_emoji"]
+
+[resource]
+base_font = ExtResource("1_palitura")
+fallbacks = Array[Font]([ExtResource("2_emoji")])
