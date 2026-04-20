@@ -1,4 +1,5 @@
-[gd_resource type="SystemFont" format=3]
+[gd_resource type="FontFile" format=3 uid="uid://noto_color_emoji_res"]
 
 [resource]
-font_names = PackedStringArray("Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Emoji")
+resource_name = "NotoColorEmoji"
+font_data_dynamic = "res://Font/NotoColorEmoji-Regular.ttf"

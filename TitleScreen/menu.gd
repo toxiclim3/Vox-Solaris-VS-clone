@@ -35,6 +35,9 @@ func _ready():
 	# Initial positions
 	main_menu_original_x = main_menu_content.position.x
 	
+	if OS.get_name() in ["Android", "iOS"]:
+		_apply_mobile_layout_overrides()
+	
 	# Shader Pre-heating (Oven)
 	_start_shader_preheating()
 	
@@ -373,3 +376,16 @@ func _start_shader_preheating() -> void:
 func _on_shader_warming_finished() -> void:
 	btn_play.disabled = false
 	btn_play.modulate.a = 1.0
+
+
+func _apply_mobile_layout_overrides():
+	# Recursively bump all font sizes by 4 points
+	_apply_recursive_font_bump(self, 4)
+
+func _apply_recursive_font_bump(node: Node, amount: int):
+	if node is Label or node is RichTextLabel or node is Button:
+		var current_size = node.get_theme_font_size("font_size")
+		node.add_theme_font_size_override("font_size", current_size + amount)
+	
+	for child in node.get_children():
+		_apply_recursive_font_bump(child, amount)

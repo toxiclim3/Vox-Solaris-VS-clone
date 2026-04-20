@@ -590,8 +590,7 @@ columns = 12
 
 [node name="PauseMenu" type="PanelContainer" parent="GUILayer/GUI" unique_id=1300825726]
 unique_name_in_owner = true
-visible = false
-custom_minimum_size = Vector2(192, 224)
+custom_minimum_size = Vector2(224, 224)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5

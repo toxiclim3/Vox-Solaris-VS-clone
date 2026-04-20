@@ -178,6 +178,8 @@ func show_levelup(options_list: Array, current_visual_level: int) -> void:
 		var option_choice = itemOptions.instantiate()
 		option_choice.item = item
 		upgradeOptions.add_child(option_choice)
+		if OS.get_name() in ["Android", "iOS"]:
+			_apply_recursive_font_bump(option_choice, 4)
 	# Native Godot UI layout will now automatically handle width and full-screen margins!
 
 func show_boss_levelup(options_list: Array) -> void:
@@ -191,6 +193,8 @@ func show_boss_levelup(options_list: Array) -> void:
 		var option_choice = itemOptions.instantiate()
 		option_choice.item = item
 		bossUpgradeOptions.add_child(option_choice)
+		if OS.get_name() in ["Android", "iOS"]:
+			_apply_recursive_font_bump(option_choice, 4)
 	# Native Godot UI layout will now automatically handle width and full-screen margins!
 
 @export var transition_duration: float = 0.4
@@ -249,6 +253,9 @@ func _ready() -> void:
 	call_deferred("_connect_debug_signals")
 
 func _apply_mobile_layout_overrides():
+	# Recursively bump all font sizes by 4 points
+	_apply_recursive_font_bump(self, 4)
+	
 	# Reduce margins for level up screens
 	var lup_mc = get_node_or_null("%LUpMarginContainer")
 	if lup_mc:
@@ -296,12 +303,21 @@ func _apply_mobile_layout_overrides():
 		lblTips.size_flags_horizontal = Control.SIZE_FILL
 		lblTips.fit_content = false
 		lblTips.bbcode_enabled = true
+		lblTips.custom_minimum_size.y = 80 # Taller for mobile text support
 	
-	# Bump HUD font sizes — 12px is hard to read at a glance on a real phone
-	if lblTimer:
-		lblTimer.add_theme_font_size_override("font_size", 16)
-	if lblLevel:
-		lblLevel.add_theme_font_size_override("font_size", 14)
+	# HUD font sizes are already bumped by recursive function, but we can fine-tune if needed
+	# (Previously manually boosted to 16/14, now they will be base+4)
+
+func _apply_recursive_font_bump(node: Node, amount: int):
+	if node is Label or node is RichTextLabel or node is Button:
+		# Check for existing override, otherwise get from theme
+		var current_size = node.get_theme_font_size("font_size")
+		# Only apply if it looks like a standard small font or doesn't have an override yet
+		# To avoid double-bumping if this is called multiple times
+		node.add_theme_font_size_override("font_size", current_size + amount)
+	
+	for child in node.get_children():
+		_apply_recursive_font_bump(child, amount)
 
 func _on_window_resized():
 	apply_gui_scale(SettingsManager.gui_scale)
@@ -530,6 +546,8 @@ func setup_give_item_menu():
 		
 	for dname in items.keys():
 		var btn = Button.new()
+		if OS.get_name() in ["Android", "iOS"]:
+			_apply_recursive_font_bump(btn, 4)
 		btn.text = tr(dname)
 		btn.pressed.connect(func(name_key=dname):
 			giveItemMainGrid.hide()
@@ -598,6 +616,8 @@ func _on_btn_remove_item_click_end() -> void:
 			var first_id = levels[0]
 			var dname = UpgradeDb.UPGRADES[first_id].get("displayname", base_name)
 			var btn = Button.new()
+			if OS.get_name() in ["Android", "iOS"]:
+				_apply_recursive_font_bump(btn, 4)
 			btn.text = tr(dname)
 			btn.custom_minimum_size = Vector2(180, 40)
 			btn.pressed.connect(func(b_name=base_name, lvls=levels):
@@ -608,6 +628,8 @@ func _on_btn_remove_item_click_end() -> void:
 				
 				# Back button
 				var back_btn = Button.new()
+				if OS.get_name() in ["Android", "iOS"]:
+					_apply_recursive_font_bump(back_btn, 4)
 				back_btn.text = tr("ui_backButton")
 				back_btn.custom_minimum_size = Vector2(180, 40)
 				back_btn.pressed.connect(func():
@@ -619,6 +641,8 @@ func _on_btn_remove_item_click_end() -> void:
 				# Remove completely
 				var max_lvl = int(lvls[-1].right(lvls[-1].length() - b_name.length()))
 				var remove_all_btn = Button.new()
+				if OS.get_name() in ["Android", "iOS"]:
+					_apply_recursive_font_bump(remove_all_btn, 4)
 				remove_all_btn.text = tr("debug_removeCompletely")
 				remove_all_btn.custom_minimum_size = Vector2(180, 40)
 				remove_all_btn.pressed.connect(func(bn=b_name):
@@ -632,6 +656,8 @@ func _on_btn_remove_item_click_end() -> void:
 				for i in range(1, max_lvl):
 					var keep_lvl = i
 					var lvl_btn = Button.new()
+					if OS.get_name() in ["Android", "iOS"]:
+						_apply_recursive_font_bump(lvl_btn, 4)
 					lvl_btn.text = tr("debug_removeToLevel") + " " + str(keep_lvl)
 					lvl_btn.custom_minimum_size = Vector2(180, 40)
 					lvl_btn.pressed.connect(func(bn=b_name, kl=keep_lvl):
@@ -686,6 +712,16 @@ func change_random_tip() -> void:
 
 func apply_gui_scale(value: float) -> void:
 	scale = Vector2(value, value)
+	
+	# Exclude Pause Menu and Settings from scaling on mobile to prevent "oversized" look
+	var is_mobile = OS.get_name() in ["Android", "iOS"]
+	if is_mobile:
+		if pause_menu:
+			pause_menu.scale = Vector2(1.0/value, 1.0/value)
+		if settings_menu:
+			settings_menu.scale = Vector2(1.0/value, 1.0/value)
+		if deathPanel:
+			deathPanel.scale = Vector2(1.0/value, 1.0/value)
 	
 	# Detach from full-rect anchors to stop engine warnings about overriding size
 	anchor_right = 0.0
