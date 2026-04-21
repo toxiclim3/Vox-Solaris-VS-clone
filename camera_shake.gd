@@ -3,6 +3,9 @@ extends Camera2D
 var shake_amount: float = 0.0
 var shake_decay: float = 0.0
 var default_offset: Vector2 = Vector2.ZERO
+var current_visual_offset: Vector2 = Vector2.ZERO
+
+@onready var parent = get_parent()
 
 func _ready():
 	default_offset = offset

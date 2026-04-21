@@ -138,6 +138,14 @@ func adjust_gui_collection(upgrade: String) -> void:
 func show_death_panel(hasWon: bool) -> void:
 	if deathPanel.visible:
 		return
+	
+	# Clean up any open gameplay menus properly
+	if is_menu_open:
+		close_pause_menu()
+		get_tree().paused = true # Ensure we stay paused, as close_pause_menu() unpauses the tree
+	
+	hide_level_panels()
+	
 	deathPanel.visible = true
 	if btnPauseMobile:
 		btnPauseMobile.visible = false

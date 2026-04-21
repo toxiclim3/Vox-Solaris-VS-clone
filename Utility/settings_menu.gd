@@ -116,7 +116,8 @@ func _ready() -> void:
 	
 	# Zoom slider
 	zoom_slider.value = SettingsManager.camera_zoom
-	zoom_slider.value_changed.connect(SettingsManager.set_camera_zoom)
+	zoom_slider.value_changed.connect(_on_zoom_slider_changed)
+	_on_zoom_slider_changed(SettingsManager.camera_zoom)
 		
 	# Hide PC-only settings on mobile
 	if OS.get_name() in ["Android", "iOS"]:
@@ -214,6 +215,12 @@ func _on_max_fps_selected(index: int) -> void:
 
 func _on_scaling_slider_changed(value: float) -> void:
 	SettingsManager.set_gui_scale(value)
+
+func _on_zoom_slider_changed(value: float) -> void:
+	SettingsManager.set_camera_zoom(value)
+	var label = zoom_slider.get_parent().get_node_or_null("ZoomLabel")
+	if label:
+		label.text = tr("ui_camera_zoom") + ": " + str(snapped(value, 0.1)) + "x"
 
 func _on_btn_reset_stats_click_end() -> void:
 	confirmation_dialog.popup_centered()

@@ -12,6 +12,11 @@ This file tracks known bugs, mathematical quirks, or engine-level limitations th
   2. Writing a specialized multi-sample pixel-perfect UV vertex shader.
   3. Generating a custom mesh instead of using `Line2D`.
 - **Current Mitigation:** The scales are mathematically consistent (`0.7` and `0.5`), keeping it as aligned as theoretically possible while maintaining sharpness.
+### Camera Subpixel Moiré vs. Integer Jitter
+- **Status:** Known Issue
+- **Description:** Moving the camera causes a slight Moiré / shimmering effect on the background tilemap and sprite edges. This happens because the game uses `canvas_items` stretch mode and renders natively at screen resolution. When the float-based `Camera2D` moves, Godot's Nearest Neighbor filtering has to rasterize non-integer positions, causing sprite pixels to shift in width on the physical monitor.
+- **Why it was deferred:** Fixing this requires forcing the camera rendering offset to an integer (which causes a violently noticeable 1-to-2 pixel jitter between the player sprite and background at high refresh rates like 144hz), or implementing a strict `SubViewport` architecture. However, utilizing a `SubViewport` inherently breaks our pristine infinitely-scaling MSDF text in the UI by locking scaling logic inside the viewport's low internal resolution. Furthermore, fractional Camera Zoom guarantees Moiré regardless of architecture when filtering is set to nearest. 
+- **Current Mitigation:** The moiré is accepted as a necessary evil to retain flawlessly crisp UI scaling and smooth player motion.
 
 ## UI & Navigation
 
@@ -23,9 +28,3 @@ This file tracks known bugs, mathematical quirks, or engine-level limitations th
   1. Play Menu width was increased to minimize bounding box overlaps.
   2. Character grid buttons have themes manually assigned for visual feedback.
   3. Strict `_input` overrides catch `ui_cancel` (B/Escape) to facilitate navigation back to categories.
-  
-### Swarm MultiMesh Animation & Spritesheet Splicing
-- **Status:** Fixed
-- **Description:** Rendering the new `SwarmManager` entities via `MultiMeshInstance2D` while natively slicing an Atlas/Spritesheet via a custom CanvasItem shader currently causes aggressively mangled, flattened, or "squished" geometry. This is likely a Godot 4 specific pixel-bleeding mismatch between `QuadMesh`/`ArrayMesh` custom UV generation and the 2D rendering pipeline utilizing Nearest Neighbor filtering (`texture_filter = 1`), alongside uniform caching problems.
-- **Why it was deferred:** The collision and separation math is functional, but fully un-corrupting the shader requires dedicating time to writing a specialized vertex-perfect CanvasItem Shader or altering how the Godot 4 Renderer binds `TEXTURE` sampling across arrays.
-- **Current Mitigation:** Resolved by using `texelFetch` in the CanvasItem shader to query exact pixel indices, preventing floating point UV bleeding. Additionally, enemy positions correctly snap to integers via `round()` before building the Transform2D, eliminating sub-pixel crushed multi-mesh rendering.
