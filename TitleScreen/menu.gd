@@ -5,7 +5,7 @@ var level = "res://World/world.tscn"
 @onready var stats_menu = %StatsMenu
 @onready var custom_menu = %CustomDifficultyMenu
 @onready var play_menu = %PlayMenu
-@onready var how_to_play_menu = %HowToPlayMenu
+var how_to_play_menu = null # Loaded on-demand
 @onready var main_menu_content = %MarginContainer
 @onready var title_label = get_node("Label")
 @onready var btn_play = %btn_play
@@ -41,6 +41,9 @@ func _ready():
 	# Shader Pre-heating (Oven)
 	_start_shader_preheating()
 	
+	# Background Pre-loading for World
+	ResourceLoader.load_threaded_request(level)
+	
 	var viewport_size = get_viewport_rect().size
 	
 	# Hide menus
@@ -52,7 +55,7 @@ func _ready():
 	custom_menu.hide()
 	play_menu.position.y = -viewport_size.y
 	play_menu.hide()
-	how_to_play_menu.hide()
+	# how_to_play_menu is null at this point
 	
 	# Intro animation: slide in from top
 	var original_title_y = title_label.position.y
@@ -115,7 +118,14 @@ func _on_stats_menu_stats_closed() -> void:
 
 func _on_play_menu_start_run_requested() -> void:
 	MusicController.fadeOutToSilence()
-	var _level = get_tree().change_scene_to_file(level)
+	
+	var status = ResourceLoader.load_threaded_get_status(level)
+	if status == ResourceLoader.THREAD_LOAD_LOADED:
+		var packed_scene = ResourceLoader.load_threaded_get(level)
+		get_tree().change_scene_to_packed(packed_scene)
+	else:
+		# Fallback if not loaded yet
+		get_tree().change_scene_to_file(level)
 
 func _on_play_menu_edit_custom_requested() -> void:
 	toggle_custom_diff()
@@ -287,6 +297,7 @@ func toggle_how_to_play() -> void:
 	if is_play_open:
 		close_play()
 		is_play_open = false
+		
 	is_how_to_play_open = !is_how_to_play_open
 	if is_how_to_play_open:
 		open_how_to_play()
@@ -294,12 +305,19 @@ func toggle_how_to_play() -> void:
 		close_how_to_play()
 
 func open_how_to_play() -> void:
+	if not how_to_play_menu:
+		var htp_scene = load("res://TitleScreen/how_to_play_menu.tscn")
+		how_to_play_menu = htp_scene.instantiate()
+		$CanvasLayer.add_child(how_to_play_menu)
+		how_to_play_menu.how_to_play_closed.connect(toggle_how_to_play)
+		
 	how_to_play_menu.show()
 	how_to_play_menu.grab_initial_focus()
 	MusicController.playSpecificTrack(MusicController.tutorialMusic, 0)
 
 func close_how_to_play() -> void:
-	how_to_play_menu.hide()
+	if how_to_play_menu:
+		how_to_play_menu.hide()
 	MusicController.playSpecificTrack(MusicController.titleMusic, 1)
 
 

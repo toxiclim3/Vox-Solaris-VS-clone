@@ -16,6 +16,9 @@ func _ready() -> void:
 	
 	SettingsManager.apply_elite_settings()
 	update_elite_graphics(0)
+	
+	# Preload Title Menu for instant exit
+	ResourceLoader.load_threaded_request("res://TitleScreen/menu.tscn")
 
 func _process(delta: float) -> void:
 	update_elite_graphics(delta)

@@ -17,9 +17,9 @@ enum MusicType { NORMAL, BOSS, EXTRA}
 @export var backgroundVolumeDb: float = -10.0 # Громкость музыки "на фоне" (в меню)
 @export var polyphony: int = 1
 
-var normalTracks: Array[AudioStream] = []
-var bossTracks: Array[AudioStream] = []
-var extraTracks: Array[AudioStream] = []
+var normalTracks: Array[String] = []
+var bossTracks: Array[String] = []
+var extraTracks: Array[String] = []
 
 var currentNormalIndex: int = -1
 var currentBossIndex: int = -1
@@ -73,6 +73,22 @@ var tutorialMusic = "res://Audio/Music/Extra/musicHitItSonA.ogg"
 # Словарь для хранения загруженных ресурсов: { "res://path": AudioStream }
 var trackCache: Dictionary = {}
 
+func _get_stream_from_cache(filePath: String) -> AudioStream:
+	if trackCache.has(filePath):
+		return trackCache[filePath]
+		
+	if not FileAccess.file_exists(filePath) and not FileAccess.file_exists(filePath + ".import") and not FileAccess.file_exists(filePath + ".remap") and not ResourceLoader.exists(filePath):
+		push_error("MusicController: Файл не найден: ", filePath)
+		return null
+		
+	var stream = load(filePath) as AudioStream
+	if stream:
+		trackCache[filePath] = stream
+		return stream
+	
+	push_error("MusicController: Ошибка загрузки ресурса: ", filePath)
+	return null
+
 # Запуск конкретного файла с кэшированием
 func playSpecificTrack(filePath: String,crossfade: bool = 1) -> void:
 	if not is_audio_functional:
@@ -81,23 +97,9 @@ func playSpecificTrack(filePath: String,crossfade: bool = 1) -> void:
 	if is_music_locked and filePath != winMusic and filePath != titleMusic:
 		return
 		
-	var stream: AudioStream
-	
-	# 1. Проверяем, есть ли трек в кэше
-	if trackCache.has(filePath):
-		stream = trackCache[filePath]
-	else:
-		# 2. Если нет, проверяем файл и загружаем
-		if not FileAccess.file_exists(filePath) and not FileAccess.file_exists(filePath + ".import") and not FileAccess.file_exists(filePath + ".remap") and not ResourceLoader.exists(filePath):
-			push_error("MusicController: Файл не найден: ", filePath)
-			return
-			
-		stream = load(filePath) as AudioStream
-		if stream:
-			trackCache[filePath] = stream # Сохраняем в кэш
-		else:
-			push_error("MusicController: Ошибка загрузки ресурса: ", filePath)
-			return
+	var stream = _get_stream_from_cache(filePath)
+	if not stream:
+		return
 
 	# 3. Если этот трек уже играет — выходим
 	if activePlayer.playing and activePlayer.stream and activePlayer.stream.resource_path == stream.resource_path:
@@ -122,7 +124,7 @@ func playNext(type: MusicType) -> void:
 	if type == MusicType.BOSS:
 		lockMusic()
 		
-	var tracks: Array[AudioStream] = normalTracks if type == MusicType.NORMAL else bossTracks
+	var tracks: Array[String] = normalTracks if type == MusicType.NORMAL else bossTracks
 	
 	if tracks.is_empty():
 		push_warning("MusicController: Папка с музыкой пуста!")
@@ -137,8 +139,12 @@ func playNext(type: MusicType) -> void:
 		currentBossIndex = (currentBossIndex + 1) % tracks.size()
 		nextIndex = currentBossIndex
 		
-	_crossfadeTo(tracks[nextIndex])
-	trackChanged.emit(tracks[nextIndex], type == MusicType.BOSS)
+	var filePath = tracks[nextIndex]
+	var stream = _get_stream_from_cache(filePath)
+	
+	if stream:
+		_crossfadeTo(stream)
+		trackChanged.emit(stream, type == MusicType.BOSS)
 
 func _initPlayers() -> void:
 	playerA = AudioStreamPlayer.new()
@@ -156,7 +162,7 @@ func _initPlayers() -> void:
 	
 	activePlayer = playerA
 
-func loadTracksFromDir(path: String, targetArray: Array[AudioStream]) -> void:
+func loadTracksFromDir(path: String, targetArray: Array[String]) -> void:
 	var dir := DirAccess.open(path)
 	if not dir:
 		push_error("MusicController: Не удалось открыть папку: ", path)
@@ -169,9 +175,8 @@ func loadTracksFromDir(path: String, targetArray: Array[AudioStream]) -> void:
 		
 		if cleanName.get_extension() in ["ogg", "mp3", "wav"]:
 			var fullPath := path.path_join(cleanName)
-			var stream := load(fullPath) as AudioStream
-			if stream and not targetArray.has(stream):
-				targetArray.append(stream)
+			if not targetArray.has(fullPath):
+				targetArray.append(fullPath)
 	targetArray.shuffle()
 
 func _switchTo(newStream: AudioStream) -> void:

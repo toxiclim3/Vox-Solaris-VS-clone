@@ -55,7 +55,7 @@ func _setup_character_grid() -> void:
 				icon_rect.texture = atlas
 				
 			var mat = ShaderMaterial.new()
-			mat.shader = load("res://Utility/recolor.gdshader")
+			mat.shader = preload("res://Utility/recolor.gdshader")
 			
 			var target_color = char_data.get("icon_color", Color(1, 1, 1))
 			mat.set_shader_parameter("target_color", target_color)

@@ -505,7 +505,12 @@ func close_settings() -> void:
 #death menu buttons
 func _on_btn_menu_click_end() -> void:
 	get_tree().paused = false
-	var _level = get_tree().change_scene_to_file(titleMenu)
+	var menu_path = titleMenu
+	var status = ResourceLoader.load_threaded_get_status(menu_path)
+	if status == ResourceLoader.THREAD_LOAD_LOADED:
+		get_tree().change_scene_to_packed(ResourceLoader.load_threaded_get(menu_path))
+	else:
+		get_tree().change_scene_to_file(menu_path)
 
 func _on_btn_restart_click_end() -> void:
 	GlobalEvents.restart_run()
@@ -516,7 +521,12 @@ func _on_btn_exit_game_click_end() -> void:
 
 func _on_btn_end_run_click_end() -> void:
 	player.death()
-	var _level = get_tree().change_scene_to_file(titleMenu)
+	var menu_path = titleMenu
+	var status = ResourceLoader.load_threaded_get_status(menu_path)
+	if status == ResourceLoader.THREAD_LOAD_LOADED:
+		get_tree().change_scene_to_packed(ResourceLoader.load_threaded_get(menu_path))
+	else:
+		get_tree().change_scene_to_file(menu_path)
 
 func _on_btn_resume_run_click_end() -> void:
 	toggle_menu()
