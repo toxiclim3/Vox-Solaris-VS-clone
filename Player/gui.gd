@@ -259,7 +259,6 @@ func _ready() -> void:
 	settings_menu.hide()
 	hide_level_panels()
 	setup_give_item_menu()
-	setup_spawn_boss_menu()
 	
 	# Connect debug signals in code so they survive movement to World.tscn root
 	call_deferred("_connect_debug_signals")
@@ -739,6 +738,7 @@ func setup_spawn_boss_menu():
 		bossGrid.add_child(btn)
 
 func _on_btn_spawn_boss_click_end() ->	void:
+	setup_spawn_boss_menu()
 	get_tree().paused = true
 	spawnBossMenu.visible = true
 
