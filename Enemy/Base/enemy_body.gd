@@ -10,6 +10,18 @@ class_name EnemyBody
 @export var isBoss = 0
 var max_hp = 0
 var knockback = Vector2.ZERO
+var active_debuffs: Dictionary = {}
+
+func apply_debuff(debuff_name: String, value: float, duration: float):
+	active_debuffs[debuff_name] = {"value": value, "duration": duration}
+
+func get_debuff_value(debuff_name: String) -> float:
+	if active_debuffs.has(debuff_name):
+		return active_debuffs[debuff_name]["value"]
+	return 0.0
+
+func has_debuff(debuff_name: String) -> bool:
+	return active_debuffs.has(debuff_name)
 
 @onready var sprite = $EnemyBase/Sprite2D
 @onready var anim = $AnimationPlayer
@@ -51,6 +63,22 @@ func _on_shadow_settings_changed(enabled: bool):
 	shadow.visible = enabled
 	
 func _physics_process(delta):
+	# Process debuffs
+	var keys_to_remove = []
+	for debuff_name in active_debuffs.keys():
+		var data = active_debuffs[debuff_name]
+		data["duration"] -= delta
+		if data["duration"] <= 0:
+			keys_to_remove.append(debuff_name)
+	for k in keys_to_remove:
+		active_debuffs.erase(k)
+		
+	# Apply Visuals
+	if has_debuff("curse"):
+		sprite.self_modulate = Color(0.8, 0.4, 1.0)
+	else:
+		sprite.self_modulate = Color(1.0, 1.0, 1.0)
+
 	knockback = knockback.move_toward(Vector2.ZERO, knockback_recovery)
 	var direction = Vector2.ZERO
 	
@@ -132,7 +160,8 @@ func death(killer_source: String = ""):
 	queue_free()
 
 func _on_hurt_box_hurt(damage, angle, knockback_amount, killer_source: String = "", attacker_node = null, proc_coefficient = 1.0):
-	hp -= (damage * GlobalEvents.get_player_damage_modifier())
+	var damage_multiplier = 1.0 + get_debuff_value("curse")
+	hp -= (damage * damage_multiplier * GlobalEvents.get_player_damage_modifier())
 	knockback = angle * knockback_amount
 	
 	GlobalEvents.player_dealt_damage.emit(damage, self, proc_coefficient)

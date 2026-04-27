@@ -227,6 +227,7 @@ layout_mode = 2
 
 [node name="btn_reset_stats" parent="MainPanel/Margin/VBox/HBox/Content/GameplayContentPanel/GameplayContent" unique_id=401716842 instance=ExtResource("7_buttonscene")]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 19)
 layout_mode = 2
 size_flags_horizontal = 4
 theme = ExtResource("5_darktheme")
@@ -384,6 +385,7 @@ alignment = 2
 
 [node name="CloseSettingsButton" parent="MainPanel/Margin/VBox/Footer" unique_id=673449830 instance=ExtResource("7_buttonscene")]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 19)
 layout_mode = 2
 theme = ExtResource("5_darktheme")
 text = "ui_close"

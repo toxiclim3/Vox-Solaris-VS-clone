@@ -488,6 +488,57 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "ui_close"
 
+[node name="SpawnBossMenu" type="Panel" parent="GUILayer/GUI" unique_id=739812500]
+unique_name_in_owner = true
+process_mode = 2
+visible = false
+z_index = 4
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="GUILayer/GUI/SpawnBossMenu" unique_id=987654400]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GUILayer/GUI/SpawnBossMenu/ScrollContainer" unique_id=123456800]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BossGrid" type="GridContainer" parent="GUILayer/GUI/SpawnBossMenu/ScrollContainer/VBoxContainer" unique_id=345678903]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 3
+
+[node name="btn_close_spawn_boss" type="Button" parent="GUILayer/GUI/SpawnBossMenu" unique_id=567890125]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -50.0
+offset_top = -45.0
+offset_right = 50.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "ui_close"
+
 [node name="DeathPanel" type="PanelContainer" parent="GUILayer/GUI" unique_id=266401415]
 unique_name_in_owner = true
 process_mode = 2
@@ -635,7 +686,7 @@ layout_mode = 2
 
 [node name="lblTips" type="RichTextLabel" parent="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2" unique_id=448275699]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 48)
+custom_minimum_size = Vector2(0, 56)
 layout_mode = 2
 theme = ExtResource("15_o28un")
 text = "tips_runInCircles"
@@ -936,6 +987,7 @@ mouse_filter = 2
 [connection signal="openMenu" from="GUILayer/GUI" to="GUILayer/GUI/DebugMenu" method="_on_gui_open_menu"]
 [connection signal="pressed" from="GUILayer/GUI/GiveItemMenu/btn_close_give_item" to="GUILayer/GUI" method="_on_btn_close_give_item_pressed"]
 [connection signal="pressed" from="GUILayer/GUI/RemoveItemMenu/btn_close_remove_item" to="GUILayer/GUI" method="_on_btn_close_remove_item_pressed"]
+[connection signal="pressed" from="GUILayer/GUI/SpawnBossMenu/btn_close_spawn_boss" to="GUILayer/GUI" method="_on_btn_close_spawn_boss_pressed"]
 [connection signal="click_end" from="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2/VBoxContainer/btn_resume_run" to="GUILayer/GUI" method="_on_btn_resume_run_click_end"]
 [connection signal="click_end" from="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2/VBoxContainer/btn_settings" to="GUILayer/GUI" method="_on_btn_settings_click_end"]
 [connection signal="click_end" from="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2/VBoxContainer/btn_end_run" to="GUILayer/GUI" method="_on_btn_end_run_click_end"]

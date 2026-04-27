@@ -36,6 +36,7 @@ var swarm_manager_scene = preload("res://Utility/swarm_manager.tscn")
 var swarm_manager = null
 
 func _ready():
+	add_to_group("spawner")
 	startTimer()
 	connect("changetime",Callable(player,"change_time"))
 	GlobalEvents.enableSpawns.connect(enableSpawns)
@@ -51,15 +52,26 @@ func enableSpawns():
 func disableSpawns():
 	isSpawningActive = false
 
-func force_queue_boss() -> void:
+func force_queue_boss(boss_path: String = "") -> void:
 	# If a boss is already queued, don't overwrite it
-	if upcoming_boss != null:
+	if upcoming_boss != null and boss_path == "":
 		return
-	if spawns_super.size() == 0:
-		return
-	upcoming_boss = spawns_super.pick_random()
+	
+	var boss_info: Spawn_info = null
+	
+	if boss_path != "":
+		for info in spawns_super:
+			if info.enemy and info.enemy.resource_path == boss_path:
+				boss_info = info
+				break
+	
+	if boss_info == null:
+		if spawns_super.size() == 0:
+			return
+		boss_info = spawns_super.pick_random()
+		
 	# Spawn immediately: instantiate and emit the spawned signal now
-	var boss_spawn = upcoming_boss.enemy.instantiate()
+	var boss_spawn = boss_info.enemy.instantiate()
 	
 	# Apply HP scaling
 	var multiplier = get_boss_hp_multiplier()

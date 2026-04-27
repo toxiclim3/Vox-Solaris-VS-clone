@@ -526,6 +526,42 @@ const UPGRADES = {
 		"type": "upgrade",
 		"stat_modifiers": {"reflected_damage": 15}
 	},
+	"occult_medallion1": 
+	{
+		"icon": "res://Textures/PLACEHOLDER.png",
+		"displayname": "item_occult_medallion",
+		"details": "ItemDesc_OccultMedallion1",
+		"level": "item_level1",
+		"prerequisite": [],
+		"type": "upgrade"
+	},
+	"occult_medallion2": 
+	{
+		"icon": "res://Textures/PLACEHOLDER.png",
+		"displayname": "item_occult_medallion",
+		"details": "ItemDesc_OccultMedallion2",
+		"level": "item_level2",
+		"prerequisite": ["occult_medallion1"],
+		"type": "upgrade"
+	},
+	"occult_medallion3": 
+	{
+		"icon": "res://Textures/PLACEHOLDER.png",
+		"displayname": "item_occult_medallion",
+		"details": "ItemDesc_OccultMedallion3",
+		"level": "item_level3",
+		"prerequisite": ["occult_medallion2"],
+		"type": "upgrade"
+	},
+	"occult_medallion4": 
+	{
+		"icon": "res://Textures/PLACEHOLDER.png",
+		"displayname": "item_occult_medallion",
+		"details": "ItemDesc_OccultMedallion4",
+		"level": "item_level4",
+		"prerequisite": ["occult_medallion3"],
+		"type": "upgrade"
+	},
 	"whip1": 
 	{
 		"icon": WEAPON_PATH + "Leather_Whip.webp",
@@ -721,6 +757,15 @@ const UPGRADES = {
 		"prerequisite": ["thornring4"],
 		"type": "endless",
 		"stat_modifiers": {"reflected_damage": 5}
+	},
+	"occult_medallion_endless": 
+	{
+		"icon": "res://Textures/PLACEHOLDER.png",
+		"displayname": "item_occult_medallion",
+		"details": "item_level_endless_details",
+		"level": "item_level_endless",
+		"prerequisite": ["occult_medallion4"],
+		"type": "endless"
 	},
 	"relicdrone1": 
 	{

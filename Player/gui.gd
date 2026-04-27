@@ -16,6 +16,9 @@ var titleMenu = "res://TitleScreen/menu.tscn"
 @onready var removeItemMainGrid = get_node("RemoveItemMenu/ScrollContainer/VBoxContainer/MainGrid")
 @onready var removeItemSubGrid = get_node("RemoveItemMenu/ScrollContainer/VBoxContainer/SubGrid")
 
+@onready var spawnBossMenu = get_node("%SpawnBossMenu")
+@onready var bossGrid = get_node("%BossGrid")
+
 @onready var expBar = get_node("%ExperienceBar")
 @onready var lblLevel = get_node("%lbl_level")
 @onready var lblTimer = get_node("%lblTimer")
@@ -256,6 +259,7 @@ func _ready() -> void:
 	settings_menu.hide()
 	hide_level_panels()
 	setup_give_item_menu()
+	setup_spawn_boss_menu()
 	
 	# Connect debug signals in code so they survive movement to World.tscn root
 	call_deferred("_connect_debug_signals")
@@ -703,8 +707,44 @@ func _on_btn_show_warning_click_end() -> void:
 	GlobalEvents.emit_signal("show_boss_warning", GlobalEvents.boss_warnings.get("generic"))
 
 
+func setup_spawn_boss_menu():
+	# We need the spawner to get the list of bosses
+	var spawner = get_tree().get_first_node_in_group("spawner")
+	if not spawner:
+		# Fallback: try to find it by name if group isn't set yet
+		spawner = get_tree().current_scene.get_node_or_null("EnemySpawner")
+	
+	if not spawner:
+		return
+		
+	for child in bossGrid.get_children():
+		child.queue_free()
+		
+	for boss_info in spawner.spawns_super:
+		if not boss_info.enemy: continue
+		
+		var path = boss_info.enemy.resource_path
+		var dname = GlobalEvents.boss_names.get(path, path.get_file().get_basename())
+		
+		var btn = Button.new()
+		if OS.get_name() in ["Android", "iOS"]:
+			_apply_recursive_font_bump(btn, 4)
+		btn.text = tr(dname)
+		btn.custom_minimum_size = Vector2(180, 40)
+		btn.pressed.connect(func(p=path):
+			GlobalEvents.queue_boss.emit(p)
+			get_tree().paused = false
+			spawnBossMenu.visible = false
+		)
+		bossGrid.add_child(btn)
+
 func _on_btn_spawn_boss_click_end() ->	void:
-	GlobalEvents.queue_boss.emit()
+	get_tree().paused = true
+	spawnBossMenu.visible = true
+
+func _on_btn_close_spawn_boss_pressed() -> void:
+	get_tree().paused = false
+	spawnBossMenu.visible = false
 
 func _process(delta: float) -> void:
 	if pause_menu.visible:

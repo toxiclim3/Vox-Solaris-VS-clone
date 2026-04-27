@@ -541,7 +541,7 @@ func upgrade_character(upgrade):
 		var relic_lvl = int(upgrade.replace("relicdrone", ""))
 		relic_drone_node.level = relic_lvl
 		relic_drone_node.update_stats()
-	elif type == "weapon" or (type == "bossitem" and boss_weapons_with_spawner.has(upgrade.rstrip("0123456789"))):
+	elif type == "weapon" or (type == "bossitem" and boss_weapons_with_spawner.has(upgrade.rstrip("0123456789"))) or upgrade.begins_with("occult_medallion"):
 		var base_name = upgrade.rstrip("0123456789")
 		var folder_name = base_name.to_lower()
 		var file_name = base_name.to_lower()
@@ -614,7 +614,8 @@ func _get_effective_type(upgrade_id: String) -> String:
 
 
 func get_random_item():
-	var dblist = []
+	var standard_pool = []
+	var endless_pool = []
 	
 	# Calculate current unique weapons and upgrades
 	var unique_weapons = []
@@ -645,7 +646,10 @@ func get_random_item():
 				if not n in collected_upgrades:
 					to_add = false
 			if to_add:
-				dblist.append(i)
+				if UpgradeDb.UPGRADES[i]["type"] == "endless":
+					endless_pool.append(i)
+				else:
+					standard_pool.append(i)
 		else:
 			# This is a new item (level 1)
 			if type == "weapon" and unique_weapons.size() >= max_weapon_slots:
@@ -653,8 +657,27 @@ func get_random_item():
 			if type == "upgrade" and unique_upgrades.size() >= max_upgrade_slots:
 				continue
 				
-			dblist.append(i)
+			if UpgradeDb.UPGRADES[i]["type"] == "endless":
+				endless_pool.append(i)
+			else:
+				standard_pool.append(i)
 
+	var has_free_slots = unique_weapons.size() < max_weapon_slots or unique_upgrades.size() < max_upgrade_slots
+	var dblist = []
+	
+	if standard_pool.size() > 0:
+		if has_free_slots:
+			# Deprioritize endless items: 10% chance to allow endless if free slots exist
+			if randf() < 0.10 and endless_pool.size() > 0:
+				dblist = standard_pool + endless_pool
+			else:
+				dblist = standard_pool
+		else:
+			# Slots are full, so we can see endless items normally
+			dblist = standard_pool + endless_pool
+	else:
+		# Only endless items left
+		dblist = endless_pool
 			
 	if dblist.size() > 0:
 		var randomitem = dblist.pick_random()
@@ -665,7 +688,9 @@ func get_random_item():
 
 
 func get_random_boss_item():
-	var dblist = []
+	var standard_pool = []
+	var endless_pool = []
+	
 	for i in UpgradeDb.UPGRADES:
 		if i in collected_upgrades:
 			if UpgradeDb.UPGRADES[i]["type"] != "endless":
@@ -684,9 +709,25 @@ func get_random_boss_item():
 				if not n in collected_upgrades:
 					to_add = false
 			if to_add:
-				dblist.append(i)
+				if UpgradeDb.UPGRADES[i]["type"] == "endless":
+					endless_pool.append(i)
+				else:
+					standard_pool.append(i)
 		else:
-			dblist.append(i)
+			if UpgradeDb.UPGRADES[i]["type"] == "endless":
+				endless_pool.append(i)
+			else:
+				standard_pool.append(i)
+				
+	var dblist = []
+	if standard_pool.size() > 0:
+		# Deprioritize endless items in boss pool as well
+		if randf() < 0.20 and endless_pool.size() > 0:
+			dblist = standard_pool + endless_pool
+		else:
+			dblist = standard_pool
+	else:
+		dblist = endless_pool
 			
 	if dblist.size() > 0:
 		var randomitem = dblist.pick_random()
@@ -778,7 +819,7 @@ func remove_upgrade(upgrade_id: String) -> void:
 
 	var type = upgrade_data["type"]
 	var boss_weapons_with_spawner = ["glasslash", "vampireknives"]
-	if type == "weapon" or (type == "bossitem" and boss_weapons_with_spawner.has(upgrade_id.rstrip("0123456789"))):
+	if type == "weapon" or (type == "bossitem" and boss_weapons_with_spawner.has(upgrade_id.rstrip("0123456789"))) or upgrade_id.begins_with("occult_medallion"):
 		var base_name = upgrade_id.rstrip("0123456789")
 		var weapon_spawner = weapons.get_node_or_null(base_name)
 		# Check if there is still a collected level for this weapon

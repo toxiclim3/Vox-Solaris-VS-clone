@@ -14,6 +14,19 @@ class SwarmEnemy:
 	var swarm_manager_ref = null
 	var separation: Vector2 = Vector2.ZERO
 	var anim_offset: float = 0.0
+	var active_debuffs: Dictionary = {}
+
+	func apply_debuff(debuff_name: String, value: float, duration: float):
+		active_debuffs[debuff_name] = {"value": value, "duration": duration}
+
+	func get_debuff_value(debuff_name: String) -> float:
+		if active_debuffs.has(debuff_name):
+			return active_debuffs[debuff_name]["value"]
+		return 0.0
+
+	func has_debuff(debuff_name: String) -> bool:
+		return active_debuffs.has(debuff_name)
+
 
 	func _on_hurt_box_hurt(dmg, angle, kb, source, attacker_node):
 		hp -= dmg
@@ -223,6 +236,16 @@ func _physics_process(delta):
 			i += 1
 			continue
 			
+		# Process debuffs
+		var keys_to_remove = []
+		for debuff_name in enemy.active_debuffs.keys():
+			var data = enemy.active_debuffs[debuff_name]
+			data["duration"] -= delta
+			if data["duration"] <= 0:
+				keys_to_remove.append(debuff_name)
+		for k in keys_to_remove:
+			enemy.active_debuffs.erase(k)
+			
 		# Check collisions with attacks
 		var hit_flag = false
 		for atk in attack_data:
@@ -238,7 +261,8 @@ func _physics_process(delta):
 					
 			if hit and not atk.hit_enemies.has(enemy): # Need proper ID or just ref tracking
 				# Apply damage
-				enemy.hp -= (atk.damage * GlobalEvents.get_player_damage_modifier())
+				var damage_multiplier = 1.0 + enemy.get_debuff_value("curse")
+				enemy.hp -= (atk.damage * damage_multiplier * GlobalEvents.get_player_damage_modifier())
 				
 				# Knockback
 				var angle = Vector2.ZERO
@@ -391,7 +415,11 @@ func _update_multimeshes():
 		var mm = multimeshes[idx].multimesh
 		
 		# Death flash effect using colors if use_colors=true is set
-		var color = Color(1,1,1,1) if not enemy.is_dead else Color(1,0,0,0.5)
+		var color = Color(1,1,1,1)
+		if enemy.is_dead:
+			color = Color(1,0,0,0.5)
+		elif enemy.has_debuff("curse"):
+			color = Color(0.8, 0.4, 1.0)
 		
 		var p_pos = player.global_position
 		var flip = -1.0 if enemy.position.x < p_pos.x else 1.0

@@ -7,7 +7,7 @@ signal disableSpawns
 signal boss_defeated
 signal boss_spawned(boss: EnemyBody)
 signal show_boss_warning(warning_text_key: String)
-signal queue_boss
+signal queue_boss(boss_path: String)
 signal camera_shake(intensity: float, duration: float)
 signal enemy_died(death_position: Vector2, enemy_max_hp: float, killer_source: String)
 signal player_took_damage(amount: float, attacker_node: Node)
