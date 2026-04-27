@@ -62,6 +62,8 @@ var reflected_damage: float = 0.0
 # Javelin level tracked for global updates to Javelins
 var javelin_level = 0
 var javelin_endless_level = 0
+var lightningrod_level = 0
+var lightningrod_endless_level = 0
 var willowisp_level = 0
 var willowisp_explosion_scene = preload("res://Player/Attack/willowisp/willowisp_explosion.tscn")
 var relic_drone_node = null

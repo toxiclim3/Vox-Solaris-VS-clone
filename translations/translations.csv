@@ -282,3 +282,8 @@
 "stat_damage","Damage","Урон","Шкода"
 "stat_armor_multiplier","Armor %","Броня %","Броня %"
 "stat_reflected_damage","Reflected Damage","Отражаемый урон","Відбита шкода"
+"item_lightningrod","Lightning Rod","Громопривод","Блискавкопривід"
+"ItemDesc_LightningRod1","Fires lightning at random enemies.","Стреляет молнией в случайных врагов.","Стріляє блискавкою у випадкових ворогів."
+"ItemDesc_LightningRod2","Increased damage and shorter cooldown.","Увеличенный урон и меньшая перезарядка.","Збільшена шкода та менша перезарядка."
+"ItemDesc_LightningRod3","Chains to 3 targets.","Молния перескакивает на 3 цели.","Блискавка перескакує на 3 цілі."
+"ItemDesc_LightningRod4","Increased damage, chains to 4 targets.","Больше урона, молния перескакивает на 4 цели.","Більше шкоди, блискавка перескакує на 4 цілі."

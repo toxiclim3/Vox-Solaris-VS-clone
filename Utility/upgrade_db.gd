@@ -404,6 +404,42 @@ const UPGRADES = {
 		"prerequisite": ["ritualcircle3"],
 		"type": "weapon"
 	},
+	"lightningrod1": 
+	{
+		"icon": WEAPON_PATH + "rod_6_new.png",
+		"displayname": "item_lightningrod",
+		"details": "ItemDesc_LightningRod1",
+		"level": "item_level1",
+		"prerequisite": [],
+		"type": "weapon"
+	},
+	"lightningrod2": 
+	{
+		"icon": WEAPON_PATH + "rod_6_new.png",
+		"displayname": "item_lightningrod",
+		"details": "ItemDesc_LightningRod2",
+		"level": "item_level2",
+		"prerequisite": ["lightningrod1"],
+		"type": "weapon"
+	},
+	"lightningrod3": 
+	{
+		"icon": WEAPON_PATH + "rod_6_new.png",
+		"displayname": "item_lightningrod",
+		"details": "ItemDesc_LightningRod3",
+		"level": "item_level3",
+		"prerequisite": ["lightningrod2"],
+		"type": "weapon"
+	},
+	"lightningrod4": 
+	{
+		"icon": WEAPON_PATH + "rod_6_new.png",
+		"displayname": "item_lightningrod",
+		"details": "ItemDesc_LightningRod4",
+		"level": "item_level4",
+		"prerequisite": ["lightningrod3"],
+		"type": "weapon"
+	},
 	"food": 
 	{
 		"icon": ICON_PATH + "chunk.png",
@@ -681,6 +717,16 @@ const UPGRADES = {
 		"details": "item_level_endless_details",
 		"level": "item_level_endless",
 		"prerequisite": ["ritualcircle4"],
+		"type": "endless",
+		"stat_modifiers": {"damage": 1}
+	},
+	"lightningrod_endless": 
+	{
+		"icon": WEAPON_PATH + "rod_6_new.png",
+		"displayname": "item_lightningrod",
+		"details": "item_level_endless_details",
+		"level": "item_level_endless",
+		"prerequisite": ["lightningrod4"],
 		"type": "endless",
 		"stat_modifiers": {"damage": 1}
 	},
