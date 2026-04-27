@@ -1,0 +1,32 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://Player/Attack/willowisp/willowisp_explosion.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://Textures/Effects/explosion_fx.png" id="2_tex"]
+[ext_resource type="AudioStream" path="res://Audio/SoundEffect/JarSouls.wav" id="3_snd"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_explosion"]
+radius = 32.0
+
+[node name="WillOWispExplosion" type="Area2D" groups=["attack"]]
+top_level = true
+collision_layer = 4
+collision_mask = 4
+script = ExtResource("1_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_tex")
+hframes = 11
+vframes = 9
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_explosion")
+
+[node name="AnimationTimer" type="Timer" parent="."]
+wait_time = 0.05
+
+[node name="snd_explosion" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_snd")
+volume_db = -10.0
+bus = &"SFX"
+
+[connection signal="timeout" from="AnimationTimer" to="." method="_on_animation_timer_timeout"]

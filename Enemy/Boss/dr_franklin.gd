@@ -28,7 +28,7 @@ func _ready() -> void:
 	ability_timer = ability_cooldown
 
 	# Override sprite texture with the placeholder (avoids UID in .tscn).
-	sprite.texture = load("res://Textures/PLACEHOLDER.png")
+	#sprite.texture = load("res://Textures/PLACEHOLDER.png")
 
 	# Store a direct reference to the HitBox collision shape so we can
 	# disable contact damage while the boss is standing still during an attack.

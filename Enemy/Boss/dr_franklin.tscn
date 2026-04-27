@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cfebwtfj16nuy" path="res://Enemy/Boss/dr_franklin.gd" id="1_drgd"]
 [ext_resource type="PackedScene" uid="uid://ndk3tlufsxr8" path="res://Enemy/Base/EnemyBase.tscn" id="2_base"]
+[ext_resource type="Texture2D" uid="uid://dimx8jn5gices" path="res://Textures/Enemy/Без имени-2.png" id="3_f1lvp"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_frank"]
 
@@ -22,7 +23,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_walk"]
 resource_name = "walk"
-length = 0.03333667
+length = 0.3
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -30,10 +31,10 @@ tracks/0/path = NodePath("EnemyBase/Sprite2D:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [0]
+"values": [0, 1]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_frank"]
@@ -57,7 +58,7 @@ isBoss = 1
 [node name="EnemyBase" parent="." unique_id=978387468 instance=ExtResource("2_base")]
 
 [node name="Sprite2D" parent="EnemyBase" index="1" unique_id=1348046775]
-hframes = 1
+texture = ExtResource("3_f1lvp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=515531834]
 shape = SubResource("CircleShape2D_frank")

@@ -488,7 +488,7 @@ const UPGRADES = {
 	},
 	"thornring1": 
 	{
-		"icon": "res://Textures/PLACEHOLDER.png",
+		"icon": ICON_PATH + "urand_octoring.png",
 		"displayname": "item_thornring",
 		"details": "ItemDesc_ThornRing1",
 		"level": "item_level1",
@@ -498,7 +498,7 @@ const UPGRADES = {
 	},
 	"thornring2": 
 	{
-		"icon": "res://Textures/PLACEHOLDER.png",
+		"icon": ICON_PATH + "urand_octoring.png",
 		"displayname": "item_thornring",
 		"details": "ItemDesc_ThornRing2",
 		"level": "item_level2",
@@ -508,7 +508,7 @@ const UPGRADES = {
 	},
 	"thornring3": 
 	{
-		"icon": "res://Textures/PLACEHOLDER.png",
+		"icon": ICON_PATH + "urand_octoring.png",
 		"displayname": "item_thornring",
 		"details": "ItemDesc_ThornRing3",
 		"level": "item_level3",
@@ -518,7 +518,7 @@ const UPGRADES = {
 	},
 	"thornring4": 
 	{
-		"icon": "res://Textures/PLACEHOLDER.png",
+		"icon": ICON_PATH + "urand_octoring.png",
 		"displayname": "item_thornring",
 		"details": "ItemDesc_ThornRing4",
 		"level": "item_level4",
@@ -528,7 +528,7 @@ const UPGRADES = {
 	},
 	"occult_medallion1": 
 	{
-		"icon": "res://Textures/PLACEHOLDER.png",
+		"icon": ICON_PATH + "urand_cekugob_old.png",
 		"displayname": "item_occult_medallion",
 		"details": "ItemDesc_OccultMedallion1",
 		"level": "item_level1",
@@ -537,7 +537,7 @@ const UPGRADES = {
 	},
 	"occult_medallion2": 
 	{
-		"icon": "res://Textures/PLACEHOLDER.png",
+		"icon": ICON_PATH + "urand_cekugob_old.png",
 		"displayname": "item_occult_medallion",
 		"details": "ItemDesc_OccultMedallion2",
 		"level": "item_level2",
@@ -546,7 +546,7 @@ const UPGRADES = {
 	},
 	"occult_medallion3": 
 	{
-		"icon": "res://Textures/PLACEHOLDER.png",
+		"icon": ICON_PATH + "urand_cekugob_old.png",
 		"displayname": "item_occult_medallion",
 		"details": "ItemDesc_OccultMedallion3",
 		"level": "item_level3",
@@ -555,11 +555,47 @@ const UPGRADES = {
 	},
 	"occult_medallion4": 
 	{
-		"icon": "res://Textures/PLACEHOLDER.png",
+		"icon": ICON_PATH + "urand_cekugob_old.png",
 		"displayname": "item_occult_medallion",
 		"details": "ItemDesc_OccultMedallion4",
 		"level": "item_level4",
 		"prerequisite": ["occult_medallion3"],
+		"type": "upgrade"
+	},
+	"willowisp1": 
+	{
+		"icon": ICON_PATH + "icon13.png",
+		"displayname": "item_willowisp",
+		"details": "ItemDesc_WillOWisp1",
+		"level": "item_level1",
+		"prerequisite": [],
+		"type": "upgrade"
+	},
+	"willowisp2": 
+	{
+		"icon": ICON_PATH + "icon13.png",
+		"displayname": "item_willowisp",
+		"details": "ItemDesc_WillOWisp2",
+		"level": "item_level2",
+		"prerequisite": ["willowisp1"],
+		"type": "upgrade"
+	},
+	"willowisp3": 
+	{
+		"icon": ICON_PATH + "icon13.png",
+		"displayname": "item_willowisp",
+		"details": "ItemDesc_WillOWisp3",
+		"level": "item_level3",
+		"prerequisite": ["willowisp2"],
+		"type": "upgrade"
+	},
+	"willowisp4": 
+	{
+		"icon": ICON_PATH + "icon13.png",
+		"displayname": "item_willowisp",
+		"details": "ItemDesc_WillOWisp4",
+		"level": "item_level4",
+		"prerequisite": ["willowisp3"],
 		"type": "upgrade"
 	},
 	"whip1": 
@@ -750,7 +786,7 @@ const UPGRADES = {
 	},
 	"thornring_endless": 
 	{
-		"icon": "res://Textures/PLACEHOLDER.png",
+		"icon": ICON_PATH + "urand_octoring.png",
 		"displayname": "item_thornring",
 		"details": "item_level_endless_details",
 		"level": "item_level_endless",
@@ -760,7 +796,7 @@ const UPGRADES = {
 	},
 	"occult_medallion_endless": 
 	{
-		"icon": "res://Textures/PLACEHOLDER.png",
+		"icon": ICON_PATH + "urand_cekugob_old.png",
 		"displayname": "item_occult_medallion",
 		"details": "item_level_endless_details",
 		"level": "item_level_endless",

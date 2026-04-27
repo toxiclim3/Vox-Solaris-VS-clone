@@ -379,6 +379,8 @@ func _handle_death(enemy: SwarmEnemy):
 			new_xp_orb.global_position = enemy.position
 			current_loot_base.call_deferred("add_child", new_xp_orb)
 		
+	GlobalEvents.enemy_died.emit(enemy.position, enemy.max_hp, "Swarm")
+		
 	# Death Animation (too many will lag, so we only spawn explicitly if we are below a threshold, or just rely on hit flashes)
 	if randf() <= explosion_chance: 
 		var d = death_anim.instantiate()

@@ -62,6 +62,8 @@ var reflected_damage: float = 0.0
 # Javelin level tracked for global updates to Javelins
 var javelin_level = 0
 var javelin_endless_level = 0
+var willowisp_level = 0
+var willowisp_explosion_scene = preload("res://Player/Attack/willowisp/willowisp_explosion.tscn")
 var relic_drone_node = null
 var joystick_vector := Vector2.ZERO
 
@@ -558,6 +560,9 @@ func upgrade_character(upgrade):
 			weapon_spawner.upgrade(upgrade)
 			
 	elif type == "upgrade" or type == "item" or type == "bossitem":
+		if upgrade.begins_with("willowisp"):
+			willowisp_level = int(upgrade.replace("willowisp", ""))
+		
 		if upgrade_data.has("stat_modifiers"):
 			if type == "item" and upgrade == "food":
 				hp += upgrade_data["stat_modifiers"]["hp"]
@@ -778,8 +783,29 @@ func _on_boss_defeated():
 	if not gui.levelPanel.visible and not gui.bossLevelPanel.visible:
 		_show_next_reward()
 
-func _on_enemy_died(_pos: Vector2, _enemy_max_hp: float, _killer: String):
-	pass
+func _on_enemy_died(pos: Vector2, enemy_max_hp: float, _killer: String):
+	if willowisp_level > 0:
+		var chance = 0.15
+		if willowisp_level >= 2:
+			chance = 0.20
+		
+		# Apply a low proc coefficient (0.1) for chain reactions
+		if _killer == "willowisp":
+			chance *= 0.1
+		
+		if randf() < chance:
+			var explosion = willowisp_explosion_scene.instantiate()
+			explosion.global_position = pos
+			
+			var dmg = 5.0
+			match willowisp_level:
+				1, 2: dmg = 5.0
+				3: dmg = 8.0
+				4: dmg = 10.0 + (enemy_max_hp * 0.05)
+			
+			explosion.damage = dmg * GlobalEvents.get_player_damage_modifier()
+			explosion.level = willowisp_level
+			get_parent().add_child(explosion)
 
 func _on_player_dealt_damage(damage: float, _target: Object, proc_coefficient: float):
 	if hp > 0 and lifesteal > 0.0:
