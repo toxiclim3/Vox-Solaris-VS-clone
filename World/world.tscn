@@ -541,6 +541,7 @@ text = "ui_close"
 [node name="DeathPanel" type="PanelContainer" parent="GUILayer/GUI" unique_id=266401415]
 unique_name_in_owner = true
 process_mode = 2
+visible = false
 custom_minimum_size = Vector2(200, 240)
 layout_mode = 1
 anchors_preset = 8
@@ -638,7 +639,6 @@ columns = 12
 
 [node name="PauseMenu" type="PanelContainer" parent="GUILayer/GUI" unique_id=1300825726]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(224, 224)
 layout_mode = 1
 anchors_preset = 8
