@@ -458,7 +458,7 @@ func _input(event: InputEvent) -> void:
 
 
 func toggle_menu():
-	if !levelup_menu.visible:
+	if !levelup_menu.visible or !deathPanel.visible:
 		if pause_menu:
 			is_menu_open = !is_menu_open
 			if is_menu_open:
@@ -467,6 +467,7 @@ func toggle_menu():
 				close_pause_menu()
 
 func open_pause_menu() -> void:
+	
 	if pause_tween:
 		pause_tween.kill()
 		

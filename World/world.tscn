@@ -144,6 +144,7 @@ anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 20.0
 grow_horizontal = 2
+mouse_filter = 2
 fill_mode = 6
 nine_patch_stretch = true
 texture_over = ExtResource("4_pbpj5")
@@ -195,6 +196,7 @@ anchor_right = 1.0
 offset_top = -40.0
 offset_bottom = -17.0
 grow_horizontal = 2
+mouse_filter = 2
 script = ExtResource("boss_ui_script")
 
 [node name="BossBarProgress" type="TextureProgressBar" parent="GUILayer/GUI/BossBarContainer" unique_id=2025092307]

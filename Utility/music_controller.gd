@@ -187,6 +187,10 @@ func _switchTo(newStream: AudioStream) -> void:
 	nextPlayer.play()
 
 func _crossfadeTo(newStream: AudioStream, immediate: bool = 1) -> void:
+	# Убиваем предыдущий Tween, если мы переключили трек слишком быстро
+	if fadeTween and fadeTween.is_valid():
+		await fadeTween.finished
+		
 	# Определяем, какой плеер сейчас свободен
 	var nextPlayer: AudioStreamPlayer = playerB if activePlayer == playerA else playerA
 	
@@ -194,9 +198,6 @@ func _crossfadeTo(newStream: AudioStream, immediate: bool = 1) -> void:
 	nextPlayer.volume_db = minVolumeDb
 	if immediate:
 		nextPlayer.play()
-	# Убиваем предыдущий Tween, если мы переключили трек слишком быстро
-	if fadeTween and fadeTween.is_valid():
-		fadeTween.kill()
 		
 	fadeTween = create_tween().set_parallel(true)
 	
@@ -218,7 +219,7 @@ func fadeOutToSilence() -> void:
 	isMusicMuted = true
 	
 	if fadeTween and fadeTween.is_valid():
-		fadeTween.kill()
+		await fadeTween.finished
 		
 	fadeTween = create_tween()
 	# Затухаем до minVolumeDb
@@ -231,7 +232,7 @@ func fadeInFromSilence() -> void:
 	isMusicMuted = false
 	
 	if fadeTween and fadeTween.is_valid():
-		fadeTween.kill()
+		await fadeTween.finished
 		
 	activePlayer.stream_paused = false
 	
@@ -251,7 +252,6 @@ func toggleMusic(shouldPlay: bool) -> void:
 func focusMusic(isFocused: bool) -> void:
 	if fadeTween and fadeTween.is_valid():
 		await fadeTween.finished
-		#fadeTween.kill()
 	
 	fadeTween = create_tween()
 	var targetVolume: float = maxVolumeDb if isFocused else backgroundVolumeDb
