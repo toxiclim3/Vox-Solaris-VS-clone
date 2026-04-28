@@ -17,6 +17,8 @@ signal settings_closed
 @onready var language_button = %LanguageButton
 @onready var mouse_control_button = %MouseControlButton
 @onready var screen_shake_button = %ScreenShakeButton
+@onready var joystick_size_button = %JoystickSizeButton
+@onready var joystick_size_label = %JoystickSizeLabel
 
 @onready var window_mode_button = %WindowModeButton
 @onready var vsync_button = %VsyncButton
@@ -86,6 +88,13 @@ func _ready() -> void:
 	screen_shake_button.button_pressed = SettingsManager.screen_shake
 	screen_shake_button.toggled.connect(_on_screen_shake_toggled)
 	
+	# Joystick Size
+	joystick_size_button.add_item("ui_size_small")
+	joystick_size_button.add_item("ui_size_medium")
+	joystick_size_button.add_item("ui_size_large")
+	joystick_size_button.select(SettingsManager.joystick_size)
+	joystick_size_button.item_selected.connect(_on_joystick_size_selected)
+	
 	# Display settings
 	window_mode_button.add_item("ui_window_windowed")
 	window_mode_button.add_item("ui_window_fullscreen")
@@ -138,6 +147,10 @@ func _ready() -> void:
 	%CloseSettingsButton.click_end.connect(_on_close_settings_button_pressed)
 	%btn_reset_stats.click_end.connect(_on_btn_reset_stats_click_end)
 	confirmation_dialog.confirmed.connect(_on_confirmation_dialog_confirmed)
+	
+	# Hide mobile-only settings on PC
+	if not OS.get_name() in ["Android", "iOS"]:
+		call_deferred("_hide_pc_irrelevant_settings")
 
 func _on_tab_pressed(tab: int) -> void:
 	current_tab_id = tab
@@ -166,7 +179,10 @@ func _update_focus_neighbors(tab: int) -> void:
 			items = [%VolSlider, %MusicSlider, %SFXSlider, %ProfileButton]
 		Tabs.GAMEPLAY:
 			first_item = %LanguageButton
-			items = [%LanguageButton, %MouseControlButton, %ScreenShakeButton, %btn_reset_stats]
+			items = [%LanguageButton, %MouseControlButton, %ScreenShakeButton]
+			if OS.get_name() in ["Android", "iOS"]:
+				items.append(%JoystickSizeButton)
+			items.append(%btn_reset_stats)
 		Tabs.DISPLAY:
 			first_item = %WindowModeButton
 			items = [%WindowModeButton, %VsyncButton, %MaxFpsButton]
@@ -203,6 +219,9 @@ func _on_mouse_control_toggled(toggled_on: bool) -> void:
 
 func _on_screen_shake_toggled(toggled_on: bool) -> void:
 	SettingsManager.set_screen_shake(toggled_on)
+
+func _on_joystick_size_selected(index: int) -> void:
+	SettingsManager.set_joystick_size(index)
 
 func _on_window_mode_selected(index: int) -> void:
 	SettingsManager.set_window_mode(index)
@@ -314,6 +333,8 @@ func _hide_mobile_irrelevant_settings() -> void:
 		if parent.has_node("MouseLabel"):
 			parent.get_node("MouseLabel").hide()
 		mouse_control_button.hide()
+	
+	
 		
 	# Hide Vsync (usually not togglable on mobile)
 	if is_instance_valid(vsync_button):
@@ -335,3 +356,9 @@ func _apply_mobile_settings_touch_targets() -> void:
 		controls.append_array(panel.find_children("", "CheckButton", true, false))
 		for ctrl in controls:
 			ctrl.custom_minimum_size.y = 32
+
+func _hide_pc_irrelevant_settings() -> void:
+	if is_instance_valid(joystick_size_button):
+		joystick_size_button.hide()
+	if is_instance_valid(joystick_size_label):
+		joystick_size_label.hide()

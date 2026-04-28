@@ -31,6 +31,19 @@ func _ready():
 	_apply_joystick_scale()
 	# Cache the mobile pause button for the dynamic exclusion zone
 	_pause_btn = get_parent().find_child("btn_pause_mobile", true, false)
+	
+	# Connect to settings changes
+	SettingsManager.joystick_settings_changed.connect(_on_joystick_settings_changed)
+	_apply_settings_size(SettingsManager.joystick_size)
+
+func _on_joystick_settings_changed(size: int) -> void:
+	_apply_settings_size(size)
+
+func _apply_settings_size(size: int) -> void:
+	match size:
+		0: joystick_scale = 0.6
+		1: joystick_scale = 0.8
+		2, _: joystick_scale = 1.0
 
 func _apply_joystick_scale() -> void:
 	# Guards: only run after children are available

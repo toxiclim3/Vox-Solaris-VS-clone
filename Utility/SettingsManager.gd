@@ -22,6 +22,7 @@ var is_audio_functional: bool = false
 var gui_scale: float = 1.0
 var camera_zoom: float = 1.0
 var unlimit_rtx: bool = false # Secret toggle for RTX FPS limit
+var joystick_size: int = 2 # 0: Small, 1: Medium, 2: Large
 
 # Modular Secret System
 var active_secrets: Dictionary = {
@@ -34,6 +35,7 @@ var active_secrets: Dictionary = {
 signal camera_zoom_changed(zoom: float)
 signal shadow_settings_changed(enabled: bool)
 signal raytracing_settings_changed(enabled: bool)
+signal joystick_settings_changed(size: int)
 
 const PROFILES = {
 	"Full": {
@@ -94,6 +96,7 @@ func loadSettings() -> void:
 	if config.has_section("controls"):
 		mouse_control = config.get_value("controls", "mouse_control", false)
 		screen_shake = config.get_value("controls", "screen_shake", true)
+		joystick_size = config.get_value("controls", "joystick_size", 2)
 	
 	if config.has_section("display"):
 		window_mode = config.get_value("display", "window_mode", 0)
@@ -189,6 +192,12 @@ func set_screen_shake(value: bool) -> void:
 	screen_shake = value
 	config.set_value("controls", "screen_shake", value)
 	config.save(SAVE_PATH)
+
+func set_joystick_size(value: int) -> void:
+	joystick_size = value
+	config.set_value("controls", "joystick_size", value)
+	config.save(SAVE_PATH)
+	joystick_settings_changed.emit(value)
 
 func set_window_mode(mode: int) -> void:
 	window_mode = mode

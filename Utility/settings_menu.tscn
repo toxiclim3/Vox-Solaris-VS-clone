@@ -221,6 +221,18 @@ unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("3_regtheme")
 
+[node name="JoystickSizeLabel" type="Label" parent="MainPanel/Margin/VBox/HBox/Content/GameplayContentPanel/GameplayContent/Grid" unique_id=83608300]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("3_regtheme")
+text = "ui_joystick_size"
+
+[node name="JoystickSizeButton" type="OptionButton" parent="MainPanel/Margin/VBox/HBox/Content/GameplayContentPanel/GameplayContent/Grid" unique_id=623758530]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_regtheme")
+
 [node name="Control" type="Control" parent="MainPanel/Margin/VBox/HBox/Content/GameplayContentPanel/GameplayContent" unique_id=1663033104]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
