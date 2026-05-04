@@ -545,7 +545,7 @@ func upgrade_character(upgrade):
 		var relic_lvl = int(upgrade.replace("relicdrone", ""))
 		relic_drone_node.level = relic_lvl
 		relic_drone_node.update_stats()
-	elif type == "weapon" or (type == "bossitem" and boss_weapons_with_spawner.has(upgrade.rstrip("0123456789"))) or upgrade.begins_with("occult_medallion"):
+	elif type == "weapon" or (type == "bossitem" and boss_weapons_with_spawner.has(upgrade.rstrip("0123456789"))) or (upgrade.begins_with("occult_medallion") and type != "endless"):
 		var base_name = upgrade.rstrip("0123456789")
 		var folder_name = base_name.to_lower()
 		var file_name = base_name.to_lower()
@@ -807,7 +807,7 @@ func _on_enemy_died(pos: Vector2, enemy_max_hp: float, _killer: String):
 			
 			explosion.damage = dmg * GlobalEvents.get_player_damage_modifier()
 			explosion.level = willowisp_level
-			get_parent().add_child(explosion)
+			get_parent().call_deferred("add_child", explosion)
 
 func _on_player_dealt_damage(damage: float, _target: Object, proc_coefficient: float):
 	if hp > 0 and lifesteal > 0.0:
@@ -847,7 +847,7 @@ func remove_upgrade(upgrade_id: String) -> void:
 
 	var type = upgrade_data["type"]
 	var boss_weapons_with_spawner = ["glasslash", "vampireknives"]
-	if type == "weapon" or (type == "bossitem" and boss_weapons_with_spawner.has(upgrade_id.rstrip("0123456789"))) or upgrade_id.begins_with("occult_medallion"):
+	if type == "weapon" or (type == "bossitem" and boss_weapons_with_spawner.has(upgrade_id.rstrip("0123456789"))) or (upgrade_id.begins_with("occult_medallion") and type != "endless"):
 		var base_name = upgrade_id.rstrip("0123456789")
 		var weapon_spawner = weapons.get_node_or_null(base_name)
 		# Check if there is still a collected level for this weapon

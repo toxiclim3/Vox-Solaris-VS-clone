@@ -66,8 +66,22 @@ const CHARACTERS: Dictionary = {
 		"displayname": "char_punished",
 		"icon": "res://Textures/Player/player_sprite.png",
 		"icon_color": Color(0.2, 0.2, 0.2), # Dark grey
-		"starting_weapon": "",
+		"starting_weapon": "whip1",
 		"details": "char_punished_desc",
+		"base_stats": {},
+		"scaling_stats": {},
+		"scaling_max_level": 20,
+		"shader_config": {"mix_hue": true, "mix_saturation": true}
+	}
+}
+
+const INACTIVE_CHARACTERS: Dictionary = {
+	"punished_backup": {
+		"displayname": "char_punished_backup",
+		"icon": "res://Textures/Player/player_sprite.png",
+		"icon_color": Color(0.2, 0.2, 0.2), # Dark grey
+		"starting_weapon": "",
+		"details": "char_punished_backup_desc",
 		"base_stats": {},
 		"scaling_stats": {},
 		"scaling_max_level": 20,
