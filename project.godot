@@ -14,10 +14,12 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 [application]
 
-config/name="SurvivorsClone"
+config/name="Inritus"
 config/version="1.0.0"
 run/main_scene="res://TitleScreen/menu.tscn"
 config/features=PackedStringArray("4.6", "Mobile")
+boot_splash/bg_color=Color(0.27467555, 0.04409372, 0.01973682, 1)
+boot_splash/image="uid://cd4l4f6upwsrf"
 config/icon="uid://cd4l4f6upwsrf"
 config/macos_native_icon="res://icon.icns"
 config/windows_native_icon="res://icon.ico"
