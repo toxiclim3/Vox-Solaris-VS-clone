@@ -2,7 +2,7 @@
 ## Diorama: Player in centre, 3 strong kobolds in a triangle.
 ## Ice Spear fires at each kobold in sequence; kobold flashes red then fades.
 ## After all 3 die, 2s pause, all reset and loop.
-## Viewport: 536x180, sprite scale 1.5x
+## Viewport: 640x360, sprite scale 1x
 extends Node2D
 
 const PLAYER_TEX  := "res://Textures/Player/player_sprite.png"
@@ -10,9 +10,8 @@ const KOBOLD_TEX  := "res://Textures/Enemy/kolbold_strong.png"
 const SPEAR_TEX   := "res://Textures/Items/Weapons/ice_spear.png"
 const SHADOW_TEX  := "res://Textures/GUI/blob_shadow.png"
 
-const SCALE       := Vector2(1.5, 1.5)
-const CENTER      := Vector2(268, 90)   # centre of 536x180
-const RADIUS      := 110.0
+const CENTER      := Vector2(320, 180)   # centre of 640x360
+const RADIUS      := 120.0
 const RESET_DELAY := 2.0
 
 var _bg: Node
@@ -28,7 +27,7 @@ func _ready() -> void:
 
 func _build_scene() -> void:
 	_bg = preload("res://World/background.tscn").instantiate()
-	_bg.pixel_scale = 2.0
+	_bg.pixel_scale = 1.0
 	add_child(_bg)
 
 	var p_shadow = _make_shadow(CENTER)
@@ -38,12 +37,10 @@ func _build_scene() -> void:
 	_player.texture = load(PLAYER_TEX)
 	_player.hframes = 2
 	_player.frame   = 0
-	_player.scale   = SCALE
 	_player.position = CENTER
 	add_child(_player)
 
 	var kobold_tex = load(KOBOLD_TEX)
-	var shadow_tex = load(SHADOW_TEX)
 	for i in 3:
 		var angle := (-PI / 2.0) + (TAU / 3.0) * i
 		var pos = CENTER + Vector2(cos(angle), sin(angle)) * RADIUS
@@ -56,7 +53,6 @@ func _build_scene() -> void:
 		kob.texture  = kobold_tex
 		kob.hframes  = 2
 		kob.frame    = 0
-		kob.scale    = SCALE
 		kob.position = pos
 		kob.flip_h   = cos(angle) > 0
 		add_child(kob)
@@ -65,8 +61,7 @@ func _build_scene() -> void:
 func _make_shadow(pos: Vector2) -> Sprite2D:
 	var s = Sprite2D.new()
 	s.texture  = load(SHADOW_TEX)
-	s.scale    = SCALE
-	s.position = pos + Vector2(0, 8 * SCALE.y)
+	s.position = pos + Vector2(0, 8)
 	return s
 
 func _process(delta: float) -> void:
@@ -92,7 +87,6 @@ func _attack_loop() -> void:
 		for i in _kobolds.size():
 			_kobolds[i].visible      = true
 			_kobolds[i].modulate     = Color.WHITE
-			_kobolds[i].scale        = SCALE
 			_kob_shadows[i].visible  = true
 			_kob_shadows[i].modulate = Color.WHITE
 
@@ -112,7 +106,7 @@ func _fire_spear(kob_idx: int) -> void:
 
 	var spear := Sprite2D.new()
 	spear.texture  = load(SPEAR_TEX)
-	spear.scale    = SCALE * 0.8
+	spear.scale    = Vector2(0.8, 0.8)
 	spear.position = start_pos
 	spear.rotation = start_pos.angle_to_point(end_pos) + deg_to_rad(135)
 	add_child(spear)

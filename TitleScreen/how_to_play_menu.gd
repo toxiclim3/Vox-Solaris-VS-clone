@@ -58,6 +58,7 @@ const SLIDES: Array[Dictionary] = [
 
 # ── Node refs ─────────────────────────────────────────────────────────────────
 @onready var _viewport:        SubViewport   = %SlideViewport
+@onready var _display:         TextureRect   = %SlideDisplay
 @onready var _lbl_title:       Label         = %LabelSlideTitle
 @onready var _lbl_desc:        Label         = %LabelSlideDesc
 @onready var _btn_prev:        Button        = %BtnPrev
@@ -73,6 +74,7 @@ var _style_on:  StyleBoxFlat
 var _style_off: StyleBoxFlat
 
 func _ready() -> void:
+	_display.texture = _viewport.get_texture()
 	_build_dot_styles()
 	_build_dots()
 	_load_slide(0)

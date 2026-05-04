@@ -1,14 +1,13 @@
 ## slide_characters.gd
 ## Diorama: Player recolored through mage/plague_doctor/occultist with the
 ## recolor shader. Character name label cycles. Starting weapon icon shown right.
-## Viewport: 536x180, sprite scale 1.5x
+## Viewport: 640x360, sprite scale 1x
 extends Node2D
 
 const PLAYER_TEX  := "res://Textures/Player/player_sprite.png"
 const SHADOW_TEX  := "res://Textures/GUI/blob_shadow.png"
 const RECOLOR_SH  := "res://Utility/recolor.gdshader"
 const DWELL_TIME  := 1.8
-const SCALE       := Vector2(1.5, 1.5)
 
 const CHARS: Array[Dictionary] = [
 	{
@@ -49,14 +48,14 @@ func _ready() -> void:
 
 func _build_scene() -> void:
 	_bg = preload("res://World/background.tscn").instantiate()
-	_bg.pixel_scale = 2.0
+	_bg.pixel_scale = 1.0
 	add_child(_bg)
 
 	# Shadow
 	_shadow = Sprite2D.new()
 	_shadow.texture  = load(SHADOW_TEX)
-	_shadow.scale    = SCALE * 1.5
-	_shadow.position = Vector2(160, 90) + Vector2(0, 12 * SCALE.y)
+	_shadow.scale    = Vector2(1.5, 1.5)
+	_shadow.position = Vector2(220, 180) + Vector2(0, 14)
 	add_child(_shadow)
 
 	# Player sprite with recolor shader
@@ -71,8 +70,8 @@ func _build_scene() -> void:
 	_player.texture  = load(PLAYER_TEX)
 	_player.hframes  = 2
 	_player.frame    = 0
-	_player.scale    = SCALE * 1.5
-	_player.position = Vector2(160, 90)
+	_player.scale    = Vector2(1.5, 1.5)
+	_player.position = Vector2(220, 180)
 	_player.material = _player_mat
 	add_child(_player)
 
@@ -81,15 +80,15 @@ func _build_scene() -> void:
 	_char_lbl.text = CHARS[0]["name"]
 	_char_lbl.add_theme_font_size_override("font_size", 11)
 	_char_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_char_lbl.size     = Vector2(130, 20)
-	_char_lbl.position = Vector2(95, 140)
+	_char_lbl.size     = Vector2(160, 20)
+	_char_lbl.position = Vector2(140, 260)
 	add_child(_char_lbl)
 
 	# Divider in center
 	var div := ColorRect.new()
 	div.color    = Color(1, 1, 1, 0.10)
-	div.size     = Vector2(1, 150)
-	div.position = Vector2(268, 15)
+	div.size     = Vector2(1, 300)
+	div.position = Vector2(360, 30)
 	add_child(div)
 
 	# "Starting weapon:" header
@@ -97,8 +96,8 @@ func _build_scene() -> void:
 	header.text = "Starting weapon:"
 	header.add_theme_font_size_override("font_size", 7)
 	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	header.size     = Vector2(130, 14)
-	header.position = Vector2(340, 35)
+	header.size     = Vector2(200, 14)
+	header.position = Vector2(400, 70)
 	header.modulate = Color(0.75, 0.75, 0.75)
 	add_child(header)
 
@@ -108,7 +107,7 @@ func _build_scene() -> void:
 	_weapon_icon.stretch_mode           = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_weapon_icon.custom_minimum_size    = Vector2(56, 56)
 	_weapon_icon.size                   = Vector2(56, 56)
-	_weapon_icon.position               = Vector2(377, 48)
+	_weapon_icon.position               = Vector2(472, 110)
 	_weapon_icon.texture                = load(CHARS[0]["weapon_tex"])
 	_weapon_icon.texture_filter         = CanvasItem.TEXTURE_FILTER_NEAREST
 	add_child(_weapon_icon)
@@ -117,8 +116,8 @@ func _build_scene() -> void:
 	_weapon_lbl.text = CHARS[0]["weapon_name"]
 	_weapon_lbl.add_theme_font_size_override("font_size", 9)
 	_weapon_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_weapon_lbl.size     = Vector2(130, 20)
-	_weapon_lbl.position = Vector2(340, 120)
+	_weapon_lbl.size     = Vector2(200, 20)
+	_weapon_lbl.position = Vector2(400, 200)
 	add_child(_weapon_lbl)
 
 func _process(delta: float) -> void:

@@ -2,25 +2,23 @@
 ## Player orbits in a wide circle. 5 kobolds trail ~90° behind.
 ## Ice spear fires outward and kobolds die one by one.
 ## Gems fly to player. Each dead kobold respawns at the tail. Seamless loop.
+## Viewport: 640x360, sprite scale 1x
 extends Node2D
 
-const BG_COLOR   := Color(0.08, 0.06, 0.12)
 const PLAYER_TEX := "res://Textures/Player/player_sprite.png"
 const KOBOLD_TEX := "res://Textures/Enemy/kolbold_weak.png"
 const SPEAR_TEX  := "res://Textures/Items/Weapons/ice_spear.png"
-const GEM_TEX    := "res://Textures/Items/XPOrb.png"
-const SCALE      := Vector2(2, 2)
+const GEM_TEX    := "res://Textures/Items/Gems/Gem_green.png"
 
-const CENTER     := Vector2(160, 92)
-const ORBT_RAD   := 68.0
+const CENTER     := Vector2(320, 180)
+const ORBT_RAD   := 120.0
 const ORBT_SPD   := 0.9      # radians/s
 const NUM_KOBS   := 5
 const LAG_ANGLE  := PI / 2.0  # how far behind kobolds trail
 
+var _bg:       Node
 var _player:   Sprite2D
 var _kobolds:  Array[Sprite2D] = []
-# Each kobold has its own angle offset along the orbit circle
-# kobold[i] angle = player_angle - LAG_ANGLE - i*(LAG_ANGLE/NUM_KOBS)
 var _looping:  bool  = false
 var _player_angle: float = 0.0
 var _kill_timer: float   = 0.0
@@ -30,16 +28,14 @@ func _ready() -> void:
 	_build_scene()
 
 func _build_scene() -> void:
-	var bg := ColorRect.new()
-	bg.color = BG_COLOR
-	bg.size  = Vector2(320, 180)
-	add_child(bg)
+	_bg = preload("res://World/background.tscn").instantiate()
+	_bg.pixel_scale = 1.0
+	add_child(_bg)
 
 	_player = Sprite2D.new()
 	_player.texture = load(PLAYER_TEX)
 	_player.hframes = 2
 	_player.frame   = 0
-	_player.scale   = SCALE
 	add_child(_player)
 
 	var kob_tex = load(KOBOLD_TEX)
@@ -48,7 +44,7 @@ func _build_scene() -> void:
 		kob.texture = kob_tex
 		kob.hframes = 2
 		kob.frame   = 0
-		kob.scale   = SCALE * 0.85
+		kob.scale   = Vector2(0.85, 0.85)
 		add_child(kob)
 		_kobolds.append(kob)
 
@@ -108,7 +104,7 @@ func _do_kill(idx: int) -> void:
 	# Spear flies outward past the kobold
 	var spear := Sprite2D.new()
 	spear.texture  = load(SPEAR_TEX)
-	spear.scale    = SCALE * 0.7
+	spear.scale    = Vector2(0.7, 0.7)
 	spear.position = _player.position
 	spear.rotation = _player.position.angle_to_point(kob_pos)
 	add_child(spear)
@@ -120,7 +116,6 @@ func _do_kill(idx: int) -> void:
 	# Gem flies to player
 	var gem := Sprite2D.new()
 	gem.texture  = load(GEM_TEX)
-	gem.scale    = Vector2(1.0, 1.0)
 	gem.position = kob_pos
 	add_child(gem)
 	var gem_tw := create_tween()

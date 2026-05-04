@@ -1,7 +1,7 @@
 ## slide_xp.gd
 ## Diorama: Projectile hits a kobold, kobold fades, XP gem curves to player,
 ## XP bar fills. 2s pause then reset.
-## Viewport: 536x180, sprite scale 1.5x
+## Viewport: 640x360, sprite scale 1x
 extends Node2D
 
 const PLAYER_TEX := "res://Textures/Player/player_sprite.png"
@@ -10,9 +10,8 @@ const GEM_TEX    := "res://Textures/Items/Gems/Gem_green.png"
 const SPEAR_TEX  := "res://Textures/Items/Weapons/ice_spear.png"
 const SHADOW_TEX := "res://Textures/GUI/blob_shadow.png"
 
-const SCALE      := Vector2(1.5, 1.5)
-const PLAYER_POS := Vector2(370, 90)
-const KOBOLD_POS := Vector2(160, 90)
+const PLAYER_POS := Vector2(430, 180)
+const KOBOLD_POS := Vector2(210, 180)
 
 var _bg:       Node
 var _player:   Sprite2D
@@ -29,34 +28,30 @@ func _ready() -> void:
 
 func _build_scene() -> void:
 	_bg = preload("res://World/background.tscn").instantiate()
-	_bg.pixel_scale = 2.0
+	_bg.pixel_scale = 1.0
 	add_child(_bg)
 
 	_k_shadow = Sprite2D.new()
 	_k_shadow.texture = load(SHADOW_TEX)
-	_k_shadow.scale = SCALE
-	_k_shadow.position = KOBOLD_POS + Vector2(0, 8 * SCALE.y)
+	_k_shadow.position = KOBOLD_POS + Vector2(0, 8)
 	add_child(_k_shadow)
 
 	_kobold = Sprite2D.new()
 	_kobold.texture = load(KOBOLD_TEX)
 	_kobold.hframes = 2
 	_kobold.frame   = 0
-	_kobold.scale   = SCALE
 	_kobold.position = KOBOLD_POS
 	add_child(_kobold)
 
 	var p_shadow = Sprite2D.new()
 	p_shadow.texture = load(SHADOW_TEX)
-	p_shadow.scale = SCALE
-	p_shadow.position = PLAYER_POS + Vector2(0, 8 * SCALE.y)
+	p_shadow.position = PLAYER_POS + Vector2(0, 8)
 	add_child(p_shadow)
 
 	_player = Sprite2D.new()
 	_player.texture = load(PLAYER_TEX)
 	_player.hframes = 2
 	_player.frame   = 0
-	_player.scale   = SCALE
 	_player.position = PLAYER_POS
 	_player.flip_h  = false # Faces left towards kobold
 	add_child(_player)
@@ -64,18 +59,17 @@ func _build_scene() -> void:
 	# Gem
 	_gem = Sprite2D.new()
 	_gem.texture  = load(GEM_TEX)
-	_gem.scale    = Vector2(1.2, 1.2)
 	_gem.position = KOBOLD_POS
 	_gem.visible  = false
 	add_child(_gem)
 
-	# True XP bar at bottom
+	# XP bar at bottom
 	_xp_bar = TextureProgressBar.new()
 	_xp_bar.min_value = 0
 	_xp_bar.max_value = 100
 	_xp_bar.value     = 30
-	_xp_bar.size      = Vector2(536, 14)
-	_xp_bar.position  = Vector2(0, 166)
+	_xp_bar.size      = Vector2(640, 14)
+	_xp_bar.position  = Vector2(0, 346)
 	_xp_bar.texture_under = load("res://Textures/GUI/exp_background.png")
 	_xp_bar.texture_progress = load("res://Textures/GUI/exp_progress_alt2.png")
 	_xp_bar.nine_patch_stretch = true
@@ -106,7 +100,7 @@ func _xp_loop() -> void:
 		# Ice Spear Attack
 		var spear := Sprite2D.new()
 		spear.texture  = load(SPEAR_TEX)
-		spear.scale    = SCALE * 0.8
+		spear.scale    = Vector2(0.8, 0.8)
 		spear.position = PLAYER_POS
 		spear.rotation = PLAYER_POS.angle_to_point(KOBOLD_POS) + deg_to_rad(135)
 		add_child(spear)

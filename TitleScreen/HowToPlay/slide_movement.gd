@@ -1,7 +1,7 @@
 ## slide_movement.gd
 ## Diorama: Left panel shows WASD + arrow keys + joystick lighting up in sync
 ## with the player sprite walking a rectangular path on the right.
-## Viewport: 536x180, sprite scale 1.5x
+## Viewport: 640x360, sprite scale 1x
 extends Node2D
 
 const PLAYER_TEX  := "res://Textures/Player/player_sprite.png"
@@ -9,14 +9,13 @@ const SHADOW_TEX  := "res://Textures/GUI/blob_shadow.png"
 const PROMPTS_DIR := "res://Textures/GUI/Prompts/"
 
 const WALK_SPEED  := 70.0   # px/s
-const SCALE       := Vector2(1.5, 1.5)
 
-# Walk path corners in 536x180 space (right 60% of screen)
+# Walk path corners in 640x360 space (right 60% of screen)
 const WAYPOINTS: Array[Vector2] = [
-	Vector2(280, 40),
-	Vector2(500, 40),
-	Vector2(500, 140),
-	Vector2(280, 140),
+	Vector2(330, 80),
+	Vector2(590, 80),
+	Vector2(590, 280),
+	Vector2(330, 280),
 ]
 
 var _bg: Node
@@ -36,33 +35,31 @@ func _ready() -> void:
 
 func _build_scene() -> void:
 	_bg = preload("res://World/background.tscn").instantiate()
-	_bg.pixel_scale = 2.0
+	_bg.pixel_scale = 1.0
 	add_child(_bg)
 
 	_build_key_panel()
 
 	_player_shadow = Sprite2D.new()
 	_player_shadow.texture = load(SHADOW_TEX)
-	_player_shadow.scale = SCALE
 	add_child(_player_shadow)
 
 	_player = Sprite2D.new()
 	_player.texture = load(PLAYER_TEX)
 	_player.hframes = 2
 	_player.frame   = 0
-	_player.scale   = SCALE
 	add_child(_player)
 
 	_update_player_position(WAYPOINTS[0])
 
 func _update_player_position(pos: Vector2) -> void:
 	_player.position = pos
-	_player_shadow.position = pos + Vector2(0, 8 * SCALE.y)
+	_player_shadow.position = pos + Vector2(0, 8)
 
 func _build_key_panel() -> void:
-	# Centre of key cluster in 536x180 space
-	var cx := 110.0
-	var gy := 18.0
+	# Centre of key cluster in left area
+	var cx := 130.0
+	var gy := 70.0
 
 	# WASD cluster
 	var wasd_positions: Array[Vector2] = [
@@ -74,7 +71,7 @@ func _build_key_panel() -> void:
 	var wasd_prefixes: Array[String] = ["w", "a", "s", "d"]
 
 	# Arrow cluster below
-	var arrow_base_y := gy + 58.0
+	var arrow_base_y := gy + 70.0
 	var arrow_positions: Array[Vector2] = [
 		Vector2(cx,        arrow_base_y),
 		Vector2(cx - 20,   arrow_base_y + 20),
@@ -99,14 +96,14 @@ func _build_key_panel() -> void:
 	_stick_node = TextureRect.new()
 	_stick_node.texture = load(PROMPTS_DIR + "lstick.png")
 	_stick_node.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	_stick_node.position = Vector2(cx - 11, arrow_base_y + 44) - Vector2(8, 8)
+	_stick_node.position = Vector2(cx - 11, arrow_base_y + 50) - Vector2(8, 8)
 	add_child(_stick_node)
 
 	# Divider
 	var divider := ColorRect.new()
 	divider.color = Color(1, 1, 1, 0.10)
-	divider.size = Vector2(1, 160)
-	divider.position = Vector2(210, 10)
+	divider.size = Vector2(1, 300)
+	divider.position = Vector2(260, 30)
 	add_child(divider)
 
 func _process(delta: float) -> void:

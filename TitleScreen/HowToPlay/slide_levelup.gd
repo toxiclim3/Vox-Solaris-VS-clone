@@ -1,6 +1,7 @@
 ## slide_levelup.gd
 ## Same as XP but XP bar overflows, flashes, then 3 item cards pop up.
 ## After 2s the cards shrink back and loop.
+## Viewport: 640x360, sprite scale 1x
 extends Node2D
 
 const PLAYER_TEX := "res://Textures/Player/player_sprite.png"
@@ -8,9 +9,8 @@ const KOBOLD_TEX := "res://Textures/Enemy/kolbold_weak.png"
 const GEM_TEX    := "res://Textures/Items/Gems/Gem_green.png"
 const SPEAR_TEX  := "res://Textures/Items/Weapons/ice_spear.png"
 const SHADOW_TEX := "res://Textures/GUI/blob_shadow.png"
-const SCALE      := Vector2(1.5, 1.5)
-const PLAYER_POS := Vector2(370, 80)
-const KOBOLD_POS := Vector2(160, 80)
+const PLAYER_POS := Vector2(430, 170)
+const KOBOLD_POS := Vector2(210, 170)
 
 # Three item cards using real icon paths
 const CARD_DATA: Array = [
@@ -36,40 +36,35 @@ func _ready() -> void:
 
 func _build_scene() -> void:
 	_bg = preload("res://World/background.tscn").instantiate()
-	_bg.pixel_scale = 2.0
+	_bg.pixel_scale = 1.0
 	add_child(_bg)
 
 	_k_shadow = Sprite2D.new()
 	_k_shadow.texture  = load(SHADOW_TEX)
-	_k_shadow.scale    = SCALE
-	_k_shadow.position = KOBOLD_POS + Vector2(0, 8 * SCALE.y)
+	_k_shadow.position = KOBOLD_POS + Vector2(0, 8)
 	add_child(_k_shadow)
 
 	_kobold = Sprite2D.new()
 	_kobold.texture  = load(KOBOLD_TEX)
 	_kobold.hframes  = 2
 	_kobold.frame    = 0
-	_kobold.scale    = SCALE
 	_kobold.position = KOBOLD_POS
 	add_child(_kobold)
 
 	var p_shadow = Sprite2D.new()
 	p_shadow.texture  = load(SHADOW_TEX)
-	p_shadow.scale    = SCALE
-	p_shadow.position = PLAYER_POS + Vector2(0, 8 * SCALE.y)
+	p_shadow.position = PLAYER_POS + Vector2(0, 8)
 	add_child(p_shadow)
 
 	_player = Sprite2D.new()
 	_player.texture  = load(PLAYER_TEX)
 	_player.hframes  = 2
 	_player.frame    = 0
-	_player.scale    = SCALE
 	_player.position = PLAYER_POS
 	add_child(_player)
 
 	_gem = Sprite2D.new()
 	_gem.texture  = load(GEM_TEX)
-	_gem.scale    = Vector2(1.2, 1.2)
 	_gem.position = KOBOLD_POS
 	_gem.visible  = false
 	add_child(_gem)
@@ -78,8 +73,8 @@ func _build_scene() -> void:
 	_xp_bar.min_value          = 0
 	_xp_bar.max_value          = 100
 	_xp_bar.value              = 75
-	_xp_bar.size               = Vector2(536, 14)
-	_xp_bar.position           = Vector2(0, 166)
+	_xp_bar.size               = Vector2(640, 14)
+	_xp_bar.position           = Vector2(0, 346)
 	_xp_bar.texture_under      = load("res://Textures/GUI/exp_background.png")
 	_xp_bar.texture_progress   = load("res://Textures/GUI/exp_progress_alt2.png")
 	_xp_bar.nine_patch_stretch = true
@@ -87,11 +82,11 @@ func _build_scene() -> void:
 
 	# Item Cards (hidden initially)
 	var total_w := CARD_DATA.size() * CARD_WIDTH + (CARD_DATA.size() - 1) * 6.0
-	var start_x := (536.0 - total_w) / 2.0
+	var start_x := (640.0 - total_w) / 2.0
 
 	for i in CARD_DATA.size():
 		var card = _make_card(CARD_DATA[i][0], CARD_DATA[i][1])
-		card.position     = Vector2(start_x + i * (CARD_WIDTH + 6), 90)
+		card.position     = Vector2(start_x + i * (CARD_WIDTH + 6), 150)
 		card.pivot_offset = Vector2(CARD_WIDTH / 2.0, CARD_HEIGHT / 2.0)
 		card.scale        = Vector2.ZERO
 		card.visible      = false
@@ -153,7 +148,7 @@ func _levelup_loop() -> void:
 
 		var spear := Sprite2D.new()
 		spear.texture  = load(SPEAR_TEX)
-		spear.scale    = SCALE * 0.8
+		spear.scale    = Vector2(0.8, 0.8)
 		spear.position = PLAYER_POS
 		spear.rotation = PLAYER_POS.angle_to_point(KOBOLD_POS) + deg_to_rad(135)
 		add_child(spear)

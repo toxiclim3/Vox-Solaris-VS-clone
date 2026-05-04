@@ -10,12 +10,12 @@ func _ready() -> void:
 func _build_scene() -> void:
 	var bg := ColorRect.new()
 	bg.color = BG_COLOR
-	bg.size  = Vector2(320, 180)
+	bg.size  = Vector2(640, 360)
 	add_child(bg)
 
 	# Shimmer particles behind the text
 	var particles := GPUParticles2D.new()
-	particles.position = Vector2(160, 100)
+	particles.position = Vector2(320, 180)
 	particles.amount   = 28
 	particles.lifetime = 2.5
 	particles.speed_scale = 0.6
@@ -24,7 +24,7 @@ func _build_scene() -> void:
 
 	var mat := ParticleProcessMaterial.new()
 	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
-	mat.emission_box_extents = Vector3(100, 30, 0)
+	mat.emission_box_extents = Vector3(200, 60, 0)
 	mat.particle_flag_disable_z = true
 	mat.direction              = Vector3(0, -1, 0)
 	mat.spread                 = 18.0
@@ -49,7 +49,7 @@ func _build_scene() -> void:
 	lbl.text = "Pro Tips"
 	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl.vertical_alignment   = VERTICAL_ALIGNMENT_CENTER
-	lbl.size     = Vector2(320, 180)
+	lbl.size     = Vector2(640, 360)
 	lbl.position = Vector2.ZERO
 	lbl.add_theme_font_size_override("font_size", 32)
 	lbl.add_theme_color_override("font_color", Color(0.9, 0.7, 1.0))
@@ -67,8 +67,8 @@ func _build_scene() -> void:
 	var sub := Label.new()
 	sub.text = "Advanced tactics for the brave"
 	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	sub.size     = Vector2(320, 20)
-	sub.position = Vector2(0, 115)
+	sub.size     = Vector2(640, 20)
+	sub.position = Vector2(0, 220)
 	sub.add_theme_font_size_override("font_size", 9)
 	sub.modulate = Color(0.75, 0.60, 0.90)
 	add_child(sub)
