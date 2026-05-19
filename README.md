@@ -7,6 +7,8 @@ At [Audio/Music](Audio/Music), there are empty folders for you to add your own m
 Boss and Normal automatically use what's in the folder
 Extra needs manual assignment in [Utility/music_controller.gd](Utility/music_controller.gd)
 
+Also: Some assets (Sprites and audio) are not CC0, and therefore should be replaced as soon as possible. Until then, Credits to respective owners
+
 Notable people for this project, who are not members of the team:  
 [Branno's VS in Godot tutorial](https://youtube.com/playlist?list=PLtosjGHWDab682nfZ1f6JSQ1cjap7Ieeb)  
-Everyone who developed Vampire survivors, Brotato, Warframe, Risk of rain, Terraria, Minecraft, Minecraft mods like Immersive engineering  
+Everyone who developed Vampire survivors, Brotato, Warframe, Risk of rain, Terraria, Minecraft, Minecraft mods like Immersive engineering and Occultism
