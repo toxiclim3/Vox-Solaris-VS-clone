@@ -17,7 +17,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 config/name="Inritus"
 config/version="1.0.4"
 run/main_scene="res://TitleScreen/menu.tscn"
-config/features=PackedStringArray("4.6", "Mobile")
+config/features=PackedStringArray("4.7", "Mobile")
 boot_splash/bg_color=Color(0.27467555, 0.04409372, 0.01973682, 1)
 config/icon="uid://cd4l4f6upwsrf"
 config/macos_native_icon="res://icon.icns"
@@ -35,7 +35,6 @@ StatsManager="*res://Utility/StatsManager.gd"
 
 window/size/viewport_width=640
 window/size/viewport_height=360
-window/size/mode=3
 window/size/window_width_override=1280
 window/size/window_height_override=720
 window/stretch/mode="canvas_items"
@@ -154,6 +153,10 @@ locale/translations=PackedStringArray("res://translations/translations.en.transl
 2d_physics/layer_2="Player"
 2d_physics/layer_3="Enemy"
 2d_physics/layer_4="Loot"
+
+[physics]
+
+common/max_physics_steps_per_frame=2
 
 [rendering]
 

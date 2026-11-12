@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://dfxw7xjk1r111" path="res://TitleScreen/play_menu.tscn" id="8_play"]
 [ext_resource type="Script" uid="uid://b31pd6wlfiij0" path="res://TitleScreen/menu_background.gd" id="9_bgscript"]
 [ext_resource type="PackedScene" path="res://TitleScreen/how_to_play_menu.tscn" id="9_htp"]
+[ext_resource type="Texture2D" uid="uid://bq25l3xf3kwrc" path="res://Textures/Items/Upgrades/thick_new.png" id="10_4odsf"]
 [ext_resource type="Texture2D" uid="uid://bscpnrlitm2k4" path="res://Textures/Titlescreen/menu_bg_sky.png" id="10_sky"]
 [ext_resource type="Texture2D" uid="uid://2iavhd581dor" path="res://Textures/Titlescreen/menu_bg_city.png" id="11_city"]
 [ext_resource type="Texture2D" uid="uid://dpx4618wam88q" path="res://Textures/Titlescreen/menu_bg_terrain.png" id="12_terrain"]
@@ -173,7 +174,7 @@ vertical_alignment = 1
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=1705476647]
 stream = ExtResource("4_cxswi")
-volume_db = -20.0
+volume_db = -11.0
 autoplay = true
 bus = &"Music"
 parameters/looping = true
@@ -194,37 +195,45 @@ grow_vertical = 0
 theme_override_constants/margin_bottom = 32
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1196240797]
-custom_minimum_size = Vector2(128, 0)
+custom_minimum_size = Vector2(160, 0)
 layout_mode = 2
 theme_override_constants/separation = 8
 
 [node name="btn_play" parent="MarginContainer/VBoxContainer" unique_id=1214550896 instance=ExtResource("3_kwsdd")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 text = "ui_play"
 
 [node name="btn_how_to_play" parent="MarginContainer/VBoxContainer" unique_id=964057103 instance=ExtResource("3_kwsdd")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 text = "ui_howToPlay"
 
 [node name="btn_settings" parent="MarginContainer/VBoxContainer" unique_id=1384267404 instance=ExtResource("3_kwsdd")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 text = "ui_settings"
 
-[node name="btn_stats" parent="MarginContainer/VBoxContainer" unique_id=1584267404 instance=ExtResource("3_kwsdd")]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 24)
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1063482294]
 layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="btn_stats" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1584267404 instance=ExtResource("3_kwsdd")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
 text = "ui_stats"
+
+[node name="btn_itemGallery" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=567022357 instance=ExtResource("3_kwsdd")]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+text = ""
+icon = ExtResource("10_4odsf")
+icon_alignment = 1
+expand_icon = true
 
 [node name="btn_exit" parent="MarginContainer/VBoxContainer" unique_id=487451911 instance=ExtResource("3_kwsdd")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 text = "ui_exit"
 
@@ -271,7 +280,7 @@ vertical_alignment = 2
 [connection signal="click_end" from="MarginContainer/VBoxContainer/btn_play" to="." method="_on_btn_play_click_end"]
 [connection signal="click_end" from="MarginContainer/VBoxContainer/btn_how_to_play" to="." method="_on_btn_how_to_play_click_end"]
 [connection signal="click_end" from="MarginContainer/VBoxContainer/btn_settings" to="." method="_on_btn_settings_click_end"]
-[connection signal="click_end" from="MarginContainer/VBoxContainer/btn_stats" to="." method="_on_btn_stats_click_end"]
+[connection signal="click_end" from="MarginContainer/VBoxContainer/HBoxContainer/btn_stats" to="." method="_on_btn_stats_click_end"]
 [connection signal="click_end" from="MarginContainer/VBoxContainer/btn_exit" to="." method="_on_btn_exit_click_end"]
 [connection signal="settings_closed" from="CanvasLayer/SettingsMenu" to="." method="_on_settings_menu_settings_closed"]
 [connection signal="stats_closed" from="CanvasLayer/StatsMenu" to="." method="_on_stats_menu_stats_closed"]

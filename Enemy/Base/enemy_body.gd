@@ -146,7 +146,7 @@ func death(killer_source: String = ""):
 	new_gem.experience = experience
 	loot_base.call_deferred("add_child",new_gem)
 	
-	if randf() < 0.01:
+	if GlobalEvents.roll_magnet_drop():
 		var new_xp_orb = xp_orb.instantiate()
 		new_xp_orb.global_position = global_position
 		loot_base.call_deferred("add_child",new_xp_orb)
@@ -161,12 +161,21 @@ func death(killer_source: String = ""):
 
 func _on_hurt_box_hurt(damage, angle, knockback_amount, killer_source: String = "", attacker_node = null, proc_coefficient = 1.0):
 	var damage_multiplier = 1.0 + get_debuff_value("curse")
-	hp -= (damage * damage_multiplier * GlobalEvents.get_player_damage_modifier())
-	knockback = angle * knockback_amount
+	var p_dmg_mod = GlobalEvents.get_player_damage_modifier()
+	if player != null and player.has_method("get_damage_modifier"):
+		p_dmg_mod *= player.get_damage_modifier()
+	hp -= (damage * damage_multiplier * p_dmg_mod)
+	if not isBoss and not is_in_group("boss"):
+		var kb_dir = angle
+		if kb_dir == Vector2.ZERO and attacker_node != null and attacker_node is Node2D:
+			kb_dir = attacker_node.global_position.direction_to(global_position)
+		knockback = kb_dir * knockback_amount
+	else:
+		knockback = Vector2.ZERO
 	
 	GlobalEvents.player_dealt_damage.emit(damage, self, proc_coefficient)
 	
 	if hp <= 0:
 		death(killer_source)
-	else:
+	elif snd_hit != null:
 		snd_hit.play()

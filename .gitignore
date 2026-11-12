@@ -61,3 +61,7 @@ Audio/SoundEffect/*.wav
 Audio/SoundEffect/*.import
 
 .geminirules
+.vscode/settings.json
+
+*.tmp
+[Dd]esktop.ini

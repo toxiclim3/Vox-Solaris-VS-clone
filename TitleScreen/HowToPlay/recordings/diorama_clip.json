@@ -1,0 +1,2070 @@
+{
+	"duration": 1.0,
+	"fps": 20.0,
+	"frame_count": 21,
+	"frames": [
+		[
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					196.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					2.0,
+					2.0
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					2.0,
+					2.0
+				],
+				"texture": "res://Textures/Enemy/giant_amoeba_new.png",
+				"vframes": 1,
+				"z_index": 0
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					188.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 2,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/Player/player_sprite.png",
+				"vframes": 1,
+				"z_index": 0
+			}
+		],
+		[
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					196.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.86,
+					1.86
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.86,
+					1.86
+				],
+				"texture": "res://Textures/Enemy/giant_amoeba_new.png",
+				"vframes": 1,
+				"z_index": 0
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					188.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 2,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/Player/player_sprite.png",
+				"vframes": 1,
+				"z_index": 0
+			}
+		],
+		[
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					196.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.71,
+					1.71
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.71,
+					1.71
+				],
+				"texture": "res://Textures/Enemy/giant_amoeba_new.png",
+				"vframes": 1,
+				"z_index": 0
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					188.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 2,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/Player/player_sprite.png",
+				"vframes": 1,
+				"z_index": 0
+			}
+		],
+		[
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					196.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.57,
+					1.57
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.57,
+					1.57
+				],
+				"texture": "res://Textures/Enemy/giant_amoeba_new.png",
+				"vframes": 1,
+				"z_index": 0
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					188.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 2,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/Player/player_sprite.png",
+				"vframes": 1,
+				"z_index": 0
+			}
+		],
+		[
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					196.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.43,
+					1.43
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.43,
+					1.43
+				],
+				"texture": "res://Textures/Enemy/giant_amoeba_new.png",
+				"vframes": 1,
+				"z_index": 0
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					188.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 2,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/Player/player_sprite.png",
+				"vframes": 1,
+				"z_index": 0
+			}
+		],
+		[
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					196.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.29,
+					1.29
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.29,
+					1.29
+				],
+				"texture": "res://Textures/Enemy/giant_amoeba_new.png",
+				"vframes": 1,
+				"z_index": 0
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					188.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 2,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/Player/player_sprite.png",
+				"vframes": 1,
+				"z_index": 0
+			}
+		],
+		[
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					196.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.14,
+					1.14
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.14,
+					1.14
+				],
+				"texture": "res://Textures/Enemy/giant_amoeba_new.png",
+				"vframes": 1,
+				"z_index": 0
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					188.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 2,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/Player/player_sprite.png",
+				"vframes": 1,
+				"z_index": 0
+			}
+		],
+		[
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					196.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/Enemy/giant_amoeba_new.png",
+				"vframes": 1,
+				"z_index": 0
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					188.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 2,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/Player/player_sprite.png",
+				"vframes": 1,
+				"z_index": 0
+			}
+		],
+		[
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					196.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					0.86,
+					0.86
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					0.86,
+					0.86
+				],
+				"texture": "res://Textures/Enemy/giant_amoeba_new.png",
+				"vframes": 1,
+				"z_index": 0
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					188.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 2,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/Player/player_sprite.png",
+				"vframes": 1,
+				"z_index": 0
+			}
+		],
+		[
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					196.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					0.71,
+					0.71
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					0.71,
+					0.71
+				],
+				"texture": "res://Textures/Enemy/giant_amoeba_new.png",
+				"vframes": 1,
+				"z_index": 0
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					188.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 2,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/Player/player_sprite.png",
+				"vframes": 1,
+				"z_index": 0
+			}
+		],
+		[
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					196.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					0.57,
+					0.57
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					0.57,
+					0.57
+				],
+				"texture": "res://Textures/Enemy/giant_amoeba_new.png",
+				"vframes": 1,
+				"z_index": 0
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					188.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 2,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/Player/player_sprite.png",
+				"vframes": 1,
+				"z_index": 0
+			}
+		],
+		[
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					196.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					0.43,
+					0.43
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					0.43,
+					0.43
+				],
+				"texture": "res://Textures/Enemy/giant_amoeba_new.png",
+				"vframes": 1,
+				"z_index": 0
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					188.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 2,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/Player/player_sprite.png",
+				"vframes": 1,
+				"z_index": 0
+			}
+		],
+		[
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					196.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					0.29,
+					0.29
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					0.29,
+					0.29
+				],
+				"texture": "res://Textures/Enemy/giant_amoeba_new.png",
+				"vframes": 1,
+				"z_index": 0
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					188.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 2,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/Player/player_sprite.png",
+				"vframes": 1,
+				"z_index": 0
+			}
+		],
+		[
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					196.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					0.14,
+					0.14
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					300.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					0.14,
+					0.14
+				],
+				"texture": "res://Textures/Enemy/giant_amoeba_new.png",
+				"vframes": 1,
+				"z_index": 0
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					188.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 2,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/Player/player_sprite.png",
+				"vframes": 1,
+				"z_index": 0
+			}
+		],
+		[
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					188.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 2,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/Player/player_sprite.png",
+				"vframes": 1,
+				"z_index": 0
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					0.2,
+					0.2,
+					0.8
+				],
+				"pos": [
+					350.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.67,
+					1.67
+				],
+				"texture": "res://Textures/Effects/telegraph_ring.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					0.15,
+					0.15,
+					0.3
+				],
+				"pos": [
+					350.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					0.01,
+					0.01
+				],
+				"texture": "res://Textures/Effects/telegraph_fill.png",
+				"vframes": 1,
+				"z_index": -2
+			}
+		],
+		[
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					188.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 2,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/Player/player_sprite.png",
+				"vframes": 1,
+				"z_index": 0
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					0.2,
+					0.2,
+					0.57
+				],
+				"pos": [
+					350.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.67,
+					1.67
+				],
+				"texture": "res://Textures/Effects/telegraph_ring.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					0.16,
+					0.15,
+					0.26
+				],
+				"pos": [
+					350.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					0.04,
+					0.04
+				],
+				"texture": "res://Textures/Effects/telegraph_fill.png",
+				"vframes": 1,
+				"z_index": -2
+			}
+		],
+		[
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					188.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 2,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/Player/player_sprite.png",
+				"vframes": 1,
+				"z_index": 0
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					0.2,
+					0.2,
+					0.79
+				],
+				"pos": [
+					350.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.67,
+					1.67
+				],
+				"texture": "res://Textures/Effects/telegraph_ring.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					0.16,
+					0.15,
+					0.27
+				],
+				"pos": [
+					350.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					0.08,
+					0.08
+				],
+				"texture": "res://Textures/Effects/telegraph_fill.png",
+				"vframes": 1,
+				"z_index": -2
+			}
+		],
+		[
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					188.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 2,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/Player/player_sprite.png",
+				"vframes": 1,
+				"z_index": 0
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					0.2,
+					0.2,
+					0.94
+				],
+				"pos": [
+					350.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.67,
+					1.67
+				],
+				"texture": "res://Textures/Effects/telegraph_ring.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					0.17,
+					0.15,
+					0.28
+				],
+				"pos": [
+					350.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					0.13,
+					0.13
+				],
+				"texture": "res://Textures/Effects/telegraph_fill.png",
+				"vframes": 1,
+				"z_index": -2
+			}
+		],
+		[
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					188.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 2,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/Player/player_sprite.png",
+				"vframes": 1,
+				"z_index": 0
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					0.2,
+					0.2,
+					0.91
+				],
+				"pos": [
+					350.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.67,
+					1.67
+				],
+				"texture": "res://Textures/Effects/telegraph_ring.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					0.17,
+					0.15,
+					0.28
+				],
+				"pos": [
+					350.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					0.17,
+					0.17
+				],
+				"texture": "res://Textures/Effects/telegraph_fill.png",
+				"vframes": 1,
+				"z_index": -2
+			}
+		],
+		[
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					188.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 2,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/Player/player_sprite.png",
+				"vframes": 1,
+				"z_index": 0
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					0.2,
+					0.2,
+					0.72
+				],
+				"pos": [
+					350.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.67,
+					1.67
+				],
+				"texture": "res://Textures/Effects/telegraph_ring.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					0.18,
+					0.15,
+					0.29
+				],
+				"pos": [
+					350.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					0.21,
+					0.21
+				],
+				"texture": "res://Textures/Effects/telegraph_fill.png",
+				"vframes": 1,
+				"z_index": -2
+			}
+		],
+		[
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					188.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/GUI/blob_shadow.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 2,
+				"modulate": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"pos": [
+					320.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.0,
+					1.0
+				],
+				"texture": "res://Textures/Player/player_sprite.png",
+				"vframes": 1,
+				"z_index": 0
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					0.2,
+					0.2,
+					0.52
+				],
+				"pos": [
+					350.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					1.67,
+					1.67
+				],
+				"texture": "res://Textures/Effects/telegraph_ring.png",
+				"vframes": 1,
+				"z_index": -1
+			},
+			{
+				"flip_h": false,
+				"flip_v": false,
+				"frame": 0,
+				"hframes": 1,
+				"modulate": [
+					1.0,
+					0.19,
+					0.15,
+					0.3
+				],
+				"pos": [
+					350.0,
+					180.0
+				],
+				"rotation": 0.0,
+				"scale": [
+					0.25,
+					0.25
+				],
+				"texture": "res://Textures/Effects/telegraph_fill.png",
+				"vframes": 1,
+				"z_index": -2
+			}
+		]
+	],
+	"stage_size": [
+		640,
+		360
+	],
+	"version": 1
+}

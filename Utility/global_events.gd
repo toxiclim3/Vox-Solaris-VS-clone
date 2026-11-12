@@ -75,20 +75,6 @@ const CHARACTERS: Dictionary = {
 	}
 }
 
-const INACTIVE_CHARACTERS: Dictionary = {
-	"punished_backup": {
-		"displayname": "char_punished_backup",
-		"icon": "res://Textures/Player/player_sprite.png",
-		"icon_color": Color(0.2, 0.2, 0.2), # Dark grey
-		"starting_weapon": "",
-		"details": "char_punished_backup_desc",
-		"base_stats": {},
-		"scaling_stats": {},
-		"scaling_max_level": 20,
-		"shader_config": {"mix_hue": true, "mix_saturation": true}
-	}
-}
-
 var selected_character: String = "mage"
 
 enum Difficulty { EASY, NORMAL, HARD, CUSTOM }
@@ -182,3 +168,14 @@ func restart_run() -> void:
 	get_tree().change_scene_to_file("res://World/world.tscn")
 	MusicController.fadeInFromSilence()
 	
+
+
+# XP magnet orb: drop chance scales with loot on the ground, up to MAGNET_MAX_CHANCE
+const MAGNET_MAX_CHANCE := 0.01
+const MAGNET_FULL_CHANCE_GEMS := 200
+
+## Roll once per dropped gem. Returns true if a magnet orb should drop too.
+func roll_magnet_drop() -> bool:
+	var gems_on_ground := get_tree().get_node_count_in_group("loot")
+	var chance := MAGNET_MAX_CHANCE * clampf(float(gems_on_ground) / MAGNET_FULL_CHANCE_GEMS, 0.0, 1.0)
+	return randf() < chance

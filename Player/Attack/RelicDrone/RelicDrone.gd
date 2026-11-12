@@ -60,7 +60,12 @@ func spawn_rocket(damage_to_deal, target):
 	rocket.target_node = target
 	
 	# Add to world/level root so it's independent of the drone/player
-	get_tree().root.add_child(rocket)
+	if is_instance_valid(player) and player.get_parent() != null:
+		player.get_parent().add_child(rocket)
+	elif is_inside_tree() and get_tree().current_scene != null:
+		get_tree().current_scene.add_child(rocket)
+	else:
+		get_tree().root.add_child(rocket)
 
 func update_stats():
 	# Sync stats from Level

@@ -9,6 +9,7 @@ var attack_size = 1.0
 var current_chain = 0
 var current_pos = Vector2.ZERO
 var hit_positions = []
+var hit_once_array = []
 var active = true
 
 @onready var player = get_tree().get_first_node_in_group("player")

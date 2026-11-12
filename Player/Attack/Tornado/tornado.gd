@@ -27,31 +27,32 @@ func _ready():
 	pulse_timer.timeout.connect(_on_pulse)
 	add_child(pulse_timer)
 	
+	var p_spell_size = player.spell_size if player else 0.0
 	match level:
 		1:
 			hp = 9999
 			speed = 150.0
 			damage = 5
 			knockback_amount = 100
-			attack_size = 1.0 * (1 + player.spell_size)
+			attack_size = 1.0 * (1 + p_spell_size)
 		2:
 			hp = 9999
 			speed = 150.0
 			damage = 5
 			knockback_amount = 100
-			attack_size = 1.0 * (1 + player.spell_size)
+			attack_size = 1.0 * (1 + p_spell_size)
 		3:
 			hp = 9999
 			speed = 150.0
 			damage = 5
 			knockback_amount = 100
-			attack_size = 1.0 * (1 + player.spell_size)
+			attack_size = 1.0 * (1 + p_spell_size)
 		4:
 			hp = 9999
 			speed = 150.0
 			damage = 5
 			knockback_amount = 125
-			attack_size = 1.0 * (1 + player.spell_size)
+			attack_size = 1.0 * (1 + p_spell_size)
 			
 	# Apply Endless Scaling (approx 5% per level)
 	attack_size += endless_level * 0.05
@@ -98,6 +99,7 @@ func _physics_process(delta):
 
 func _on_pulse():
 	hit_once_array.clear()
+	remove_from_array.emit(self)
 
 func _on_timer_timeout():
 	emit_signal("remove_from_array",self)

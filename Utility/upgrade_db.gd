@@ -866,5 +866,123 @@ const UPGRADES = {
 		"level": "item_level2",
 		"prerequisite": ["relicdrone1"],
 		"type": "bossitem"
+	},
+	"glasstalisman1": 
+	{
+		"icon": ICON_PATH + "icon25.png",
+		"displayname": "item_glasstalisman",
+		"details": "ItemDesc_GlassTalisman1",
+		"level": "item_level1",
+		"prerequisite": [],
+		"type": "upgrade"
+	},
+	"glasstalisman2": 
+	{
+		"icon": ICON_PATH + "icon25.png",
+		"displayname": "item_glasstalisman",
+		"details": "ItemDesc_GlassTalisman2",
+		"level": "item_level2",
+		"prerequisite": ["glasstalisman1"],
+		"type": "upgrade"
+	},
+	"glasstalisman3": 
+	{
+		"icon": ICON_PATH + "icon25.png",
+		"displayname": "item_glasstalisman",
+		"details": "ItemDesc_GlassTalisman3",
+		"level": "item_level3",
+		"prerequisite": ["glasstalisman2"],
+		"type": "upgrade"
+	},
+	"glasstalisman4": 
+	{
+		"icon": ICON_PATH + "icon25.png",
+		"displayname": "item_glasstalisman",
+		"details": "ItemDesc_GlassTalisman4",
+		"level": "item_level4",
+		"prerequisite": ["glasstalisman3"],
+		"type": "upgrade"
+	},
+	"glasstalisman_endless": 
+	{
+		"icon": ICON_PATH + "icon25.png",
+		"displayname": "item_glasstalisman",
+		"details": "item_level_endless_details",
+		"level": "item_level_endless",
+		"prerequisite": ["glasstalisman4"],
+		"type": "endless",
+		"stat_modifiers": {"damage": 0.02}
+	},
+	"wardingbrooch1": 
+	{
+		"icon": ICON_PATH + "icon26.png",
+		"displayname": "item_wardingbrooch",
+		"details": "ItemDesc_WardingBrooch1",
+		"level": "item_level1",
+		"prerequisite": [],
+		"type": "upgrade"
+	},
+	"wardingbrooch2": 
+	{
+		"icon": ICON_PATH + "icon26.png",
+		"displayname": "item_wardingbrooch",
+		"details": "ItemDesc_WardingBrooch2",
+		"level": "item_level2",
+		"prerequisite": ["wardingbrooch1"],
+		"type": "upgrade"
+	},
+	"frenzycharm1": 
+	{
+		"icon": ICON_PATH + "scroll_old.png",
+		"displayname": "item_frenzycharm",
+		"details": "ItemDesc_FrenzyCharm1",
+		"level": "item_level1",
+		"prerequisite": [],
+		"type": "upgrade"
+	},
+	"frenzycharm2": 
+	{
+		"icon": ICON_PATH + "scroll_old.png",
+		"displayname": "item_frenzycharm",
+		"details": "ItemDesc_FrenzyCharm2",
+		"level": "item_level2",
+		"prerequisite": ["frenzycharm1"],
+		"type": "upgrade"
+	},
+	"frenzycharm3": 
+	{
+		"icon": ICON_PATH + "scroll_old.png",
+		"displayname": "item_frenzycharm",
+		"details": "ItemDesc_FrenzyCharm3",
+		"level": "item_level3",
+		"prerequisite": ["frenzycharm2"],
+		"type": "upgrade"
+	},
+	"impactbuckler1": 
+	{
+		"icon": ICON_PATH + "helmet_1.png",
+		"displayname": "item_impactbuckler",
+		"details": "ItemDesc_ImpactBuckler1",
+		"level": "item_level1",
+		"prerequisite": [],
+		"type": "upgrade"
+	},
+	"impactbuckler2": 
+	{
+		"icon": ICON_PATH + "helmet_1.png",
+		"displayname": "item_impactbuckler",
+		"details": "ItemDesc_ImpactBuckler2",
+		"level": "item_level2",
+		"prerequisite": ["impactbuckler1"],
+		"type": "upgrade"
+	},
+	"impactbuckler3": 
+	{
+		"icon": ICON_PATH + "helmet_1.png",
+		"displayname": "item_impactbuckler",
+		"details": "ItemDesc_ImpactBuckler3",
+		"level": "item_level3",
+		"prerequisite": ["impactbuckler2"],
+		"type": "upgrade"
 	}
 }

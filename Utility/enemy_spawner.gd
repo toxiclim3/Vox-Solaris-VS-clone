@@ -103,7 +103,7 @@ func _on_timer_timeout():
 		elif fps <= 30:
 			soft_limit = max(soft_limit - 5, min_soft_limit)
 
-		var current_enemies = get_tree().get_nodes_in_group("enemy").size()
+		var _current_enemies = get_tree().get_nodes_in_group("enemy").size()
 		
 		# Boss Spawns 1 minute Warning
 		if boss_spawn_interval > 60 and (GlobalEvents.time + 60) % boss_spawn_interval == 0 and GlobalEvents.time > 0:

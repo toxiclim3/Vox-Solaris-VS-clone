@@ -1,0 +1,388 @@
+[gd_scene format=3 uid="uid://diorama_studio_scene"]
+
+[ext_resource type="Script" path="res://TitleScreen/HowToPlay/diorama_studio.gd" id="1_studio"]
+[ext_resource type="PackedScene" uid="uid://diorama_player_scene" path="res://TitleScreen/HowToPlay/diorama_player.tscn" id="2_player"]
+[ext_resource type="Texture2D" uid="uid://doa3scrwgj2oq" path="res://Textures/Player/player_sprite.png" id="3_player_tex"]
+[ext_resource type="Texture2D" uid="uid://drewk5ll6a167" path="res://Textures/GUI/blob_shadow.png" id="4_shadow_tex"]
+[ext_resource type="Theme" uid="uid://ds5mdedn440wb" path="res://Themes/NinePatchUI.tres" id="5_theme"]
+
+[node name="DioramaStudio" type="Node2D"]
+script = ExtResource("1_studio")
+
+[node name="Stage" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="StageBounds" type="ReferenceRect" parent="Stage"]
+offset_right = 640.0
+offset_bottom = 360.0
+border_color = Color(1, 1, 1, 0.25)
+border_width = 1.0
+editor_only = false
+
+[node name="Actors" type="Node2D" parent="Stage"]
+unique_name_in_owner = true
+
+[node name="Drops" type="Node2D" parent="Stage/Actors"]
+unique_name_in_owner = true
+
+[node name="Enemies" type="Node2D" parent="Stage/Actors"]
+unique_name_in_owner = true
+
+[node name="PlayerDummy" type="Node2D" parent="Stage/Actors"]
+unique_name_in_owner = true
+position = Vector2(320, 180)
+
+[node name="PlayerShadow" type="Sprite2D" parent="Stage/Actors/PlayerDummy"]
+unique_name_in_owner = true
+z_index = -1
+position = Vector2(0, 8)
+texture = ExtResource("4_shadow_tex")
+
+[node name="PlayerSprite" type="Sprite2D" parent="Stage/Actors/PlayerDummy"]
+unique_name_in_owner = true
+texture = ExtResource("3_player_tex")
+hframes = 2
+
+[node name="Projectiles" type="Node2D" parent="Stage/Actors"]
+unique_name_in_owner = true
+
+[node name="PreviewContainer" type="Node2D" parent="Stage"]
+unique_name_in_owner = true
+visible = false
+
+[node name="PreviewPlayer" parent="Stage/PreviewContainer" instance=ExtResource("2_player")]
+unique_name_in_owner = true
+show_background = false
+
+[node name="UI" type="CanvasLayer" parent="."]
+unique_name_in_owner = true
+layer = 100
+
+[node name="TopBar" type="PanelContainer" parent="UI"]
+offset_right = 640.0
+offset_bottom = 32.0
+theme = ExtResource("5_theme")
+
+[node name="HBox" type="HBoxContainer" parent="UI/TopBar"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="BtnToolsToggle" type="Button" parent="UI/TopBar/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Tools [Tab]"
+
+[node name="LabelTitle" type="Label" parent="UI/TopBar/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
+text = "STUDIO"
+
+[node name="VSep1" type="VSeparator" parent="UI/TopBar/HBox"]
+layout_mode = 2
+
+[node name="BtnRecord" type="Button" parent="UI/TopBar/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 0.3, 0.3, 1)
+text = "● REC [Space]"
+
+[node name="BtnStop" type="Button" parent="UI/TopBar/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+disabled = true
+text = "■ STOP"
+
+[node name="BtnPreview" type="Button" parent="UI/TopBar/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "▶ PREVIEW [P]"
+
+[node name="DurationOption" type="OptionButton" parent="UI/TopBar/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+
+[node name="ClipNameEdit" type="LineEdit" parent="UI/TopBar/HBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+text = "diorama_clip"
+placeholder_text = "clip_name"
+
+[node name="VSep2" type="VSeparator" parent="UI/TopBar/HBox"]
+layout_mode = 2
+
+[node name="StatusLabel" type="Label" parent="UI/TopBar/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+text = "Ready."
+text_overrun_behavior = 3
+
+[node name="SidePanel" type="PanelContainer" parent="UI"]
+unique_name_in_owner = true
+offset_left = 6.0
+offset_top = 36.0
+offset_right = 176.0
+offset_bottom = 354.0
+theme = ExtResource("5_theme")
+
+[node name="Scroll" type="ScrollContainer" parent="UI/SidePanel"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="VBox" type="VBoxContainer" parent="UI/SidePanel/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="CheckSpawnOnCursor" type="CheckBox" parent="UI/SidePanel/Scroll/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Cursor Spawn [C]"
+
+[node name="LblSpawn" type="Label" parent="UI/SidePanel/Scroll/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.4, 1)
+text = "SPAWN DUMMY"
+
+[node name="SpawnGrid" type="GridContainer" parent="UI/SidePanel/Scroll/VBox"]
+layout_mode = 2
+columns = 2
+
+[node name="BtnKoboldW" type="Button" parent="UI/SidePanel/Scroll/VBox/SpawnGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Kobold W [1]"
+
+[node name="BtnKoboldS" type="Button" parent="UI/SidePanel/Scroll/VBox/SpawnGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Kobold S [2]"
+
+[node name="BtnCyclops" type="Button" parent="UI/SidePanel/Scroll/VBox/SpawnGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Cyclops [3]"
+
+[node name="BtnJuggernaut" type="Button" parent="UI/SidePanel/Scroll/VBox/SpawnGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Juggernaut [4]"
+
+[node name="BtnAmoeba" type="Button" parent="UI/SidePanel/Scroll/VBox/SpawnGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Amoeba [9]"
+
+[node name="HSep1" type="HSeparator" parent="UI/SidePanel/Scroll/VBox"]
+layout_mode = 2
+
+[node name="LblAttacks" type="Label" parent="UI/SidePanel/Scroll/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.4, 1)
+text = "ATTACKS"
+
+[node name="AttacksGrid" type="GridContainer" parent="UI/SidePanel/Scroll/VBox"]
+layout_mode = 2
+columns = 2
+
+[node name="BtnSpear" type="Button" parent="UI/SidePanel/Scroll/VBox/AttacksGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Spear [Q]"
+
+[node name="BtnJavelin" type="Button" parent="UI/SidePanel/Scroll/VBox/AttacksGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Javelin [E]"
+
+[node name="BtnWhip" type="Button" parent="UI/SidePanel/Scroll/VBox/AttacksGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Whip [F]"
+
+[node name="BtnLightning" type="Button" parent="UI/SidePanel/Scroll/VBox/AttacksGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Bolt [T]"
+
+[node name="BtnTornado" type="Button" parent="UI/SidePanel/Scroll/VBox/AttacksGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Tornado [R]"
+
+[node name="BtnAmoebaAttack" type="Button" parent="UI/SidePanel/Scroll/VBox/AttacksGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Telegraph [G]"
+
+[node name="HSep2" type="HSeparator" parent="UI/SidePanel/Scroll/VBox"]
+layout_mode = 2
+
+[node name="LblDrops" type="Label" parent="UI/SidePanel/Scroll/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.4, 1)
+text = "DROPS"
+
+[node name="DropsGrid" type="GridContainer" parent="UI/SidePanel/Scroll/VBox"]
+layout_mode = 2
+columns = 2
+
+[node name="BtnGemGreen" type="Button" parent="UI/SidePanel/Scroll/VBox/DropsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Gem G [5]"
+
+[node name="BtnGemBlue" type="Button" parent="UI/SidePanel/Scroll/VBox/DropsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Gem B [6]"
+
+[node name="BtnGemRed" type="Button" parent="UI/SidePanel/Scroll/VBox/DropsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Gem R [7]"
+
+[node name="BtnMagnet" type="Button" parent="UI/SidePanel/Scroll/VBox/DropsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Magnet [8]"
+
+[node name="HSep3" type="HSeparator" parent="UI/SidePanel/Scroll/VBox"]
+layout_mode = 2
+
+[node name="LblActions" type="Label" parent="UI/SidePanel/Scroll/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.4, 1)
+text = "ACTIONS"
+
+[node name="BtnAiMode" type="Button" parent="UI/SidePanel/Scroll/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "AI: Chase [B]"
+
+[node name="ActionsGrid" type="GridContainer" parent="UI/SidePanel/Scroll/VBox"]
+layout_mode = 2
+columns = 2
+
+[node name="BtnHurt" type="Button" parent="UI/SidePanel/Scroll/VBox/ActionsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Hurt [H]"
+
+[node name="BtnKill" type="Button" parent="UI/SidePanel/Scroll/VBox/ActionsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Kill [K]"
+
+[node name="BtnClear" type="Button" parent="UI/SidePanel/Scroll/VBox/ActionsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Clear [X]"
+
+[node name="BtnResetPlayer" type="Button" parent="UI/SidePanel/Scroll/VBox/ActionsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Center [Z]"
+
+[node name="HSep4" type="HSeparator" parent="UI/SidePanel/Scroll/VBox"]
+layout_mode = 2
+
+[node name="LblClips" type="Label" parent="UI/SidePanel/Scroll/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.4, 1)
+text = "SAVED CLIPS"
+
+[node name="RecordingsOption" type="OptionButton" parent="UI/SidePanel/Scroll/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+
+[node name="BtnLoadClip" type="Button" parent="UI/SidePanel/Scroll/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Load & Preview"
+
+[node name="PreviewOverlay" type="PanelContainer" parent="UI"]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 60.0
+offset_top = -42.0
+offset_right = -60.0
+offset_bottom = -6.0
+grow_horizontal = 2
+grow_vertical = 0
+theme = ExtResource("5_theme")
+
+[node name="VBox" type="VBoxContainer" parent="UI/PreviewOverlay"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="PreviewStatusLabel" type="Label" parent="UI/PreviewOverlay/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 1, 0.4, 1)
+text = "PREVIEW MODE - Looping"
+horizontal_alignment = 1
+
+[node name="HBox" type="HBoxContainer" parent="UI/PreviewOverlay/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="BtnPlayPause" type="Button" parent="UI/PreviewOverlay/VBox/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Pause"
+
+[node name="PreviewScrubber" type="HSlider" parent="UI/PreviewOverlay/VBox/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+focus_mode = 0
+
+[node name="PreviewFrameLabel" type="Label" parent="UI/PreviewOverlay/VBox/HBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+text = "0 / 0"
+horizontal_alignment = 1
+
+[node name="BtnExitPreview" type="Button" parent="UI/PreviewOverlay/VBox/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Exit Preview [P]"

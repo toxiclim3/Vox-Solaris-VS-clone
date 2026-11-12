@@ -1,16 +1,10 @@
-[gd_resource type="Resource" script_class="PreheatList" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="PreheatList" load_steps=5 format=3]
 
+[ext_resource type="Script" path="res://Utility/preheat_list.gd" id="0_script"]
 [ext_resource type="Material" uid="uid://recolor_preheat" path="res://Utility/recolor_preheat.tres" id="1_recolor"]
 [ext_resource type="Material" uid="uid://whip_preheat" path="res://Utility/whip_preheat.tres" id="2_whip"]
 [ext_resource type="Material" path="res://Utility/elite_preheat.tres" id="3_elite"]
 
-[sub_resource type="GDScript" id="GDScript_preheat"]
-script/source = "extends Resource
-class_name PreheatList
-
-@export var materials: Array[Material] = []
-"
-
 [resource]
-script = SubResource("GDScript_preheat")
+script = ExtResource("0_script")
 materials = Array[Material]([ExtResource("1_recolor"), ExtResource("2_whip"), ExtResource("3_elite")])

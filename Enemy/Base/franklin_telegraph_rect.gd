@@ -171,7 +171,7 @@ func execute_attack() -> void:
 func _spawn_blast_particles() -> void:
 	const PARTICLE_LIFETIME := 1.25
 	var half_len := rect_length / 2.0
-	var half_w   := rect_width  / 2.0
+	var _half_w   := rect_width  / 2.0
 
 	# Build a reusable shrink curve (1.0 → 0.0 over lifetime).
 	var scale_curve := Curve.new()

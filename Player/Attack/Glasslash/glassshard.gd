@@ -8,13 +8,15 @@ var speed = 250.0
 var lifetime = 0.4
 var timer = 0.0
 var base_scale = Vector2.ONE
+var hit_once_array = []
 
 @onready var player = get_tree().get_first_node_in_group("player")
 
 func _ready():
 	rotation = angle.angle()
 	# Scale based on player spell size
-	base_scale = Vector2.ONE * (1.0 + player.spell_size)
+	if player != null:
+		base_scale = Vector2.ONE * (1.0 + player.spell_size)
 	scale = base_scale
 	area_entered.connect(_on_area_entered)
 
@@ -35,3 +37,6 @@ func _process(delta):
 func _on_area_entered(area):
 	if area.is_in_group("hurtbox"):
 		queue_free() # Shards break on hit. Damage handled by system.
+
+func enemy_hit(_c = 1):
+	queue_free()

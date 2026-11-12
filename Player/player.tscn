@@ -1,32 +1,55 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://2potvs6v0udg"]
 
-[ext_resource type="Script" path="res://Player/player.gd" id="1_37q80"]
-[ext_resource type="Texture2D" path="res://Textures/Player/player_sprite.png" id="1_jefax"]
-[ext_resource type="Script" path="res://camera_shake.gd" id="1_shake"]
-[ext_resource type="PackedScene" path="res://Utility/hurt_box.tscn" id="3_gs51i"]
-[ext_resource type="Script" path="res://Player/gui.gd" id="4_gu6f8"]
-[ext_resource type="Texture2D" path="res://Textures/GUI/exp_background.png" id="4_pbpj5"]
-[ext_resource type="Texture2D" path="res://Textures/GUI/exp_progress_alt2.png" id="5_p5o4e"]
-[ext_resource type="AudioStream" path="res://Audio/SoundEffect/PlayerHurt.wav" id="6_7emwf"]
-[ext_resource type="Texture2D" path="res://Textures/GUI/healthcircleunderlay.png" id="7_5htga"]
-[ext_resource type="AudioStream" path="res://Audio/SoundEffect/PlayerHurtBad.wav" id="7_hshwv"]
-[ext_resource type="PackedScene" path="res://Utility/settings_menu.tscn" id="7_pisgm"]
-[ext_resource type="AudioStream" path="res://Audio/SoundEffect/levelup.ogg" id="7_wl7d2"]
-[ext_resource type="Texture2D" path="res://Textures/GUI/healthcircle.png" id="8_p5o4e"]
-[ext_resource type="AudioStream" path="res://Audio/SoundEffect/win.ogg" id="11_p5o4e"]
-[ext_resource type="PackedScene" path="res://Utility/basic_button.tscn" id="12_i8esf"]
-[ext_resource type="AudioStream" path="res://Audio/SoundEffect/magic_crumple2.ogg" id="12_p5o4e"]
-[ext_resource type="Theme" path="res://Themes/DebugButtons.tres" id="15_dkpta"]
-[ext_resource type="Script" path="res://Player/debugmenu.gd" id="15_lfmf2"]
-[ext_resource type="Theme" path="res://Themes/HeaderText.tres" id="15_o28un"]
-[ext_resource type="Theme" path="res://Themes/HeaderText_White.tres" id="16_7emwf"]
-[ext_resource type="Theme" path="res://Themes/HeaderText_NoShadow.tres" id="16_noshadow"]
-[ext_resource type="Theme" path="res://Themes/Buttons_Dark.tres" id="18_hshwv"]
-[ext_resource type="StyleBox" path="res://Themes/Shadowpanel.tres" id="21_8viyr"]
-[ext_resource type="Theme" path="res://Themes/RegularText_NoShadow.tres" id="22_8viyr"]
-[ext_resource type="AudioStream" path="res://Audio/SoundEffect/Difficulty.wav" id="24_wdifc"]
-[ext_resource type="Script" path="res://Player/boss_ui.gd" id="boss_ui_script"]
-[ext_resource type="Shader" path="res://Utility/recolor.gdshader" id="recolor_shader"]
+[ext_resource type="Script" uid="uid://cjvncc5g0n8kc" path="res://Player/player.gd" id="1_37q80"]
+[ext_resource type="Texture2D" uid="uid://doa3scrwgj2oq" path="res://Textures/Player/player_sprite.png" id="1_jefax"]
+[ext_resource type="Script" uid="uid://fes8mkm0ab36" path="res://camera_shake.gd" id="1_shake"]
+[ext_resource type="PackedScene" uid="uid://xy3cvpwdy828" path="res://Utility/hurt_box.tscn" id="3_gs51i"]
+[ext_resource type="AudioStream" uid="uid://cw6gd5eleb2fy" path="res://Audio/SoundEffect/PlayerHurt.wav" id="6_7emwf"]
+[ext_resource type="PackedScene" uid="uid://cspfn3yiuaxrv" path="res://Player/banana.glb" id="6_x3vf3"]
+[ext_resource type="Texture2D" uid="uid://ptj28vdafu7m" path="res://Textures/GUI/healthcircleunderlay.png" id="7_5htga"]
+[ext_resource type="AudioStream" uid="uid://cgf78ydglric8" path="res://Audio/SoundEffect/PlayerHurtBad.wav" id="7_hshwv"]
+[ext_resource type="Texture2D" uid="uid://diw4w587rd2qa" path="res://Textures/GUI/healthcircle.png" id="8_p5o4e"]
+[ext_resource type="Shader" uid="uid://d33y51s4lrshp" path="res://Utility/recolor.gdshader" id="recolor_shader"]
+
+[sub_resource type="Animation" id="Animation_x3vf3"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SubViewportContainer/SubViewport/banana2:rotation:y")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="Animation" id="Animation_apopc"]
+resource_name = "bananaSpin"
+length = 2.0000017
+step = 0.016666668
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SubViewportContainer/SubViewport/banana2:rotation:y")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 2, 0),
+"points": PackedFloat32Array(0, 0, 0, 0.25, 0, 180, 0, 0, 0, 0, 360, 0, 0, 0, 0),
+"times": PackedFloat32Array(0, 1.0000001, 2)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_5htga"]
+_data = {
+&"RESET": SubResource("Animation_x3vf3"),
+&"bananaSpin": SubResource("Animation_apopc")
+}
+
+[sub_resource type="Environment" id="Environment_x3vf3"]
+ambient_light_source = 3
+ambient_light_color = Color(1, 0.8555461, 0.30635422, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_recolor"]
 shader = ExtResource("recolor_shader")
@@ -51,6 +74,33 @@ radius = 50.0
 [node name="Player" type="CharacterBody2D" unique_id=1361429612 groups=["player"]]
 motion_mode = 1
 script = ExtResource("1_37q80")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="." unique_id=273264405]
+visible = false
+offset_left = -16.0
+offset_top = -56.0
+offset_right = 16.0
+offset_bottom = -24.0
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer" unique_id=1360068543]
+handle_input_locally = false
+size = Vector2i(32, 32)
+size_2d_override = Vector2i(16, 16)
+size_2d_override_stretch = true
+render_target_update_mode = 0
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="SubViewportContainer/SubViewport" unique_id=547940069]
+root_node = NodePath("../../..")
+libraries/ = SubResource("AnimationLibrary_5htga")
+
+[node name="banana2" parent="SubViewportContainer/SubViewport" unique_id=2125886481 instance=ExtResource("6_x3vf3")]
+
+[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport" unique_id=1967155011]
+transform = Transform3D(0.8079921, -0.3352938, 0.4844862, 0.08970572, 0.8827071, 0.46128196, -0.5823244, -0.32925096, 0.7432982, 0.2483089, 0.39226872, 0.45292187)
+fov = 66.1647
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewportContainer/SubViewport" unique_id=1327959967]
+environment = SubResource("Environment_x3vf3")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1264366194]
 z_index = 1
@@ -102,11 +152,13 @@ one_shot = true
 position = Vector2(-1, 0)
 collision_layer = 2
 collision_mask = 2
-HurtBoxType = 2
 
 [node name="CollisionShape2D" parent="HurtBox" index="0" unique_id=931685760]
 position = Vector2(2, 3)
 shape = SubResource("RectangleShape2D_yfi4i")
+
+[node name="DisableTimer" parent="HurtBox" index="1" unique_id=712124523]
+wait_time = 0.3
 
 [node name="Attack" type="Node2D" parent="." unique_id=1452306207]
 
@@ -151,16 +203,11 @@ stream = ExtResource("7_hshwv")
 volume_db = -5.0
 bus = &"PlayerHurt"
 
-
-
-
-
 [connection signal="timeout" from="regenTimer" to="." method="_on_regen_timer_timeout"]
 [connection signal="hurt" from="HurtBox" to="." method="_on_hurt_box_hurt"]
 [connection signal="body_entered" from="EnemyDetectionArea" to="." method="_on_enemy_detection_area_body_entered"]
 [connection signal="body_exited" from="EnemyDetectionArea" to="." method="_on_enemy_detection_area_body_exited"]
 [connection signal="area_entered" from="GrabArea" to="." method="_on_grab_area_area_entered"]
 [connection signal="area_entered" from="CollectArea" to="." method="_on_collect_area_area_entered"]
-
 
 [editable path="HurtBox"]

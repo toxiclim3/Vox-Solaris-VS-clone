@@ -66,7 +66,7 @@ func _on_timer_timeout():
 		var lash = glasslash_scene.instantiate()
 		lash.global_position = player.global_position
 		lash.target_pos = target_pos
-		lash.damage = damage * GlobalEvents.get_player_damage_modifier()
+		lash.damage = damage
 		lash.level = level
 
 		# Slightly randomize angle for additional attacks

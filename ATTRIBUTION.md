@@ -71,6 +71,15 @@ The following assets are integrated into the repository under open-source and Cr
   - **Creator**: Team Vox Solaris via Generative AI tools (as disclosed in university coursework documentation).
   - **Status**: Licensed as part of the project repository under GPL-3.0 compatibility terms.
 
+### 2.5 Dungeon Crawl Stone Soup (DCSS) Tileset
+- **Source**: [Dungeon Crawl 32x32 Tiles Supplemental (OpenGameArt.org)](https://opengameart.org/content/dungeon-crawl-32x32-tiles-supplemental)
+- **Contributors**: Dungeon Crawl Stone Soup development team and pixel artists (including Denzi, Jesse, and OGA contributors)
+- **License**: [Creative Commons Zero (CC0 1.0 Universal / Public Domain)](https://creativecommons.org/publicdomain/zero/1.0/) / Free Art License
+- **Location**: `Textures/Items/`, `Textures/Enemy/`, `Textures/Objects/` (icons, item drops, props)
+- **Status**: Permissive / Public Domain. A substantial number of icons, items, and monster sprites across the project originate or were adapted from this tileset.
+- **Provenance Note**: Due to rapid prototyping across multiple open bundles, some sprites overlap between this DCSS collection and various itch.io asset packs (see Section 3.5).
+
+
 ---
 
 ## 3. Temporary Placeholder & Proprietary Assets (Non-Commercial Prototyping Only)
@@ -110,6 +119,13 @@ The following assets are integrated into the repository under open-source and Cr
 - **GUI Elements**: `Textures/GUI/` (`alloy_smelter_top.png`, `basic_engineering.png`, `coke_oven.png` from Immersive Engineering)
 - **Status**: Prototyping placeholders.
 - **Action Required**: Replace with original tilemaps and UI icons before public distribution.
+
+### 3.5 Mixed Asset Origin Tracking (OpenGameArt vs. Itch.io Packs)
+- **Status**: Attribution & Provenance Backlog
+- **Location**: `Textures/` (Items, Enemies, Pickups, Weapons)
+- **Description**: While a large volume of sprites originates from the public domain Dungeon Crawl Stone Soup supplemental set on OpenGameArt (Section 2.5), various visual assets were integrated from assorted itch.io community packs during early game prototyping without exhaustive per-file origin logging.
+- **Action Required**: Perform an asset inventory prior to public or commercial release to catalog every itch.io sprite pack, verify their redistribution licenses, and provide individual creator credits. (Tracked in `tech_debt.md`).
+
 
 ---
 

@@ -10,6 +10,7 @@ var velocity = Vector2.ZERO
 var lifetime = 3.0
 
 var proc_coefficient = 0.0 # Proc items shouldn't proc themselves
+var hit_once_array = []
 
 @onready var player = get_tree().get_first_node_in_group("player")
 @onready var sprite = $ColorRect
@@ -89,5 +90,5 @@ func _on_area_entered(area):
 		# But since this is a projectile, we might want to explode it
 		explode()
 
-func enemy_hit(charge = 1):
+func enemy_hit(_charge = 1):
 	explode()

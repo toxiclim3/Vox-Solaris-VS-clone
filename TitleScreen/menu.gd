@@ -250,7 +250,7 @@ func open_stats() -> void:
 	
 	var screen_size = get_viewport_rect().size
 	var screen_center_x: float = screen_size.x / 2.0
-	var screen_center_y: float = screen_size.y / 2.0
+	var _screen_center_y: float = screen_size.y / 2.0
 	
 	var total_width: float = main_menu_content.size.x + gap + stats_menu.size.x
 	var group_start_x: float = screen_center_x - (total_width / 2.0)

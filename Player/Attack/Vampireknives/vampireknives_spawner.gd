@@ -83,7 +83,7 @@ func _throw_fan():
 	for i in range(total_knives):
 		var knife = knife_scene.instantiate()
 		knife.global_position = player.global_position
-		knife.damage = damage * GlobalEvents.get_player_damage_modifier()
+		knife.damage = damage
 		knife.lifesteal_per_hit = lifesteal_per_hit
 		knife.hp = 1 # Force no pierce
 		knife.scale = Vector2(0.4, 0.4) * (1.0 + player.spell_size)

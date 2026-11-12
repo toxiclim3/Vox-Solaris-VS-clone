@@ -69,6 +69,29 @@ var willowisp_explosion_scene = preload("res://Player/Attack/willowisp/willowisp
 var relic_drone_node = null
 var joystick_vector := Vector2.ZERO
 
+# Health-based items state
+var glass_talisman_level: int = 0
+var glass_talisman_damage_bonus: float = 0.0
+var damage_multiplier: float = 1.0
+const GLASS_TALISMAN_BONUSES = [0.0, 0.05, 0.10, 0.15, 0.25]
+
+var warding_brooch_level: int = 0
+var warding_brooch_charge: bool = false
+var warding_brooch_timer: float = 0.0
+var warding_brooch_speed_timer: float = 0.0
+var last_warding_absorbed: float = 0.0
+var last_warding_spillover: float = 0.0
+
+var frenzy_charm_level: int = 0
+var frenzy_charm_active: bool = false
+const FRENZY_CHARM_BONUSES = [0.0, 0.10, 0.20, 0.30]
+
+var impact_buckler_level: int = 0
+var impact_buckler_cooldown: float = 0.0
+var buckler_triggered: bool = false
+var buckler_trigger_count: int = 0
+const IMPACT_BUCKLER_COOLDOWNS = [0.0, 60.0, 40.0, 20.0]
+
 #Elite Graphics
 var rt_light: PointLight2D = null
 
@@ -92,6 +115,11 @@ var enemy_close = []
 
 #Signal
 signal playerdeath
+signal health_ratio_changed(current_ratio: float, previous_ratio: float)
+
+func _init() -> void:
+	if not health_ratio_changed.is_connected(_on_health_ratio_changed):
+		health_ratio_changed.connect(_on_health_ratio_changed)
 
 func _ready():
 	var active_char = GlobalEvents.selected_character
@@ -175,8 +203,122 @@ func _on_camera_zoom_changed(zoom_val: float):
 	if cam:
 		cam.zoom = Vector2(zoom_val, zoom_val)
 
-func _physics_process(_delta):
+func _physics_process(delta):
 	movement()
+	update_health_items(delta)
+
+func _set_hp(new_hp: float) -> void:
+	var prev_ratio: float = float(hp) / float(maxhp) if maxhp > 0 else 0.0
+	hp = clamp(new_hp, 0.0, float(maxhp))
+	var cur_ratio: float = float(hp) / float(maxhp) if maxhp > 0 else 0.0
+	if healthBar != null:
+		healthBar.max_value = maxhp
+		healthBar.value = hp
+	if not is_equal_approx(cur_ratio, prev_ratio):
+		health_ratio_changed.emit(cur_ratio, prev_ratio)
+
+func _on_health_ratio_changed(current_ratio: float, previous_ratio: float) -> void:
+	# Glass Talisman: active when HP >= 95%
+	glass_talisman_damage_bonus = get_damage_bonus()
+	damage_multiplier = get_damage_modifier()
+	
+	# Frenzy Charm: active when HP < 30%
+	var prev_frenzy = (previous_ratio < 0.30)
+	var cur_frenzy = (current_ratio < 0.30)
+	if prev_frenzy != cur_frenzy:
+		apply_stat_modifiers()
+		
+	# Warding Brooch: recharge check if healed to >= 90%
+	if warding_brooch_level > 0 and not warding_brooch_charge:
+		if current_ratio >= 0.90 and warding_brooch_timer >= 10.0:
+			warding_brooch_charge = true
+			
+	# Impact Buckler: automatically triggers radial shockwave when HP drops below 20%
+	if impact_buckler_level > 0:
+		if current_ratio < 0.20 and previous_ratio >= 0.20:
+			if impact_buckler_cooldown <= 0.0:
+				trigger_impact_buckler()
+
+func update_health_items(delta: float) -> void:
+	# Warding brooch recharge: while HP >= 90%, gains protection charge after 10s out of combat
+	if warding_brooch_level > 0 and not warding_brooch_charge:
+		warding_brooch_timer += delta
+		var cur_ratio = float(hp) / float(maxhp) if maxhp > 0 else 0.0
+		if warding_brooch_timer >= 10.0 and cur_ratio >= 0.90:
+			warding_brooch_charge = true
+			
+	# Warding brooch Tier 2 speed boost timer
+	if warding_brooch_speed_timer > 0.0:
+		warding_brooch_speed_timer -= delta
+		if warding_brooch_speed_timer <= 0.0:
+			warding_brooch_speed_timer = 0.0
+			apply_stat_modifiers()
+			
+	# Impact buckler cooldown
+	if impact_buckler_cooldown > 0.0:
+		impact_buckler_cooldown -= delta
+		if impact_buckler_cooldown < 0.0:
+			impact_buckler_cooldown = 0.0
+
+func get_damage_bonus() -> float:
+	var cur_ratio = float(hp) / float(maxhp) if maxhp > 0 else 0.0
+	if cur_ratio >= 0.95 and glass_talisman_level > 0:
+		var endless_count = collected_endless.get("glasstalisman", 0)
+		return GLASS_TALISMAN_BONUSES[clamp(glass_talisman_level, 0, 4)] + (0.02 * endless_count)
+	return 0.0
+
+func get_damage_modifier() -> float:
+	return 1.0 + get_damage_bonus()
+
+func get_attack_speed_bonus() -> float:
+	var cur_ratio = float(hp) / float(maxhp) if maxhp > 0 else 0.0
+	if cur_ratio < 0.30 and frenzy_charm_level > 0:
+		return FRENZY_CHARM_BONUSES[clamp(frenzy_charm_level, 0, 3)]
+	return 0.0
+
+func calculate_cooldown(wait_time: float) -> float:
+	return max(0.05, wait_time * (1.0 - spell_cooldown))
+
+func calculate_weapon_cooldown(wait_time: float) -> float:
+	return calculate_cooldown(wait_time)
+
+func absorb_warding_damage(incoming_damage: float) -> Dictionary:
+	var capacity: float = float(maxhp) * 0.05
+	var absorbed: float = 0.0
+	var spillover: float = incoming_damage
+	if warding_brooch_charge:
+		warding_brooch_charge = false
+		warding_brooch_timer = 0.0
+		if incoming_damage <= capacity:
+			absorbed = incoming_damage
+			spillover = 0.0
+		else:
+			absorbed = capacity
+			spillover = incoming_damage - capacity
+		if warding_brooch_level >= 2:
+			warding_brooch_speed_timer = 3.0
+			apply_stat_modifiers()
+	last_warding_absorbed = absorbed
+	last_warding_spillover = spillover
+	return {"absorbed": absorbed, "spillover": spillover}
+
+func trigger_impact_buckler() -> void:
+	impact_buckler_cooldown = IMPACT_BUCKLER_COOLDOWNS[clamp(impact_buckler_level, 0, 3)]
+	buckler_triggered = true
+	buckler_trigger_count += 1
+	_spawn_buckler_shockwave()
+
+func _spawn_buckler_shockwave() -> void:
+	var shockwave_scene = load("res://Player/Attack/impact_buckler/impact_buckler_shockwave.tscn")
+	if shockwave_scene:
+		var sw = shockwave_scene.instantiate()
+		sw.global_position = global_position
+		if get_parent() != null:
+			get_parent().add_child(sw)
+		elif is_inside_tree() and get_tree() != null and get_tree().current_scene != null:
+			get_tree().current_scene.add_child(sw)
+		else:
+			add_child(sw)
 
 func movement():
 	var mov = Vector2.ZERO
@@ -215,14 +357,15 @@ func attack():
 	for weapon in weapons.get_children():
 		if weapon.has_method("attack"):
 			weapon.attack()
+		var timer = weapon.get("timer")
+		if timer != null and timer is Timer:
+			if timer.wait_time < 0.05:
+				timer.wait_time = 0.05
 
 func _on_regen_timer_timeout(): #regens regenPerSecond percent of maxHp every regenTimer timeout
 	if hp < maxhp:
 		var actual_regen = regenPerSecond * GlobalEvents.get_player_regen_modifier()
-		hp = clamp(hp + actual_regen*maxhp, 0, maxhp)	
-		healthBar.max_value = maxhp
-		healthBar.value = hp
-		
+		_set_hp(hp + actual_regen*maxhp)
 		if (hp >= (maxhp * hurtBadThreshold)) and hurtBadTriggered:
 			hurtBadTriggered = false
 
@@ -240,12 +383,16 @@ func _on_hurt_box_hurt(damage, _angle, _knockback, _killer_source = "", attacker
 		# Armor rework: Percentage reduction with diminishing returns (DR = Armor / (Armor + 40))
 		var dr = float(armor) / (armor + 40.0)
 		var actual_damage = damage * (1.0 - dr)
-		
-		# Ensure we don't heal from damage, and at least 0.1 damage is taken if hit (optional, keeping it simple for now)
 		actual_damage = clamp(actual_damage, 0.0, 999.0)
 		
+		# Taking damage resets Warding Brooch out-of-combat timer
 		if actual_damage > 0:
-
+			warding_brooch_timer = 0.0
+			if warding_brooch_charge:
+				var absorb_res = absorb_warding_damage(actual_damage)
+				actual_damage = absorb_res["spillover"]
+		
+		if actual_damage > 0:
 			if (hp >= (maxhp * hurtBadThreshold)) or hurtBadTriggered:
 				sndHurt.play()
 				GlobalEvents.camera_shake.emit(2.0, 0.2)
@@ -253,9 +400,8 @@ func _on_hurt_box_hurt(damage, _angle, _knockback, _killer_source = "", attacker
 				sndHurtBad.play()
 				hurtBadTriggered = true
 				GlobalEvents.camera_shake.emit(3.0, 0.5)
-		hp -= actual_damage
-	healthBar.max_value = maxhp
-	healthBar.value = hp
+			_set_hp(hp - actual_damage)
+			
 	if hp <= 0:
 		death()
 
@@ -508,6 +654,19 @@ func apply_stat_modifiers():
 			"ringofrejuvenation": max_hp_percent_total += 0.05 * count # Scales max HP% by 5% per stack
 
 	
+	# Apply Warding Brooch Tier 2 speed boost if active
+	if warding_brooch_speed_timer > 0.0:
+		movement_speed_percent_total += 0.15
+
+	# Apply Frenzy Charm attack speed bonus if active (HP < 30%)
+	var frenzy_bonus = get_attack_speed_bonus()
+	frenzy_charm_active = (frenzy_bonus > 0.0)
+	spell_cooldown += frenzy_bonus
+
+	# Update Glass Talisman damage values
+	glass_talisman_damage_bonus = get_damage_bonus()
+	damage_multiplier = get_damage_modifier()
+	
 	# Apply movement speed percent bonus
 	movement_speed = base_movement_speed * (1.0 + movement_speed_percent_total)
 	
@@ -517,11 +676,9 @@ func apply_stat_modifiers():
 	# Apply max HP percent bonus on top of base
 	var new_maxhp = int(base_maxhp * (1.0 + max_hp_percent_total))
 	if new_maxhp != maxhp:
-		var ratio = float(hp) / float(maxhp)
+		var ratio = float(hp) / float(maxhp) if maxhp > 0 else 1.0
 		maxhp = new_maxhp
-		hp = clamp(int(ratio * maxhp), 1, maxhp)
-		healthBar.max_value = maxhp
-		healthBar.value = hp
+		_set_hp(max(1.0, ratio * maxhp))
 	
 	# Apply XP grab range
 	grab_shape.shape.radius = BASE_GRAB_RADIUS * (1.0 + xp_range_percent_total)
@@ -564,15 +721,23 @@ func upgrade_character(upgrade):
 	elif type == "upgrade" or type == "item" or type == "bossitem":
 		if upgrade.begins_with("willowisp"):
 			willowisp_level = int(upgrade.replace("willowisp", ""))
+		elif upgrade.begins_with("glasstalisman"):
+			glass_talisman_level = int(upgrade.replace("glasstalisman", ""))
+		elif upgrade.begins_with("wardingbrooch"):
+			warding_brooch_level = int(upgrade.replace("wardingbrooch", ""))
+		elif upgrade.begins_with("frenzycharm"):
+			frenzy_charm_level = int(upgrade.replace("frenzycharm", ""))
+		elif upgrade.begins_with("impactbuckler"):
+			impact_buckler_level = int(upgrade.replace("impactbuckler", ""))
 		
 		if upgrade_data.has("stat_modifiers"):
 			if type == "item" and upgrade == "food":
-				hp += upgrade_data["stat_modifiers"]["hp"]
-				hp = clamp(hp, 0, maxhp)
-				healthBar.value = hp
+				_set_hp(hp + upgrade_data["stat_modifiers"]["hp"])
 			else:
 				stat_modifiers[upgrade] = upgrade_data["stat_modifiers"]
 				apply_stat_modifiers()
+		else:
+			apply_stat_modifiers()
 	elif type == "endless":
 		var base_name = upgrade.trim_suffix("_endless")
 		if not collected_endless.has(base_name):
@@ -600,7 +765,8 @@ func upgrade_character(upgrade):
 	if pending_levelups > 0 or pending_boss_rewards > 0:
 		_show_next_reward()
 	else:
-		get_tree().paused = false
+		if is_inside_tree() and get_tree() != null:
+			get_tree().paused = false
 		MusicController.focusMusic(true)
 	calculate_experience(0)
 	
@@ -755,8 +921,8 @@ func change_time(argtime = 0):
 		last_logged_time = time
 
 func _log_minute_data():
-	var current_second = time
-	var xp_this_interval = total_collected_experience - last_minute_total_experience
+	var _current_second = time
+	var _xp_this_interval = total_collected_experience - last_minute_total_experience
 	last_minute_total_experience = total_collected_experience
 
 	
@@ -805,7 +971,7 @@ func _on_enemy_died(pos: Vector2, enemy_max_hp: float, _killer: String):
 				3: dmg = 8.0
 				4: dmg = 10.0 + (enemy_max_hp * 0.05)
 			
-			explosion.damage = dmg * GlobalEvents.get_player_damage_modifier()
+			explosion.damage = dmg
 			explosion.level = willowisp_level
 			get_parent().call_deferred("add_child", explosion)
 
@@ -813,8 +979,8 @@ func _on_player_dealt_damage(damage: float, _target: Object, proc_coefficient: f
 	if hp > 0 and lifesteal > 0.0:
 		# Heal by percentage of damage dealt, scaled by proc coefficient
 		var heal_amount = damage * lifesteal * proc_coefficient
-		hp = clamp(hp + heal_amount, 0, maxhp)
-		healthBar.value = hp
+		if heal_amount > 0:
+			_set_hp(hp + heal_amount)
 
 
 #Debug buttons

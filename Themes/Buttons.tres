@@ -18,10 +18,10 @@ axis_stretch_vertical = 1
 modulate_color = Color(0.5, 0.5, 0.5, 0.7)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_focus"]
-content_margin_left = 4.0
-content_margin_top = 2.0
-content_margin_right = 4.0
-content_margin_bottom = 2.0
+content_margin_left = 9.0
+content_margin_top = 4.0
+content_margin_right = 9.0
+content_margin_bottom = 4.0
 texture = ExtResource("2_tex")
 texture_margin_left = 9.0
 texture_margin_top = 9.0
@@ -29,13 +29,13 @@ texture_margin_right = 9.0
 texture_margin_bottom = 9.0
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
-modulate_color = Color(1.499905, 1.499905, 1.2788284, 1)
+modulate_color = Color(0.8666667, 1, 1, 1)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hover"]
-content_margin_left = 4.0
-content_margin_top = 2.0
-content_margin_right = 4.0
-content_margin_bottom = 2.0
+content_margin_left = 9.0
+content_margin_top = 4.0
+content_margin_right = 9.0
+content_margin_bottom = 4.0
 texture = ExtResource("2_tex")
 texture_margin_left = 9.0
 texture_margin_top = 9.0
@@ -46,10 +46,10 @@ axis_stretch_vertical = 1
 modulate_color = Color(1.300188, 1.300188, 1.300188, 1)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_normal"]
-content_margin_left = 4.0
-content_margin_top = 2.0
-content_margin_right = 4.0
-content_margin_bottom = 2.0
+content_margin_left = 9.0
+content_margin_top = 4.0
+content_margin_right = 9.0
+content_margin_bottom = 4.0
 texture = ExtResource("2_tex")
 texture_margin_left = 9.0
 texture_margin_top = 9.0
@@ -59,10 +59,10 @@ axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pressed"]
-content_margin_left = 4.0
-content_margin_top = 2.0
-content_margin_right = 4.0
-content_margin_bottom = 2.0
+content_margin_left = 9.0
+content_margin_top = 4.0
+content_margin_right = 9.0
+content_margin_bottom = 4.0
 texture = ExtResource("2_tex")
 texture_margin_left = 9.0
 texture_margin_top = 9.0
@@ -74,10 +74,10 @@ modulate_color = Color(0.7, 0.7, 0.7, 1)
 
 [resource]
 default_font = ExtResource("2_e7fam")
-default_font_size = 10
-Button/colors/font_outline_color = Color(0, 0, 0, 0.37254903)
+default_font_size = 14
+Button/colors/font_outline_color = Color(0.15487596, 0.154876, 0.15487596, 1)
 Button/colors/font_shadow_color = Color(0, 0, 0, 1)
-Button/constants/outline_size = 2
+Button/constants/outline_size = 3
 Button/constants/shadow_offset_x = 1
 Button/constants/shadow_offset_y = 1
 Button/styles/disabled = SubResource("StyleBoxTexture_disabled")

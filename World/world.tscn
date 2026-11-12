@@ -691,6 +691,7 @@ layout_mode = 2
 theme = ExtResource("15_o28un")
 text = "tips_runInCircles"
 scroll_active = false
+horizontal_alignment = 1
 
 [node name="filler2" type="Control" parent="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2" unique_id=1438850757]
 layout_mode = 2

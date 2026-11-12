@@ -2,6 +2,11 @@ extends Node2D
 
 class SwarmEnemy:
 	var position: Vector2
+	var global_position: Vector2:
+		get:
+			return position
+		set(val):
+			position = val
 	var max_hp: float
 	var hp: float
 	var speed: float
@@ -16,6 +21,9 @@ class SwarmEnemy:
 	var anim_offset: float = 0.0
 	var active_debuffs: Dictionary = {}
 
+	func is_alive() -> bool:
+		return not is_dead
+
 	func apply_debuff(debuff_name: String, value: float, duration: float):
 		active_debuffs[debuff_name] = {"value": value, "duration": duration}
 
@@ -28,14 +36,15 @@ class SwarmEnemy:
 		return active_debuffs.has(debuff_name)
 
 
-	func _on_hurt_box_hurt(dmg, angle, kb, source, attacker_node):
-		hp -= dmg
+	func _on_hurt_box_hurt(_dmg, _angle, _kb, _source = "", _attacker_node = null):
+		hp -= _dmg
 		if hp <= 0 and not is_dead:
 			if swarm_manager_ref:
-				swarm_manager_ref._handle_death(self)
+				swarm_manager_ref._handle_death(self, _source)
 
 var swarm_data: Array[SwarmEnemy] = []
 var spatial_grid: Dictionary = {}
+var max_enemy_radius: float = 24.0
 
 # Map of type_id to cache structures
 # cache: { texture: Texture2D, multimesh_idx: int, radius_sq: float }
@@ -130,6 +139,9 @@ func register_enemy_type(texture: Texture2D, radius: float, hframes: int = 1, vf
 		"radius_sq": radius * radius
 	}
 	
+	if radius > max_enemy_radius:
+		max_enemy_radius = radius
+
 	return id
 
 func add_enemy(pos: Vector2, max_hp: float, hp: float, speed: float, experience: int, damage: int, type_id: int):
@@ -147,7 +159,9 @@ func add_enemy(pos: Vector2, max_hp: float, hp: float, speed: float, experience:
 
 func _physics_process(delta):
 	if not player:
-		return
+		player = get_tree().get_first_node_in_group("player")
+		if not player:
+			return
 		
 	var p_pos = player.global_position
 	var frame = Engine.get_physics_frames()
@@ -166,7 +180,7 @@ func _physics_process(delta):
 	for enemy in swarm_data:
 		if not enemy.is_dead:
 			# Cell size of 40px ensures we easily cover the 20px repulsion radius by checking adjacent cells
-			var cell = Vector2(int(enemy.position.x / 40.0), int(enemy.position.y / 40.0))
+			var cell = Vector2(floor(enemy.position.x / 40.0), floor(enemy.position.y / 40.0))
 			if not spatial_grid.has(cell):
 				spatial_grid[cell] = [enemy]
 			else:
@@ -190,13 +204,12 @@ func _physics_process(delta):
 			continue
 				
 		var shape_type = 0 # 1 = circle, 2 = rect
-		var r_sq = 0.0
+		var radius = 0.0
 		var extents = Vector2.ZERO
 		
 		if cs.shape is CircleShape2D:
 			shape_type = 1
-			var r = cs.shape.radius * max(atk.scale.x, atk.scale.y)
-			r_sq = r * r
+			radius = cs.shape.radius * max(abs(atk.scale.x), abs(atk.scale.y))
 		elif cs.shape is RectangleShape2D:
 			shape_type = 2
 			extents = cs.shape.size / 2.0
@@ -211,17 +224,120 @@ func _physics_process(delta):
 			# Fallback to checking the parent if the hitbox doesn't have the array itself
 			hit_list = atk.owner.get("hit_once_array") if atk.owner else null
 		
+		var killer_source = ""
+		if atk.get("killer_source") != null:
+			killer_source = str(atk.killer_source)
+		elif atk.owner != null and atk.owner.get("killer_source") != null:
+			killer_source = str(atk.owner.killer_source)
+
 		attack_data.append({
 			"node": atk,
 			"cs_node": cs,
 			"shape_type": shape_type,
-			"radius_sq": r_sq,
+			"radius": radius,
 			"extents": extents,
 			"damage": dmg,
 			"knockback_amount": kb,
 			"hit_enemies": hit_list if hit_list != null else [],
-			"has_enemy_hit": atk.has_method("enemy_hit")
+			"has_enemy_hit": atk.has_method("enemy_hit"),
+			"has_on_hit_enemy": atk.has_method("on_hit_enemy"),
+			"killer_source": killer_source
 		})
+
+	# Process attack collisions against nearby swarm enemies
+	for atk in attack_data:
+		if atk.node == null or not is_instance_valid(atk.node):
+			continue
+		if atk.node.is_queued_for_deletion():
+			continue
+		if atk.node.get("hp") != null and atk.node.hp <= 0:
+			continue
+
+		var cs_pos = atk.cs_node.global_position
+		var candidate_enemies: Array = []
+		var search_r = 0.0
+		if atk.shape_type == 1:
+			search_r = atk.radius + max_enemy_radius
+		elif atk.shape_type == 2:
+			search_r = atk.extents.length() * max(abs(atk.node.scale.x), abs(atk.node.scale.y)) + max_enemy_radius
+
+		if search_r > 0.0 and not spatial_grid.is_empty():
+			var min_cx = int(floor((cs_pos.x - search_r) / 40.0))
+			var max_cx = int(floor((cs_pos.x + search_r) / 40.0))
+			var min_cy = int(floor((cs_pos.y - search_r) / 40.0))
+			var max_cy = int(floor((cs_pos.y + search_r) / 40.0))
+			var cell_count = (max_cx - min_cx + 1) * (max_cy - min_cy + 1)
+
+			if cell_count < swarm_data.size():
+				for cx in range(min_cx, max_cx + 1):
+					for cy in range(min_cy, max_cy + 1):
+						var cell = Vector2(cx, cy)
+						if spatial_grid.has(cell):
+							candidate_enemies.append_array(spatial_grid[cell])
+			else:
+				candidate_enemies = swarm_data
+		else:
+			candidate_enemies = swarm_data
+
+		for enemy in candidate_enemies:
+			if enemy.is_dead:
+				continue
+			if atk.hit_enemies.has(enemy):
+				continue
+
+			var hit = false
+			var enemy_radius = enemy_type_cache[enemy.type_id].radius
+			if atk.shape_type == 2: # Rect
+				var local_p = atk.cs_node.global_transform.affine_inverse() * enemy.position
+				if abs(local_p.x) <= atk.extents.x + enemy_radius and abs(local_p.y) <= atk.extents.y + enemy_radius:
+					hit = true
+			elif atk.shape_type == 1: # Circle
+				var dist_sq = enemy.position.distance_squared_to(cs_pos)
+				if dist_sq <= (atk.radius + enemy_radius) ** 2:
+					hit = true
+
+			if hit:
+				# Apply damage
+				var damage_multiplier = 1.0 + enemy.get_debuff_value("curse")
+				var p_dmg_mod = GlobalEvents.get_player_damage_modifier()
+				if player != null and player.has_method("get_damage_modifier"):
+					p_dmg_mod *= player.get_damage_modifier()
+				enemy.hp -= (atk.damage * damage_multiplier * p_dmg_mod)
+
+				# Knockback
+				var angle = Vector2.ZERO
+				if atk.node.get("angle"):
+					angle = atk.node.angle
+				else:
+					angle = cs_pos.direction_to(enemy.position)
+				enemy.knockback = angle * atk.knockback_amount
+
+				# Proc coefficient and stats
+				var proc_co = atk.node.get("proc_coefficient")
+				if proc_co == null: proc_co = 1.0
+				GlobalEvents.player_dealt_damage.emit(atk.damage, enemy, proc_co)
+
+				if atk.has_on_hit_enemy:
+					atk.node.on_hit_enemy(enemy)
+
+				if atk.has_enemy_hit and not atk.node.is_queued_for_deletion():
+					atk.node.enemy_hit(1)
+
+				if not atk.hit_enemies.has(enemy):
+					atk.hit_enemies.append(enemy)
+				if atk.node.get("hit_once_array") != null and typeof(atk.node.hit_once_array) == TYPE_ARRAY:
+					if not atk.node.hit_once_array.has(enemy):
+						atk.node.hit_once_array.append(enemy)
+				elif atk.node.owner != null and atk.node.owner.get("hit_once_array") != null and typeof(atk.node.owner.hit_once_array) == TYPE_ARRAY:
+					if not atk.node.owner.hit_once_array.has(enemy):
+						atk.node.owner.hit_once_array.append(enemy)
+
+				if enemy.hp <= 0:
+					_handle_death(enemy, atk.killer_source)
+
+				# Immediately halt processing for an attack once queued for deletion or depleted HP
+				if atk.node.is_queued_for_deletion() or (atk.node.get("hp") != null and atk.node.hp <= 0):
+					break
 	
 	var i = 0
 	var player_push_sum = Vector2.ZERO
@@ -245,53 +361,6 @@ func _physics_process(delta):
 				keys_to_remove.append(debuff_name)
 		for k in keys_to_remove:
 			enemy.active_debuffs.erase(k)
-			
-		# Check collisions with attacks
-		var hit_flag = false
-		for atk in attack_data:
-			var hit = false
-			if atk.shape_type == 2: # Rect
-				var local_p = atk.cs_node.global_transform.affine_inverse() * enemy.position
-				if abs(local_p.x) <= atk.extents.x + 10.0 and abs(local_p.y) <= atk.extents.y + 10.0:
-					hit = true
-			elif atk.shape_type == 1: # Circle
-				var dist_sq = enemy.position.distance_squared_to(atk.cs_node.global_position)
-				if dist_sq < atk.radius_sq + enemy_type_cache[enemy.type_id].radius_sq:
-					hit = true
-					
-			if hit and not atk.hit_enemies.has(enemy): # Need proper ID or just ref tracking
-				# Apply damage
-				var damage_multiplier = 1.0 + enemy.get_debuff_value("curse")
-				enemy.hp -= (atk.damage * damage_multiplier * GlobalEvents.get_player_damage_modifier())
-				
-				# Knockback
-				var angle = Vector2.ZERO
-				if atk.node.get("angle"):
-					angle = atk.node.angle
-				else:
-					angle = atk.cs_node.global_position.direction_to(enemy.position)
-				enemy.knockback = angle * atk.knockback_amount
-				
-				# Proc coefficient and stats
-				var proc_co = atk.node.get("proc_coefficient")
-				if proc_co == null: proc_co = 1.0
-				GlobalEvents.player_dealt_damage.emit(atk.damage, enemy, proc_co)
-				
-				if atk.has_enemy_hit:
-					atk.node.enemy_hit(1)
-				
-				if atk.node.get("hit_once_array") != null:
-					if typeof(atk.node.hit_once_array) == TYPE_ARRAY:
-						atk.node.hit_once_array.append(enemy)
-				
-				if enemy.hp <= 0:
-					_handle_death(enemy)
-					hit_flag = true
-					break # dead
-		
-		if hit_flag:
-			i += 1
-			continue
 
 		var velocity = Vector2.ZERO
 		if enemy.knockback.length_squared() > 0.1:
@@ -304,8 +373,8 @@ func _physics_process(delta):
 		# Separation (evaluate every 3 frames for neighbors)
 		if frame % 3 == (i % 3):
 			var push_vector = Vector2.ZERO
-			var cell_x = int(enemy.position.x / 40.0)
-			var cell_y = int(enemy.position.y / 40.0)
+			var cell_x = int(floor(enemy.position.x / 40.0))
+			var cell_y = int(floor(enemy.position.y / 40.0))
 			
 			for cx in range(cell_x - 1, cell_x + 2):
 				for cy in range(cell_y - 1, cell_y + 2):
@@ -363,29 +432,33 @@ func _physics_process(delta):
 
 	_update_multimeshes()
 
-func _handle_death(enemy: SwarmEnemy):
+func _handle_death(enemy: SwarmEnemy, killer_source: String = "Swarm"):
+	if enemy.is_dead:
+		return
 	enemy.is_dead = true
 	enemy.death_timer = 0.2 # Brief flash or disappear time
 	
-	var current_loot_base = get_tree().get_first_node_in_group("loot")
+	var current_loot_base = get_tree().get_first_node_in_group("loot") if get_tree() else null
 	if current_loot_base:
 		var new_gem = exp_gem_scene.instantiate()
 		new_gem.global_position = enemy.position
 		new_gem.experience = enemy.experience
 		current_loot_base.call_deferred("add_child", new_gem)
 		
-		if randf() < 0.01:
+		if GlobalEvents.roll_magnet_drop():
 			var new_xp_orb = xp_orb_scene.instantiate()
 			new_xp_orb.global_position = enemy.position
 			current_loot_base.call_deferred("add_child", new_xp_orb)
 		
-	GlobalEvents.enemy_died.emit(enemy.position, enemy.max_hp, "Swarm")
+	var final_source = killer_source if killer_source != "" else "Swarm"
+	GlobalEvents.enemy_died.emit(enemy.position, enemy.max_hp, final_source)
 		
 	# Death Animation (too many will lag, so we only spawn explicitly if we are below a threshold, or just rely on hit flashes)
-	if randf() <= explosion_chance: 
+	var parent = get_parent()
+	if parent and randf() <= explosion_chance: 
 		var d = death_anim.instantiate()
 		d.global_position = enemy.position
-		get_parent().call_deferred("add_child", d)
+		parent.call_deferred("add_child", d)
 		
 	StatsManager.register_kill(0)
 

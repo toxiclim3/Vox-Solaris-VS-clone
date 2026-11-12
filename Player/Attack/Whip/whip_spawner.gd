@@ -60,7 +60,7 @@ func _on_timer_timeout():
 		var whip = whip_scene.instantiate()
 		whip.global_position = player.global_position
 		whip.target_pos = target_pos
-		whip.damage = damage * GlobalEvents.get_player_damage_modifier()
+		whip.damage = damage
 		whip.level = level
 
 		
