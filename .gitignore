@@ -60,8 +60,27 @@ Audio/Music_Lite/**/*.import
 Audio/SoundEffect/*.wav
 Audio/SoundEffect/*.import
 
+# AI agent workspaces, skills, and scratch files
+.agents/
+.agent/
+.gemini/
+.claude/
+.cursor/
 .geminirules
+
 .vscode/settings.json
 
 *.tmp
 [Dd]esktop.ini
+
+# OS junk
+Thumbs.db
+.DS_Store
+
+# Python caches (helper scripts in translations/ and .agents/skills/)
+__pycache__/
+*.py[cod]
+
+# Merge / editor leftovers
+*.orig
+*.bak
