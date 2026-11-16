@@ -73,9 +73,79 @@ var tutorialMusic = "res://Audio/Music/Extra/musicHitItSonA.ogg"
 # Словарь для хранения загруженных ресурсов: { "res://path": AudioStream }
 var trackCache: Dictionary = {}
 
+const MUSIC_KEY_A: PackedByteArray = [
+	0x7A, 0x31, 0xC4, 0x8E, 0x19, 0xB2, 0x55, 0xE0,
+	0x4C, 0x93, 0x27, 0xF1, 0x68, 0xD4, 0x0B, 0xA6,
+	0x3E, 0x85, 0xDF, 0x12, 0x79, 0xC0, 0x44, 0x9B,
+	0xE7, 0x2A, 0x61, 0xB8, 0x03, 0x5C, 0xA9, 0xF4
+]
+const MUSIC_KEY_B: PackedByteArray = [
+	0x33, 0x5F, 0xB6, 0xE7, 0x6D, 0xC7, 0x26, 0xBF,
+	0x1A, 0xFC, 0x5F, 0xA2, 0x07, 0xB8, 0x6A, 0xD4,
+	0x57, 0xF6, 0x80, 0x53, 0x0C, 0xA4, 0x2D, 0xF4,
+	0xB8, 0x6D, 0x14, 0xD9, 0x71, 0x38, 0x9F, 0xC2
+]
+
+func _load_encrypted_stream(mencPath: String, logicalPath: String) -> AudioStream:
+	var data := FileAccess.get_file_as_bytes(mencPath)
+	if data.size() < 44:
+		push_error("MusicController: Некорректный размер зашифрованного файла: ", mencPath)
+		return null
+	if data[0] != 0x49 or data[1] != 0x4E or data[2] != 0x52 or data[3] != 0x4D:
+		push_error("MusicController: Неверный заголовок файла .menc: ", mencPath)
+		return null
+
+	var fmt := data[4]
+	var orig_size := data.decode_u32(8)
+	var iv := data.slice(12, 28)
+	var cipher := data.slice(28)
+	if orig_size == 0 or cipher.is_empty() or (cipher.size() % 16) != 0 or orig_size > cipher.size():
+		push_error("MusicController: Поврежденные метаданные в .menc: ", mencPath)
+		return null
+
+	var key := PackedByteArray()
+	key.resize(32)
+	for i in range(32):
+		key[i] = MUSIC_KEY_A[i] ^ MUSIC_KEY_B[i]
+
+	var aes := AESContext.new()
+	if aes.start(AESContext.MODE_CBC_DECRYPT, key, iv) != OK:
+		push_error("MusicController: Не удалось запустить AES расшифровку: ", mencPath)
+		return null
+	var dec := aes.update(cipher)
+	aes.finish()
+	if dec.size() < orig_size:
+		push_error("MusicController: Ошибка расшифровки данных: ", mencPath)
+		return null
+	dec.resize(orig_size)
+
+	var stream: AudioStream = null
+	if fmt == 1:
+		stream = AudioStreamMP3.load_from_buffer(dec)
+	elif fmt == 2:
+		stream = AudioStreamOggVorbis.load_from_buffer(dec)
+	else:
+		push_error("MusicController: Неизвестный формат аудио в .menc: ", fmt)
+		return null
+
+	if stream:
+		stream.resource_path = logicalPath
+		return stream
+
+	push_error("MusicController: Ошибка декодирования аудио из буфера: ", mencPath)
+	return null
+
 func _get_stream_from_cache(filePath: String) -> AudioStream:
 	if trackCache.has(filePath):
 		return trackCache[filePath]
+
+	var mencPath := filePath if filePath.ends_with(".menc") else filePath + ".menc"
+	if FileAccess.file_exists(mencPath):
+		var enc_stream := _load_encrypted_stream(mencPath, filePath)
+		if enc_stream:
+			trackCache[filePath] = enc_stream
+			return enc_stream
+		return null
 		
 	if not FileAccess.file_exists(filePath) and not FileAccess.file_exists(filePath + ".import") and not FileAccess.file_exists(filePath + ".remap") and not ResourceLoader.exists(filePath):
 		push_error("MusicController: Файл не найден: ", filePath)
@@ -171,7 +241,7 @@ func loadTracksFromDir(path: String, targetArray: Array[String]) -> void:
 	var files := dir.get_files()
 	for file in files:
 		# Защита от особенностей экспорта Godot: в билде файлы получают суффикс .import
-		var cleanName := file.trim_suffix(".remap").trim_suffix(".import")
+		var cleanName := file.trim_suffix(".remap").trim_suffix(".import").trim_suffix(".menc")
 		
 		if cleanName.get_extension() in ["ogg", "mp3", "wav"]:
 			var fullPath := path.path_join(cleanName)
@@ -250,6 +320,8 @@ func toggleMusic(shouldPlay: bool) -> void:
 
 # Функция для приглушения музыки (например, для меню паузы)
 func focusMusic(isFocused: bool) -> void:
+	if activePlayer == null:
+		return
 	if fadeTween and fadeTween.is_valid():
 		await fadeTween.finished
 	

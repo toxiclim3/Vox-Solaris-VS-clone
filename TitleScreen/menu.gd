@@ -23,9 +23,12 @@ var is_stats_open: bool = false
 var is_custom_diff_open: bool = false
 var is_play_open: bool = false
 var is_how_to_play_open: bool = false
+var _switcher: PanelContainer = null
 
 func _ready():
 	get_tree().paused = false
+	Engine.time_scale = 1.0
+	StatsManager.clear_run_taint()
 	MusicController.setLooping(false)
 	MusicController.playSpecificTrack(MusicController.titleMusic)
 	
@@ -76,6 +79,18 @@ func _ready():
 	)
 
 func _input(event):
+	if SettingsManager.is_debug_enabled():
+		if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F5:
+			_toggle_switcher()
+			get_viewport().set_input_as_handled()
+			return
+
+	if _switcher and is_instance_valid(_switcher) and _switcher.visible:
+		if event.is_action_pressed("ui_cancel") or event.is_action_pressed("menu") or (event is InputEventKey and event.pressed and not event.echo and (event.keycode == KEY_ESCAPE or event.keycode == KEY_BACKSPACE)):
+			_switcher.close_modal()
+			get_viewport().set_input_as_handled()
+			return
+
 	if event.is_action_pressed("ui_cancel"):
 		if is_settings_open:
 			if settings_menu.is_focus_in_content():
@@ -407,3 +422,9 @@ func _apply_recursive_font_bump(node: Node, amount: int):
 	
 	for child in node.get_children():
 		_apply_recursive_font_bump(child, amount)
+
+func _toggle_switcher() -> void:
+	if _switcher == null or not is_instance_valid(_switcher):
+		_switcher = load("res://Tools/TestRooms/test_room_switcher.gd").new()
+		add_child(_switcher)
+	_switcher.toggle_modal()

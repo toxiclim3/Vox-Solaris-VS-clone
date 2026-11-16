@@ -42,6 +42,16 @@ const SUITES: Array[Dictionary] = [
 		"name": "Diorama Studio & Player System",
 		"id": "diorama_system",
 		"path": "res://Tests/Unit/test_diorama_system.gd"
+	},
+	{
+		"name": "Debug System",
+		"id": "debug_system",
+		"path": "res://Tests/Unit/test_debug_system.gd"
+	},
+	{
+		"name": "Testing Rooms & Utilities",
+		"id": "test_rooms",
+		"path": "res://Tests/Unit/test_test_rooms.gd"
 	}
 ]
 

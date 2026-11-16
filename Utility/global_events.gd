@@ -12,6 +12,7 @@ signal camera_shake(intensity: float, duration: float)
 signal enemy_died(death_position: Vector2, enemy_max_hp: float, killer_source: String)
 signal player_took_damage(amount: float, attacker_node: Node)
 signal player_dealt_damage(amount: float, target_node: Object, proc_coefficient: float)
+signal weapon_damage_dealt(source: String, amount: float, target_node: Object)
 @warning_ignore_restore("unused_signal")
 
 var boss_warnings: Dictionary = {
@@ -68,8 +69,8 @@ const CHARACTERS: Dictionary = {
 		"icon_color": Color(0.2, 0.2, 0.2), # Dark grey
 		"starting_weapon": "whip1",
 		"details": "char_punished_desc",
-		"base_stats": {},
-		"scaling_stats": {},
+		"base_stats": {"armor": 3, "maxhp": 100},
+		"scaling_stats": {"reflected_damage": 40},
 		"scaling_max_level": 20,
 		"shader_config": {"mix_hue": true, "mix_saturation": true}
 	}
@@ -162,11 +163,67 @@ func get_max_upgrade_slots() -> int:
 
 
 func restart_run() -> void:
+	Engine.time_scale = 1.0
+	StatsManager.clear_run_taint()
 	MusicController.fadeOutToSilence()
 	MusicController.unlockMusic()
 	MusicController.resetPlaylists()
 	get_tree().change_scene_to_file("res://World/world.tscn")
 	MusicController.fadeInFromSilence()
+
+func infer_attack_source(atk_node: Node) -> String:
+	if atk_node == null or not is_instance_valid(atk_node):
+		return "unknown"
+	var ks = atk_node.get("killer_source")
+	if ks != null and str(ks) != "":
+		return normalize_damage_source(str(ks))
+	if atk_node.owner != null and is_instance_valid(atk_node.owner):
+		var owner_ks = atk_node.owner.get("killer_source")
+		if owner_ks != null and str(owner_ks) != "":
+			return normalize_damage_source(str(owner_ks))
+	var parent := atk_node.get_parent()
+	if parent != null and is_instance_valid(parent):
+		var parent_ks = parent.get("killer_source")
+		if parent_ks != null and str(parent_ks) != "":
+			return normalize_damage_source(str(parent_ks))
+	for candidate in [atk_node, parent, atk_node.owner]:
+		if candidate == null or not is_instance_valid(candidate):
+			continue
+		var paths: Array[String] = []
+		if candidate.scene_file_path != "":
+			paths.append(candidate.scene_file_path)
+		var scr: Variant = candidate.get_script()
+		if scr != null and scr is Script and scr.resource_path != "":
+			paths.append(scr.resource_path)
+		for p in paths:
+			var idx := p.find("/Attack/")
+			if idx != -1:
+				var sub := p.substr(idx + 8)
+				var slash := sub.find("/")
+				if slash != -1:
+					return normalize_damage_source(sub.substr(0, slash))
+	if parent != null and atk_node.name in ["Area2D", "DamageBox", "HitBox"]:
+		return normalize_damage_source(str(parent.name))
+	return normalize_damage_source(str(atk_node.name))
+
+func normalize_damage_source(raw_source: String) -> String:
+	var s := raw_source.strip_edges().to_lower()
+	if s == "":
+		return "unknown"
+	match s:
+		"vampireknife": return "vampireknives"
+		"glassshard": return "glasslash"
+		"thorn ring", "thorn_ring": return "thornring"
+		"relicrocket", "relic_rocket": return "relicdrone"
+		"poison_gas", "poisongas": return "poisonbottle"
+		"willowisp_explosion": return "willowisp"
+		"impact_buckler_shockwave": return "impact_buckler"
+	return s
+
+func record_weapon_damage(source: String, amount: float, target_node: Object = null) -> void:
+	if amount <= 0.0:
+		return
+	weapon_damage_dealt.emit(normalize_damage_source(source), amount, target_node)
 	
 
 

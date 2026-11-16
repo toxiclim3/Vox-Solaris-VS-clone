@@ -2,6 +2,7 @@ extends PanelContainer
 
 @onready var lblName = $MarginContainer/VBoxContainer/HBoxContainer/lbl_name
 @onready var lblDescription = $MarginContainer/VBoxContainer/HBoxContainer2/lbl_description
+@onready var lblTargeting = get_node_or_null("MarginContainer/VBoxContainer/HBoxContainer/lbl_targeting")
 @onready var lblLevel = $MarginContainer/VBoxContainer/HBoxContainer/lbl_level
 @onready var itemIcon = $MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/ItemIcon
 @onready var focusFrame = $FocusFrame
@@ -20,7 +21,8 @@ func _ready():
 	connect("mouse_exited", _on_mouse_exited)
 	connect("focus_entered", _on_focus_entered)
 	connect("focus_exited", _on_focus_exited)
-	connect("selected_upgrade",Callable(player,"upgrade_character"))
+	if player:
+		connect("selected_upgrade", Callable(player, "upgrade_character"))
 	
 	focus_mode = FOCUS_ALL
 	if item == null:
@@ -29,7 +31,7 @@ func _ready():
 	
 	if item.ends_with("_endless"):
 		var base_name = item.trim_suffix("_endless")
-		var count = player.collected_endless.get(base_name, 0) + 1
+		var count = (player.collected_endless.get(base_name, 0) if player else 0) + 1
 		lblLevel.text = "∞ (+" + str(count) + ")"
 		
 		# Display specific scaling info
@@ -42,6 +44,7 @@ func _ready():
 		lblDescription.text = tr(UpgradeDb.UPGRADES[item]["details"])
 		lblLevel.text = tr(UpgradeDb.UPGRADES[item]["level"])
 
+	_update_targeting_badge()
 	itemIcon.texture = load(UpgradeDb.UPGRADES[item]["icon"])
 	
 	if lblName.has_theme_font_size_override("font_size"):
@@ -53,6 +56,18 @@ func _ready():
 			original_name_font_size = 16
 			
 	scale_name_to_fit()
+	call_deferred("scale_name_to_fit")
+
+func _update_targeting_badge() -> void:
+	if not lblTargeting:
+		return
+	var targeting_key: String = UpgradeDb.UPGRADES.get(item, {}).get("targeting", "")
+	if targeting_key != "":
+		lblTargeting.text = "[" + tr(targeting_key) + "]"
+		lblTargeting.visible = true
+	else:
+		lblTargeting.text = ""
+		lblTargeting.visible = false
 
 func _get_stat_description(stat_modifiers: Dictionary) -> String:
 	var descriptions = []
@@ -80,7 +95,10 @@ func _get_stat_description(stat_modifiers: Dictionary) -> String:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_TRANSLATION_CHANGED:
-		scale_name_to_fit()
+		if is_node_ready() and item != null and UpgradeDb.UPGRADES.has(item):
+			lblName.text = tr(UpgradeDb.UPGRADES[item]["displayname"])
+			_update_targeting_badge()
+		call_deferred("scale_name_to_fit")
 
 func scale_name_to_fit():
 	if original_name_font_size <= 0:
@@ -91,6 +109,20 @@ func scale_name_to_fit():
 	
 	var text_to_check = lblName.text
 	var available_width = lblName.size.x - padding
+	var hbox = lblName.get_parent() as HBoxContainer
+	if hbox and hbox.size.x > 0:
+		var separation = hbox.get_theme_constant("separation")
+		var used_width := 0.0
+		var icon_panel = hbox.get_node_or_null("PanelContainer") as Control
+		if icon_panel:
+			used_width += max(icon_panel.size.x, icon_panel.custom_minimum_size.x) + separation
+		if lblTargeting and lblTargeting.visible:
+			used_width += lblTargeting.get_combined_minimum_size().x + separation
+		if lblLevel:
+			used_width += lblLevel.get_combined_minimum_size().x + separation
+		available_width = hbox.size.x - used_width - padding
+	if available_width <= 0:
+		return
 	
 	var current_size = original_name_font_size
 	var text_size = font.get_string_size(text_to_check, HORIZONTAL_ALIGNMENT_LEFT, -1, current_size)

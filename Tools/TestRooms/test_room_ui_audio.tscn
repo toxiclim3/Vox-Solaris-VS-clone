@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://u14ud10r00m01"]
+
+[ext_resource type="Script" path="res://Tools/TestRooms/test_room_ui_audio.gd" id="1_test_room_ui_audio"]
+
+[node name="TestRoomUiAudio" type="Node2D"]
+script = ExtResource("1_test_room_ui_audio")

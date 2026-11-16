@@ -164,7 +164,8 @@ func _on_hurt_box_hurt(damage, angle, knockback_amount, killer_source: String = 
 	var p_dmg_mod = GlobalEvents.get_player_damage_modifier()
 	if player != null and player.has_method("get_damage_modifier"):
 		p_dmg_mod *= player.get_damage_modifier()
-	hp -= (damage * damage_multiplier * p_dmg_mod)
+	var dealt_damage = damage * damage_multiplier * p_dmg_mod
+	hp -= dealt_damage
 	if not isBoss and not is_in_group("boss"):
 		var kb_dir = angle
 		if kb_dir == Vector2.ZERO and attacker_node != null and attacker_node is Node2D:
@@ -174,6 +175,10 @@ func _on_hurt_box_hurt(damage, angle, knockback_amount, killer_source: String = 
 		knockback = Vector2.ZERO
 	
 	GlobalEvents.player_dealt_damage.emit(damage, self, proc_coefficient)
+	var source_name := killer_source
+	if source_name == "" and attacker_node != null:
+		source_name = str(attacker_node.name)
+	GlobalEvents.record_weapon_damage(source_name, dealt_damage, self)
 	
 	if hp <= 0:
 		death(killer_source)

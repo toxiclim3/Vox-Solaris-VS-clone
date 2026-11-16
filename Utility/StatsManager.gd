@@ -9,6 +9,20 @@ var total_deaths: int = 0
 var total_wins: int = 0
 var best_run_level: int = 0
 var best_run_time: int = 0
+var is_run_tainted: bool = false
+var allow_tainted_stats: bool = false
+
+signal run_taint_changed(tainted: bool)
+
+func mark_run_tainted() -> void:
+	if not is_run_tainted:
+		is_run_tainted = true
+		run_taint_changed.emit(true)
+
+func clear_run_taint() -> void:
+	if is_run_tainted:
+		is_run_tainted = false
+		run_taint_changed.emit(false)
 
 func _ready() -> void:
 	load_stats()
@@ -35,13 +49,16 @@ func save_stats() -> void:
 	config.save(SAVE_PATH)
 
 func register_kill(is_boss: bool) -> void:
+	if is_run_tainted and not allow_tainted_stats:
+		return
 	if is_boss:
 		boss_kills += 1
 	else:
 		enemy_kills += 1
-	save_stats()
 
 func register_end_run(won: bool) -> void:
+	if is_run_tainted and not allow_tainted_stats:
+		return
 	if won:
 		total_wins += 1
 	else:
@@ -49,6 +66,8 @@ func register_end_run(won: bool) -> void:
 	save_stats()
 
 func update_best_run(level: int, time: int) -> void:
+	if is_run_tainted and not allow_tainted_stats:
+		return
 	var updated = false
 	if level > best_run_level:
 		best_run_level = level

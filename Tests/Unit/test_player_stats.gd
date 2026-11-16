@@ -26,6 +26,20 @@ class MockGui extends Node:
 		levelPanel.free()
 		bossLevelPanel.free()
 
+class MockAttacker extends Node:
+	var received_damage: float = 0.0
+	var received_knockback: float = 0.0
+	var killer_source: String = ""
+	var attacker_node: Node = null
+	var hit_count: int = 0
+	
+	func _on_hurt_box_hurt(damage: float, _angle: Vector2, knockback: float, p_killer_source: String = "", p_attacker: Node = null, _proc: float = 1.0) -> void:
+		received_damage = damage
+		received_knockback = knockback
+		killer_source = p_killer_source
+		attacker_node = p_attacker
+		hit_count += 1
+
 func _create_player() -> Dictionary:
 	var player_script = load("res://Player/player.gd")
 	var player = player_script.new()
@@ -43,15 +57,26 @@ func _create_player() -> Dictionary:
 	var mock_gui = MockGui.new()
 	player.gui = mock_gui
 	
+	var snd_hurt = AudioStreamPlayer2D.new()
+	var snd_hurt_bad = AudioStreamPlayer2D.new()
+	player.sndHurt = snd_hurt
+	player.sndHurtBad = snd_hurt_bad
+	
 	return {
 		"player": player,
 		"hb": hb,
 		"cs": cs,
 		"weapons": weapons,
-		"gui": mock_gui
+		"gui": mock_gui,
+		"snd_hurt": snd_hurt,
+		"snd_hurt_bad": snd_hurt_bad
 	}
 
 func _destroy_player(ctx: Dictionary) -> void:
+	if ctx.has("snd_hurt_bad") and is_instance_valid(ctx["snd_hurt_bad"]):
+		ctx["snd_hurt_bad"].free()
+	if ctx.has("snd_hurt") and is_instance_valid(ctx["snd_hurt"]):
+		ctx["snd_hurt"].free()
 	ctx["gui"].cleanup()
 	ctx["gui"].free()
 	ctx["weapons"].free()
@@ -325,3 +350,116 @@ func test_endless_stacking_modifiers() -> void:
 	assert_almost_eq(player.grab_shape.shape.radius, 55.0, 0.001, "Endless grab range")
 	
 	_destroy_player(ctx)
+
+# -----------------------------------------------------------------------------
+# 6. The Punished / Retaliation Archetype Tests
+# -----------------------------------------------------------------------------
+
+func test_punished_character_base_stats() -> void:
+	var orig_char = GlobalEvents.selected_character
+	GlobalEvents.selected_character = "punished"
+	
+	var ctx = _create_player()
+	var player = ctx["player"]
+	
+	# Verify GlobalEvents definition
+	assert_eq(GlobalEvents.CHARACTERS["punished"]["starting_weapon"], "whip1", "Punished starting weapon must be whip1")
+	assert_eq(GlobalEvents.CHARACTERS["punished"]["base_stats"]["armor"], 3, "Punished base armor must be 3")
+	assert_eq(GlobalEvents.CHARACTERS["punished"]["base_stats"]["maxhp"], 100, "Punished base maxhp must be 100")
+	assert_eq(GlobalEvents.CHARACTERS["punished"]["scaling_stats"]["reflected_damage"], 40, "Punished scaling reflected_damage must be 40")
+	assert_eq(GlobalEvents.CHARACTERS["punished"]["scaling_max_level"], 20, "Punished scaling_max_level must be 20")
+	
+	# Verify runtime stats after applying modifiers
+	player.apply_stat_modifiers()
+	assert_eq(player.armor, 3, "Player armor should be initialized to base_stats armor (3)")
+	assert_eq(player.base_maxhp, 100, "Player base_maxhp should be 100")
+	assert_eq(player.maxhp, 100, "Player maxhp should be 100")
+	assert_eq(player.hp, 100, "Player hp should match maxhp (100)")
+	assert_eq(int(player.healthBar.max_value), 100, "HealthBar max_value should match maxhp")
+	assert_eq(int(player.healthBar.value), 100, "HealthBar value should match hp")
+	
+	_destroy_player(ctx)
+	GlobalEvents.selected_character = orig_char
+
+func test_punished_character_passive_scaling() -> void:
+	var orig_char = GlobalEvents.selected_character
+	GlobalEvents.selected_character = "punished"
+	
+	var ctx = _create_player()
+	var player = ctx["player"]
+	
+	# Level 1: No scaling bonus applied (0.0 reflected damage)
+	player.experience_level = 1
+	player.apply_stat_modifiers()
+	assert_almost_eq(player.reflected_damage, 0.0, 0.001, "Level 1 reflected damage should be 0.0")
+	
+	# Level 10: Progress = (10 - 1) / (20 - 1) = 9 / 19 ≈ 0.473684... -> 40 * (9 / 19) ≈ 18.947
+	player.experience_level = 10
+	player.apply_stat_modifiers()
+	var expected_lvl_10 = 40.0 * (9.0 / 19.0)
+	assert_almost_eq(player.reflected_damage, expected_lvl_10, 0.01, "Level 10 reflected damage should scale to ~18.95")
+	
+	# Level 20: Full scaling bonus (40.0 reflected damage)
+	player.experience_level = 20
+	player.apply_stat_modifiers()
+	assert_almost_eq(player.reflected_damage, 40.0, 0.001, "Level 20 reflected damage should be exactly 40.0")
+	
+	# Level 25: Capped at scaling_max_level (40.0 reflected damage)
+	player.experience_level = 25
+	player.apply_stat_modifiers()
+	assert_almost_eq(player.reflected_damage, 40.0, 0.001, "Level 25 reflected damage should remain capped at 40.0")
+	
+	_destroy_player(ctx)
+	GlobalEvents.selected_character = orig_char
+
+func test_punished_reflection_damage() -> void:
+	var orig_char = GlobalEvents.selected_character
+	GlobalEvents.selected_character = "punished"
+	
+	var ctx = _create_player()
+	var player = ctx["player"]
+	
+	var mock_attacker = MockAttacker.new()
+	
+	# At Level 20, reflected_damage is 40.0
+	player.experience_level = 20
+	player.apply_stat_modifiers()
+	assert_almost_eq(player.reflected_damage, 40.0, 0.001, "Punished reflected damage at level 20")
+	
+	# Trigger damage on player with mock attacker
+	player._on_hurt_box_hurt(10.0, Vector2.ZERO, 0.0, "TestEnemy", mock_attacker)
+	
+	assert_eq(mock_attacker.hit_count, 1, "Attacker should receive 1 retaliation strike")
+	assert_almost_eq(mock_attacker.received_damage, 40.0, 0.001, "Attacker should receive exactly reflected_damage (40.0)")
+	assert_eq(mock_attacker.attacker_node, player, "Attacker should receive player reference as damage dealer")
+	
+	# When reflected_damage is 0.0, attacker should NOT receive retaliation
+	player.reflected_damage = 0.0
+	mock_attacker.hit_count = 0
+	mock_attacker.received_damage = 0.0
+	player._on_hurt_box_hurt(10.0, Vector2.ZERO, 0.0, "TestEnemy", mock_attacker)
+	assert_eq(mock_attacker.hit_count, 0, "Attacker should not receive retaliation when reflected_damage is 0")
+	assert_almost_eq(mock_attacker.received_damage, 0.0, 0.001, "No damage delivered when reflected_damage is 0")
+	
+	mock_attacker.free()
+	_destroy_player(ctx)
+	GlobalEvents.selected_character = orig_char
+
+func test_punished_manual_base_maxhp_override_preserved() -> void:
+	var orig_char = GlobalEvents.selected_character
+	GlobalEvents.selected_character = "punished"
+	
+	var ctx = _create_player()
+	var player = ctx["player"]
+	
+	# Explicitly override base_maxhp to custom value before apply_stat_modifiers
+	player.base_maxhp = 150
+	player.maxhp = 150
+	player.hp = 150
+	player.apply_stat_modifiers()
+	
+	assert_eq(player.base_maxhp, 150, "Manual unit test base_maxhp override should be preserved")
+	assert_eq(player.maxhp, 150, "Manual unit test maxhp override should be preserved")
+	
+	_destroy_player(ctx)
+	GlobalEvents.selected_character = orig_char

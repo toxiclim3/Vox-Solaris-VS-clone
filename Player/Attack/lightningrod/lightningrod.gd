@@ -9,6 +9,7 @@ var attack_size = 1.0
 var current_chain = 0
 var current_pos = Vector2.ZERO
 var hit_positions = []
+var hit_targets: Array = []
 var hit_once_array = []
 var active = true
 
@@ -23,8 +24,10 @@ const COLOR_CORE = Color(1.00, 0.95, 1.00, 1.00)
 var lines_to_draw = [] # Array of dicts: {"start": Vector2, "end": Vector2, "alpha": 1.0}
 
 func _ready():
+	z_index = 20
 	# Configure based on level
-	level = player.lightningrod_level
+	if is_instance_valid(player) and "lightningrod_level" in player:
+		level = player.lightningrod_level
 	match level:
 		1:
 			damage = 10
@@ -40,19 +43,29 @@ func _ready():
 			chains = 4
 			
 	# Endless scaling
-	damage += player.lightningrod_endless_level * 2.0
+	if is_instance_valid(player) and "lightningrod_endless_level" in player:
+		damage += player.lightningrod_endless_level * 2.0
 	
-	scale = Vector2(1.0, 1.0) * (1 + player.spell_size)
+	if is_instance_valid(player) and "spell_size" in player:
+		scale = Vector2(1.0, 1.0) * (1 + player.spell_size)
 	
-	global_position = Vector2.ZERO
-	current_pos = player.global_position
+	if is_instance_valid(player):
+		current_pos = player.global_position
+	else:
+		current_pos = global_position
+		
 	# Find first target
-	var first_target = player.get_random_target()
-	if first_target == Vector2.INF:
+	var first_target = Vector2.INF
+	if is_instance_valid(player):
+		if player.has_method("get_strongest_target"):
+			first_target = player.get_strongest_target()
+		elif player.has_method("get_random_target"):
+			first_target = player.get_random_target()
+	if first_target != null and first_target != Vector2.INF:
+		strike(first_target)
+	elif is_instance_valid(player):
 		queue_free()
 		return
-		
-	strike(first_target)
 
 func _physics_process(delta):
 	# Fade out drawn lines
@@ -67,33 +80,78 @@ func _physics_process(delta):
 	if not active and not any_visible:
 		queue_free()
 
+func _is_target_valid(body) -> bool:
+	if is_instance_valid(player) and player.has_method("_is_enemy_valid_target"):
+		return player._is_enemy_valid_target(body)
+	if not is_instance_valid(body) or body.is_queued_for_deletion():
+		return false
+	if body.get("is_dying") == true or (body.get("hp") != null and body.hp <= 0):
+		return false
+	if not body.visible:
+		return false
+	var sprite_node = body.get_node_or_null("EnemyBase/Sprite2D")
+	if not sprite_node:
+		sprite_node = body.get_node_or_null("Sprite2D")
+	if sprite_node and not sprite_node.visible:
+		return false
+	var hurt_box = body.get_node_or_null("EnemyBase/HurtBox")
+	if not hurt_box:
+		hurt_box = body.get_node_or_null("HurtBox")
+	if hurt_box:
+		var cs = hurt_box.get_node_or_null("CollisionShape2D")
+		if cs and cs.disabled:
+			return false
+	return true
+
+func _find_entity_at(pos: Vector2):
+	if is_instance_valid(player) and "enemy_close" in player:
+		for body in player.enemy_close:
+			if is_instance_valid(body) and _is_target_valid(body) and body.global_position.distance_squared_to(pos) <= 64.0:
+				return body
+	var swarm = get_tree().get_first_node_in_group("swarm_manager")
+	if swarm and "swarm_data" in swarm:
+		for enemy in swarm.swarm_data:
+			if not enemy.is_dead and enemy.hp > 0 and enemy.position.distance_squared_to(pos) <= 64.0:
+				return enemy
+	return null
+
 func get_next_target(from_pos: Vector2) -> Vector2:
 	var closest_pos = Vector2.INF
 	var min_dist = INF
+	var closest_target = null
 	
-	for body in player.enemy_close:
-		if is_instance_valid(body):
-			var pos = body.global_position
-			var dist = from_pos.distance_squared_to(pos)
-			if dist < min_dist and not is_hit(pos) and dist < 90000: # 300px range limit for chain
-				min_dist = dist
-				closest_pos = pos
-				
-	var swarm = get_tree().get_first_node_in_group("swarm_manager")
-	if swarm:
-		for enemy in swarm.swarm_data:
-			if not enemy.is_dead:
-				var pos = enemy.position
+	if is_instance_valid(player) and "enemy_close" in player:
+		for body in player.enemy_close:
+			if is_instance_valid(body) and _is_target_valid(body) and not hit_targets.has(body):
+				var pos = body.global_position
 				var dist = from_pos.distance_squared_to(pos)
-				if dist < min_dist and not is_hit(pos) and dist < 90000:
+				if dist > 16.0 and dist < min_dist and dist < 90000.0: # 300px range limit for chain
 					min_dist = dist
 					closest_pos = pos
+					closest_target = body
+					
+	var swarm = get_tree().get_first_node_in_group("swarm_manager")
+	if swarm and "swarm_data" in swarm:
+		for enemy in swarm.swarm_data:
+			if not enemy.is_dead and enemy.hp > 0 and not hit_targets.has(enemy):
+				var pos = enemy.position
+				var dist = from_pos.distance_squared_to(pos)
+				if dist > 16.0 and dist < min_dist and dist < 90000.0:
+					min_dist = dist
+					closest_pos = pos
+					closest_target = enemy
+					
+	if closest_target != null:
+		if not hit_targets.has(closest_target):
+			hit_targets.append(closest_target)
+		if not hit_once_array.has(closest_target):
+			hit_once_array.append(closest_target)
 					
 	return closest_pos
 
 func is_hit(pos: Vector2) -> bool:
 	for hit_pos in hit_positions:
-		if hit_pos.distance_squared_to(pos) < 400: # 20px overlap check
+		if hit_pos.distance_squared_to(pos) < 16.0:
 			return true
 	return false
 
@@ -108,7 +166,14 @@ func strike(target_pos: Vector2):
 	
 	hit_positions.append(target_pos)
 	
-	# Add line to draw queue (using global positions since root is at Vector2.ZERO)
+	var entity = _find_entity_at(target_pos)
+	if entity != null:
+		if not hit_targets.has(entity):
+			hit_targets.append(entity)
+		if not hit_once_array.has(entity):
+			hit_once_array.append(entity)
+	
+	# Add line to draw queue (using global positions, converted in _draw via to_local)
 	lines_to_draw.append({"start": current_pos, "end": target_pos, "alpha": 1.0})
 	
 	current_pos = target_pos
@@ -144,8 +209,8 @@ func _draw_arc(p0: Vector2, p1: Vector2, roughness: float, depth: int, color: Co
 func _draw():
 	for line in lines_to_draw:
 		if line.alpha <= 0: continue
-		var p0 = line.start
-		var p1 = line.end
+		var p0 = to_local(line.start)
+		var p1 = to_local(line.end)
 		
 		# Set alpha for colors
 		var c_mid = COLOR_MID

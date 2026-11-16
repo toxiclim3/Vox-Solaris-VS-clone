@@ -159,3 +159,35 @@ func test_passive_upgrade_families_exist() -> void:
 			assert_has(upgrades, key, "Expected passive tier '%s' in UpgradeDb" % key)
 			assert_eq(upgrades[key].get("type"), "upgrade",
 				"Key '%s' must be of type 'upgrade'" % key)
+
+func test_weapon_targeting_schema() -> void:
+	var valid_targets = [
+		"target_closest",
+		"target_frontal",
+		"target_crowd",
+		"target_strongest",
+		"target_direction",
+		"target_random"
+	]
+	var weapon_families = [
+		"icespear", "javelin", "tornado", "poisonbottle",
+		"ritualcircle", "lightningrod", "whip", "glasslash", "vampireknives"
+	]
+	for prefix in weapon_families:
+		var keys: Array[String] = []
+		for tier in range(1, 5):
+			keys.append("%s%d" % [prefix, tier])
+		keys.append("%s_endless" % prefix)
+		for key in keys:
+			assert_has(upgrades, key, "Expected weapon entry '%s' in UpgradeDb" % key)
+			var targeting = upgrades[key].get("targeting", "")
+			assert_true(targeting is String and not targeting.is_empty(),
+				"Entry '%s' must define non-empty 'targeting' key" % key)
+			assert_has(valid_targets, targeting,
+				"Entry '%s' has invalid targeting '%s'" % [key, targeting])
+			if prefix in ["whip", "glasslash"]:
+				assert_eq(targeting, "target_closest",
+					"Melee weapon '%s' must use 'target_closest'" % key)
+			else:
+				assert_ne(targeting, "target_closest",
+					"Non-melee weapon '%s' must not use 'target_closest'" % key)

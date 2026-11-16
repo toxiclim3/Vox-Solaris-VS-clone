@@ -38,6 +38,8 @@ func _on_area_entered(area):
 				knockback = area.knockback_amount
 			if not area.get("killer_source") == null:
 				killer_source = area.killer_source
+			if killer_source == "":
+				killer_source = GlobalEvents.infer_attack_source(area)
 			
 			# Find the actual body node that handles damage (traversing up from hitBox)
 			var attacker_node = area.owner

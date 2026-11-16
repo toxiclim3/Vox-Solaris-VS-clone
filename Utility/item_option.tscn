@@ -91,6 +91,15 @@ layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
 
+[node name="lbl_targeting" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1427683333]
+visible = false
+layout_mode = 2
+theme = ExtResource("3_regular")
+theme_override_colors/font_color = Color(0.85, 0.82, 0.65, 1)
+theme_override_font_sizes/font_size = 10
+text = ""
+vertical_alignment = 1
+
 [node name="lbl_level" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1427683332]
 layout_mode = 2
 theme = ExtResource("2_header")

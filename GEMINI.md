@@ -26,8 +26,8 @@ This project is a **Vampire Survivors clone** built in **Godot 4.6**, featuring 
 - **GUI Controller**: `res://Player/gui.gd` — the master GUI script. Manages: level-up panels, boss reward panels, pause/settings menus, death panel, debug menus, timer, XP bar, collected items display.
 - **Boss UI**: `res://Player/boss_ui.gd` — dedicated boss health bar, warning banners, particle effects.
 - **Pickups**: `res://Objects/pickup.gd` — handles both XP gems (tiered: green/blue/red) and XP magnets (collects all gems on map).
-- **Tech Debt**: `res://tech_debt.md` — central tracker for known visual quirks, deferred fixes, and engine-level limitations.
-- **Design Guidelines**: `res://design_guidelines.md` — authoritative design specifications for characters, items, weapons, stat budgets, and batch implementation workflows.
+- **Tech Debt**: `res://docs/tech_debt.md` — central tracker for known visual quirks, deferred fixes, and engine-level limitations.
+- **Design Guidelines**: `res://docs/design_guidelines.md` — authoritative design specifications for characters, items, weapons, stat budgets, and batch implementation workflows.
 
 ### Key Utility Systems
 - **Shader Prewarmer**: `res://Utility/shader_prewarmer.gd` — handles background shader compilation to prevent runtime micro-stuttering.
@@ -78,7 +78,7 @@ Key signals to be aware of:
 7. **Weapon Pattern**: When adding new weapons, follow the established spawner pattern: create `<weapon>_spawner.gd` + `<weapon>.gd` + `<weapon>.tscn` in `res://Player/Attack/<WeaponName>/`, and add all levels to `upgrade_db.gd`.
 8. **GUI Split**: Player GUI logic lives in `gui.gd` (not `player.gd`). `player.gd` calls gui helper functions. Boss-specific UI is in `boss_ui.gd`. The `%HealthBar` stays under `player.gd` because it's physically parented to the player sprite.
 9. **Python is available**: Python is installed on the host machine, and so is pillow, ffmpeg, and godot (as in, added to PATH). If you need any extra programs, tell the user.
-10. **Technical Debt Accountability**: Before attempting a "fix" for a known visual or systemic quirk, check `res://tech_debt.md`. If a requested fix is deferred due to prohibitive complexity, document the rationale in that file.
+10. **Technical Debt Accountability**: Before attempting a "fix" for a known visual or systemic quirk, check `res://docs/tech_debt.md`. If a requested fix is deferred due to prohibitive complexity, document the rationale in that file.
 11. **Start-Loop-End Animation Rule**: Any persistent or timed AOE effect (e.g., Poison Gas, Ritual Circle) must follow the `PhasedAnimator` pattern (Start -> Loop -> End) to ensure visual continuity and prevent "popping" upon weapon expiration.
 12. **Asset Alignment Standards**: Always trim transparent padding from weapon and item sprites used in the UI. Alignment logic in `ItemOption` and `ItemContainer` assumes tight bounding boxes.
 13. **Flexible Asset Rendering**: Whips, chains, or flexible Line2D-based weapons must use a 3-slice shader (similar to `res://Utility/whip_3slice.gdshader`) to preserve the integrity of the handle/tip while the body stretches.
@@ -93,3 +93,4 @@ Key signals to be aware of:
     - **Dead Code Discipline**: Remove obsolete, backup, or placeholder code (e.g., test characters, dead functions, unused dictionaries) rather than keeping them in production dictionaries or scripts.
     - **Pragmatic Testing**: Unit tests must validate actual runtime calculations (stat formulas, prerequisite logic, difficulty multipliers), not verify speculative edge cases or test frameworks for non-existent components.
     - **Direct Solutions Over Factory Patterns**: For weapons, items, and UI elements, follow established, direct node-instantiation patterns rather than introducing speculative factory or reflection mechanisms.
+20. **Subagent Model Selection**: When invoking subagents or orchestrating multi-agent workflows, orchestrators must use the `pro` model, while worker subagents must use the `flash` or `flash_lite` models depending on task complexity.

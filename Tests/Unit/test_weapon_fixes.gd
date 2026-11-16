@@ -438,3 +438,483 @@ func on_hit_enemy(e):
 	
 	test_root.free()
 
+func test_lightning_rod_visual_coordinate_alignment() -> void:
+	var tree = Engine.get_main_loop() as SceneTree
+	var test_root = Node2D.new()
+	tree.root.add_child(test_root)
+
+	var rod_scene = load("res://Player/Attack/lightningrod/lightningrod.tscn")
+	assert_not_null(rod_scene, "lightningrod.tscn must load")
+
+	# Test across spell_size = 0.0 and spell_size = 0.5
+	for spell_size in [0.0, 0.5]:
+		var rod = rod_scene.instantiate()
+		rod.global_position = Vector2(250, 350)
+		rod.scale = Vector2.ONE * (1.0 + spell_size)
+		test_root.add_child(rod)
+
+		# Check z_index and top_level
+		assert_eq(rod.z_index, 20, "LightningRod z_index must be 20")
+		assert_true(rod.top_level, "LightningRod must be top_level")
+
+		var target_pos = Vector2(800, 600)
+		rod.strike(target_pos)
+
+		assert_eq(rod.lines_to_draw.size(), 1, "Must have 1 line to draw after strike")
+		var line = rod.lines_to_draw[0]
+		assert_eq(line.end, target_pos, "Stored line end must match target_pos")
+
+		# Verify local-to-global transform maps endpoint exactly to target_pos
+		var p1_local = rod.to_local(line.end)
+		var p1_global = rod.to_global(p1_local)
+		assert_almost_eq(p1_global.x, target_pos.x, 0.01, "Transformed visual endpoint X must equal target global X at spell_size %s" % spell_size)
+		assert_almost_eq(p1_global.y, target_pos.y, 0.01, "Transformed visual endpoint Y must equal target global Y at spell_size %s" % spell_size)
+
+		# Verify collision shape global position matches target_pos
+		assert_almost_eq(rod.collision.global_position.x, target_pos.x, 0.01, "CollisionShape2D global X must equal target global X")
+		assert_almost_eq(rod.collision.global_position.y, target_pos.y, 0.01, "CollisionShape2D global Y must equal target global Y")
+
+		rod.free()
+
+	test_root.free()
+
+func test_player_target_validity_filters_invalid_enemies() -> void:
+	var tree = Engine.get_main_loop() as SceneTree
+	var test_root = Node2D.new()
+	tree.root.add_child(test_root)
+
+	var dummy_gui_script = GDScript.new()
+	dummy_gui_script.source_code = """extends Node
+func adjust_gui_collection(_upgrade): pass
+func set_expbar(_c, _m): pass
+func show_levelup(_o, _l): pass
+func hide_level_panels(): pass
+func set_level_text(_l): pass
+"""
+	dummy_gui_script.reload()
+	var dummy_gui = dummy_gui_script.new()
+	dummy_gui.add_to_group("gui")
+	dummy_gui.add_to_group("gui_layer")
+	test_root.add_child(dummy_gui)
+
+	var player_scene = load("res://Player/player.tscn")
+	assert_not_null(player_scene, "player.tscn must load")
+	var player = player_scene.instantiate()
+	test_root.add_child(player)
+	player.global_position = Vector2(100, 100)
+	player.enemy_close = []
+
+	var dummy_enemy_script = GDScript.new()
+	dummy_enemy_script.source_code = """extends CharacterBody2D
+var hp: float = 50.0
+var is_dying: bool = false
+"""
+	dummy_enemy_script.reload()
+
+	# Helper to create a dummy CharacterBody2D enemy with EnemyBase structure
+	var make_enemy = func(pos: Vector2, hp: float, is_dying: bool, visible: bool, sprite_visible: bool, hurtbox_disabled: bool):
+		var body = CharacterBody2D.new()
+		body.set_script(dummy_enemy_script)
+		body.global_position = pos
+		body.hp = hp
+		body.is_dying = is_dying
+		body.visible = visible
+		var base = Node2D.new()
+		base.name = "EnemyBase"
+		body.add_child(base)
+		var sprite = Sprite2D.new()
+		sprite.name = "Sprite2D"
+		sprite.visible = sprite_visible
+		base.add_child(sprite)
+		var hurtbox = Area2D.new()
+		hurtbox.name = "HurtBox"
+		var cs = CollisionShape2D.new()
+		cs.name = "CollisionShape2D"
+		cs.disabled = hurtbox_disabled
+		hurtbox.add_child(cs)
+		base.add_child(hurtbox)
+		test_root.add_child(body)
+		return body
+
+	# 1. Valid enemy
+	var valid_enemy = make_enemy.call(Vector2(150, 100), 50.0, false, true, true, false)
+	assert_true(player._is_enemy_valid_target(valid_enemy), "Valid enemy must pass validation")
+
+	# 2. Dead enemy (hp <= 0)
+	var dead_enemy = make_enemy.call(Vector2(160, 100), 0.0, false, true, true, false)
+	assert_false(player._is_enemy_valid_target(dead_enemy), "Dead enemy (hp <= 0) must fail validation")
+
+	# 3. Dying enemy (is_dying == true)
+	var dying_enemy = make_enemy.call(Vector2(170, 100), 50.0, true, true, true, false)
+	assert_false(player._is_enemy_valid_target(dying_enemy), "Dying enemy (is_dying == true) must fail validation")
+
+	# 4. Queued for deletion enemy
+	var queued_enemy = make_enemy.call(Vector2(180, 100), 50.0, false, true, true, false)
+	queued_enemy.queue_free()
+	assert_false(player._is_enemy_valid_target(queued_enemy), "Queued for deletion enemy must fail validation")
+
+	# 5. Invisible root enemy (e.g. dissolved)
+	var invisible_enemy = make_enemy.call(Vector2(190, 100), 50.0, false, false, true, false)
+	assert_false(player._is_enemy_valid_target(invisible_enemy), "Invisible root enemy must fail validation")
+
+	# 6. Invisible sprite enemy (e.g. telegraphing Ancient Amoeba)
+	var hidden_sprite_enemy = make_enemy.call(Vector2(200, 100), 50.0, false, true, false, false)
+	assert_false(player._is_enemy_valid_target(hidden_sprite_enemy), "Enemy with invisible sprite must fail validation")
+
+	# 7. Disabled hurtbox enemy (e.g. invulnerable state)
+	var disabled_hb_enemy = make_enemy.call(Vector2(210, 100), 50.0, false, true, true, true)
+	assert_false(player._is_enemy_valid_target(disabled_hb_enemy), "Enemy with disabled hurtbox must fail validation")
+
+	# Test player.get_random_target() and get_closest_target() filtering
+	player.enemy_close = [dead_enemy, dying_enemy, queued_enemy, invisible_enemy, hidden_sprite_enemy, disabled_hb_enemy]
+	assert_eq(player.get_random_target(), Vector2.INF, "get_random_target must return Vector2.INF when all enemies in enemy_close are invalid")
+	assert_eq(player.get_closest_target(), Vector2.INF, "get_closest_target must return Vector2.INF when all enemies in enemy_close are invalid")
+
+	# Adding valid enemy should return its position
+	player.enemy_close.append(valid_enemy)
+	assert_eq(player.get_random_target(), valid_enemy.global_position, "get_random_target must return valid enemy position")
+	assert_eq(player.get_closest_target(), valid_enemy.global_position, "get_closest_target must return valid enemy position")
+
+	test_root.free()
+
+func test_lightning_rod_dense_swarm_chaining() -> void:
+	var tree = Engine.get_main_loop() as SceneTree
+	var test_root = Node2D.new()
+	tree.root.add_child(test_root)
+
+	var sm_scene = load("res://Utility/swarm_manager.tscn")
+	var sm = sm_scene.instantiate()
+	test_root.add_child(sm)
+	sm.add_to_group("swarm_manager")
+
+	var img = Image.create(16, 16, false, Image.FORMAT_RGBA8)
+	var tex = ImageTexture.create_from_image(img)
+	var type_id = sm.register_enemy_type(tex, 8.0)
+
+	# Add 4 dense swarm enemies 10px apart (< 20px, which previously broke under is_hit spatial check)
+	sm.add_enemy(Vector2(100, 100), 50.0, 50.0, 50.0, 1, 1, type_id)
+	sm.add_enemy(Vector2(110, 100), 50.0, 50.0, 50.0, 1, 1, type_id)
+	sm.add_enemy(Vector2(120, 100), 50.0, 50.0, 50.0, 1, 1, type_id)
+	sm.add_enemy(Vector2(130, 100), 50.0, 50.0, 50.0, 1, 1, type_id)
+
+	var e0 = sm.swarm_data[0]
+	var e1 = sm.swarm_data[1]
+	var e2 = sm.swarm_data[2]
+	var e3 = sm.swarm_data[3]
+
+	var rod_scene = load("res://Player/Attack/lightningrod/lightningrod.tscn")
+	var rod = rod_scene.instantiate()
+	test_root.add_child(rod)
+	rod.chains = 3
+
+	# Strike first enemy
+	rod.strike(e0.position)
+	assert_true(rod.hit_targets.has(e0), "First strike must record e0 in hit_targets")
+	assert_true(rod.hit_once_array.has(e0), "First strike must record e0 in hit_once_array")
+
+	# Chain 1: Should find e1 (10px away from e0)
+	var target1 = rod.get_next_target(e0.position)
+	assert_eq(target1, e1.position, "Chain 1 must find e1 at 10px distance without spatial 20px exclusion failure")
+	assert_true(rod.hit_targets.has(e1), "Chain 1 must record e1 in hit_targets")
+
+	# Chain 2: Should find e2 (10px away from e1)
+	var target2 = rod.get_next_target(target1)
+	assert_eq(target2, e2.position, "Chain 2 must find e2 at 10px distance")
+	assert_true(rod.hit_targets.has(e2), "Chain 2 must record e2 in hit_targets")
+
+	# Chain 3: Should find e3 (10px away from e2)
+	var target3 = rod.get_next_target(target2)
+	assert_eq(target3, e3.position, "Chain 3 must find e3 at 10px distance")
+	assert_true(rod.hit_targets.has(e3), "Chain 3 must record e3 in hit_targets")
+
+	# Chain 4: All 4 are in hit_targets; should return Vector2.INF
+	var target4 = rod.get_next_target(target3)
+	assert_eq(target4, Vector2.INF, "Chain 4 must return Vector2.INF when all swarm enemies have been hit")
+
+	assert_eq(rod.hit_targets.size(), 4, "All 4 distinct swarm enemies must be tracked in hit_targets")
+
+	test_root.free()
+
+func test_freed_enemy_handling_in_player_and_lightning_rod() -> void:
+	var tree = Engine.get_main_loop() as SceneTree
+	var test_root = Node2D.new()
+	tree.root.add_child(test_root)
+
+	var dummy_gui_script = GDScript.new()
+	dummy_gui_script.source_code = """extends Node
+func adjust_gui_collection(_upgrade): pass
+func set_expbar(_c, _m): pass
+func show_levelup(_o, _l): pass
+func hide_level_panels(): pass
+func set_level_text(_l): pass
+"""
+	dummy_gui_script.reload()
+	var dummy_gui = dummy_gui_script.new()
+	dummy_gui.add_to_group("gui")
+	dummy_gui.add_to_group("gui_layer")
+	test_root.add_child(dummy_gui)
+
+	var player_scene = load("res://Player/player.tscn")
+	assert_not_null(player_scene, "player.tscn must load")
+	var player = player_scene.instantiate()
+	test_root.add_child(player)
+	player.global_position = Vector2(100, 100)
+	player.enemy_close = []
+
+	var rod_scene = load("res://Player/Attack/lightningrod/lightningrod.tscn")
+	assert_not_null(rod_scene, "lightningrod.tscn must load")
+	var rod = rod_scene.instantiate()
+	rod.player = player
+	test_root.add_child(rod)
+
+	# Create an enemy and free it immediately to produce a <Freed Object>
+	var enemy = Node2D.new()
+	test_root.add_child(enemy)
+	player.enemy_close = [enemy]
+	enemy.free()
+
+	# Assert that helper validity checks handle <Freed Object> safely
+	assert_false(player._is_enemy_valid_target(enemy), "_is_enemy_valid_target must return false on freed object without engine type crash")
+	assert_false(rod._is_target_valid(enemy), "_is_target_valid must return false on freed object without engine type crash")
+
+	# Assert player targeting returns Vector2.INF without script error
+	var random_target = player.get_random_target()
+	assert_eq(random_target, Vector2.INF, "player.get_random_target must return Vector2.INF when enemy in enemy_close is freed")
+
+	var closest_target = player.get_closest_target()
+	assert_eq(closest_target, Vector2.INF, "player.get_closest_target must return Vector2.INF when enemy in enemy_close is freed")
+
+	# Assert rod chaining returns Vector2.INF without script error or crashing at (0, 0)
+	var next_target = rod.get_next_target(Vector2.ZERO)
+	assert_eq(next_target, Vector2.INF, "rod.get_next_target must return Vector2.INF when enemy in enemy_close is freed")
+
+	# Verify with both a freed object and a valid enemy in enemy_close
+	var dummy_enemy_script = GDScript.new()
+	dummy_enemy_script.source_code = """extends CharacterBody2D
+var hp: float = 50.0
+var is_dying: bool = false
+"""
+	dummy_enemy_script.reload()
+	var valid_enemy = CharacterBody2D.new()
+	valid_enemy.set_script(dummy_enemy_script)
+	valid_enemy.global_position = Vector2(150, 100)
+	var base = Node2D.new()
+	base.name = "EnemyBase"
+	valid_enemy.add_child(base)
+	var sprite = Sprite2D.new()
+	sprite.name = "Sprite2D"
+	base.add_child(sprite)
+	var hurtbox = Area2D.new()
+	hurtbox.name = "HurtBox"
+	var cs = CollisionShape2D.new()
+	cs.name = "CollisionShape2D"
+	hurtbox.add_child(cs)
+	base.add_child(hurtbox)
+	test_root.add_child(valid_enemy)
+
+	player.enemy_close = [enemy, valid_enemy]
+	assert_eq(player.get_random_target(), valid_enemy.global_position, "get_random_target must return valid enemy position even when enemy_close has freed object")
+	assert_eq(player.get_closest_target(), valid_enemy.global_position, "get_closest_target must return valid enemy position even when enemy_close has freed object")
+	assert_eq(rod.get_next_target(Vector2.ZERO), valid_enemy.global_position, "rod.get_next_target must return valid enemy position even when enemy_close has freed object")
+
+	test_root.free()
+
+func _setup_targeting_context() -> Dictionary:
+	var tree = Engine.get_main_loop() as SceneTree
+	var test_root = Node2D.new()
+	tree.root.add_child(test_root)
+
+	var dummy_gui_script = GDScript.new()
+	dummy_gui_script.source_code = """extends Node
+func adjust_gui_collection(_upgrade): pass
+func set_expbar(_c, _m): pass
+func show_levelup(_o, _l): pass
+func hide_level_panels(): pass
+func set_level_text(_l): pass
+"""
+	dummy_gui_script.reload()
+	var dummy_gui = dummy_gui_script.new()
+	dummy_gui.add_to_group("gui")
+	dummy_gui.add_to_group("gui_layer")
+	test_root.add_child(dummy_gui)
+
+	var player_scene = load("res://Player/player.tscn")
+	var player = player_scene.instantiate()
+	test_root.add_child(player)
+	player.global_position = Vector2.ZERO
+	player.enemy_close = []
+
+	var dummy_enemy_script = GDScript.new()
+	dummy_enemy_script.source_code = """extends CharacterBody2D
+var hp: float = 50.0
+var is_dying: bool = false
+"""
+	dummy_enemy_script.reload()
+
+	var make_enemy = func(pos: Vector2, hp: float):
+		var body = CharacterBody2D.new()
+		body.set_script(dummy_enemy_script)
+		body.global_position = pos
+		body.hp = hp
+		var base = Node2D.new()
+		base.name = "EnemyBase"
+		body.add_child(base)
+		var sprite = Sprite2D.new()
+		sprite.name = "Sprite2D"
+		base.add_child(sprite)
+		var hurtbox = Area2D.new()
+		hurtbox.name = "HurtBox"
+		var cs = CollisionShape2D.new()
+		cs.name = "CollisionShape2D"
+		hurtbox.add_child(cs)
+		base.add_child(hurtbox)
+		test_root.add_child(body)
+		return body
+
+	return {
+		"root": test_root,
+		"player": player,
+		"make_enemy": make_enemy
+	}
+
+func test_player_frontal_targeting() -> void:
+	var ctx = _setup_targeting_context()
+	var player = ctx["player"]
+	var make_enemy: Callable = ctx["make_enemy"]
+	player.last_movement = Vector2.RIGHT
+
+	assert_eq(player.get_frontal_target(), Vector2.INF,
+		"get_frontal_target must return Vector2.INF when no enemies exist")
+
+	var behind_close = make_enemy.call(Vector2(-30, 0), 50.0)
+	var front_far = make_enemy.call(Vector2(200, 0), 50.0)
+	var front_near = make_enemy.call(Vector2(120, 10), 50.0)
+	player.enemy_close = [behind_close, front_far, front_near]
+
+	assert_eq(player.get_frontal_target(), front_near.global_position,
+		"get_frontal_target must prioritize closest enemy inside frontal cone over behind enemy")
+
+	# Fallback when no enemies are inside the frontal 120-degree cone
+	var rear_straight = make_enemy.call(Vector2(-100, 0), 50.0)
+	var rear_angled = make_enemy.call(Vector2(-100, 100), 50.0)
+	player.enemy_close = [rear_straight, rear_angled]
+	assert_eq(player.get_frontal_target(), rear_angled.global_position,
+		"get_frontal_target must fall back to best-aligned enemy when frontal cone is empty")
+
+	ctx["root"].free()
+
+func test_player_strongest_targeting() -> void:
+	var ctx = _setup_targeting_context()
+	var player = ctx["player"]
+	var make_enemy: Callable = ctx["make_enemy"]
+
+	var sm_scene = load("res://Utility/swarm_manager.tscn")
+	var sm = sm_scene.instantiate()
+	ctx["root"].add_child(sm)
+	sm.add_to_group("swarm_manager")
+
+	var img = Image.create(16, 16, false, Image.FORMAT_RGBA8)
+	var tex = ImageTexture.create_from_image(img)
+	var type_id = sm.register_enemy_type(tex, 8.0)
+	sm.add_enemy(Vector2(100, 0), 50.0, 50.0, 50.0, 1, 1, type_id)
+
+	var weak_close = make_enemy.call(Vector2(30, 0), 10.0)
+	var elite_far = make_enemy.call(Vector2(250, 0), 200.0)
+	player.enemy_close = [weak_close, elite_far]
+
+	assert_eq(player.get_strongest_target(), elite_far.global_position,
+		"get_strongest_target must pick highest-HP enemy across enemy_close and SwarmManager")
+
+	# Equal max HP must tie-break by closest distance
+	var elite_near = make_enemy.call(Vector2(150, 0), 200.0)
+	player.enemy_close.append(elite_near)
+	assert_eq(player.get_strongest_target(), elite_near.global_position,
+		"get_strongest_target must tie-break equal HP by closest distance")
+
+	ctx["root"].free()
+
+func test_player_crowd_targeting() -> void:
+	var ctx = _setup_targeting_context()
+	var player = ctx["player"]
+	var make_enemy: Callable = ctx["make_enemy"]
+
+	var sm_scene = load("res://Utility/swarm_manager.tscn")
+	var sm = sm_scene.instantiate()
+	ctx["root"].add_child(sm)
+	sm.add_to_group("swarm_manager")
+
+	var img = Image.create(16, 16, false, Image.FORMAT_RGBA8)
+	var tex = ImageTexture.create_from_image(img)
+	var type_id = sm.register_enemy_type(tex, 8.0)
+
+	# Isolated enemy very close to player
+	var isolated_close = make_enemy.call(Vector2(20, 0), 10.0)
+	player.enemy_close = [isolated_close]
+
+	# Dense swarm cluster further away (within 400px radius)
+	var cluster_center = Vector2(215, 212)
+	sm.add_enemy(Vector2(210, 210), 20.0, 20.0, 50.0, 1, 1, type_id)
+	sm.add_enemy(Vector2(215, 212), 20.0, 20.0, 50.0, 1, 1, type_id)
+	sm.add_enemy(Vector2(220, 208), 20.0, 20.0, 50.0, 1, 1, type_id)
+	sm.add_enemy(Vector2(212, 220), 20.0, 20.0, 50.0, 1, 1, type_id)
+
+	var chosen = player.get_crowd_target()
+	assert_ne(chosen, isolated_close.global_position,
+		"get_crowd_target must ignore closer isolated enemy in favor of dense cluster")
+	assert_lt(chosen.distance_to(cluster_center), 32.0,
+		"get_crowd_target must return an enemy position inside the dense cluster")
+
+	ctx["root"].free()
+
+func test_item_option_targeting_badge() -> void:
+	var tree = Engine.get_main_loop() as SceneTree
+	var test_root = Control.new()
+	tree.root.add_child(test_root)
+
+	var dummy_player_script = GDScript.new()
+	dummy_player_script.source_code = """extends Node
+var collected_endless: Dictionary = {}
+func upgrade_character(_u): pass
+"""
+	dummy_player_script.reload()
+	var dummy_player = dummy_player_script.new()
+	dummy_player.add_to_group("player")
+	test_root.add_child(dummy_player)
+
+	var option_scene = load("res://Utility/item_option.tscn")
+	assert_not_null(option_scene, "item_option.tscn must load")
+
+	var prev_locale = TranslationServer.get_locale()
+	TranslationServer.set_locale("en")
+
+	var whip_opt = option_scene.instantiate()
+	whip_opt.item = "whip1"
+	test_root.add_child(whip_opt)
+	assert_not_null(whip_opt.lblTargeting, "ItemOption must expose lblTargeting")
+	assert_true(whip_opt.lblTargeting.visible, "Weapon card whip1 must show targeting badge")
+	assert_eq(whip_opt.lblTargeting.text, "[Closest]",
+		"whip1 badge text must resolve to [Closest]")
+
+	var spear_opt = option_scene.instantiate()
+	spear_opt.item = "icespear1"
+	test_root.add_child(spear_opt)
+	assert_true(spear_opt.lblTargeting.visible, "Weapon card icespear1 must show targeting badge")
+	assert_eq(spear_opt.lblTargeting.text, "[Frontal]",
+		"icespear1 badge text must resolve to [Frontal]")
+
+	var rod_endless_opt = option_scene.instantiate()
+	rod_endless_opt.item = "lightningrod_endless"
+	test_root.add_child(rod_endless_opt)
+	assert_true(rod_endless_opt.lblTargeting.visible, "Endless weapon card must show targeting badge")
+	assert_eq(rod_endless_opt.lblTargeting.text, "[Strongest]",
+		"lightningrod_endless badge text must resolve to [Strongest]")
+
+	var armor_opt = option_scene.instantiate()
+	armor_opt.item = "armor1"
+	test_root.add_child(armor_opt)
+	assert_false(armor_opt.lblTargeting.visible, "Passive upgrade card armor1 must hide targeting badge")
+	assert_eq(armor_opt.lblTargeting.text, "", "Passive upgrade badge text must be empty")
+
+	TranslationServer.set_locale(prev_locale)
+	test_root.free()
+

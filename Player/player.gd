@@ -10,6 +10,7 @@ var hasWon = false
 var time = 0
 var godmode = false
 var loggingEnabled = false
+var suppress_upgrade_unpause: bool = false
 
 var experience = 0
 var experience_level = 1
@@ -125,6 +126,10 @@ func _ready():
 	var active_char = GlobalEvents.selected_character
 	if active_char != "" and GlobalEvents.CHARACTERS.has(active_char):
 		var char_data = GlobalEvents.CHARACTERS[active_char]
+		if char_data.has("base_stats") and char_data["base_stats"].has("maxhp"):
+			base_maxhp = char_data["base_stats"]["maxhp"]
+			maxhp = base_maxhp
+			hp = maxhp
 		if char_data.has("starting_weapon") and char_data["starting_weapon"] != "":
 			upgrade_character(char_data["starting_weapon"])
 			
@@ -409,44 +414,153 @@ func _on_hurt_box_hurt(damage, _angle, _knockback, _killer_source = "", attacker
 
 
 #enemy related logic
-func get_random_target():
-	var targets = []
-	for body in enemy_close:
-		if is_instance_valid(body):
-			targets.append(body.global_position)
-	
-	var swarm = get_tree().get_first_node_in_group("swarm_manager")
-	if swarm:
-		for enemy in swarm.swarm_data:
-			if not enemy.is_dead and enemy.position.distance_squared_to(global_position) < 160000: # approx 400px radius
-				targets.append(enemy.position)
-				
-	if targets.size() > 0:
-		return targets.pick_random()
-	else:
-		return Vector2.INF
+func _is_enemy_valid_target(body) -> bool:
+	if not is_instance_valid(body) or body.is_queued_for_deletion():
+		return false
+	if body.get("is_dying") == true or (body.get("hp") != null and body.hp <= 0):
+		return false
+	if not body.visible:
+		return false
+	var sprite_node = body.get_node_or_null("EnemyBase/Sprite2D")
+	if not sprite_node:
+		sprite_node = body.get_node_or_null("Sprite2D")
+	if sprite_node and not sprite_node.visible:
+		return false
+	var hurt_box = body.get_node_or_null("EnemyBase/HurtBox")
+	if not hurt_box:
+		hurt_box = body.get_node_or_null("HurtBox")
+	if hurt_box:
+		var cs = hurt_box.get_node_or_null("CollisionShape2D")
+		if cs and cs.disabled:
+			return false
+	return true
 
-func get_closest_target():
+func _collect_valid_targets() -> Array[Dictionary]:
+	var candidates: Array[Dictionary] = []
+	for body in enemy_close:
+		if is_instance_valid(body) and _is_enemy_valid_target(body):
+			var pos: Vector2 = body.global_position
+			var hp_val = body.get("hp")
+			candidates.append({
+				"pos": pos,
+				"hp": float(hp_val) if hp_val != null else 0.0,
+				"dist_sq": global_position.distance_squared_to(pos)
+			})
+	
+	var tree := get_tree()
+	if tree != null:
+		var swarm = tree.get_first_node_in_group("swarm_manager")
+		if swarm and "swarm_data" in swarm:
+			for enemy in swarm.swarm_data:
+				if not enemy.is_dead and enemy.hp > 0:
+					var dist_sq := global_position.distance_squared_to(enemy.position)
+					if dist_sq < 160000.0: # approx 400px radius
+						candidates.append({
+							"pos": enemy.position,
+							"hp": float(enemy.hp),
+							"dist_sq": dist_sq
+						})
+	return candidates
+
+func get_random_target() -> Vector2:
+	var candidates := _collect_valid_targets()
+	if candidates.is_empty():
+		return Vector2.INF
+	return candidates.pick_random()["pos"]
+
+func get_closest_target() -> Vector2:
 	var closest_pos = Vector2.INF
 	var min_dist = INF
 	
-	for body in enemy_close:
-		if is_instance_valid(body):
-			var dist = global_position.distance_squared_to(body.global_position)
-			if dist < min_dist:
-				min_dist = dist
-				closest_pos = body.global_position
-				
-	var swarm = get_tree().get_first_node_in_group("swarm_manager")
-	if swarm:
-		for enemy in swarm.swarm_data:
-			if not enemy.is_dead:
-				var dist = global_position.distance_squared_to(enemy.position)
-				if dist < min_dist and dist < 160000:
-					min_dist = dist
-					closest_pos = enemy.position
-					
+	for candidate in _collect_valid_targets():
+		var dist: float = candidate["dist_sq"]
+		if dist < min_dist:
+			min_dist = dist
+			closest_pos = candidate["pos"]
+			
 	return closest_pos
+
+func get_frontal_target() -> Vector2:
+	var dir := last_movement.normalized()
+	if dir == Vector2.ZERO:
+		dir = Vector2.UP
+
+	var closest_in_cone := Vector2.INF
+	var min_cone_dist := INF
+	var best_aligned_pos := Vector2.INF
+	var best_dot := -2.0
+	var best_aligned_dist := INF
+
+	for candidate in _collect_valid_targets():
+		var pos: Vector2 = candidate["pos"]
+		var dist_sq: float = candidate["dist_sq"]
+		var to_enemy := pos - global_position
+		var dot := dir.dot(to_enemy.normalized()) if dist_sq > 0.0001 else 1.0
+
+		if dot >= 0.5 and dist_sq < min_cone_dist:
+			min_cone_dist = dist_sq
+			closest_in_cone = pos
+
+		if dot > best_dot + 0.0001 or (is_equal_approx(dot, best_dot) and dist_sq < best_aligned_dist):
+			best_dot = dot
+			best_aligned_dist = dist_sq
+			best_aligned_pos = pos
+
+	return closest_in_cone if closest_in_cone != Vector2.INF else best_aligned_pos
+
+func get_strongest_target() -> Vector2:
+	var best_pos := Vector2.INF
+	var max_hp_found := -1.0
+	var best_dist_sq := INF
+
+	for candidate in _collect_valid_targets():
+		var enemy_hp: float = candidate["hp"]
+		var dist_sq: float = candidate["dist_sq"]
+		if enemy_hp > max_hp_found + 0.001 or (is_equal_approx(enemy_hp, max_hp_found) and dist_sq < best_dist_sq):
+			max_hp_found = enemy_hp
+			best_dist_sq = dist_sq
+			best_pos = candidate["pos"]
+
+	return best_pos
+
+func get_crowd_target() -> Vector2:
+	var cell_enemies: Dictionary = {}
+	var cell_min_dist: Dictionary = {}
+
+	for candidate in _collect_valid_targets():
+		var pos: Vector2 = candidate["pos"]
+		var dist_sq: float = candidate["dist_sq"]
+		var cell := Vector2i(int(floor(pos.x / 64.0)), int(floor(pos.y / 64.0)))
+		if not cell_enemies.has(cell):
+			cell_enemies[cell] = [pos]
+			cell_min_dist[cell] = dist_sq
+		else:
+			cell_enemies[cell].append(pos)
+			if dist_sq < cell_min_dist[cell]:
+				cell_min_dist[cell] = dist_sq
+
+	if cell_enemies.is_empty():
+		return Vector2.INF
+
+	var best_cell := Vector2i.ZERO
+	var best_count := -1
+	var best_dist_sq := INF
+
+	for cell in cell_enemies.keys():
+		var neighborhood_count := 0
+		for cx in range(cell.x - 1, cell.x + 2):
+			for cy in range(cell.y - 1, cell.y + 2):
+				var neighbor := Vector2i(cx, cy)
+				if cell_enemies.has(neighbor):
+					neighborhood_count += cell_enemies[neighbor].size()
+
+		var cell_dist: float = cell_min_dist[cell]
+		if neighborhood_count > best_count or (neighborhood_count == best_count and cell_dist < best_dist_sq):
+			best_count = neighborhood_count
+			best_dist_sq = cell_dist
+			best_cell = cell
+
+	return cell_enemies[best_cell].pick_random()
 
 
 func _on_enemy_detection_area_body_entered(body):
@@ -604,6 +718,10 @@ func apply_stat_modifiers():
 		var char_data = GlobalEvents.CHARACTERS[active_char]
 		# Base character stats
 		if char_data.has("base_stats"):
+			if char_data["base_stats"].has("maxhp"):
+				var char_base_hp = char_data["base_stats"]["maxhp"]
+				if base_maxhp == 80 or base_maxhp == char_base_hp:
+					base_maxhp = char_base_hp
 			for stat_name in char_data["base_stats"].keys():
 				var val = char_data["base_stats"][stat_name]
 				match stat_name:
@@ -765,7 +883,7 @@ func upgrade_character(upgrade):
 	if pending_levelups > 0 or pending_boss_rewards > 0:
 		_show_next_reward()
 	else:
-		if is_inside_tree() and get_tree() != null:
+		if not suppress_upgrade_unpause and is_inside_tree() and get_tree() != null:
 			get_tree().paused = false
 		MusicController.focusMusic(true)
 	calculate_experience(0)
@@ -946,7 +1064,9 @@ func death():
 		MusicController.playSpecificTrack(MusicController.winMusic)
 
 func _on_boss_defeated():
-	hasWon = true
+	if not hasWon:
+		hasWon = true
+		StatsManager.save_stats()
 	pending_boss_rewards += 1
 	if not gui.levelPanel.visible and not gui.bossLevelPanel.visible:
 		_show_next_reward()
@@ -983,128 +1103,299 @@ func _on_player_dealt_damage(damage: float, _target: Object, proc_coefficient: f
 			_set_hp(hp + heal_amount)
 
 
-#Debug buttons
-func _on_btn_give_xp_click_end() -> void:
-	calculate_experience(100)
-	
-func _on_btn_give_level_click_end() -> void:
-	var xpToGive = calculate_experiencecap()-experience
-	calculate_experience(xpToGive)
+func _get_upgrade_base_name(uid: String) -> String:
+	if uid.ends_with("_endless"):
+		return uid.trim_suffix("_endless")
+	return uid.rstrip("0123456789")
 
-func grant_upgrade_with_prereqs(upgrade_id: String):
-	if upgrade_id in collected_upgrades:
+func _get_upgrade_tier(uid: String) -> int:
+	if uid.ends_with("_endless"):
+		return -1
+	var base_name := _get_upgrade_base_name(uid)
+	if uid.length() <= base_name.length():
+		return 0
+	return int(uid.right(uid.length() - base_name.length()))
+
+func _get_highest_owned_tier(base_name: String) -> int:
+	var max_lvl := 0
+	for uid in collected_upgrades:
+		if _get_upgrade_base_name(uid) == base_name:
+			var lvl := _get_upgrade_tier(uid)
+			if lvl > max_lvl:
+				max_lvl = lvl
+	return max_lvl
+
+func _is_spawner_item(upgrade_id: String, upgrade_data: Dictionary) -> bool:
+	var type: String = upgrade_data.get("type", "")
+	var base_name := _get_upgrade_base_name(upgrade_id)
+	var boss_weapons_with_spawner := ["glasslash", "vampireknives"]
+	return type == "weapon" or (type == "bossitem" and boss_weapons_with_spawner.has(base_name)) or (base_name == "occult_medallion" and type != "endless")
+
+func _sync_special_passive_levels() -> void:
+	willowisp_level = _get_highest_owned_tier("willowisp")
+	glass_talisman_level = _get_highest_owned_tier("glasstalisman")
+	warding_brooch_level = _get_highest_owned_tier("wardingbrooch")
+	frenzy_charm_level = _get_highest_owned_tier("frenzycharm")
+	impact_buckler_level = _get_highest_owned_tier("impactbuckler")
+	javelin_level = _get_highest_owned_tier("javelin")
+	javelin_endless_level = collected_endless.get("javelin", 0)
+	lightningrod_level = _get_highest_owned_tier("lightningrod")
+	lightningrod_endless_level = collected_endless.get("lightningrod", 0)
+	if warding_brooch_level <= 0:
+		warding_brooch_charge = false
+		warding_brooch_timer = 0.0
+		warding_brooch_speed_timer = 0.0
+	if impact_buckler_level <= 0:
+		impact_buckler_cooldown = 0.0
+	if frenzy_charm_level <= 0:
+		frenzy_charm_active = false
+	if glass_talisman_level <= 0:
+		glass_talisman_damage_bonus = 0.0
+		damage_multiplier = 1.0
+
+func _rebuild_weapon_spawner(base_name: String) -> void:
+	if weapons == null:
 		return
-	var prereqs = UpgradeDb.UPGRADES[upgrade_id].get("prerequisite", [])
+	var existing := weapons.get_node_or_null(base_name)
+	if existing:
+		weapons.remove_child(existing)
+		existing.queue_free()
+	
+	var tiers: Array[int] = []
+	for uid in collected_upgrades:
+		if _get_upgrade_base_name(uid) == base_name:
+			var t := _get_upgrade_tier(uid)
+			if t > 0 and not tiers.has(t):
+				tiers.append(t)
+	tiers.sort()
+	
+	if tiers.is_empty():
+		if base_name == "javelin":
+			javelin_level = 0
+			javelin_endless_level = 0
+		elif base_name == "lightningrod":
+			lightningrod_level = 0
+			lightningrod_endless_level = 0
+		return
+	
+	var folder_name := base_name.to_lower()
+	var spawner_script = load("res://Player/Attack/" + folder_name + "/" + folder_name + "_spawner.gd")
+	if not spawner_script:
+		return
+	var new_spawner := Node2D.new()
+	new_spawner.set_script(spawner_script)
+	new_spawner.name = base_name
+	weapons.add_child(new_spawner)
+	for t in tiers:
+		var tier_id := base_name + str(t)
+		if UpgradeDb.UPGRADES.has(tier_id):
+			new_spawner.upgrade(tier_id)
+	var endless_stacks: int = collected_endless.get(base_name, 0)
+	var endless_id := base_name + "_endless"
+	for _i in range(endless_stacks):
+		if UpgradeDb.UPGRADES.has(endless_id):
+			new_spawner.upgrade(endless_id)
+
+func _sync_gui_collection_after_change(base_name_check: String) -> void:
+	if gui == null or not is_instance_valid(gui):
+		return
+	if gui.has_method("refresh_gui_collection"):
+		gui.refresh_gui_collection()
+		return
+	if not ("collectedWeapons" in gui and "collectedUpgrades" in gui and "collectedBossItems" in gui):
+		return
+	var still_owned := false
+	for uid in collected_upgrades:
+		if _get_upgrade_base_name(uid) == base_name_check:
+			still_owned = true
+			break
+	if not still_owned:
+		for container in [gui.collectedWeapons, gui.collectedUpgrades, gui.collectedBossItems]:
+			if container == null:
+				continue
+			for child in container.get_children():
+				if child.get("upgrade") != null:
+					if _get_upgrade_base_name(str(child.upgrade)) == base_name_check:
+						child.queue_free()
+
+func grant_upgrade_with_prereqs(upgrade_id: String) -> void:
+	var upgrade_data = UpgradeDb.UPGRADES.get(upgrade_id)
+	if upgrade_data == null:
+		return
+	var is_endless: bool = (upgrade_data.get("type", "") == "endless")
+	if upgrade_id in collected_upgrades and not is_endless:
+		return
+	var prereqs: Array = upgrade_data.get("prerequisite", [])
 	for p in prereqs:
 		grant_upgrade_with_prereqs(p)
 	upgrade_character(upgrade_id)
 
 ## Removes a single upgrade from the player's collected list.
-## For weapons: downgrades or removes the weapon spawner.
-## For upgrades: removes the stat modifier.
+## Handles weapons, passives, special items, companion drone, and endless stacks.
 func remove_upgrade(upgrade_id: String) -> void:
 	if not upgrade_id in collected_upgrades:
 		return
 	var upgrade_data = UpgradeDb.UPGRADES.get(upgrade_id)
 	if upgrade_data == null:
 		return
-
-	collected_upgrades.erase(upgrade_id)
-
-	var type = upgrade_data["type"]
-	var boss_weapons_with_spawner = ["glasslash", "vampireknives"]
-	if type == "weapon" or (type == "bossitem" and boss_weapons_with_spawner.has(upgrade_id.rstrip("0123456789"))) or (upgrade_id.begins_with("occult_medallion") and type != "endless"):
-		var base_name = upgrade_id.rstrip("0123456789")
-		var weapon_spawner = weapons.get_node_or_null(base_name)
-		# Check if there is still a collected level for this weapon
-		var remaining_level = ""
-		var max_lvl = 0
-		for uid in collected_upgrades:
-			if uid.rstrip("0123456789") == base_name:
-				var lvl = int(uid.right(uid.length() - base_name.length()))
-				if lvl > max_lvl:
-					max_lvl = lvl
-					remaining_level = uid
-		if remaining_level == "" and weapon_spawner:
-			# No levels left — remove the spawner entirely
-			weapon_spawner.queue_free()
-		elif remaining_level != "" and weapon_spawner and weapon_spawner.has_method("upgrade"):
-			# Downgrade the spawner to the remaining highest level
-			weapon_spawner.upgrade(remaining_level)
-	elif type == "upgrade":
-		stat_modifiers.erase(upgrade_id)
-		apply_stat_modifiers()
-
-	# Update GUI collection (remove icon if no levels owned)
-	var base_name_check = upgrade_id.rstrip("0123456789")
-	var still_owned = false
-	for uid in collected_upgrades:
-		if uid.rstrip("0123456789") == base_name_check:
-			still_owned = true
-			break
-	if not still_owned:
-		# Remove from collectedWeapons or collectedUpgrades display
-		for container in [gui.collectedWeapons, gui.collectedUpgrades, gui.collectedBossItems]:
-			for child in container.get_children():
-				if child.get("upgrade") != null:
-					var child_base = child.upgrade.rstrip("0123456789")
-					if child_base == base_name_check:
-						child.queue_free()
+	
+	var type: String = upgrade_data["type"]
+	var base_name := _get_upgrade_base_name(upgrade_id)
+	
+	if type == "endless":
+		var current_stacks: int = collected_endless.get(base_name, 0)
+		if current_stacks > 1:
+			collected_endless[base_name] = current_stacks - 1
+		else:
+			collected_endless.erase(base_name)
+			collected_upgrades.erase(upgrade_id)
+		if weapons != null and weapons.get_node_or_null(base_name) != null:
+			_rebuild_weapon_spawner(base_name)
+	else:
+		collected_upgrades.erase(upgrade_id)
+		if base_name == "relicdrone":
+			var remaining_lvl := _get_highest_owned_tier("relicdrone")
+			if remaining_lvl <= 0:
+				if relic_drone_node and is_instance_valid(relic_drone_node):
+					if relic_drone_node.get_parent() == self:
+						remove_child(relic_drone_node)
+					relic_drone_node.queue_free()
+					relic_drone_node = null
+			elif relic_drone_node and is_instance_valid(relic_drone_node):
+				relic_drone_node.level = remaining_lvl
+				relic_drone_node.update_stats()
+		elif _is_spawner_item(upgrade_id, upgrade_data):
+			if _get_highest_owned_tier(base_name) <= 0:
+				collected_endless.erase(base_name)
+				collected_upgrades.erase(base_name + "_endless")
+			_rebuild_weapon_spawner(base_name)
+		else:
+			stat_modifiers.erase(upgrade_id)
+			if _get_highest_owned_tier(base_name) <= 0:
+				collected_endless.erase(base_name)
+				collected_upgrades.erase(base_name + "_endless")
+	
+	_sync_special_passive_levels()
+	apply_stat_modifiers()
+	_sync_gui_collection_after_change(base_name)
 
 ## Removes all levels of the given base item above `keep_level`.
 ## Pass keep_level=0 to remove completely.
 func remove_upgrade_to_level(base_name: String, keep_level: int) -> void:
-	# Collect which upgrade IDs to remove (all levels > keep_level for this base)
-	var to_remove: Array = []
+	var max_tier := 0
+	for uid in UpgradeDb.UPGRADES.keys():
+		if _get_upgrade_base_name(uid) == base_name:
+			var t := _get_upgrade_tier(uid)
+			if t > max_tier:
+				max_tier = t
+	if keep_level < max_tier:
+		set_endless_stacks(base_name, 0)
+	
+	var to_remove: Array[String] = []
 	for uid in collected_upgrades:
-		if uid.rstrip("0123456789") == base_name:
-			var lvl = int(uid.right(uid.length() - base_name.length()))
+		if _get_upgrade_base_name(uid) == base_name:
+			var lvl := _get_upgrade_tier(uid)
 			if lvl > keep_level:
 				to_remove.append(uid)
-	# Remove highest levels first so the weapon spawner stays valid
 	to_remove.sort()
 	to_remove.reverse()
 	for uid in to_remove:
 		remove_upgrade(uid)
 
-func _on_btn_kill_player_click_end() -> void:
-	death()
+func set_item_tier(base_name: String, target_tier: int) -> void:
+	var prev_suppress := suppress_upgrade_unpause
+	suppress_upgrade_unpause = true
+	var current_tier := _get_highest_owned_tier(base_name)
+	if target_tier <= 0:
+		remove_upgrade_to_level(base_name, 0)
+	elif target_tier < current_tier:
+		remove_upgrade_to_level(base_name, target_tier)
+	elif target_tier > current_tier:
+		var target_id := base_name + str(target_tier)
+		if UpgradeDb.UPGRADES.has(target_id):
+			grant_upgrade_with_prereqs(target_id)
+	suppress_upgrade_unpause = prev_suppress
 
-func _on_btn_damage_player_click_end() -> void:
-	_on_hurt_box_hurt(10,0,0)
+func set_endless_stacks(base_name: String, target_count: int) -> void:
+	var clamped_count: int = max(0, target_count)
+	var endless_id := base_name + "_endless"
+	if not UpgradeDb.UPGRADES.has(endless_id):
+		return
+	var prev_suppress := suppress_upgrade_unpause
+	suppress_upgrade_unpause = true
+	var current_count: int = collected_endless.get(base_name, 0)
+	if clamped_count > current_count:
+		var prereqs: Array = UpgradeDb.UPGRADES[endless_id].get("prerequisite", [])
+		for p in prereqs:
+			grant_upgrade_with_prereqs(p)
+		for _i in range(clamped_count - current_count):
+			upgrade_character(endless_id)
+	elif clamped_count < current_count:
+		if clamped_count == 0:
+			collected_endless.erase(base_name)
+			collected_upgrades.erase(endless_id)
+		else:
+			collected_endless[base_name] = clamped_count
+		if weapons != null and weapons.get_node_or_null(base_name) != null:
+			_rebuild_weapon_spawner(base_name)
+		_sync_special_passive_levels()
+		apply_stat_modifiers()
+		_sync_gui_collection_after_change(base_name)
+	suppress_upgrade_unpause = prev_suppress
 
-func _on_btn_toggle_godmode_toggled(toggled_on: bool) -> void:
-	if toggled_on == true:
-		godmode = true
-	if toggled_on == false:
-		godmode = false
+func reset_all_upgrades() -> void:
+	var prev_suppress := suppress_upgrade_unpause
+	suppress_upgrade_unpause = true
+	var bases: Array[String] = []
+	for uid in collected_upgrades:
+		var b := _get_upgrade_base_name(uid)
+		if not bases.has(b):
+			bases.append(b)
+	for b in bases:
+		remove_upgrade_to_level(b, 0)
+	collected_upgrades.clear()
+	collected_endless.clear()
+	stat_modifiers.clear()
+	_sync_special_passive_levels()
+	apply_stat_modifiers()
+	if gui != null and is_instance_valid(gui) and gui.has_method("refresh_gui_collection"):
+		gui.refresh_gui_collection()
+	suppress_upgrade_unpause = prev_suppress
 
-func _on_btn_toggle_spawns_toggled(toggled_on: bool) -> void:
-	if toggled_on == true:
-		GlobalEvents.disableSpawns.emit()
-	if toggled_on == false:
-		GlobalEvents.enableSpawns.emit()
-
-func _on_btn_next_normal_track_click_end() -> void:
-	MusicController.playNext(MusicController.MusicType.NORMAL)
-
-func _on_btn_next_boss_track_click_end() -> void:
-	MusicController.playNext(MusicController.MusicType.BOSS)
-
-func _on_btn_pause_music_click_end() -> void:
-	MusicController.toggleMusic(false)
-
-func _on_btn_unpause_music_click_end() -> void:
-	MusicController.toggleMusic(true)
-
-func _on_btn_timer_1m_click_end() -> void:
-	GlobalEvents.time += 60
-
-func _on_btn_timer_5m_click_end() -> void:
-	GlobalEvents.time += 60 * 5
-
-func _on_btn_exit_game_click_end() -> void:
-	get_tree().quit()
+func switch_character_mid_run(char_id: String, grant_starter: bool = true) -> void:
+	if not GlobalEvents.CHARACTERS.has(char_id):
+		return
+	GlobalEvents.selected_character = char_id
+	var char_data: Dictionary = GlobalEvents.CHARACTERS[char_id]
+	var prev_ratio := float(hp) / float(maxhp) if maxhp > 0 else 1.0
+	base_maxhp = char_data.get("base_stats", {}).get("maxhp", 80)
 	
-func _on_btn_end_run_click_end() -> void:
-	var _level = get_tree().change_scene_to_file(titleMenu)
+	if sprite != null:
+		if char_data.has("icon"):
+			var tex = load(char_data["icon"])
+			if tex:
+				sprite.texture = tex
+		if char_data.has("icon_color"):
+			var mat := sprite.material as ShaderMaterial
+			if mat:
+				var col: Color = char_data["icon_color"]
+				mat.set_shader_parameter("target_color", col)
+				mat.set_shader_parameter("mix_hue", true)
+				mat.set_shader_parameter("mix_saturation", false)
+				mat.set_shader_parameter("mix_value", false)
+				if col.r > 0.99 and col.g > 0.99 and col.b > 0.99:
+					mat.set_shader_parameter("mix_hue", false)
+				if char_data.has("shader_config"):
+					var config: Dictionary = char_data["shader_config"]
+					for key in config:
+						mat.set_shader_parameter(key, config[key])
+			sprite.self_modulate = Color.WHITE
+	
+	if grant_starter and char_data.get("starting_weapon", "") != "":
+		var prev_suppress := suppress_upgrade_unpause
+		suppress_upgrade_unpause = true
+		grant_upgrade_with_prereqs(char_data["starting_weapon"])
+		suppress_upgrade_unpause = prev_suppress
+	
+	apply_stat_modifiers()
+	_set_hp(max(1.0, prev_ratio * float(maxhp)))

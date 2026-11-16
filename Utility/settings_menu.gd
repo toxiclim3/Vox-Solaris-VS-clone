@@ -293,18 +293,6 @@ func _input(event: InputEvent) -> void:
 			grab_initial_focus()
 			get_viewport().set_input_as_handled()
 	
-	# Capture characters for secret keywords
-	if event is InputEventKey and event.pressed:
-		var c = char(event.unicode)
-		if c != "":
-			secret_buffer += c
-			if secret_buffer.length() > MAX_SECRET_BUFFER:
-				secret_buffer = secret_buffer.right(MAX_SECRET_BUFFER)
-			
-			if SettingsManager.process_secret_keyword(secret_buffer):
-				secret_buffer = ""
-				# Visual/Audio feedback could be added here
-		
 	var is_cancel = false
 	if event.is_action_pressed("ui_cancel"):
 		is_cancel = true

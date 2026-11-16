@@ -229,6 +229,8 @@ func _physics_process(delta):
 			killer_source = str(atk.killer_source)
 		elif atk.owner != null and atk.owner.get("killer_source") != null:
 			killer_source = str(atk.owner.killer_source)
+		if killer_source == "":
+			killer_source = GlobalEvents.infer_attack_source(atk)
 
 		attack_data.append({
 			"node": atk,
@@ -302,7 +304,8 @@ func _physics_process(delta):
 				var p_dmg_mod = GlobalEvents.get_player_damage_modifier()
 				if player != null and player.has_method("get_damage_modifier"):
 					p_dmg_mod *= player.get_damage_modifier()
-				enemy.hp -= (atk.damage * damage_multiplier * p_dmg_mod)
+				var dealt_damage = atk.damage * damage_multiplier * p_dmg_mod
+				enemy.hp -= dealt_damage
 
 				# Knockback
 				var angle = Vector2.ZERO
@@ -316,6 +319,7 @@ func _physics_process(delta):
 				var proc_co = atk.node.get("proc_coefficient")
 				if proc_co == null: proc_co = 1.0
 				GlobalEvents.player_dealt_damage.emit(atk.damage, enemy, proc_co)
+				GlobalEvents.record_weapon_damage(atk.killer_source, dealt_damage, enemy)
 
 				if atk.has_on_hit_enemy:
 					atk.node.on_hit_enemy(enemy)
@@ -432,6 +436,12 @@ func _physics_process(delta):
 
 	_update_multimeshes()
 
+func clear_all() -> void:
+	swarm_data.clear()
+	for mmi in multimeshes:
+		if mmi and mmi.multimesh:
+			mmi.multimesh.visible_instance_count = 0
+
 func _handle_death(enemy: SwarmEnemy, killer_source: String = "Swarm"):
 	if enemy.is_dead:
 		return
@@ -496,8 +506,8 @@ func _update_multimeshes():
 		elif enemy.has_debuff("curse"):
 			color = Color(0.8, 0.4, 1.0)
 		
-		var p_pos = player.global_position
-		var flip = -1.0 if enemy.position.x < p_pos.x else 1.0
+		var p_pos: Vector2 = player.global_position if (player and is_instance_valid(player)) else Vector2.ZERO
+		var flip = -1.0 if (player and is_instance_valid(player) and enemy.position.x < p_pos.x) else 1.0
 		
 		# Smooth float transforms paired with snapped-UV shader achieves perfect pixel art swarms.
 		# Multiply Y-scale by -1.0 because Godot 3D QuadMeshes project upside-down in the 2D space.

@@ -5,6 +5,8 @@ var smoothed_motion = Vector2.ZERO
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	Engine.time_scale = 1.0
+	StatsManager.clear_run_taint()
 	GlobalEvents.time = 0
 	MusicController.resetPlaylists()
 	MusicController.setLooping(true)

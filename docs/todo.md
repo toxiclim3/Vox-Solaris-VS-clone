@@ -5,6 +5,7 @@
     Offer item alternatives, e.g. poison bottle replacement that prioritises slow and has no damage (easier to implement, but kind of boring?)
 
 ## Place the game more inside of a game world, like EtG or Soul Knight
+    So you wouldn't start your round from a title screen, but instead by walking to the entrance. And selecting a loadout\changing weapons\whatever pre-round stuff would also be done by doing it at a designated place
 
 ## Add maps
     Might need pathfinding improvements? 
@@ -27,8 +28,8 @@
 
 ## Replace texturebuttons with classic buttons, like the close button in the "How to play" menu
  
-## Character Concept: The Punished / Retaliation Archetype [RESOLVED & SPECIFIED]
-    - Status: Resolved & Specified in design_guidelines.md Section 2 (Ready for Implementation).
+## Character Concept: The Punished / Retaliation Archetype [COMPLETED]
+    - Status: Completed (implemented in global_events.gd, player.gd, and localized).
     - Resolved Blueprint:
         - Signature Starting Weapon: `whip1`
         - Base Stats (`base_stats`): `{"armor": 3, "maxhp": 100}` (+25% starting HP over base 80).
@@ -39,8 +40,6 @@
         - Item Ecosystem Synergy: The v2 health item pool (Warding Brooch barrier, Frenzy Charm low-HP attack speed surge, Impact Buckler emergency blast) alongside Thorn Ring supplies the complete sustain and survival loop externally through upgrade drafts.
 
 ## Long-Term Horizons (Backlog Roadmap)
-    - Pre-run Weapon Loadouts (Risk of Rain 2 Style):
-        - Allow selecting alternate starting primary weapons per character in character select (e.g. Mage: Ice Spear vs. Lightning Rod). Loadouts alter starting_weapon only; base stats and scaling passive remain identical.
     - Draft Economy (1 Reroll per 3 Levels):
         - Start with 0 rerolls; earn 1 reroll charge every 3 character levels (levels 3, 6, 9, 12, ...). Balanced to prevent early bricking and endless late-game fishing.
     - Closed Maps & Environmental Wall Collision:
@@ -53,3 +52,24 @@
         - Standardize on-hit triggers across future accessory expansions using P_trigger = P_base * proc_coefficient and strict zero-proc loop prevention.
     - HurtBox & Hazard Immunity Standardization (Terraria 4-Tier ICD Model):
         - Audit enemy HurtBoxes and hazard systems (Poison Gas, Ritual Circle) to ensure Category Immunity is used for overlapping clouds without disabling enemy HurtBoxes to other weapons (preventing Ice Spear / projectile eaten hits).
+
+## Future Variance & Core Gameplay Pillars (Design Notes)
+    - Complex Enemy Behaviors & Per-Type Population Caps:
+        - Goal: Introduce enemies with distinct, complex behaviors (chargers, ranged/zoners, shielders, etc.) rather than pure linear chasers.
+        - Implementation Strategy: Combine further enemy performance optimization with per-type population caps in `enemy_spawner.gd` (capping specific complex node-based or state-driven enemy types independently of the general swarm soft limit).
+    - Environmental Hazards & Boss Interactions (When Maps Are Added):
+        - Once actual maps and environmental hazards exist, knocking/luring bosses into hazards can be a rewarding skill-shot interaction, provided it deals bounded bonus damage or a temporary debuff/stagger rather than instant-killing (so displacement items do not become mandatory meta).
+        - Requires fixing detached boss telegraphs (e.g., parenting Dr. Franklin's telegraph to his pivot or syncing position on knockback).
+    - Unconventional Variance Mechanics:
+        - A. Empty-Slot Resonance (Weapon Slot Locking):
+            - Sacrificing/locking empty weapon slots to supercharge remaining equipped weapons.
+            - Caveat: Must NOT be toggleable on-demand; needs a dedicated activation point (e.g., between stages, after a boss, or at a stage transition shrine).
+        - B. Stage-Driven World/Arena Rule Shifts:
+            - Evolution of `GlobalEvents.advanceBackground` into full stage/map transitions with distinct environmental rules.
+            - Caveat: Tie transitions to actual map design and structured stage progression (e.g., transitioning after defeating a boss rather than an arbitrary level counter).
+        - C. Velocity / Stance-Coupled Combat (Addressing Game Pacing / "Feels Too Slow"):
+            - Make movement state (standing still vs. moving, or angular momentum / tight kiting) an instrumental, core combat mechanic rather than a niche item effect.
+            - Caveat: Requires a holistic combat and movement rebalance so stance/velocity interplay feels foundational to how Inritus plays.
+        - D. XP Gem Ground Ecology (Passive / Non-Active Loot Interactions):
+            - Using uncollected XP gems on the floor as combat fuel or enemy targets.
+            - Caveat: Must be used sparingly (since destroying gems taxes XP progression) and strictly without active-use item buttons (must trigger passively via weapon/enemy behaviors).

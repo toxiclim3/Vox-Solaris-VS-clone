@@ -52,7 +52,8 @@ func _ready():
 	damage += endless_level * 1.0
 
 
-	attack_size = 1.0 * (1 + player.spell_size)
+	var spell_size_mod: float = player.spell_size if player and is_instance_valid(player) else 0.0
+	attack_size = 1.0 * (1.0 + spell_size_mod)
 	scale = Vector2.ONE * attack_size
 	z_index = 20
 	top_level = true

@@ -62,12 +62,12 @@ func _on_timer_timeout():
 	timer.wait_time = attack_speed * (1.0 - player.spell_cooldown)
 
 func _throw_fan():
-	# Spread knives in a fan toward the nearest enemy (or last movement direction)
+	# Spread knives in a fan toward a frontal enemy (or last movement direction)
 	var extra_attacks = int(player.additional_attacks)
 	if randf() < (player.additional_attacks - extra_attacks):
 		extra_attacks += 1
 		
-	var target_pos = player.get_closest_target()
+	var target_pos = player.get_frontal_target() if player.has_method("get_frontal_target") else player.get_closest_target()
 	var base_dir: Vector2
 	if target_pos == Vector2.INF:
 		base_dir = player.last_movement.normalized()

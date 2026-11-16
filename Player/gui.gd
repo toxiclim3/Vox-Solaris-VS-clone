@@ -7,17 +7,12 @@ var titleMenu = "res://TitleScreen/menu.tscn"
 @onready var debug_menu = get_node("%DebugMenu")
 @onready var levelup_menu = get_node("%LevelUp")
 
-@onready var giveItemMenu = get_node("%GiveItemMenu")
-@onready var giveItemMainGrid = get_node("GiveItemMenu/ScrollContainer/VBoxContainer/MainGrid")
-@onready var giveItemSubGrid = get_node("GiveItemMenu/ScrollContainer/VBoxContainer/SubGrid")
 @onready var player = get_tree().get_first_node_in_group("player")
 
-@onready var removeItemMenu = get_node("RemoveItemMenu")
-@onready var removeItemMainGrid = get_node("RemoveItemMenu/ScrollContainer/VBoxContainer/MainGrid")
-@onready var removeItemSubGrid = get_node("RemoveItemMenu/ScrollContainer/VBoxContainer/SubGrid")
-
-@onready var spawnBossMenu = get_node("%SpawnBossMenu")
-@onready var bossGrid = get_node("%BossGrid")
+var debug_controller: Node = null
+var _timer_hold_active: bool = false
+var _timer_hold_time: float = 0.0
+var _timer_hold_triggered: bool = false
 
 @onready var expBar = get_node("%ExperienceBar")
 @onready var lblLevel = get_node("%lbl_level")
@@ -137,6 +132,39 @@ func adjust_gui_collection(upgrade: String) -> void:
 					collectedUpgrades.add_child(new_item)
 				"bossitem":
 					collectedBossItems.add_child(new_item)
+
+func refresh_gui_collection() -> void:
+	if not player or not is_instance_valid(player):
+		player = get_tree().get_first_node_in_group("player")
+	for container in [collectedWeapons, collectedUpgrades, collectedBossItems]:
+		if container == null:
+			continue
+		for ch in container.get_children():
+			container.remove_child(ch)
+			ch.queue_free()
+	if not player:
+		return
+	var seen_displaynames: Array = []
+	for uid in player.collected_upgrades:
+		if not UpgradeDb.UPGRADES.has(uid):
+			continue
+		var data: Dictionary = UpgradeDb.UPGRADES[uid]
+		var get_type: String = data.get("type", "")
+		if get_type in ["item", "endless"]:
+			continue
+		var disp: String = data.get("displayname", uid)
+		if disp in seen_displaynames:
+			continue
+		seen_displaynames.append(disp)
+		var new_item = itemContainer.instantiate()
+		new_item.upgrade = uid
+		match get_type:
+			"weapon":
+				if collectedWeapons: collectedWeapons.add_child(new_item)
+			"upgrade":
+				if collectedUpgrades: collectedUpgrades.add_child(new_item)
+			"bossitem":
+				if collectedBossItems: collectedBossItems.add_child(new_item)
 
 func show_death_panel(hasWon: bool) -> void:
 	if deathPanel.visible:
@@ -258,10 +286,41 @@ func _ready() -> void:
 	# Remaining UI init
 	settings_menu.hide()
 	hide_level_panels()
-	setup_give_item_menu()
-	
-	# Connect debug signals in code so they survive movement to World.tscn root
-	call_deferred("_connect_debug_signals")
+	call_deferred("_init_debug_suite")
+
+func _init_debug_suite() -> void:
+	if debug_controller == null:
+		debug_controller = load("res://Utility/Debug/debug_controller.gd").new()
+		add_child(debug_controller)
+	var world_root: Node = get_tree().current_scene if get_tree() else null
+	if world_root == null and get_parent() and get_parent().get_parent():
+		world_root = get_parent().get_parent()
+	debug_controller.attach(self, world_root)
+	if debug_menu and debug_menu.has_method("rebuild_layout"):
+		debug_menu.rebuild_layout(debug_controller)
+	if lblTimer:
+		lblTimer.mouse_filter = Control.MOUSE_FILTER_STOP
+		if not lblTimer.gui_input.is_connected(_on_timer_gui_input):
+			lblTimer.gui_input.connect(_on_timer_gui_input)
+
+func _on_timer_gui_input(event: InputEvent) -> void:
+	if not SettingsManager.is_debug_enabled():
+		return
+	var pressed := false
+	var released := false
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		pressed = event.pressed
+		released = not event.pressed
+	elif event is InputEventScreenTouch:
+		pressed = event.pressed
+		released = not event.pressed
+	if pressed:
+		_timer_hold_active = true
+		_timer_hold_time = 0.0
+		_timer_hold_triggered = false
+	elif released:
+		_timer_hold_active = false
+		_timer_hold_time = 0.0
 
 func _apply_mobile_layout_overrides():
 	# Recursively bump all font sizes by 4 points
@@ -361,78 +420,43 @@ func _initialize_pause_menu_position():
 		pause_menu.visible = was_visible
 
 
-func _connect_debug_signals():
-	if not player or not is_instance_valid(player): 
-		player = get_tree().get_first_node_in_group("player")
-	if not player: return
-	
-	# Find debug buttons and connect them if they aren't already
-	var grid = get_node_or_null("%DebugMenu/Padded container/VBoxContainer/GridContainer")
-	if grid:
-		# 1. Buttons that connect to Player functions
-		var player_btn_map = {
-			"btn_end_run": player._on_btn_end_run_click_end,
-			"btn_exit_game": player._on_btn_exit_game_click_end,
-			"btn_give_xp": player._on_btn_give_xp_click_end,
-			"btn_give_level": player._on_btn_give_level_click_end,
-			"btn_kill_player": player._on_btn_kill_player_click_end,
-			"btn_damage_player": player._on_btn_damage_player_click_end,
-			"btn_next_normal_track": player._on_btn_next_normal_track_click_end,
-			"btn_next_boss_track": player._on_btn_next_boss_track_click_end,
-			"btn_pause_music": player._on_btn_pause_music_click_end,
-			"btn_unpause_music": player._on_btn_unpause_music_click_end,
-			"btn_timer_1m": player._on_btn_timer_1m_click_end,
-			"btn_timer_5m": player._on_btn_timer_5m_click_end,
-		}
-		
-		# 2. Buttons that connect to GUI (Self) functions
-		var gui_btn_map = {
-			"btn_give_item": _on_btn_give_item_click_end,
-			"btn_remove_item": _on_btn_remove_item_click_end,
-			"btn_show_warning": _on_btn_show_warning_click_end,
-			"btn_spawn_boss": _on_btn_spawn_boss_click_end,
-		}
-
-		# Connect player-based buttons
-		for btn_name in player_btn_map:
-			var btn = grid.get_node_or_null(btn_name)
-			if btn and btn.has_signal("click_end"):
-				if not btn.click_end.is_connected(player_btn_map[btn_name]):
-					btn.click_end.connect(player_btn_map[btn_name])
-		
-		# Connect gui-based buttons
-		for btn_name in gui_btn_map:
-			var btn = grid.get_node_or_null(btn_name)
-			if btn and btn.has_signal("click_end"):
-				if not btn.click_end.is_connected(gui_btn_map[btn_name]):
-					btn.click_end.connect(gui_btn_map[btn_name])
-		
-		# Toggle buttons (mostly player-based)
-		var god = grid.get_node_or_null("btn_toggle_godmode")
-		if god and not god.toggled.is_connected(player._on_btn_toggle_godmode_toggled):
-			god.toggled.connect(player._on_btn_toggle_godmode_toggled)
-			
-		var spawn = grid.get_node_or_null("btn_toggle_spawns")
-		if spawn and not spawn.toggled.is_connected(player._on_btn_toggle_spawns_toggled):
-			spawn.toggled.connect(player._on_btn_toggle_spawns_toggled)
-
-
-
-
 func _input(event: InputEvent) -> void:
 	if event.is_echo():
 		return
-	
-	if event.is_action("debugMenu"):
-		if debug_menu:
-			if event.is_pressed():
-				openMenu.emit()
-			
-			if event.is_released():
-				closeMenu.emit()
-		get_viewport().set_input_as_handled()
-		
-		
+
+	if SettingsManager.is_debug_enabled():
+		if debug_controller and debug_controller.handle_key_event(event):
+			get_viewport().set_input_as_handled()
+			return
+
+		if event.is_action("debugMenu"):
+			if debug_menu:
+				if event.is_pressed():
+					if debug_menu.has_method("handle_tab_pressed"):
+						debug_menu.handle_tab_pressed()
+					else:
+						openMenu.emit()
+				elif event.is_released():
+					if debug_menu.has_method("handle_tab_released"):
+						debug_menu.handle_tab_released()
+					else:
+						closeMenu.emit()
+			get_viewport().set_input_as_handled()
+			return
+
+	if debug_controller:
+		var modal_cancel: bool = bool(event.is_action_pressed("menu") or event.is_action_pressed("ui_cancel") or (event is InputEventKey and event.pressed and not event.echo and (event.keycode == KEY_ESCAPE or event.keycode == KEY_BACKSPACE)))
+		if debug_controller.workbench and debug_controller.workbench.visible:
+			if modal_cancel:
+				debug_controller.workbench.close_modal()
+				get_viewport().set_input_as_handled()
+				return
+		if debug_controller.switcher and debug_controller.switcher.visible:
+			if modal_cancel:
+				debug_controller.switcher.close_modal()
+				get_viewport().set_input_as_handled()
+				return
+
 	if event.is_action_pressed("menu"):
 		toggle_menu()
 	elif event.is_action_pressed("ui_cancel") and pause_menu.visible:
@@ -452,9 +476,6 @@ func _input(event: InputEvent) -> void:
 			if levelPanel.visible or bossLevelPanel.visible or pause_menu.visible:
 				_grab_context_focus()
 				get_viewport().set_input_as_handled()
-	if event.is_action_pressed("FreezeeverythingNOW!!!"):
-		get_tree().paused = !get_tree().paused
-		get_viewport().set_input_as_handled()
 
 
 func toggle_menu():
@@ -557,197 +578,15 @@ func _grab_context_focus() -> void:
 		else:
 			btnResume.grab_focus()
 
-# Give Item Menu Logic
-func setup_give_item_menu():
-	var items = {}
-	for i in UpgradeDb.UPGRADES:
-		var dname = UpgradeDb.UPGRADES[i].get("displayname", i)
-		if not items.has(dname):
-			items[dname] = []
-		items[dname].append(i)
-		
-	for dname in items.keys():
-		var btn = Button.new()
-		if OS.get_name() in ["Android", "iOS"]:
-			_apply_recursive_font_bump(btn, 4)
-		btn.text = tr(dname)
-		btn.pressed.connect(func(name_key=dname):
-			giveItemMainGrid.hide()
-			giveItemSubGrid.show()
-			for child in giveItemSubGrid.get_children():
-				child.queue_free()
-			
-			var back_btn = Button.new()
-			back_btn.text = tr("ui_backButton")
-			back_btn.custom_minimum_size = Vector2(180, 40)
-			back_btn.pressed.connect(func():
-				giveItemSubGrid.hide()
-				giveItemMainGrid.show()
-			)
-			giveItemSubGrid.add_child(back_btn)
-			
-			for lvl_id in items[name_key]:
-				var lvl_btn = Button.new()
-				var lvl_text = str(tr(UpgradeDb.UPGRADES[lvl_id].get("level", lvl_id)))
-				lvl_btn.text = lvl_text
-				lvl_btn.custom_minimum_size = Vector2(180, 40)
-				lvl_btn.pressed.connect(func(id=lvl_id):
-					player.grant_upgrade_with_prereqs(id)
-					get_tree().paused = false
-					giveItemMenu.visible = false
-				)
-				giveItemSubGrid.add_child(lvl_btn)
-		)
-		giveItemMainGrid.add_child(btn)
-
-func _on_btn_give_item_click_end() -> void:
-	get_tree().paused = true
-	giveItemMainGrid.show()
-	giveItemSubGrid.hide()
-	giveItemMenu.visible = true
-
-func _on_btn_close_give_item_pressed() -> void:
-	get_tree().paused = false
-	giveItemMenu.visible = false
-
-
-func _on_btn_remove_item_click_end() -> void:
-	# Rebuild the menu each time so it reflects current inventory
-	for child in removeItemMainGrid.get_children():
-		child.queue_free()
-	for child in removeItemSubGrid.get_children():
-		child.queue_free()
-	
-	# Group collected upgrades by base name
-	var owned: Dictionary = {}
-	for uid in player.collected_upgrades:
-		var base_name = uid.rstrip("0123456789")
-		if not owned.has(base_name):
-			owned[base_name] = []
-		owned[base_name].append(uid)
-	
-	if owned.is_empty():
-		# Nothing to remove — show the menu anyway so player can see it's empty
-		var lbl = Label.new()
-		lbl.text = tr("debug_noItemsToRemove")
-		removeItemMainGrid.add_child(lbl)
-	else:
-		for base_name in owned.keys():
-			var levels: Array = owned[base_name]
-			levels.sort()
-			var first_id = levels[0]
-			var dname = UpgradeDb.UPGRADES[first_id].get("displayname", base_name)
-			var btn = Button.new()
-			if OS.get_name() in ["Android", "iOS"]:
-				_apply_recursive_font_bump(btn, 4)
-			btn.text = tr(dname)
-			btn.custom_minimum_size = Vector2(180, 40)
-			btn.pressed.connect(func(b_name=base_name, lvls=levels):
-				removeItemMainGrid.hide()
-				removeItemSubGrid.show()
-				for child in removeItemSubGrid.get_children():
-					child.queue_free()
-				
-				# Back button
-				var back_btn = Button.new()
-				if OS.get_name() in ["Android", "iOS"]:
-					_apply_recursive_font_bump(back_btn, 4)
-				back_btn.text = tr("ui_backButton")
-				back_btn.custom_minimum_size = Vector2(180, 40)
-				back_btn.pressed.connect(func():
-					removeItemSubGrid.hide()
-					removeItemMainGrid.show()
-				)
-				removeItemSubGrid.add_child(back_btn)
-				
-				# Remove completely
-				var max_lvl = int(lvls[-1].right(lvls[-1].length() - b_name.length()))
-				var remove_all_btn = Button.new()
-				if OS.get_name() in ["Android", "iOS"]:
-					_apply_recursive_font_bump(remove_all_btn, 4)
-				remove_all_btn.text = tr("debug_removeCompletely")
-				remove_all_btn.custom_minimum_size = Vector2(180, 40)
-				remove_all_btn.pressed.connect(func(bn=b_name):
-					player.remove_upgrade_to_level(bn, 0)
-					get_tree().paused = false
-					removeItemMenu.visible = false
-				)
-				removeItemSubGrid.add_child(remove_all_btn)
-				
-				# Remove to level X buttons (for each level above 1)
-				for i in range(1, max_lvl):
-					var keep_lvl = i
-					var lvl_btn = Button.new()
-					if OS.get_name() in ["Android", "iOS"]:
-						_apply_recursive_font_bump(lvl_btn, 4)
-					lvl_btn.text = tr("debug_removeToLevel") + " " + str(keep_lvl)
-					lvl_btn.custom_minimum_size = Vector2(180, 40)
-					lvl_btn.pressed.connect(func(bn=b_name, kl=keep_lvl):
-						player.remove_upgrade_to_level(bn, kl)
-						get_tree().paused = false
-						removeItemMenu.visible = false
-					)
-					removeItemSubGrid.add_child(lvl_btn)
-			)
-			removeItemMainGrid.add_child(btn)
-	
-	get_tree().paused = true
-	removeItemMainGrid.show()
-	removeItemSubGrid.hide()
-	removeItemMenu.visible = true
-
-
-func _on_btn_close_remove_item_pressed() -> void:
-	get_tree().paused = false
-	removeItemMenu.visible = false
-
-
-func _on_btn_show_warning_click_end() -> void:
-	
-	GlobalEvents.emit_signal("show_boss_warning", GlobalEvents.boss_warnings.get("generic"))
-
-
-func setup_spawn_boss_menu():
-	# We need the spawner to get the list of bosses
-	var spawner = get_tree().get_first_node_in_group("spawner")
-	if not spawner:
-		# Fallback: try to find it by name if group isn't set yet
-		spawner = get_tree().current_scene.get_node_or_null("EnemySpawner")
-	
-	if not spawner:
-		return
-		
-	for child in bossGrid.get_children():
-		child.queue_free()
-		
-	for boss_info in spawner.spawns_super:
-		if not boss_info.enemy: continue
-		
-		var path = boss_info.enemy.resource_path
-		var dname = GlobalEvents.boss_names.get(path, path.get_file().get_basename())
-		
-		var btn = Button.new()
-		if OS.get_name() in ["Android", "iOS"]:
-			_apply_recursive_font_bump(btn, 4)
-		btn.text = tr(dname)
-		btn.custom_minimum_size = Vector2(180, 40)
-		btn.pressed.connect(func(p=path):
-			GlobalEvents.queue_boss.emit(p)
-			get_tree().paused = false
-			spawnBossMenu.visible = false
-		)
-		bossGrid.add_child(btn)
-
-func _on_btn_spawn_boss_click_end() ->	void:
-	setup_spawn_boss_menu()
-	get_tree().paused = true
-	spawnBossMenu.visible = true
-
-func _on_btn_close_spawn_boss_pressed() -> void:
-	get_tree().paused = false
-	spawnBossMenu.visible = false
-
 func _process(delta: float) -> void:
+	if _timer_hold_active and not _timer_hold_triggered and SettingsManager.is_debug_enabled():
+		_timer_hold_time += delta
+		if _timer_hold_time >= 1.0:
+			_timer_hold_triggered = true
+			_timer_hold_active = false
+			if debug_menu and debug_menu.has_method("toggle_menu"):
+				debug_menu.toggle_menu()
+
 	if pause_menu.visible:
 		tip_timer += delta
 		if tip_timer >= TIP_ROTATION_TIME:

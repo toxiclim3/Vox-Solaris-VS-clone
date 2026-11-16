@@ -338,7 +338,7 @@ theme_override_constants/margin_bottom = 32
 unique_name_in_owner = true
 visible = false
 self_modulate = Color(1, 0.843137, 0, 1)
-custom_minimum_size = Vector2(192, 0)
+custom_minimum_size = Vector2(224, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 
@@ -372,173 +372,6 @@ size_flags_vertical = 3
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-
-[node name="GiveItemMenu" type="Panel" parent="GUILayer/GUI" unique_id=739812498]
-unique_name_in_owner = true
-process_mode = 2
-visible = false
-z_index = 4
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="ScrollContainer" type="ScrollContainer" parent="GUILayer/GUI/GiveItemMenu" unique_id=987654321]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = -50.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="GUILayer/GUI/GiveItemMenu/ScrollContainer" unique_id=123456789]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="MainGrid" type="GridContainer" parent="GUILayer/GUI/GiveItemMenu/ScrollContainer/VBoxContainer" unique_id=345678901]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_constants/h_separation = 8
-theme_override_constants/v_separation = 8
-columns = 3
-
-[node name="SubGrid" type="GridContainer" parent="GUILayer/GUI/GiveItemMenu/ScrollContainer/VBoxContainer" unique_id=456789012]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-theme_override_constants/h_separation = 8
-theme_override_constants/v_separation = 8
-columns = 3
-
-[node name="btn_close_give_item" type="Button" parent="GUILayer/GUI/GiveItemMenu" unique_id=567890123]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -50.0
-offset_top = -45.0
-offset_right = 50.0
-offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 0
-text = "ui_close"
-
-[node name="RemoveItemMenu" type="Panel" parent="GUILayer/GUI" unique_id=739812499]
-unique_name_in_owner = true
-process_mode = 2
-visible = false
-z_index = 4
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="ScrollContainer" type="ScrollContainer" parent="GUILayer/GUI/RemoveItemMenu" unique_id=987654390]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = -50.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="GUILayer/GUI/RemoveItemMenu/ScrollContainer" unique_id=123456790]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="MainGrid" type="GridContainer" parent="GUILayer/GUI/RemoveItemMenu/ScrollContainer/VBoxContainer" unique_id=345678902]
-layout_mode = 2
-theme_override_constants/h_separation = 8
-theme_override_constants/v_separation = 8
-columns = 3
-
-[node name="SubGrid" type="GridContainer" parent="GUILayer/GUI/RemoveItemMenu/ScrollContainer/VBoxContainer" unique_id=456789013]
-visible = false
-layout_mode = 2
-theme_override_constants/h_separation = 8
-theme_override_constants/v_separation = 8
-columns = 3
-
-[node name="btn_close_remove_item" type="Button" parent="GUILayer/GUI/RemoveItemMenu" unique_id=567890124]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -50.0
-offset_top = -45.0
-offset_right = 50.0
-offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 0
-text = "ui_close"
-
-[node name="SpawnBossMenu" type="Panel" parent="GUILayer/GUI" unique_id=739812500]
-unique_name_in_owner = true
-process_mode = 2
-visible = false
-z_index = 4
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="ScrollContainer" type="ScrollContainer" parent="GUILayer/GUI/SpawnBossMenu" unique_id=987654400]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = -50.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="GUILayer/GUI/SpawnBossMenu/ScrollContainer" unique_id=123456800]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="BossGrid" type="GridContainer" parent="GUILayer/GUI/SpawnBossMenu/ScrollContainer/VBoxContainer" unique_id=345678903]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_constants/h_separation = 8
-theme_override_constants/v_separation = 8
-columns = 3
-
-[node name="btn_close_spawn_boss" type="Button" parent="GUILayer/GUI/SpawnBossMenu" unique_id=567890125]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -50.0
-offset_top = -45.0
-offset_right = 50.0
-offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 0
-text = "ui_close"
 
 [node name="DeathPanel" type="PanelContainer" parent="GUILayer/GUI" unique_id=266401415]
 unique_name_in_owner = true
@@ -743,15 +576,14 @@ anchors_preset = 11
 anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -144.0
+offset_left = -160.0
 grow_horizontal = 0
 grow_vertical = 2
 theme_override_constants/margin_right = 0
 script = ExtResource("15_lfmf2")
 
 [node name="background" type="Panel" parent="GUILayer/GUI/DebugMenu" unique_id=1650127741]
-modulate = Color(0.30112115, 0.9912104, 7.70092e-07, 1)
-self_modulate = Color(1, 1, 1, 0.8901961)
+self_modulate = Color(1, 1, 1, 0.92)
 show_behind_parent = true
 z_index = -1
 layout_mode = 2
@@ -759,175 +591,21 @@ theme = ExtResource("15_dkpta")
 
 [node name="Padded container" type="MarginContainer" parent="GUILayer/GUI/DebugMenu" unique_id=1475646517]
 layout_mode = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 5
 
 [node name="VBoxContainer" type="VBoxContainer" parent="GUILayer/GUI/DebugMenu/Padded container" unique_id=225952374]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 3
 
 [node name="Label" type="Label" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer" unique_id=1014688637]
-custom_minimum_size = Vector2(0, 24)
+custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
-theme_override_font_sizes/font_size = 12
 text = "ui_debug"
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="GridContainer" type="GridContainer" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer" unique_id=1198252385]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/h_separation = 8
-theme_override_constants/v_separation = 8
-columns = 2
-
-[node name="btn_end_run" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=486226472 instance=ExtResource("12_i8esf")]
-z_index = 1
-custom_minimum_size = Vector2(56, 16)
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("15_dkpta")
-text = "ui_endRun"
-
-[node name="btn_exit_game" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=821377785 instance=ExtResource("12_i8esf")]
-z_index = 1
-custom_minimum_size = Vector2(56, 16)
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("15_dkpta")
-text = "ui_exitGame"
-
-[node name="btn_give_xp" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=1062571127 instance=ExtResource("12_i8esf")]
-z_index = 1
-custom_minimum_size = Vector2(56, 16)
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("15_dkpta")
-text = "debug_giveXP"
-
-[node name="btn_give_level" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=760045520 instance=ExtResource("12_i8esf")]
-z_index = 1
-custom_minimum_size = Vector2(56, 16)
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("15_dkpta")
-text = "debug_giveLevel"
-
-[node name="btn_give_item" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=760045521 instance=ExtResource("12_i8esf")]
-z_index = 1
-custom_minimum_size = Vector2(56, 16)
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("15_dkpta")
-text = "debug_giveItem"
-
-[node name="btn_remove_item" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=99461217 instance=ExtResource("12_i8esf")]
-z_index = 1
-custom_minimum_size = Vector2(56, 16)
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("15_dkpta")
-text = "debug_removeItem"
-
-[node name="btn_kill_player" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=1404436878 instance=ExtResource("12_i8esf")]
-z_index = 1
-custom_minimum_size = Vector2(56, 16)
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("15_dkpta")
-text = "debug_killPlayer"
-
-[node name="btn_damage_player" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=1416143240 instance=ExtResource("12_i8esf")]
-z_index = 1
-custom_minimum_size = Vector2(56, 16)
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("15_dkpta")
-text = "debug_damageSelf"
-
-[node name="btn_toggle_godmode" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=283840757 instance=ExtResource("12_i8esf")]
-z_index = 1
-custom_minimum_size = Vector2(56, 16)
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("15_dkpta")
-toggle_mode = true
-text = "debug_godmode"
-
-[node name="btn_toggle_spawns" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=1717811240 instance=ExtResource("12_i8esf")]
-z_index = 1
-custom_minimum_size = Vector2(56, 16)
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("15_dkpta")
-toggle_mode = true
-text = "debug_toggleSpawns"
-
-[node name="btn_next_normal_track" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=587350050 instance=ExtResource("12_i8esf")]
-z_index = 1
-custom_minimum_size = Vector2(56, 16)
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("15_dkpta")
-text = "debug_nextNormalTrack"
-
-[node name="btn_next_boss_track" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=1447930104 instance=ExtResource("12_i8esf")]
-z_index = 1
-custom_minimum_size = Vector2(56, 16)
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("15_dkpta")
-text = "debug_nextBossTrack"
-
-[node name="btn_pause_music" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=1520240956 instance=ExtResource("12_i8esf")]
-z_index = 1
-custom_minimum_size = Vector2(56, 16)
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("15_dkpta")
-text = "debug_pauseMusic"
-
-[node name="btn_unpause_music" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=1724961784 instance=ExtResource("12_i8esf")]
-z_index = 1
-custom_minimum_size = Vector2(56, 16)
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("15_dkpta")
-text = "debug_unpauseMusic"
-
-[node name="btn_timer_1m" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=1284255928 instance=ExtResource("12_i8esf")]
-z_index = 1
-custom_minimum_size = Vector2(56, 16)
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("15_dkpta")
-text = "debug_advanceTimer1m"
-
-[node name="btn_timer_5m" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=1731754616 instance=ExtResource("12_i8esf")]
-z_index = 1
-custom_minimum_size = Vector2(56, 16)
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("15_dkpta")
-text = "debug_advanceTimer5m"
-
-[node name="btn_show_warning" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=1194648786 instance=ExtResource("12_i8esf")]
-z_index = 1
-custom_minimum_size = Vector2(56, 16)
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("15_dkpta")
-text = "debug_showBossWarning"
-
-[node name="btn_spawn_boss" parent="GUILayer/GUI/DebugMenu/Padded container/VBoxContainer/GridContainer" unique_id=565666093 instance=ExtResource("12_i8esf")]
-z_index = 1
-custom_minimum_size = Vector2(56, 16)
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("15_dkpta")
-text = "debug_spawnBoss"
 
 [node name="BossBarParticles" type="GPUParticles2D" parent="GUILayer" unique_id=1500000004]
 unique_name_in_owner = true
@@ -986,9 +664,6 @@ mouse_filter = 2
 
 [connection signal="closeMenu" from="GUILayer/GUI" to="GUILayer/GUI/DebugMenu" method="_on_gui_close_menu"]
 [connection signal="openMenu" from="GUILayer/GUI" to="GUILayer/GUI/DebugMenu" method="_on_gui_open_menu"]
-[connection signal="pressed" from="GUILayer/GUI/GiveItemMenu/btn_close_give_item" to="GUILayer/GUI" method="_on_btn_close_give_item_pressed"]
-[connection signal="pressed" from="GUILayer/GUI/RemoveItemMenu/btn_close_remove_item" to="GUILayer/GUI" method="_on_btn_close_remove_item_pressed"]
-[connection signal="pressed" from="GUILayer/GUI/SpawnBossMenu/btn_close_spawn_boss" to="GUILayer/GUI" method="_on_btn_close_spawn_boss_pressed"]
 [connection signal="click_end" from="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2/VBoxContainer/btn_resume_run" to="GUILayer/GUI" method="_on_btn_resume_run_click_end"]
 [connection signal="click_end" from="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2/VBoxContainer/btn_settings" to="GUILayer/GUI" method="_on_btn_settings_click_end"]
 [connection signal="click_end" from="GUILayer/GUI/PauseMenu/MarginContainer/PanelContainer/VBoxContainer2/VBoxContainer/btn_end_run" to="GUILayer/GUI" method="_on_btn_end_run_click_end"]

@@ -11,7 +11,8 @@ const UPGRADES = {
 		"details": "ItemDesc_IceSpear1",
 		"level": "item_level1",
 		"prerequisite": [],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_frontal"
 	},
 	"icespear2": 
 	{
@@ -20,7 +21,8 @@ const UPGRADES = {
 		"details": "ItemDesc_IceSpear2",
 		"level": "item_level2",
 		"prerequisite": ["icespear1"],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_frontal"
 	},
 	"icespear3": 
 	{
@@ -29,7 +31,8 @@ const UPGRADES = {
 		"details": "ItemDesc_IceSpear3",
 		"level": "item_level3",
 		"prerequisite": ["icespear2"],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_frontal"
 	},
 	"icespear4": 
 	{
@@ -38,7 +41,8 @@ const UPGRADES = {
 		"details": "ItemDesc_IceSpear4",
 		"level": "item_level4",
 		"prerequisite": ["icespear3"],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_frontal"
 	},
 	"javelin1": 
 	{
@@ -47,7 +51,8 @@ const UPGRADES = {
 		"details": "ItemDesc_Javelin1",
 		"level": "item_level1",
 		"prerequisite": [],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_random"
 	},
 	"javelin2": 
 	{
@@ -56,7 +61,8 @@ const UPGRADES = {
 		"details": "ItemDesc_Javelin2",
 		"level": "item_level2",
 		"prerequisite": ["javelin1"],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_random"
 	},
 	"javelin3": 
 	{
@@ -65,7 +71,8 @@ const UPGRADES = {
 		"details": "ItemDesc_Javelin3",
 		"level": "item_level3",
 		"prerequisite": ["javelin2"],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_random"
 	},
 	"javelin4": 
 	{
@@ -74,7 +81,8 @@ const UPGRADES = {
 		"details": "ItemDesc_Javelin4",
 		"level": "item_level4",
 		"prerequisite": ["javelin3"],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_random"
 	},
 	"tornado1": 
 	{
@@ -83,7 +91,8 @@ const UPGRADES = {
 		"details": "ItemDesc_Tornado1",
 		"level": "item_level1",
 		"prerequisite": [],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_direction"
 	},
 	"tornado2": 
 	{
@@ -92,7 +101,8 @@ const UPGRADES = {
 		"details": "ItemDesc_Tornado2",
 		"level": "item_level2",
 		"prerequisite": ["tornado1"],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_direction"
 	},
 	"tornado3": 
 	{
@@ -101,7 +111,8 @@ const UPGRADES = {
 		"details": "ItemDesc_Tornado3",
 		"level": "item_level3",
 		"prerequisite": ["tornado2"],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_direction"
 	},
 	"tornado4": 
 	{
@@ -110,7 +121,8 @@ const UPGRADES = {
 		"details": "ItemDesc_Tornado4",
 		"level": "item_level4",
 		"prerequisite": ["tornado3"],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_direction"
 	},
 	"armor1": 
 	{
@@ -339,7 +351,8 @@ const UPGRADES = {
 		"details": "ItemDesc_PoisonBottle1",
 		"level": "item_level1",
 		"prerequisite": [],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_crowd"
 	},
 	"poisonbottle2": 
 	{
@@ -348,7 +361,8 @@ const UPGRADES = {
 		"details": "ItemDesc_PoisonBottle2",
 		"level": "item_level2",
 		"prerequisite": ["poisonbottle1"],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_crowd"
 	},
 	"poisonbottle3": 
 	{
@@ -357,7 +371,8 @@ const UPGRADES = {
 		"details": "ItemDesc_PoisonBottle3",
 		"level": "item_level3",
 		"prerequisite": ["poisonbottle2"],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_crowd"
 	},
 	"poisonbottle4": 
 	{
@@ -366,7 +381,8 @@ const UPGRADES = {
 		"details": "ItemDesc_PoisonBottle4",
 		"level": "item_level4",
 		"prerequisite": ["poisonbottle3"],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_crowd"
 	},
 	"ritualcircle1": 
 	{
@@ -375,7 +391,8 @@ const UPGRADES = {
 		"details": "ItemDesc_RitualCircle1",
 		"level": "item_level1",
 		"prerequisite": [],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_crowd"
 	},
 	"ritualcircle2": 
 	{
@@ -384,7 +401,8 @@ const UPGRADES = {
 		"details": "ItemDesc_RitualCircle2",
 		"level": "item_level2",
 		"prerequisite": ["ritualcircle1"],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_crowd"
 	},
 	"ritualcircle3": 
 	{
@@ -393,7 +411,8 @@ const UPGRADES = {
 		"details": "ItemDesc_RitualCircle3",
 		"level": "item_level3",
 		"prerequisite": ["ritualcircle2"],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_crowd"
 	},
 	"ritualcircle4": 
 	{
@@ -402,7 +421,8 @@ const UPGRADES = {
 		"details": "ItemDesc_RitualCircle4",
 		"level": "item_level4",
 		"prerequisite": ["ritualcircle3"],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_crowd"
 	},
 	"lightningrod1": 
 	{
@@ -411,7 +431,8 @@ const UPGRADES = {
 		"details": "ItemDesc_LightningRod1",
 		"level": "item_level1",
 		"prerequisite": [],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_strongest"
 	},
 	"lightningrod2": 
 	{
@@ -420,7 +441,8 @@ const UPGRADES = {
 		"details": "ItemDesc_LightningRod2",
 		"level": "item_level2",
 		"prerequisite": ["lightningrod1"],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_strongest"
 	},
 	"lightningrod3": 
 	{
@@ -429,7 +451,8 @@ const UPGRADES = {
 		"details": "ItemDesc_LightningRod3",
 		"level": "item_level3",
 		"prerequisite": ["lightningrod2"],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_strongest"
 	},
 	"lightningrod4": 
 	{
@@ -438,7 +461,8 @@ const UPGRADES = {
 		"details": "ItemDesc_LightningRod4",
 		"level": "item_level4",
 		"prerequisite": ["lightningrod3"],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_strongest"
 	},
 	"food": 
 	{
@@ -457,7 +481,8 @@ const UPGRADES = {
 		"details": "ItemDesc_GlassLash1",
 		"level": "item_level1",
 		"prerequisite": [],
-		"type": "bossitem"
+		"type": "bossitem",
+		"targeting": "target_closest"
 	},
 	"glasslash2": 
 	{
@@ -466,7 +491,8 @@ const UPGRADES = {
 		"details": "ItemDesc_GlassLash2",
 		"level": "item_level2",
 		"prerequisite": ["glasslash1"],
-		"type": "bossitem"
+		"type": "bossitem",
+		"targeting": "target_closest"
 	},
 	"glasslash3": 
 	{
@@ -475,7 +501,8 @@ const UPGRADES = {
 		"details": "ItemDesc_GlassLash3",
 		"level": "item_level3",
 		"prerequisite": ["glasslash2"],
-		"type": "bossitem"
+		"type": "bossitem",
+		"targeting": "target_closest"
 	},
 	"glasslash4": 
 	{
@@ -484,7 +511,8 @@ const UPGRADES = {
 		"details": "ItemDesc_GlassLash4",
 		"level": "item_level4",
 		"prerequisite": ["glasslash3"],
-		"type": "bossitem"
+		"type": "bossitem",
+		"targeting": "target_closest"
 	},
 	"vampireknives1": 
 	{
@@ -493,7 +521,8 @@ const UPGRADES = {
 		"details": "ItemDesc_VampireKnives1",
 		"level": "item_level1",
 		"prerequisite": [],
-		"type": "bossitem"
+		"type": "bossitem",
+		"targeting": "target_frontal"
 	},
 	"vampireknives2": 
 	{
@@ -502,7 +531,8 @@ const UPGRADES = {
 		"details": "ItemDesc_VampireKnives2",
 		"level": "item_level2",
 		"prerequisite": ["vampireknives1"],
-		"type": "bossitem"
+		"type": "bossitem",
+		"targeting": "target_frontal"
 	},
 	"vampireknives3": 
 	{
@@ -511,7 +541,8 @@ const UPGRADES = {
 		"details": "ItemDesc_VampireKnives3",
 		"level": "item_level3",
 		"prerequisite": ["vampireknives2"],
-		"type": "bossitem"
+		"type": "bossitem",
+		"targeting": "target_frontal"
 	},
 	"vampireknives4": 
 	{
@@ -520,7 +551,8 @@ const UPGRADES = {
 		"details": "ItemDesc_VampireKnives4",
 		"level": "item_level4",
 		"prerequisite": ["vampireknives3"],
-		"type": "bossitem"
+		"type": "bossitem",
+		"targeting": "target_frontal"
 	},
 	"thornring1": 
 	{
@@ -641,7 +673,8 @@ const UPGRADES = {
 		"details": "ItemDesc_Whip1",
 		"level": "item_level1",
 		"prerequisite": [],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_closest"
 	},
 	"whip2": 
 	{
@@ -650,7 +683,8 @@ const UPGRADES = {
 		"details": "ItemDesc_Whip2",
 		"level": "item_level2",
 		"prerequisite": ["whip1"],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_closest"
 	},
 	"whip3": 
 	{
@@ -659,7 +693,8 @@ const UPGRADES = {
 		"details": "ItemDesc_Whip3",
 		"level": "item_level3",
 		"prerequisite": ["whip2"],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_closest"
 	},
 	"whip4": 
 	{
@@ -668,7 +703,8 @@ const UPGRADES = {
 		"details": "ItemDesc_Whip4",
 		"level": "item_level4",
 		"prerequisite": ["whip3"],
-		"type": "weapon"
+		"type": "weapon",
+		"targeting": "target_closest"
 	},
 	"icespear_endless": 
 	{
@@ -678,6 +714,7 @@ const UPGRADES = {
 		"level": "item_level_endless",
 		"prerequisite": ["icespear4"],
 		"type": "endless",
+		"targeting": "target_frontal",
 		"stat_modifiers": {"damage": 1}
 	},
 	"javelin_endless": 
@@ -688,6 +725,7 @@ const UPGRADES = {
 		"level": "item_level_endless",
 		"prerequisite": ["javelin4"],
 		"type": "endless",
+		"targeting": "target_random",
 		"stat_modifiers": {"damage": 1}
 	},
 	"tornado_endless": 
@@ -698,6 +736,7 @@ const UPGRADES = {
 		"level": "item_level_endless",
 		"prerequisite": ["tornado4"],
 		"type": "endless",
+		"targeting": "target_direction",
 		"stat_modifiers": {"damage": 1}
 	},
 	"poisonbottle_endless": 
@@ -708,6 +747,7 @@ const UPGRADES = {
 		"level": "item_level_endless",
 		"prerequisite": ["poisonbottle4"],
 		"type": "endless",
+		"targeting": "target_crowd",
 		"stat_modifiers": {"damage": 1}
 	},
 	"ritualcircle_endless": 
@@ -718,6 +758,7 @@ const UPGRADES = {
 		"level": "item_level_endless",
 		"prerequisite": ["ritualcircle4"],
 		"type": "endless",
+		"targeting": "target_crowd",
 		"stat_modifiers": {"damage": 1}
 	},
 	"lightningrod_endless": 
@@ -728,6 +769,7 @@ const UPGRADES = {
 		"level": "item_level_endless",
 		"prerequisite": ["lightningrod4"],
 		"type": "endless",
+		"targeting": "target_strongest",
 		"stat_modifiers": {"damage": 1}
 	},
 	"glasslash_endless": 
@@ -738,6 +780,7 @@ const UPGRADES = {
 		"level": "item_level_endless",
 		"prerequisite": ["glasslash4"],
 		"type": "endless",
+		"targeting": "target_closest",
 		"stat_modifiers": {"damage": 1}
 	},
 	"vampireknives_endless": 
@@ -748,6 +791,7 @@ const UPGRADES = {
 		"level": "item_level_endless",
 		"prerequisite": ["vampireknives4"],
 		"type": "endless",
+		"targeting": "target_frontal",
 		"stat_modifiers": {"damage": 1}
 	},
 	"whip_endless": 
@@ -758,6 +802,7 @@ const UPGRADES = {
 		"level": "item_level_endless",
 		"prerequisite": ["whip4"],
 		"type": "endless",
+		"targeting": "target_closest",
 		"stat_modifiers": {"damage": 1}
 	},
 	"armor_endless": 

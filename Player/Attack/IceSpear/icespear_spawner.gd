@@ -56,7 +56,7 @@ func _on_timer_timeout():
 
 func _on_attack_timer_timeout():
 	if ammo > 0:
-		var target = player.get_random_target()
+		var target = player.get_frontal_target() if player.has_method("get_frontal_target") else player.get_random_target()
 		if target != Vector2.INF:
 			var icespear_attack = iceSpear.instantiate()
 			icespear_attack.position = player.position

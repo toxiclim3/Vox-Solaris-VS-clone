@@ -23,19 +23,27 @@ var gui_scale: float = 1.0
 var camera_zoom: float = 1.0
 var unlimit_rtx: bool = false # Secret toggle for RTX FPS limit
 var joystick_size: int = 2 # 0: Small, 1: Medium, 2: Large
+var debug_unlocked: bool = OS.is_debug_build()
+var _secret_buffer: String = ""
+const MAX_SECRET_BUFFER: int = 32
 
 # Modular Secret System
 var active_secrets: Dictionary = {
 	"frames": func(): 
 		unlimit_rtx = !unlimit_rtx
 		apply_elite_settings()
-		print("Secret activated: RTX FPS Limit toggled")
+		print("Secret activated: RTX FPS Limit toggled"),
+	"debug": func():
+		debug_unlocked = !debug_unlocked
+		debug_mode_changed.emit(debug_unlocked)
+		print("Secret activated: Debug Mode toggled (%s)" % str(debug_unlocked))
 }
 
 signal camera_zoom_changed(zoom: float)
 signal shadow_settings_changed(enabled: bool)
 signal raytracing_settings_changed(enabled: bool)
 signal joystick_settings_changed(size: int)
+signal debug_mode_changed(enabled: bool)
 
 const PROFILES = {
 	"Full": {
@@ -57,6 +65,7 @@ const PROFILES = {
 }
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	# Check if audio is functional (dummy driver or no buses means it's not)
 	if AudioServer.get_bus_count() > 0:
 		is_audio_functional = true
@@ -64,6 +73,24 @@ func _ready() -> void:
 		push_warning("SettingsManager: AudioServer failed to initialize buses. Audio is disabled.")
 		
 	loadSettings()
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.is_echo():
+		var vp := get_viewport()
+		var focused := vp.gui_get_focus_owner() if vp else null
+		if focused is LineEdit or focused is TextEdit:
+			return
+		if event.unicode > 0:
+			var c := char(event.unicode)
+			if c != "":
+				_secret_buffer += c
+				if _secret_buffer.length() > MAX_SECRET_BUFFER:
+					_secret_buffer = _secret_buffer.right(MAX_SECRET_BUFFER)
+				if process_secret_keyword(_secret_buffer):
+					_secret_buffer = ""
+
+func is_debug_enabled() -> bool:
+	return debug_unlocked
 
 # Сохранение значения громкости
 func saveAudioSetting(busName: String, value: float) -> void:
