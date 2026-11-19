@@ -201,40 +201,103 @@ func show_death_panel(hasWon: bool) -> void:
 		lblResult.text = tr("result_lose")
 		sndLose.play()
 
+const LEVELUP_CARD_WIDTH: float = 148.0
+const LEVELUP_CARD_SEPARATION: float = 8.0
+const LEVELUP_PANEL_CHROME_WIDTH: float = 48.0
+const LEVELUP_MIN_PANEL_WIDTH: float = 220.0
+const LEVELUP_HORIZONTAL_MARGIN: float = 32.0
+
+func _release_panel_focus(panel: Node) -> void:
+	if panel == null or not is_instance_valid(panel):
+		return
+	var vp := get_viewport()
+	if vp == null:
+		return
+	var focused := vp.gui_get_focus_owner()
+	if focused != null and (focused == panel or panel.is_ancestor_of(focused)):
+		focused.release_focus()
+
 func hide_level_panels() -> void:
+	_release_panel_focus(levelPanel)
+	_release_panel_focus(bossLevelPanel)
 	levelPanel.visible = false
 	bossLevelPanel.visible = false
+
+func _populate_level_options(panel: PanelContainer, scroll: ScrollContainer, options_container: Container, options_list: Array) -> void:
+	for child in options_container.get_children():
+		options_container.remove_child(child)
+		child.queue_free()
+
+	var vp := get_viewport()
+	if vp:
+		var focused := vp.gui_get_focus_owner()
+		if focused:
+			focused.release_focus()
+
+	panel.visible = true
+	if scroll:
+		scroll.scroll_horizontal = 0
+		scroll.scroll_vertical = 0
+
+	var is_mobile := OS.get_name() in ["Android", "iOS"]
+	for item in options_list:
+		var option_choice = itemOptions.instantiate()
+		option_choice.item = item
+		options_container.add_child(option_choice)
+		if is_mobile:
+			_apply_recursive_font_bump(option_choice, 4)
+			if option_choice.has_method("on_font_size_bumped"):
+				option_choice.on_font_size_bumped(4)
+
+	_wire_option_focus_neighbors(options_container)
+	_update_level_panel_width(panel, options_container)
+
+func _wire_option_focus_neighbors(options_container: Container) -> void:
+	var cards: Array[Control] = []
+	for child in options_container.get_children():
+		if child is Control:
+			cards.append(child)
+	var count := cards.size()
+	for i in range(count):
+		var card := cards[i]
+		var self_path := card.get_path_to(card)
+		card.focus_neighbor_top = self_path
+		card.focus_neighbor_bottom = self_path
+		card.focus_neighbor_left = card.get_path_to(cards[i - 1]) if i > 0 else self_path
+		card.focus_neighbor_right = card.get_path_to(cards[i + 1]) if i < count - 1 else self_path
+		card.focus_previous = card.focus_neighbor_left
+		card.focus_next = card.focus_neighbor_right
+
+func _update_level_panel_width(panel: PanelContainer, options_container: Container) -> void:
+	if not panel or not options_container:
+		return
+	var count := maxi(1, options_container.get_child_count())
+	var desired_w := maxf(
+		LEVELUP_MIN_PANEL_WIDTH,
+		count * LEVELUP_CARD_WIDTH + maxi(0, count - 1) * LEVELUP_CARD_SEPARATION + LEVELUP_PANEL_CHROME_WIDTH
+	)
+	var available_w := size.x
+	if available_w <= 0.0:
+		var vp_w := get_viewport_rect().size.x
+		available_w = (vp_w / maxf(scale.x, 0.01)) if vp_w > 0.0 else 640.0
+	var h_margin := 16.0 if OS.get_name() in ["Android", "iOS"] else LEVELUP_HORIZONTAL_MARGIN
+	var max_w := maxf(LEVELUP_MIN_PANEL_WIDTH, available_w - h_margin)
+	panel.custom_minimum_size.x = minf(desired_w, max_w)
+
+func _refresh_visible_level_panel_widths() -> void:
+	if levelPanel and levelPanel.visible:
+		_update_level_panel_width(levelPanel, upgradeOptions)
+	if bossLevelPanel and bossLevelPanel.visible:
+		_update_level_panel_width(bossLevelPanel, bossUpgradeOptions)
 
 func show_levelup(options_list: Array, current_visual_level: int) -> void:
 	sndLevelUp.play()
 	set_level_text(current_visual_level)
-	for child in upgradeOptions.get_children():
-		upgradeOptions.remove_child(child)
-		child.queue_free()
-	
-	levelPanel.visible = true
-	for item in options_list:
-		var option_choice = itemOptions.instantiate()
-		option_choice.item = item
-		upgradeOptions.add_child(option_choice)
-		if OS.get_name() in ["Android", "iOS"]:
-			_apply_recursive_font_bump(option_choice, 4)
-	# Native Godot UI layout will now automatically handle width and full-screen margins!
+	_populate_level_options(levelPanel, upgradeScroll, upgradeOptions, options_list)
 
 func show_boss_levelup(options_list: Array) -> void:
 	sndLevelUp.play()
-	for child in bossUpgradeOptions.get_children():
-		bossUpgradeOptions.remove_child(child)
-		child.queue_free()
-		
-	bossLevelPanel.visible = true
-	for item in options_list:
-		var option_choice = itemOptions.instantiate()
-		option_choice.item = item
-		bossUpgradeOptions.add_child(option_choice)
-		if OS.get_name() in ["Android", "iOS"]:
-			_apply_recursive_font_bump(option_choice, 4)
-	# Native Godot UI layout will now automatically handle width and full-screen margins!
+	_populate_level_options(bossLevelPanel, bossUpgradeScroll, bossUpgradeOptions, options_list)
 
 @export var transition_duration: float = 0.4
 @export var gap: float = 0.5 * 8 * 8 # Расстояние между окнами
@@ -329,11 +392,15 @@ func _apply_mobile_layout_overrides():
 	# Reduce margins for level up screens
 	var lup_mc = get_node_or_null("%LUpMarginContainer")
 	if lup_mc:
+		lup_mc.add_theme_constant_override("margin_left", 8)
+		lup_mc.add_theme_constant_override("margin_right", 8)
 		lup_mc.add_theme_constant_override("margin_top", 8)
 		lup_mc.add_theme_constant_override("margin_bottom", 8)
 		
 	var blup_mc = get_node_or_null("%BLUpMarginContainer")
 	if blup_mc:
+		blup_mc.add_theme_constant_override("margin_left", 8)
+		blup_mc.add_theme_constant_override("margin_right", 8)
 		blup_mc.add_theme_constant_override("margin_top", 8)
 		blup_mc.add_theme_constant_override("margin_bottom", 8)
 
@@ -392,6 +459,7 @@ func _apply_recursive_font_bump(node: Node, amount: int):
 func _on_window_resized():
 	apply_gui_scale(SettingsManager.gui_scale)
 	_initialize_pause_menu_position()
+	call_deferred("_refresh_visible_level_panel_widths")
 	
 	if deathPanel.visible:
 		var is_mobile = OS.get_name() in ["Android", "iOS"]
@@ -481,14 +549,13 @@ func _input(event: InputEvent) -> void:
 func toggle_menu():
 	if !levelup_menu.visible or !deathPanel.visible:
 		if pause_menu:
-			is_menu_open = !is_menu_open
-			if is_menu_open:
+			if not is_menu_open:
 				open_pause_menu()
 			else:
 				close_pause_menu()
 
 func open_pause_menu() -> void:
-	
+	is_menu_open = true
 	if pause_tween:
 		pause_tween.kill()
 		
@@ -504,9 +571,12 @@ func open_pause_menu() -> void:
 	
 
 func close_pause_menu() -> void:
+	is_menu_open = false
 	if pause_tween:
 		pause_tween.kill()
 		
+	_release_panel_focus(pause_menu)
+	_release_panel_focus(settings_menu)
 	get_tree().paused = false
 	MusicController.focusMusic(true)
 	
@@ -525,6 +595,7 @@ func open_settings() -> void:
 	settings_menu.show()
 
 func close_settings() -> void:
+	_release_panel_focus(settings_menu)
 	settings_menu.hide()
 	
 #death menu buttons
@@ -627,3 +698,4 @@ func apply_gui_scale(value: float) -> void:
 	
 	var vp_size = get_viewport_rect().size
 	set_deferred("size", vp_size / value)
+	call_deferred("_refresh_visible_level_panel_widths")

@@ -241,6 +241,14 @@ func _unhandled_input(event: InputEvent) -> void:
 	var code = event.physical_keycode if event.physical_keycode != 0 else event.keycode
 
 	match code:
+		KEY_F5:
+			var sw: Control = load("res://Tools/TestRooms/test_room_switcher.gd").new()
+			_ui_root.add_child(sw)
+			sw.open_modal()
+			get_viewport().set_input_as_handled()
+		KEY_BACKSPACE:
+			get_tree().change_scene_to_file("res://TitleScreen/menu.tscn")
+			get_viewport().set_input_as_handled()
 		KEY_SPACE:
 			if _is_recording:
 				stop_recording()

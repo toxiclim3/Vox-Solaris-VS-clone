@@ -13,6 +13,7 @@ signal enemy_died(death_position: Vector2, enemy_max_hp: float, killer_source: S
 signal player_took_damage(amount: float, attacker_node: Node)
 signal player_dealt_damage(amount: float, target_node: Object, proc_coefficient: float)
 signal weapon_damage_dealt(source: String, amount: float, target_node: Object)
+signal movement_config_changed()
 @warning_ignore_restore("unused_signal")
 
 var boss_warnings: Dictionary = {
@@ -38,9 +39,10 @@ const CHARACTERS: Dictionary = {
 		"icon": "res://Textures/Player/player_sprite.png",
 		"icon_color": Color(1.0, 1.0, 1.0),
 		"starting_weapon": "icespear1",
+		"mobility_type": "sidestep",
 		"details": "char_mage_desc",
 		"base_stats": {},
-		"scaling_stats": {"spell_cooldown": -0.15}, # Goal: -15% CDR
+		"scaling_stats": {"spell_cooldown": 0.15}, # Goal: +15% CDR
 		"scaling_max_level": 20
 	},
 	"plague_doctor": {
@@ -48,6 +50,7 @@ const CHARACTERS: Dictionary = {
 		"icon": "res://Textures/Player/player_sprite.png",
 		"icon_color": Color(0.3, 0.9, 0.3),
 		"starting_weapon": "poisonbottle1",
+		"mobility_type": "forward_dash",
 		"details": "char_plague_doctor_desc",
 		"base_stats": {},
 		"scaling_stats": {"spell_size": 0.50}, # Goal: +50% Size
@@ -58,6 +61,7 @@ const CHARACTERS: Dictionary = {
 		"icon": "res://Textures/Player/player_sprite.png",
 		"icon_color": Color(0.7, 0.3, 0.9),
 		"starting_weapon": "ritualcircle1",
+		"mobility_type": "rock_stance",
 		"details": "char_occultist_desc",
 		"base_stats": {},
 		"scaling_stats": {"lifesteal": 0.02}, # Goal: 2% Damage Lifesteal
@@ -68,6 +72,7 @@ const CHARACTERS: Dictionary = {
 		"icon": "res://Textures/Player/player_sprite.png",
 		"icon_color": Color(0.2, 0.2, 0.2), # Dark grey
 		"starting_weapon": "whip1",
+		"mobility_type": "rock_stance",
 		"details": "char_punished_desc",
 		"base_stats": {"armor": 3, "maxhp": 100},
 		"scaling_stats": {"reflected_damage": 40},
@@ -75,6 +80,48 @@ const CHARACTERS: Dictionary = {
 		"shader_config": {"mix_hue": true, "mix_saturation": true}
 	}
 }
+
+const DEFAULT_MOVEMENT_CONFIG: Dictionary = {
+	"movement_coupled_enabled": true,
+	"base_movement_speed": 85.0,
+	"bastion_in_time": 0.45,
+	"bastion_out_time": 0.20,
+	"cooldown_floor": 0.05,
+	"sidestep_distance": 84.0,
+	"sidestep_duration": 0.12,
+	"sidestep_cooldown": 2.5,
+	"forward_dash_distance": 140.0,
+	"forward_dash_duration": 0.14,
+	"forward_dash_cooldown": 3.5,
+	"impulse_prime_duration": 1.5,
+	"rock_stance_armor_bonus": 4,
+	"rock_stance_burst_duration": 1.35,
+	"rock_stance_burst_cd_mult": 0.70,
+	"rock_stance_icd": 4.0,
+	"vector_advance_dot": 0.3,
+	"vector_retreat_dot": -0.3,
+	"stride_efficiency_per_speed_tier": 0.05,
+	"stride_threshold_reduction_per_scroll_tier": 0.05,
+}
+
+var MOVEMENT_CONFIG: Dictionary = DEFAULT_MOVEMENT_CONFIG.duplicate(true)
+
+func is_movement_coupled() -> bool:
+	return bool(MOVEMENT_CONFIG.get("movement_coupled_enabled", true))
+
+func set_movement_coupled(enabled: bool) -> void:
+	if is_movement_coupled() == enabled:
+		return
+	MOVEMENT_CONFIG["movement_coupled_enabled"] = enabled
+	movement_config_changed.emit()
+
+func set_movement_config_value(key: String, value: Variant) -> void:
+	MOVEMENT_CONFIG[key] = value
+	movement_config_changed.emit()
+
+func reset_movement_config() -> void:
+	MOVEMENT_CONFIG = DEFAULT_MOVEMENT_CONFIG.duplicate(true)
+	movement_config_changed.emit()
 
 var selected_character: String = "mage"
 

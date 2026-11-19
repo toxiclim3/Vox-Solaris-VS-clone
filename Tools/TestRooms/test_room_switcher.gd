@@ -62,13 +62,6 @@ func _init() -> void:
 	offset_right = 210.0
 	offset_bottom = 140.0
 
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.08, 0.09, 0.13, 0.96)
-	sb.border_color = Color(0.35, 0.55, 0.85, 1.0)
-	sb.set_border_width_all(1)
-	sb.set_content_margin_all(8)
-	add_theme_stylebox_override("panel", sb)
-
 	_build_ui()
 
 func _build_ui() -> void:
@@ -92,6 +85,7 @@ func _build_ui() -> void:
 
 	var btn_close := Button.new()
 	btn_close.text = " X "
+	btn_close.focus_mode = Control.FOCUS_NONE
 	btn_close.custom_minimum_size = Vector2(20, 16)
 	btn_close.pressed.connect(close_modal)
 	header.add_child(btn_close)
@@ -110,6 +104,7 @@ func _build_ui() -> void:
 		var r_path: String = room["path"]
 		var r_btn := Button.new()
 		r_btn.text = "[%s] %s" % [room["key"], room["name"]]
+		r_btn.focus_mode = Control.FOCUS_NONE
 		r_btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		r_btn.tooltip_text = room["desc"]
 		r_btn.custom_minimum_size = Vector2(0, 20)
@@ -158,11 +153,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 
 	if event is InputEventKey and event.pressed and not event.echo:
-		if event.keycode == KEY_F5:
+		var eff_key := DebugController.get_effective_keycode(event)
+		if eff_key == KEY_F5:
 			close_modal()
 			get_viewport().set_input_as_handled()
 			return
-		var key_str := OS.get_keycode_string(event.keycode)
+		var key_str := OS.get_keycode_string(eff_key)
 		for room in ROOMS:
 			if room["key"] == key_str:
 				switch_to_room(room["path"])

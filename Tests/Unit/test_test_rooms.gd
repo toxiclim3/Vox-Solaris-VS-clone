@@ -108,17 +108,28 @@ func test_combat_proving_ground_setup_and_weapons() -> void:
 	assert_not_null(combat_room.station3_dummy, "Station 3 Retaliation dummy must exist")
 	assert_eq(combat_room.station2_dummies.size(), 17, "Station 2 must have 8 line + 9 cluster dummies = 17")
 
-	# Weapon cycling: cycle through all weapon families cleanly
-	var initial_fam = combat_room.WEAPON_FAMILIES[combat_room.current_weapon_idx]
-	combat_room._cycle_weapon(1)
-	var next_fam = combat_room.WEAPON_FAMILIES[combat_room.current_weapon_idx]
-	assert_true(initial_fam != next_fam, "Cycling weapon must advance to different family")
+	# Player Camera2D must be current (not static RoomCamera)
+	var p_cam := combat_room.player.get_node_or_null("Camera2D") as Camera2D
+	assert_not_null(p_cam, "Player must have Camera2D")
+	assert_true(p_cam.enabled, "Player Camera2D must be enabled")
+	assert_false(combat_room.camera.enabled, "Static RoomCamera must be disabled when Player is active")
 
-	# Tier stepping: step up to 4 and endless (5)
-	combat_room._step_tier(1)
-	assert_eq(combat_room.current_weapon_tier, 2, "Weapon tier stepped up to 2")
-	combat_room._step_tier(3)
-	assert_eq(combat_room.current_weapon_tier, 5, "Weapon tier clamped to endless (5)")
+	# Zoned dummy targeting: at Center (0,0), all station dummies are untargetable
+	assert_false(combat_room.station1_dummy.is_in_group("enemy"), "Station 1 dummy must be untargetable from Center")
+	assert_eq(combat_room.station1_dummy.collision_layer, 0, "Station 1 dummy collision_layer must be 0 when inactive")
+
+	# Warp to Station 1 -> activates Station 1 dummy only
+	var k1 := InputEventKey.new()
+	k1.pressed = true
+	k1.physical_keycode = KEY_1
+	combat_room._unhandled_input(k1)
+	assert_true(combat_room.station1_dummy.is_in_group("enemy"), "Station 1 dummy must be targetable inside Zone 1")
+	assert_eq(combat_room.station1_dummy.collision_layer, 5, "Station 1 dummy collision_layer restored in Zone 1")
+	assert_false(combat_room.station3_dummy.is_in_group("enemy"), "Station 3 dummy remains untargetable while in Zone 1")
+
+	# DebugController / Workbench item tiering replaces legacy top-bar switcher
+	combat_room.debug_controller.set_item_tier("icespear", 3)
+	assert_has(combat_room.player.collected_upgrades, "icespear3", "DebugController grants weapon tier 3")
 
 	# Wall mode cycling
 	var orig_wall = combat_room.wall_mode
@@ -164,6 +175,10 @@ func test_assets_room_tabs_and_icon_audit() -> void:
 	_tree().root.add_child(assets_room)
 	_spawned_nodes.append(assets_room)
 
+	# Backdrop must ignore mouse so whip handles & wheel zoom work
+	assert_eq(assets_room.backdrop_rect.mouse_filter, Control.MOUSE_FILTER_IGNORE, "Backdrop ColorRect must ignore mouse input")
+	assert_eq(assets_room.audit_panel.get_parent(), assets_room.ui_layer, "Audit panel must live on ui_layer")
+
 	# Tab switching
 	assets_room._switch_tab(assets_room.TabMode.WHIP)
 	assert_true(assets_room.tab_containers[assets_room.TabMode.WHIP].visible, "Whip tab visible")
@@ -171,6 +186,7 @@ func test_assets_room_tabs_and_icon_audit() -> void:
 
 	assets_room._switch_tab(assets_room.TabMode.ICONS)
 	assert_true(assets_room.tab_containers[assets_room.TabMode.ICONS].visible, "Icons tab visible")
+	assert_true(assets_room.audit_panel.visible, "Audit panel visible on Icons tab")
 
 	# Backdrop cycling
 	var orig_b = assets_room.active_backdrop_idx
@@ -317,13 +333,15 @@ func test_ui_audio_room_locales_and_focus_graph() -> void:
 	ui_audio_room._cycle_item(1)
 	assert_true(ui_audio_room.current_up_idx != orig_idx, "Upgrade item cycled")
 
-	# Locale cycling
+	# Locale cycling switches to Single mode and cycles locale
 	var orig_loc = TranslationServer.get_locale()
 	ui_audio_room._cycle_locale()
 	var new_loc = TranslationServer.get_locale()
 	assert_true(orig_loc != new_loc, "Engine locale cycled")
-	# Restore locale
+	assert_false(ui_audio_room.is_split_locale_view, "Locale cycling switches to Single Locale view")
+	# Restore locale & split view for Rule 14 neighbor check
 	TranslationServer.set_locale("en")
+	ui_audio_room._toggle_locale_view_mode()
 
 	# Focus visualizer toggle
 	var orig_focus = ui_audio_room.show_focus_graph
@@ -331,11 +349,30 @@ func test_ui_audio_room_locales_and_focus_graph() -> void:
 	assert_true(ui_audio_room.show_focus_graph != orig_focus, "Focus graph toggled")
 	assert_eq(ui_audio_room.focus_overlay.get_parent(), ui_audio_room.ui_layer, "Focus overlay must be on ui_layer in screen space")
 
-	# Rule 14 focus neighbor links between cards
-	var card_0 = ui_audio_room.cards_hbox.get_child(0) as Control
-	var card_1 = ui_audio_room.cards_hbox.get_child(1) as Control
+	# Rule 14 focus neighbor links between real ItemOption cards
+	var slot_0 = ui_audio_room.cards_hbox.get_child(0)
+	var slot_1 = ui_audio_room.cards_hbox.get_child(1)
+	var card_0 = slot_0.get_child(1) as Control
+	var card_1 = slot_1.get_child(1) as Control
+	assert_not_null(card_0.get("lblName"), "Card 0 must be a real ItemOption instance")
 	assert_true(not card_0.focus_neighbor_right.is_empty(), "Card 0 has focus_neighbor_right")
 	assert_true(not card_1.focus_neighbor_left.is_empty(), "Card 1 has focus_neighbor_left")
+
+	# Music Player modal & _cycle_music must run without error
+	assert_not_null(ui_audio_room.music_modal, "Music player modal must exist")
+	var m_key := InputEventKey.new()
+	m_key.pressed = true
+	m_key.physical_keycode = KEY_M
+	ui_audio_room._unhandled_input(m_key)
+	assert_true(ui_audio_room.music_modal.visible, "KEY_M opens Music Player modal")
+	ui_audio_room._cycle_music()
+	ui_audio_room._cycle_music()
+	ui_audio_room._cycle_music()
+	var esc_m := InputEventKey.new()
+	esc_m.pressed = true
+	esc_m.keycode = KEY_ESCAPE
+	ui_audio_room._unhandled_input(esc_m)
+	assert_false(ui_audio_room.music_modal.visible, "Escape closes Music Player modal")
 
 	# Test Shift+L toggles between 3-locale split view and single-locale view
 	assert_true(ui_audio_room.is_split_locale_view, "Initial view is 3-locale split")
@@ -506,3 +543,31 @@ func test_test_room_base_esc_and_backspace_modal_behavior() -> void:
 	assert_true(room.switcher.visible, "F5 opened TestRoomSwitcher in room")
 	room._unhandled_input(f5_ev)
 	assert_false(room.switcher.visible, "F5 closed TestRoomSwitcher in room")
+
+# -----------------------------------------------------------------------------
+# 10. Paused Input Relay & Physical Keycode (RU/UA Layout) Tests
+# -----------------------------------------------------------------------------
+
+func test_paused_room_input_relay_and_physical_keycode() -> void:
+	var room = AssetsRoomScript.new()
+	_tree().root.add_child(room)
+	_spawned_nodes.append(room)
+
+	# Simulate Russian/Ukrainian layout: keycode = 0 (or non-Latin), physical_keycode = KEY_H
+	var cyr_h := InputEventKey.new()
+	cyr_h.pressed = true
+	cyr_h.keycode = KEY_NONE
+	cyr_h.physical_keycode = KEY_H
+	room._input_relay._unhandled_input(cyr_h)
+	assert_true(room.legend_panel.visible, "Physical KEY_H must toggle legend even with non-Latin keycode")
+	room._input_relay._unhandled_input(cyr_h)
+	assert_false(room.legend_panel.visible, "Physical KEY_H closes legend")
+
+	# Freeze with F4 and verify relay unfreezes while tree is paused
+	var f4_ev := InputEventKey.new()
+	f4_ev.pressed = true
+	f4_ev.physical_keycode = KEY_F4
+	room._input_relay._unhandled_input(f4_ev)
+	assert_true(_tree().paused, "F4 froze the tree")
+	room._input_relay._unhandled_input(f4_ev)
+	assert_false(_tree().paused, "F4 via _input_relay must unfreeze even when tree is paused")

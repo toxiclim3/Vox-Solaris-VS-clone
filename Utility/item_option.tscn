@@ -7,34 +7,57 @@
 [ext_resource type="Theme" uid="uid://blmqbnir3amd5" path="res://Themes/HeaderText_NoShadow.tres" id="2_header"]
 [ext_resource type="Theme" path="res://Themes/RegularText_NoShadow.tres" id="3_regular"]
 [ext_resource type="Theme" uid="uid://crfiwpevxb7b2" path="res://Themes/NinePatchUI_Dark.tres" id="4_w0qxg"]
+[ext_resource type="Resource" path="res://Themes/CardStyles/card_style_default.tres" id="5_style_default"]
+[ext_resource type="Resource" path="res://Themes/CardStyles/card_style_weapon.tres" id="6_style_weapon"]
+[ext_resource type="Resource" path="res://Themes/CardStyles/card_style_upgrade.tres" id="7_style_upgrade"]
+[ext_resource type="Resource" path="res://Themes/CardStyles/card_style_boss_weapon.tres" id="8_style_boss_weapon"]
+[ext_resource type="Resource" path="res://Themes/CardStyles/card_style_boss_accessory.tres" id="9_style_boss_accessory"]
+[ext_resource type="Resource" path="res://Themes/CardStyles/card_style_item.tres" id="10_style_item"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r6i4i"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-shadow_color = Color(0, 0, 0, 0.19215687)
-shadow_size = 8
-shadow_offset = Vector2(0, 3)
+bg_color = Color(0.08, 0.06, 0.06, 0.42)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 0.45)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+shadow_color = Color(0, 0, 0, 0.28)
+shadow_size = 5
+shadow_offset = Vector2(0, 2)
 
 [sub_resource type="Theme" id="Theme_empty"]
 PanelContainer/styles/panel = SubResource("StyleBoxFlat_r6i4i")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_focus"]
-bg_color = Color(1, 1, 1, 0)
-draw_center = false
+bg_color = Color(1, 1, 1, 0.06)
+draw_center = true
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(1, 1, 1, 1)
-expand_margin_left = 2.0
-expand_margin_top = 2.0
-expand_margin_right = 2.0
-expand_margin_bottom = 2.0
+border_color = Color(1, 1, 1, 0.95)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+expand_margin_left = 0.0
+expand_margin_top = 0.0
+expand_margin_right = 0.0
+expand_margin_bottom = 0.0
 
 [node name="ItemOption" type="PanelContainer" unique_id=53943087]
+custom_minimum_size = Vector2(146, 196)
 size_flags_horizontal = 3
+size_flags_vertical = 3
 mouse_filter = 1
 theme = SubResource("Theme_empty")
 script = ExtResource("1_script")
+default_style = ExtResource("5_style_default")
+category_styles = {"boss_accessory": ExtResource("9_style_boss_accessory"), "boss_weapon": ExtResource("8_style_boss_weapon"), "item": ExtResource("10_style_item"), "upgrade": ExtResource("7_style_upgrade"), "weapon": ExtResource("6_style_weapon")}
 
 [node name="FocusFrame" type="Panel" parent="." unique_id=12345678]
 visible = false
@@ -42,80 +65,109 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_focus")
 
-[node name="MarginContainer" type="MarginContainer" parent="." unique_id=441372501]
-layout_mode = 2
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 4
-
-[node name="snd_hover" type="AudioStreamPlayer" parent="MarginContainer" unique_id=685127909]
+[node name="snd_hover" type="AudioStreamPlayer" parent="." unique_id=685127909]
 stream = ExtResource("1_hover")
 bus = &"SFX"
 
-[node name="snd_click" type="AudioStreamPlayer" parent="MarginContainer" unique_id=1310888882]
+[node name="snd_click" type="AudioStreamPlayer" parent="." unique_id=1310888882]
 stream = ExtResource("2_click")
 bus = &"SFX"
 
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=441372501]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 6
+
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=2093371394]
 layout_mode = 2
-theme_override_constants/separation = 8
+mouse_filter = 2
+theme_override_constants/separation = 4
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=526571905]
+[node name="IconPanel" type="PanelContainer" parent="MarginContainer/VBoxContainer" unique_id=2120820264]
+custom_minimum_size = Vector2(44, 44)
 layout_mode = 2
-size_flags_vertical = 3
-
-[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=2120820264]
-custom_minimum_size = Vector2(24, 24)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
+size_flags_horizontal = 4
+size_flags_vertical = 0
 mouse_filter = 2
 theme = ExtResource("4_w0qxg")
 
-[node name="ItemIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer" unique_id=1850822096]
+[node name="ItemIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/IconPanel" unique_id=1850822096]
 texture_filter = 3
 layout_mode = 2
+mouse_filter = 2
 texture = ExtResource("1_583l0")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="lbl_name" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=845083178]
-layout_mode = 2
-theme = ExtResource("2_header")
-text = "ui_itemExampleName"
-vertical_alignment = 1
-
-[node name="Control" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=691258249]
+[node name="lbl_name" type="Label" parent="MarginContainer/VBoxContainer" unique_id=845083178]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
-
-[node name="lbl_targeting" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1427683333]
-visible = false
-layout_mode = 2
-theme = ExtResource("3_regular")
-theme_override_colors/font_color = Color(0.85, 0.82, 0.65, 1)
-theme_override_font_sizes/font_size = 10
-text = ""
-vertical_alignment = 1
-
-[node name="lbl_level" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1427683332]
-layout_mode = 2
 theme = ExtResource("2_header")
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
-theme_override_font_sizes/font_size = 12
-text = "item_levelNA"
+text = "ui_itemExampleName"
+horizontal_alignment = 1
 vertical_alignment = 1
+clip_text = true
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=917969840]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="lbl_description" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2" unique_id=2079713157]
+[node name="lbl_level" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1427683332]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 1
+mouse_filter = 2
+theme = ExtResource("2_header")
+theme_override_colors/font_color = Color(0.92, 0.88, 0.72, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_font_sizes/font_size = 11
+text = "item_levelNA"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Divider" type="ColorRect" parent="MarginContainer/VBoxContainer" unique_id=1954321001]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+color = Color(1, 1, 1, 0.18)
+
+[node name="lbl_description" type="Label" parent="MarginContainer/VBoxContainer" unique_id=2079713157]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
 theme = ExtResource("3_regular")
 text = "ui_itemExampleDesc"
+horizontal_alignment = 1
+vertical_alignment = 0
 autowrap_mode = 3
+
+[node name="BadgeRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1954321002]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="TargetingBadge" type="TextureRect" parent="MarginContainer/VBoxContainer/BadgeRow" unique_id=1954321003]
+visible = false
+texture_filter = 1
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 1
+expand_mode = 1
+stretch_mode = 5
+
+[node name="lbl_targeting" type="Label" parent="MarginContainer/VBoxContainer/BadgeRow" unique_id=1427683333]
+visible = false
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("3_regular")
+theme_override_colors/font_color = Color(0.85, 0.82, 0.65, 1)
+theme_override_font_sizes/font_size = 9
+text = ""
+vertical_alignment = 1

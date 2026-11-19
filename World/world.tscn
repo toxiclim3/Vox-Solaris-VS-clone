@@ -264,6 +264,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+focus_mode = 0
 flat = true
 
 [node name="LUpMarginContainer" type="MarginContainer" parent="GUILayer/GUI" unique_id=1379863372]
@@ -275,13 +276,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 32
 
 [node name="LevelUp" type="PanelContainer" parent="GUILayer/GUI/LUpMarginContainer" unique_id=1699352669]
 unique_name_in_owner = true
 visible = false
-custom_minimum_size = Vector2(224, 0)
+custom_minimum_size = Vector2(508, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 
@@ -311,16 +314,31 @@ vertical_alignment = 1
 
 [node name="UpgradeScroll" type="ScrollContainer" parent="GUILayer/GUI/LUpMarginContainer/LevelUp/MarginContainer/VBoxContainer" unique_id=826318036]
 unique_name_in_owner = true
-clip_contents = false
+clip_contents = true
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_vertical = 3
+follow_focus = true
+horizontal_scroll_mode = 1
+vertical_scroll_mode = 1
 
-[node name="UpgradeOptions" type="VBoxContainer" parent="GUILayer/GUI/LUpMarginContainer/LevelUp/MarginContainer/VBoxContainer/UpgradeScroll" unique_id=826318037]
+[node name="ScrollMargin" type="MarginContainer" parent="GUILayer/GUI/LUpMarginContainer/LevelUp/MarginContainer/VBoxContainer/UpgradeScroll" unique_id=826318038]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="UpgradeOptions" type="HBoxContainer" parent="GUILayer/GUI/LUpMarginContainer/LevelUp/MarginContainer/VBoxContainer/UpgradeScroll/ScrollMargin" unique_id=826318037]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
 theme_override_constants/separation = 8
+alignment = 1
 
 [node name="BLUpMarginContainer" type="MarginContainer" parent="GUILayer/GUI" unique_id=124367374]
 unique_name_in_owner = true
@@ -331,14 +349,16 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 32
 
 [node name="BossLevelUp" type="PanelContainer" parent="GUILayer/GUI/BLUpMarginContainer" unique_id=1700000000]
 unique_name_in_owner = true
 visible = false
 self_modulate = Color(1, 0.843137, 0, 1)
-custom_minimum_size = Vector2(224, 0)
+custom_minimum_size = Vector2(508, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 
@@ -363,15 +383,31 @@ vertical_alignment = 1
 
 [node name="BossUpgradeScroll" type="ScrollContainer" parent="GUILayer/GUI/BLUpMarginContainer/BossLevelUp/MarginContainer/VBoxContainer" unique_id=1700000004]
 unique_name_in_owner = true
-clip_contents = false
+clip_contents = true
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_vertical = 3
+follow_focus = true
+horizontal_scroll_mode = 1
+vertical_scroll_mode = 1
 
-[node name="BossUpgradeOptions" type="VBoxContainer" parent="GUILayer/GUI/BLUpMarginContainer/BossLevelUp/MarginContainer/VBoxContainer/BossUpgradeScroll" unique_id=1700000005]
+[node name="ScrollMargin" type="MarginContainer" parent="GUILayer/GUI/BLUpMarginContainer/BossLevelUp/MarginContainer/VBoxContainer/BossUpgradeScroll" unique_id=1700000006]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="BossUpgradeOptions" type="HBoxContainer" parent="GUILayer/GUI/BLUpMarginContainer/BossLevelUp/MarginContainer/VBoxContainer/BossUpgradeScroll/ScrollMargin" unique_id=1700000005]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+alignment = 1
 
 [node name="DeathPanel" type="PanelContainer" parent="GUILayer/GUI" unique_id=266401415]
 unique_name_in_owner = true
@@ -630,6 +666,7 @@ grow_horizontal = 0
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+focus_mode = 0
 texture_normal = ExtResource("7_pause_icon")
 ignore_texture_size = true
 stretch_mode = 5

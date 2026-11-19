@@ -5,6 +5,7 @@
 extends SceneTree
 
 var _has_run: bool = false
+var _frame_count: int = 0
 
 # Registered test suite scripts
 const SUITES: Array[Dictionary] = [
@@ -52,11 +53,17 @@ const SUITES: Array[Dictionary] = [
 		"name": "Testing Rooms & Utilities",
 		"id": "test_rooms",
 		"path": "res://Tests/Unit/test_test_rooms.gd"
+	},
+	{
+		"name": "Movement Substrate & Character Mobility",
+		"id": "movement_substrate",
+		"path": "res://Tests/Unit/test_movement_substrate.gd"
 	}
 ]
 
 func _process(_delta: float) -> bool:
-	if _has_run:
+	_frame_count += 1
+	if _has_run or _frame_count < 3:
 		return false
 	_has_run = true
 	

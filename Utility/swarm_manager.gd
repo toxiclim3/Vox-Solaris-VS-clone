@@ -428,8 +428,9 @@ func _physics_process(delta):
 		i += 1 # Critical: Increment the loop!
 
 	# Apply accumulated and capped push to the player to allow blocking without "force fields"
-	if player_push_sum.length_squared() > 1.0:
-		var max_push = 300.0 # Enough to strongly block player (spd 75) but not launch them
+	var push_immune: bool = player.has_method("is_swarm_push_immune") and player.is_swarm_push_immune()
+	if not push_immune and player_push_sum.length_squared() > 1.0:
+		var max_push = 300.0 # Enough to strongly block player (base spd 85) but not launch them
 		if player_push_sum.length() > max_push:
 			player_push_sum = player_push_sum.normalized() * max_push
 		player.global_position += player_push_sum * delta

@@ -68,6 +68,13 @@ func _setup_player() -> void:
 	if player.get("gui") == null:
 		player.set("gui", mock_gui)
 
+	var p_cam := player.get_node_or_null("Camera2D") as Camera2D
+	if p_cam:
+		if camera:
+			camera.enabled = false
+		p_cam.enabled = true
+		p_cam.make_current()
+
 func _setup_swarm() -> void:
 	var sm_scene := preload("res://Utility/swarm_manager.tscn")
 	swarm_manager = sm_scene.instantiate()
@@ -316,7 +323,7 @@ func _process(delta: float) -> void:
 				_apply_benchmark_tier()
 
 func _handle_room_key(event: InputEventKey) -> bool:
-	match event.keycode:
+	match DebugController.get_effective_keycode(event):
 		KEY_1:
 			spawn_boss("amoeba")
 			return true
@@ -356,6 +363,10 @@ func _handle_room_key(event: InputEventKey) -> bool:
 				var to_remove: int = mini(500, swarm_manager.swarm_data.size())
 				for i in range(to_remove):
 					swarm_manager.swarm_data.pop_back()
+				if swarm_manager.get("spatial_grid") is Dictionary:
+					swarm_manager.spatial_grid.clear()
+				if swarm_manager.has_method("_update_multimeshes"):
+					swarm_manager._update_multimeshes()
 			return true
 		KEY_M:
 			if swarm_manager:

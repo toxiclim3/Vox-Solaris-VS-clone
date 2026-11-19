@@ -13,17 +13,17 @@ var mock_gui: Control = null
 var swarm_manager: Node2D = null
 var swarm_type_id: int = -1
 
-# Station coordinates
+# Station coordinates (spaced 600-650px apart so zones never cross-target)
 const STATION_POSITIONS: Dictionary = {
-	1: Vector2(0, -220),   # North: Single DPS Dummy
-	2: Vector2(260, 0),    # East: Pierce Line + 3x3 AoE Matrix
-	3: Vector2(0, 220),    # South: Retaliation Dummy + HP Snap Pads
-	4: Vector2(-260, 0),   # West: Swarm Pen & Prototype Walls
+	1: Vector2(0, -600),   # North: Single DPS Dummy
+	2: Vector2(650, 0),    # East: Pierce Line + 3x3 AoE Matrix
+	3: Vector2(0, 600),    # South: Retaliation Dummy + HP Snap Pads
+	4: Vector2(-650, 0),   # West: Swarm Pen & Prototype Walls
 	0: Vector2(0, 0)       # Center: Spawn pad
 }
+const ZONE_RADIUS: float = 260.0
 
-var current_weapon_idx: int = 0
-var current_weapon_tier: int = 1
+var active_zone_idx: int = -1
 
 # Dummy references
 var station1_dummy: TargetDummy = null
@@ -41,9 +41,8 @@ var retal_idx: int = 0
 var knockback_enabled: bool = false
 
 # UI references in top bar
-var weapon_lbl: Label = null
-var hp_snap_btn: OptionButton = null
 var wall_btn: Button = null
+var zone_lbl: Label = null
 
 func _get_room_title() -> String:
 	return "COMBAT PROVING GROUND"
@@ -52,8 +51,7 @@ func _get_keybind_entries() -> Array[Dictionary]:
 	return [
 		{"key": "1 - 4", "desc": "Warp: 1 DPS | 2 Pierce/AoE | 3 Retal/HP | 4 Swarm/Walls"},
 		{"key": "0", "desc": "Center / Recharge Brooch & Buckler CDs"},
-		{"key": "Q / E", "desc": "Previous / Next Weapon Family (Auto-Equips Lv1)"},
-		{"key": "Up / Down", "desc": "Step Weapon Tier (Lv 1..4, Endless +1)"},
+		{"key": "F1", "desc": "Open Build Workbench (Weapons, Passives, Endless, Presets)"},
 		{"key": "T / Alt+T", "desc": "Spawn TargetDummy at Cursor / Clear Custom Dummies"},
 		{"key": "Shift+T", "desc": "Toggle Retaliation & Cycle Damage (5 -> 15 -> 30)"},
 		{"key": "K", "desc": "Toggle Knockback on Active Dummies"},
@@ -70,8 +68,14 @@ func _setup_room() -> void:
 		STATION_POSITIONS[4],
 		STATION_POSITIONS[0]
 	]
-	ring_radii = [50.0, 100.0, 180.0, 250.0]
+	ring_radii = [50.0, 100.0, ZONE_RADIUS]
 	queue_grid_redraw()
+
+	var bg_scene := load("res://World/background.tscn") as PackedScene
+	if bg_scene:
+		var bg := bg_scene.instantiate()
+		bg.z_index = -50
+		add_child(bg)
 
 	_setup_mock_gui()
 	_setup_player()
@@ -82,7 +86,7 @@ func _setup_room() -> void:
 	_setup_station_4_walls()
 	_setup_extra_topbar_buttons()
 
-	_equip_weapon(current_weapon_idx, current_weapon_tier)
+	_update_zone_states(true)
 
 func _setup_mock_gui() -> void:
 	mock_gui = GuiClass.new()
@@ -97,6 +101,13 @@ func _setup_player() -> void:
 	# Safety fallback in case GUI groups were initialized after player ready
 	if player.get("gui") == null:
 		player.set("gui", mock_gui)
+
+	var p_cam := player.get_node_or_null("Camera2D") as Camera2D
+	if p_cam:
+		if camera:
+			camera.enabled = false
+		p_cam.enabled = true
+		p_cam.make_current()
 
 func _setup_swarm() -> void:
 	var sm_scene := preload("res://Utility/swarm_manager.tscn")
@@ -195,29 +206,18 @@ func _add_wall_segment(top_left: Vector2, size: Vector2) -> void:
 	sb.add_child(cr)
 
 func _setup_extra_topbar_buttons() -> void:
-	weapon_lbl = Label.new()
-	weapon_lbl.add_theme_color_override("font_color", Color(0.6, 0.9, 1.0))
-	extra_buttons_bar.add_child(weapon_lbl)
+	var btn_build := Button.new()
+	btn_build.text = "F1 Build"
+	btn_build.pressed.connect(func():
+		if debug_controller:
+			debug_controller.toggle_workbench()
+	)
+	extra_buttons_bar.add_child(btn_build)
 
-	var btn_prev_w := Button.new()
-	btn_prev_w.text = "<"
-	btn_prev_w.pressed.connect(func(): _cycle_weapon(-1))
-	extra_buttons_bar.add_child(btn_prev_w)
-
-	var btn_next_w := Button.new()
-	btn_next_w.text = ">"
-	btn_next_w.pressed.connect(func(): _cycle_weapon(1))
-	extra_buttons_bar.add_child(btn_next_w)
-
-	var btn_up_tier := Button.new()
-	btn_up_tier.text = "+Tier"
-	btn_up_tier.pressed.connect(func(): _step_tier(1))
-	extra_buttons_bar.add_child(btn_up_tier)
-
-	var btn_down_tier := Button.new()
-	btn_down_tier.text = "-Tier"
-	btn_down_tier.pressed.connect(func(): _step_tier(-1))
-	extra_buttons_bar.add_child(btn_down_tier)
+	zone_lbl = Label.new()
+	zone_lbl.text = "Zone: Center"
+	zone_lbl.add_theme_color_override("font_color", Color(0.6, 0.9, 1.0))
+	extra_buttons_bar.add_child(zone_lbl)
 
 	wall_btn = Button.new()
 	wall_btn.text = "Walls: Std"
@@ -235,35 +235,47 @@ func _setup_extra_topbar_buttons() -> void:
 		b.pressed.connect(func(): _snap_player_hp(val))
 		extra_buttons_bar.add_child(b)
 
-func _equip_weapon(family_idx: int, tier: int) -> void:
-	if not player:
+func _process(_delta: float) -> void:
+	_update_zone_states(false)
+
+func _update_zone_states(force: bool) -> void:
+	var next_zone := -1
+	if player and is_instance_valid(player):
+		for z in [1, 2, 3, 4]:
+			if player.global_position.distance_to(STATION_POSITIONS[z]) <= ZONE_RADIUS:
+				next_zone = z
+				break
+	if not force and next_zone == active_zone_idx:
 		return
-	family_idx = posmod(family_idx, WEAPON_FAMILIES.size())
-	current_weapon_idx = family_idx
-	current_weapon_tier = clamp(tier, 1, 5)
+	active_zone_idx = next_zone
+	if zone_lbl:
+		var z_names := {-1: "Center", 1: "1 DPS", 2: "2 Pierce/AoE", 3: "3 Retal", 4: "4 Swarm"}
+		zone_lbl.text = "Zone: %s" % z_names.get(active_zone_idx, "Center")
 
-	var fam := WEAPON_FAMILIES[current_weapon_idx]
-	player.reset_all_upgrades()
+	_set_dummy_zone_active(station1_dummy, active_zone_idx == 1)
+	for d in station2_dummies:
+		_set_dummy_zone_active(d, active_zone_idx == 2)
+	_set_dummy_zone_active(station3_dummy, active_zone_idx == 3)
 
-	var upgrade_id := ""
-	if current_weapon_tier <= 4:
-		upgrade_id = "%s%d" % [fam, current_weapon_tier]
+func _set_dummy_zone_active(dummy: TargetDummy, active: bool) -> void:
+	if dummy == null or not is_instance_valid(dummy):
+		return
+	dummy.modulate.a = 1.0 if active else 0.25
+	dummy.collision_layer = 5 if active else 0
+	dummy.set_physics_process(active)
+	if active:
+		if not dummy.is_in_group("enemy"):
+			dummy.add_to_group("enemy")
 	else:
-		upgrade_id = "%s_endless" % fam
-
-	if UpgradeDb.UPGRADES.has(upgrade_id):
-		player.grant_upgrade_with_prereqs(upgrade_id)
-
-	var tier_str := str(current_weapon_tier) if current_weapon_tier <= 4 else "Endless"
-	if weapon_lbl:
-		weapon_lbl.text = "%s Lv%s" % [fam.capitalize(), tier_str]
-
-func _cycle_weapon(delta: int) -> void:
-	_equip_weapon(current_weapon_idx + delta, current_weapon_tier)
-
-func _step_tier(delta: int) -> void:
-	var next_tier: int = clampi(current_weapon_tier + delta, 1, 5)
-	_equip_weapon(current_weapon_idx, next_tier)
+		if dummy.is_in_group("enemy"):
+			dummy.remove_from_group("enemy")
+	var hb := dummy.get("hurtBox") as Area2D
+	if hb and is_instance_valid(hb):
+		hb.set_deferred("monitoring", active)
+		hb.set_deferred("monitorable", active)
+		var cs := hb.get_node_or_null("CollisionShape2D")
+		if cs:
+			cs.set_deferred("disabled", not active)
 
 func _snap_player_hp(ratio: float) -> void:
 	if not player:
@@ -343,45 +355,34 @@ func _reset_room_state() -> void:
 	if player:
 		player.position = STATION_POSITIONS[0]
 		player._set_hp(player.maxhp)
-		# Re-arm brooch & buckler
-		if "brooch_current_capacity" in player and "brooch_max_capacity" in player:
-			player.brooch_current_capacity = player.brooch_max_capacity
-		if "buckler_cooldown_timer" in player:
-			player.buckler_cooldown_timer = 0.0
+	if debug_controller:
+		debug_controller.reset_item_cooldowns()
+	_update_zone_states(true)
 
 func _handle_room_key(event: InputEventKey) -> bool:
-	match event.keycode:
+	match DebugController.get_effective_keycode(event):
 		KEY_1:
 			if player: player.position = STATION_POSITIONS[1] + Vector2(0, 80)
+			_update_zone_states(true)
 			return true
 		KEY_2:
 			if player: player.position = STATION_POSITIONS[2] + Vector2(-130, 0)
+			_update_zone_states(true)
 			return true
 		KEY_3:
 			if player: player.position = STATION_POSITIONS[3] + Vector2(0, -80)
+			_update_zone_states(true)
 			return true
 		KEY_4:
 			if player: player.position = STATION_POSITIONS[4] + Vector2(80, 0)
+			_update_zone_states(true)
 			return true
 		KEY_0:
 			if player:
 				player.position = STATION_POSITIONS[0]
-				if "brooch_current_capacity" in player and "brooch_max_capacity" in player:
-					player.brooch_current_capacity = player.brooch_max_capacity
-				if "buckler_cooldown_timer" in player:
-					player.buckler_cooldown_timer = 0.0
-			return true
-		KEY_Q:
-			_cycle_weapon(-1)
-			return true
-		KEY_E:
-			_cycle_weapon(1)
-			return true
-		KEY_UP:
-			_step_tier(1)
-			return true
-		KEY_DOWN:
-			_step_tier(-1)
+			if debug_controller:
+				debug_controller.reset_item_cooldowns()
+			_update_zone_states(true)
 			return true
 		KEY_T:
 			if event.alt_pressed:

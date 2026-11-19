@@ -263,13 +263,13 @@ func test_stat_modifiers_movement_speed() -> void:
 	
 	player.stat_modifiers["speed_boost_1"] = {"movement_speed_percent": 0.20}
 	player.apply_stat_modifiers()
-	# base_movement_speed is 75.0. 75.0 * 1.20 = 90.0
-	assert_almost_eq(player.movement_speed, 90.0, 0.001, "Movement speed with +20% modifier")
+	# base_movement_speed is 85.0. 85.0 * 1.20 = 102.0
+	assert_almost_eq(player.movement_speed, 102.0, 0.001, "Movement speed with +20% modifier")
 	
 	player.stat_modifiers["speed_boost_2"] = {"movement_speed_percent": 0.10}
 	player.apply_stat_modifiers()
-	# 75.0 * 1.30 = 97.5
-	assert_almost_eq(player.movement_speed, 97.5, 0.001, "Movement speed with cumulative +30% modifier")
+	# 85.0 * 1.30 = 110.5
+	assert_almost_eq(player.movement_speed, 110.5, 0.001, "Movement speed with cumulative +30% modifier")
 	
 	_destroy_player(ctx)
 
@@ -336,8 +336,8 @@ func test_endless_stacking_modifiers() -> void:
 	
 	player.apply_stat_modifiers()
 	
-	# Speed: 75.0 * (1.0 + 0.10) = 82.5
-	assert_almost_eq(player.movement_speed, 82.5, 0.001, "Endless speed stacking")
+	# Speed: 85.0 * (1.0 + 0.10) = 93.5
+	assert_almost_eq(player.movement_speed, 93.5, 0.001, "Endless speed stacking")
 	# Armor: 0 + 12 = 12
 	assert_eq(player.armor, 12, "Endless armor stacking")
 	# Reflected damage: 5 * 4 = 20

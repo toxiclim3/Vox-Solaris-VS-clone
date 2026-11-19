@@ -30,6 +30,13 @@ var allow_tainted_check: CheckBox
 # Presets state
 var custom_slots_vbox: VBoxContainer
 
+# Movement state
+var move_mode_badge_label: Label
+var move_btn_coupled: Button
+var move_btn_vanilla: Button
+var move_sliders: Dictionary = {}
+var move_value_labels: Dictionary = {}
+
 var _was_paused_before_open: bool = false
 
 const BUILTIN_PRESETS := [
@@ -68,13 +75,6 @@ func _init() -> void:
 	offset_right = 260.0
 	offset_bottom = 158.0
 
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.08, 0.09, 0.12, 0.96)
-	sb.border_color = Color(0.38, 0.48, 0.68, 1.0)
-	sb.set_border_width_all(1)
-	sb.set_content_margin_all(5)
-	add_theme_stylebox_override("panel", sb)
-
 	_build_shell()
 
 func setup(ctrl: Node) -> void:
@@ -104,11 +104,11 @@ func _build_shell() -> void:
 	filter_edit.text_changed.connect(_on_filter_changed)
 	header.add_child(filter_edit)
 
-	var tab_names := ["Build", "Sandbox", "World", "Presets"]
+	var tab_names := ["Build", "Sandbox", "World", "Presets", "Move"]
 	for i in range(tab_names.size()):
 		var tbtn := Button.new()
 		tbtn.text = tab_names[i]
-		tbtn.custom_minimum_size = Vector2(46, 16)
+		tbtn.custom_minimum_size = Vector2(42, 16)
 		var idx := i
 		tbtn.pressed.connect(func(): switch_tab(idx))
 		header.add_child(tbtn)
@@ -139,17 +139,17 @@ func _build_shell() -> void:
 	# Content stack
 	var body_stack := PanelContainer.new()
 	body_stack.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	var inner_sb := StyleBoxFlat.new()
-	inner_sb.bg_color = Color(0.05, 0.06, 0.08, 0.85)
-	inner_sb.set_content_margin_all(4)
-	body_stack.add_theme_stylebox_override("panel", inner_sb)
+	var inner_sb: StyleBox = load("res://Themes/Shadowpanel.tres")
+	if inner_sb:
+		body_stack.add_theme_stylebox_override("panel", inner_sb)
 	root_vbox.add_child(body_stack)
 
 	var t0 := _build_tab_build_matrix()
 	var t1 := _build_tab_sandbox()
 	var t2 := _build_tab_char_world()
 	var t3 := _build_tab_presets()
-	tab_containers = [t0, t1, t2, t3]
+	var t4 := _build_tab_movement()
+	tab_containers = [t0, t1, t2, t3, t4]
 	for t in tab_containers:
 		t.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		t.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -438,6 +438,114 @@ func _build_tab_presets() -> Control:
 
 	return scroll
 
+const MOVE_SLIDER_SPECS := [
+	["base_movement_speed", "Base Speed", 40.0, 160.0, 5.0, "%.0f px/s"],
+	["bastion_in_time", "Bastion In Time", 0.05, 1.50, 0.05, "%.2fs"],
+	["bastion_out_time", "Bastion Out Time", 0.05, 1.50, 0.05, "%.2fs"],
+	["cooldown_floor", "Cooldown Floor", 0.05, 0.50, 0.01, "%.2fs"],
+	["sidestep_distance", "Sidestep Dist", 30.0, 180.0, 1.0, "%.0f px"],
+	["sidestep_cooldown", "Sidestep CD", 0.2, 8.0, 0.1, "%.1fs"],
+	["forward_dash_distance", "Dash Dist", 50.0, 250.0, 5.0, "%.0f px"],
+	["forward_dash_cooldown", "Dash CD", 0.2, 8.0, 0.1, "%.1fs"],
+	["rock_stance_burst_duration", "Rock Burst Dur", 0.2, 4.0, 0.05, "%.2fs"],
+	["rock_stance_burst_cd_mult", "Rock Burst Mult", 0.30, 1.00, 0.05, "x%.2f"],
+	["rock_stance_icd", "Rock Stance ICD", 0.5, 10.0, 0.5, "%.1fs"],
+	["rock_stance_armor_bonus", "Rock Armor Bonus", 0.0, 12.0, 1.0, "+%.0f"],
+]
+
+func _build_tab_movement() -> Control:
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+
+	var vbox := VBoxContainer.new()
+	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vbox.add_theme_constant_override("separation", 4)
+	scroll.add_child(vbox)
+
+	vbox.add_child(_section_header("Movement Combat Mode (A/B Toggle)"))
+	var mode_row := HBoxContainer.new()
+	mode_row.add_theme_constant_override("separation", 4)
+	vbox.add_child(mode_row)
+
+	move_btn_coupled = Button.new()
+	move_btn_coupled.text = "Movement-Coupled"
+	move_btn_coupled.focus_mode = Control.FOCUS_NONE
+	move_btn_coupled.pressed.connect(func():
+		_call_ctrl("set_movement_coupled", [true])
+		_refresh_movement_tab()
+		_set_status("Mode: Movement-Coupled")
+	)
+	mode_row.add_child(move_btn_coupled)
+
+	move_btn_vanilla = Button.new()
+	move_btn_vanilla.text = "Vanilla Timers"
+	move_btn_vanilla.focus_mode = Control.FOCUS_NONE
+	move_btn_vanilla.pressed.connect(func():
+		_call_ctrl("set_movement_coupled", [false])
+		_refresh_movement_tab()
+		_set_status("Mode: Vanilla Timers")
+	)
+	mode_row.add_child(move_btn_vanilla)
+
+	var btn_reset := Button.new()
+	btn_reset.text = "Reset Defaults"
+	btn_reset.focus_mode = Control.FOCUS_NONE
+	btn_reset.pressed.connect(func():
+		_call_ctrl("reset_movement_config")
+		_refresh_movement_tab()
+		_set_status("Reset MOVEMENT_CONFIG to defaults")
+	)
+	mode_row.add_child(btn_reset)
+
+	move_mode_badge_label = Label.new()
+	move_mode_badge_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	move_mode_badge_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	mode_row.add_child(move_mode_badge_label)
+
+	vbox.add_child(_section_header("Live Movement Coefficients"))
+	for spec in MOVE_SLIDER_SPECS:
+		var key: String = spec[0]
+		var title: String = spec[1]
+		var min_v: float = spec[2]
+		var max_v: float = spec[3]
+		var step_v: float = spec[4]
+		var fmt: String = spec[5]
+
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 4)
+		vbox.add_child(row)
+
+		var lbl := Label.new()
+		lbl.text = title
+		lbl.custom_minimum_size = Vector2(120, 0)
+		row.add_child(lbl)
+
+		var slider := HSlider.new()
+		slider.min_value = min_v
+		slider.max_value = max_v
+		slider.step = step_v
+		slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		slider.focus_mode = Control.FOCUS_NONE
+		var k := key
+		var f := fmt
+		slider.value_changed.connect(func(val: float):
+			var store_val: Variant = int(round(val)) if k == "rock_stance_armor_bonus" else val
+			_call_ctrl("set_movement_config_value", [k, store_val])
+			if move_value_labels.has(k):
+				move_value_labels[k].text = f % val
+			_set_status("%s = %s" % [k, f % val])
+		)
+		row.add_child(slider)
+		move_sliders[key] = slider
+
+		var val_lbl := Label.new()
+		val_lbl.custom_minimum_size = Vector2(56, 0)
+		val_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		row.add_child(val_lbl)
+		move_value_labels[key] = val_lbl
+
+	return scroll
+
 func _section_header(text: String) -> Label:
 	var lbl := Label.new()
 	lbl.text = text
@@ -457,8 +565,11 @@ func close_modal() -> void:
 	if not visible:
 		return
 	visible = false
-	if filter_edit and filter_edit.has_focus():
-		filter_edit.release_focus()
+	var vp := get_viewport()
+	if vp:
+		var focused := vp.gui_get_focus_owner()
+		if focused != null and (focused == self or is_ancestor_of(focused)):
+			focused.release_focus()
 	if get_tree():
 		var frozen := bool(controller.get("is_frozen_by_debug")) if controller else false
 		get_tree().paused = true if frozen else _was_paused_before_open
@@ -485,6 +596,24 @@ func refresh_active_tab() -> void:
 			_sync_sandbox_highlights()
 		2: _refresh_char_world_tab()
 		3: _refresh_presets_tab()
+		4: _refresh_movement_tab()
+
+func _refresh_movement_tab() -> void:
+	var coupled := GlobalEvents.is_movement_coupled()
+	if move_mode_badge_label:
+		move_mode_badge_label.text = "Active: " + ("Movement-Coupled" if coupled else "Vanilla Timers")
+	if move_btn_coupled:
+		move_btn_coupled.modulate = Color(0.55, 1.0, 0.65) if coupled else Color.WHITE
+	if move_btn_vanilla:
+		move_btn_vanilla.modulate = Color(0.55, 1.0, 0.65) if not coupled else Color.WHITE
+	for spec in MOVE_SLIDER_SPECS:
+		var key: String = spec[0]
+		var fmt: String = spec[5]
+		var cur_val := float(GlobalEvents.MOVEMENT_CONFIG.get(key, spec[2]))
+		if move_sliders.has(key):
+			(move_sliders[key] as HSlider).set_value_no_signal(cur_val)
+		if move_value_labels.has(key):
+			(move_value_labels[key] as Label).text = fmt % cur_val
 
 func _on_filter_changed(_new_text: String) -> void:
 	if active_tab == 0:

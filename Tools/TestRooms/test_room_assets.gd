@@ -18,6 +18,7 @@ var backdrop_checker: Node2D = null
 # Loupe Camera
 var zoom_levels: Array[float] = [1.0, 2.0, 4.0, 8.0, 16.0]
 var zoom_idx: int = 0
+var is_panning_camera: bool = false
 
 # --- Tab 1: Sprites & PhasedAnimator ---
 var sprite_catalog: Array[Dictionary] = [
@@ -83,6 +84,7 @@ var shader_oscillator_time: float = 0.0
 var shader_info_lbl: Label = null
 
 # --- Tab 4: Rule 12 Icon Trim Auditor ---
+var audit_panel: PanelContainer = null
 var audit_scroll: ScrollContainer = null
 var audit_grid: GridContainer = null
 var audit_summary_lbl: Label = null
@@ -108,7 +110,8 @@ func _get_keybind_entries() -> Array[Dictionary]:
 		{"key": "Up / Down", "desc": "Cycle row_index or Shader trail_mode"},
 		{"key": "B", "desc": "Cycle Backdrop (Dark -> Grass -> White -> Checker)"},
 		{"key": "G", "desc": "Toggle Gizmos (Pivot Crosshair +, Bounds, UV Grid)"},
-		{"key": "+ / -", "desc": "Step Pixel Loupe Zoom (1x, 2x, 4x, 8x, 16x)"},
+		{"key": "+ / -", "desc": "Step Pixel Loupe Zoom (1x..16x) | Wheel: Zoom to Cursor"},
+		{"key": "RMB / MMB", "desc": "Drag to Pan Camera | 0: Reset Camera"},
 		{"key": "A", "desc": "Re-run Rule 12 Transparent Padding Audit"}
 	]
 
@@ -133,8 +136,9 @@ func _setup_camera() -> void:
 func _setup_backdrop() -> void:
 	backdrop_rect = ColorRect.new()
 	backdrop_rect.z_index = -30
-	backdrop_rect.position = Vector2(-1000, -1000)
-	backdrop_rect.size = Vector2(2000, 2000)
+	backdrop_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	backdrop_rect.position = Vector2(-2000, -2000)
+	backdrop_rect.size = Vector2(4000, 4000)
 	backdrop_rect.color = BACKDROP_COLORS[active_backdrop_idx]
 	add_child(backdrop_rect)
 
@@ -162,13 +166,20 @@ func _setup_tab_roots() -> void:
 		add_child(n)
 		tab_containers[m] = n
 
-func _setup_tab_1_sprites() -> void:
-	var root: Node2D = tab_containers[TabMode.SPRITES]
-	sprite_info_lbl = Label.new()
-	sprite_info_lbl.position = Vector2(-150, 90)
-	sprite_info_lbl.add_theme_color_override("font_color", Color(0.95, 0.85, 0.35))
-	root.add_child(sprite_info_lbl)
+func _make_hud_info_label() -> Label:
+	var lbl := Label.new()
+	lbl.theme = load("res://Themes/DebugButtons.tres")
+	lbl.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+	lbl.offset_left = 10.0
+	lbl.offset_bottom = -8.0
+	lbl.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	lbl.add_theme_color_override("font_color", Color(0.95, 0.85, 0.35))
+	ui_layer.add_child(lbl)
+	return lbl
 
+func _setup_tab_1_sprites() -> void:
+	sprite_info_lbl = _make_hud_info_label()
 	_load_sprite_catalog_item(0)
 
 func _load_sprite_catalog_item(idx: int) -> void:
@@ -258,10 +269,7 @@ func _setup_tab_2_whip_rig() -> void:
 	root.add_child(whip_handles)
 	whip_handles.draw.connect(_on_draw_whip_handles)
 
-	whip_info_lbl = Label.new()
-	whip_info_lbl.position = Vector2(-170, 70)
-	whip_info_lbl.add_theme_color_override("font_color", Color(0.95, 0.85, 0.35))
-	root.add_child(whip_info_lbl)
+	whip_info_lbl = _make_hud_info_label()
 
 	_load_whip_catalog_item(0)
 
@@ -380,10 +388,7 @@ func _setup_tab_3_shader_lab() -> void:
 	lbl_swarm.add_theme_color_override("font_color", Color(0.5, 0.9, 0.5))
 	swarm_col.add_child(lbl_swarm)
 
-	shader_info_lbl = Label.new()
-	shader_info_lbl.position = Vector2(-180, 80)
-	shader_info_lbl.add_theme_color_override("font_color", Color(0.95, 0.85, 0.35))
-	root.add_child(shader_info_lbl)
+	shader_info_lbl = _make_hud_info_label()
 
 	_refresh_shader_info()
 
@@ -395,17 +400,19 @@ func _refresh_shader_info() -> void:
 	]
 
 func _setup_tab_4_icon_audit() -> void:
-	var root: Node2D = tab_containers[TabMode.ICONS]
-
-	var panel := PanelContainer.new()
-	panel.theme = load("res://Themes/DebugButtons.tres")
-	panel.position = Vector2(-280, -130)
-	panel.custom_minimum_size = Vector2(560, 260)
-	root.add_child(panel)
+	audit_panel = PanelContainer.new()
+	audit_panel.theme = load("res://Themes/DebugButtons.tres")
+	audit_panel.set_anchors_preset(Control.PRESET_CENTER)
+	audit_panel.offset_left = -280.0
+	audit_panel.offset_top = -135.0
+	audit_panel.offset_right = 280.0
+	audit_panel.offset_bottom = 155.0
+	audit_panel.visible = false
+	ui_layer.add_child(audit_panel)
 
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 4)
-	panel.add_child(vbox)
+	audit_panel.add_child(vbox)
 
 	audit_summary_lbl = Label.new()
 	audit_summary_lbl.add_theme_color_override("font_color", Color(0.95, 0.85, 0.35))
@@ -517,9 +524,14 @@ func _setup_extra_topbar_buttons() -> void:
 	extra_buttons_bar.add_child(b_gizmo)
 
 	var b_zoom := Button.new()
-	b_zoom.text = "Zoom 1x"
+	b_zoom.text = "Zoom"
 	b_zoom.pressed.connect(_cycle_zoom)
 	extra_buttons_bar.add_child(b_zoom)
+
+	var b_cam_reset := Button.new()
+	b_cam_reset.text = "0 Cam"
+	b_cam_reset.pressed.connect(_reset_camera)
+	extra_buttons_bar.add_child(b_cam_reset)
 
 func _setup_gizmo_overlay() -> void:
 	gizmo_overlay = Node2D.new()
@@ -588,12 +600,17 @@ func _draw_sprite_gizmos(line_w: float) -> void:
 			gizmo_overlay.draw_line(Vector2(frame_rect.position.x, gy), Vector2(frame_rect.position.x + frame_rect.size.x, gy), Color(0.3, 0.6, 0.9, 0.25), line_w)
 			gy += step_sz
 
-		# Green UsedRect
+		# Green UsedRect (sliced to active frame)
 		var img: Image = tex.get_image()
 		if img:
-			var used_rect := img.get_used_rect()
-			var used_draw_rect := Rect2(target.global_position - Vector2(used_rect.size) / 2.0, Vector2(used_rect.size))
-			gizmo_overlay.draw_rect(used_draw_rect, Color(0.3, 1.0, 0.4, 0.85), false, line_w)
+			var f_col: int = target.frame % hf
+			var f_row: int = int(target.frame / hf)
+			var frame_region := Rect2i(f_col * int(frame_w), f_row * int(frame_h), int(frame_w), int(frame_h))
+			var used_rect := img.get_region(frame_region).get_used_rect()
+			if used_rect.size != Vector2i.ZERO:
+				var frame_top_left := target.global_position - frame_size / 2.0
+				var used_draw_rect := Rect2(frame_top_left + Vector2(used_rect.position), Vector2(used_rect.size))
+				gizmo_overlay.draw_rect(used_draw_rect, Color(0.3, 1.0, 0.4, 0.85), false, line_w)
 
 func _draw_whip_gizmos(line_w: float) -> void:
 	if whip_points.is_empty():
@@ -617,6 +634,14 @@ func _switch_tab(mode: TabMode) -> void:
 	current_tab = mode
 	for m in tab_containers:
 		tab_containers[m].visible = (m == current_tab)
+	if sprite_info_lbl:
+		sprite_info_lbl.visible = (current_tab == TabMode.SPRITES)
+	if whip_info_lbl:
+		whip_info_lbl.visible = (current_tab == TabMode.WHIP)
+	if shader_info_lbl:
+		shader_info_lbl.visible = (current_tab == TabMode.SHADER)
+	if audit_panel:
+		audit_panel.visible = (current_tab == TabMode.ICONS)
 	if tab3_swarm_mgr:
 		tab3_swarm_mgr.set_physics_process(current_tab == TabMode.SHADER)
 	if gizmo_overlay:
@@ -660,7 +685,7 @@ func _process(delta: float) -> void:
 			elite_material.set_shader_parameter("motion_offset", osc)
 
 func _handle_room_key(event: InputEventKey) -> bool:
-	match event.keycode:
+	match DebugController.get_effective_keycode(event):
 		KEY_1:
 			_switch_tab(TabMode.SPRITES)
 			return true
@@ -755,6 +780,9 @@ func _handle_room_key(event: InputEventKey) -> bool:
 			if camera: camera.zoom = Vector2(zoom_levels[zoom_idx], zoom_levels[zoom_idx])
 			if gizmo_overlay: gizmo_overlay.queue_redraw()
 			return true
+		KEY_0:
+			_reset_camera()
+			return true
 		KEY_A:
 			_run_icon_audit()
 			return true
@@ -791,20 +819,28 @@ func _update_whip_length() -> void:
 	if gizmo_overlay:
 		gizmo_overlay.queue_redraw()
 
-# Whip point dragging & Mouse Wheel Zoom
+# Whip point dragging, Camera Panning & Mouse Wheel Zoom
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.pressed:
+	if event is InputEventMouseButton:
 		var mev := event as InputEventMouseButton
-		if mev.button_index == MOUSE_BUTTON_WHEEL_UP:
-			zoom_idx = mini(zoom_idx + 1, zoom_levels.size() - 1)
-			_cycle_zoom_to(zoom_idx)
+		if mev.pressed and mev.button_index == MOUSE_BUTTON_WHEEL_UP:
+			_cycle_zoom_to(mini(zoom_idx + 1, zoom_levels.size() - 1), true)
 			get_viewport().set_input_as_handled()
 			return
-		elif mev.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			zoom_idx = maxi(zoom_idx - 1, 0)
-			_cycle_zoom_to(zoom_idx)
+		elif mev.pressed and mev.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			_cycle_zoom_to(maxi(zoom_idx - 1, 0), true)
 			get_viewport().set_input_as_handled()
 			return
+		elif mev.button_index == MOUSE_BUTTON_MIDDLE or mev.button_index == MOUSE_BUTTON_RIGHT:
+			is_panning_camera = mev.pressed
+			get_viewport().set_input_as_handled()
+			return
+
+	if event is InputEventMouseMotion and is_panning_camera and camera:
+		var mm := event as InputEventMouseMotion
+		camera.position -= mm.relative / maxf(0.01, camera.zoom.x)
+		get_viewport().set_input_as_handled()
+		return
 
 	if current_tab == TabMode.WHIP and event is InputEventMouseButton:
 		var mev := event as InputEventMouseButton
@@ -826,10 +862,22 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	super._unhandled_input(event)
 
-func _cycle_zoom_to(idx: int) -> void:
+func _cycle_zoom_to(idx: int, toward_mouse: bool = false) -> void:
+	var before_world := get_global_mouse_position() if toward_mouse and is_inside_tree() else Vector2.ZERO
 	zoom_idx = clamp(idx, 0, zoom_levels.size() - 1)
 	var z := zoom_levels[zoom_idx]
 	if camera:
 		camera.zoom = Vector2(z, z)
+		if toward_mouse and is_inside_tree():
+			var after_world := get_global_mouse_position()
+			camera.position += before_world - after_world
+	if gizmo_overlay:
+		gizmo_overlay.queue_redraw()
+
+func _reset_camera() -> void:
+	zoom_idx = 0
+	if camera:
+		camera.position = Vector2.ZERO
+		camera.zoom = Vector2.ONE
 	if gizmo_overlay:
 		gizmo_overlay.queue_redraw()

@@ -36,8 +36,8 @@ var collected_endless = {} # Dictionary of "base_name" -> int count
 # Base Stats
 var base_armor = 0
 var armor = 0
-@export var base_movement_speed = 75.0
-var movement_speed = 75.0
+@export var base_movement_speed = 85.0
+var movement_speed = 85.0
 var base_spell_cooldown = 0.0
 var spell_cooldown = 0.0
 var base_spell_size = 0.0
@@ -93,6 +93,35 @@ var buckler_triggered: bool = false
 var buckler_trigger_count: int = 0
 const IMPACT_BUCKLER_COOLDOWNS = [0.0, 60.0, 40.0, 20.0]
 
+# Passive tier caches for stride helpers
+var speed_tier: int = 0
+var scroll_tier: int = 0
+
+# Layer 1 Movement Substrate
+var stride_distance_total: float = 0.0
+var stride_step_delta: float = 0.0
+var is_anchored: bool = false
+var bastion_charge: float = 0.0
+var current_move_dir: Vector2 = Vector2.ZERO
+var _last_emitted_anchored: bool = false
+var _last_emitted_bastion_charge: float = 0.0
+
+# Layer 2 Character Mobility (Spacebar)
+var mobility_type: String = "sidestep"
+var mobility_cooldown: float = 0.0
+var sidestep_timer: float = 0.0
+var sidestep_iframe_timer: float = 0.0
+var sidestep_dir: Vector2 = Vector2.ZERO
+var forward_dash_timer: float = 0.0
+var forward_dash_dir: Vector2 = Vector2.ZERO
+var forward_dash_distance_credited: bool = false
+var impulse_primed: bool = false
+var impulse_prime_timer: float = 0.0
+var rock_stance_active: bool = false
+var rock_stance_burst_timer: float = 0.0
+var rock_stance_burst_icd: float = 0.0
+var _rock_stance_from_input: bool = false
+
 #Elite Graphics
 var rt_light: PointLight2D = null
 
@@ -117,15 +146,22 @@ var enemy_close = []
 #Signal
 signal playerdeath
 signal health_ratio_changed(current_ratio: float, previous_ratio: float)
+signal mobility_triggered(mobility_type: String, direction: Vector2)
+signal stance_changed(is_anchored: bool, bastion_charge: float)
+signal rock_stance_burst_started(duration: float)
+signal movement_prime_ready(source_id: String)
+signal stride_distance_gained(delta_px: float)
 
 func _init() -> void:
 	if not health_ratio_changed.is_connected(_on_health_ratio_changed):
 		health_ratio_changed.connect(_on_health_ratio_changed)
 
 func _ready():
+	base_movement_speed = float(GlobalEvents.MOVEMENT_CONFIG.get("base_movement_speed", 85.0))
 	var active_char = GlobalEvents.selected_character
 	if active_char != "" and GlobalEvents.CHARACTERS.has(active_char):
 		var char_data = GlobalEvents.CHARACTERS[active_char]
+		mobility_type = str(char_data.get("mobility_type", "sidestep"))
 		if char_data.has("base_stats") and char_data["base_stats"].has("maxhp"):
 			base_maxhp = char_data["base_stats"]["maxhp"]
 			maxhp = base_maxhp
@@ -167,10 +203,13 @@ func _ready():
 	apply_stat_modifiers()
 	gui.set_expbar(experience, calculate_experiencecap())
 	gui.set_level_text(experience_level)
-	_on_hurt_box_hurt(0,0,0)
+	healthBar.max_value = maxhp
+	healthBar.value = hp
 	GlobalEvents.enemy_died.connect(_on_enemy_died)
 	GlobalEvents.boss_defeated.connect(_on_boss_defeated)
 	GlobalEvents.player_dealt_damage.connect(_on_player_dealt_damage)
+	if not GlobalEvents.movement_config_changed.is_connected(_on_movement_config_changed):
+		GlobalEvents.movement_config_changed.connect(_on_movement_config_changed)
 	
 	# Ray Tracing (Elite)
 	_setup_rt_light()
@@ -208,8 +247,19 @@ func _on_camera_zoom_changed(zoom_val: float):
 	if cam:
 		cam.zoom = Vector2(zoom_val, zoom_val)
 
+func _on_movement_config_changed() -> void:
+	base_movement_speed = float(GlobalEvents.MOVEMENT_CONFIG.get("base_movement_speed", 85.0))
+	if not GlobalEvents.is_movement_coupled():
+		_cancel_active_mobility()
+		is_anchored = false
+		bastion_charge = 0.0
+		stride_step_delta = 0.0
+		rock_stance_burst_timer = 0.0
+		_emit_stance_if_changed()
+	apply_stat_modifiers()
+
 func _physics_process(delta):
-	movement()
+	movement(delta)
 	update_health_items(delta)
 
 func _set_hp(new_hp: float) -> void:
@@ -281,11 +331,23 @@ func get_attack_speed_bonus() -> float:
 		return FRENZY_CHARM_BONUSES[clamp(frenzy_charm_level, 0, 3)]
 	return 0.0
 
-func calculate_cooldown(wait_time: float) -> float:
-	return max(0.05, wait_time * (1.0 - spell_cooldown))
+func get_rock_stance_burst_mult() -> float:
+	if GlobalEvents.is_movement_coupled() and rock_stance_burst_timer > 0.0:
+		return float(GlobalEvents.MOVEMENT_CONFIG.get("rock_stance_burst_cd_mult", 0.70))
+	return 1.0
 
-func calculate_weapon_cooldown(wait_time: float) -> float:
-	return calculate_cooldown(wait_time)
+func calculate_cooldown(wait_time: float) -> float:
+	return calculate_weapon_cooldown(wait_time, 1.0)
+
+func calculate_weapon_cooldown(base_wait_time: float, movement_cd_mult: float = 1.0) -> float:
+	var raw_floor := float(GlobalEvents.MOVEMENT_CONFIG.get("cooldown_floor", 0.05))
+	var cd_floor := 0.05 if (is_nan(raw_floor) or not is_finite(raw_floor)) else maxf(0.05, raw_floor)
+	var burst_mult := get_rock_stance_burst_mult()
+	var effective_mult := movement_cd_mult if GlobalEvents.is_movement_coupled() else 1.0
+	var raw: float = base_wait_time * (1.0 - float(spell_cooldown)) * burst_mult * effective_mult
+	if is_nan(raw) or not is_finite(raw):
+		return cd_floor
+	return maxf(cd_floor, raw)
 
 func absorb_warding_damage(incoming_damage: float) -> Dictionary:
 	var capacity: float = float(maxhp) * 0.05
@@ -325,47 +387,270 @@ func _spawn_buckler_shockwave() -> void:
 		else:
 			add_child(sw)
 
-func movement():
-	var mov = Vector2.ZERO
+func add_stride_distance(px: float) -> void:
+	if px > 0.0 and GlobalEvents.is_movement_coupled():
+		stride_distance_total += px
+		stride_distance_gained.emit(px)
+
+func get_stride_efficiency() -> float:
+	var per_tier := float(GlobalEvents.MOVEMENT_CONFIG.get("stride_efficiency_per_speed_tier", 0.05))
+	return 1.0 + per_tier * float(speed_tier)
+
+func get_stride_threshold_mult() -> float:
+	var per_tier := float(GlobalEvents.MOVEMENT_CONFIG.get("stride_threshold_reduction_per_scroll_tier", 0.05))
+	return maxf(0.2, 1.0 - per_tier * float(scroll_tier))
+
+func evaluate_heading_dot(target_pos: Vector2) -> float:
+	if target_pos == Vector2.INF or not target_pos.is_finite():
+		return 0.0
+	var mov_dir := current_move_dir
+	if mov_dir == Vector2.ZERO and velocity.length_squared() > 0.0001:
+		mov_dir = velocity.normalized()
+	if mov_dir == Vector2.ZERO:
+		return 0.0
+	var to_target := target_pos - global_position
+	if to_target.length_squared() <= 0.0001:
+		return 0.0
+	return clampf(mov_dir.dot(to_target.normalized()), -1.0, 1.0)
+
+func is_swarm_push_immune() -> bool:
+	return sidestep_iframe_timer > 0.0 or rock_stance_active
+
+func _can_process_mobility_input() -> bool:
+	if not GlobalEvents.is_movement_coupled():
+		return false
+	if not is_inside_tree():
+		return false
+	var tree := get_tree()
+	if tree != null and tree.paused:
+		return false
+	var vp := get_viewport()
+	if vp != null and vp.gui_get_focus_owner() != null:
+		return false
+	if gui != null and is_instance_valid(gui):
+		var lp = gui.get("levelPanel")
+		if lp is Control and lp.visible:
+			return false
+		var blp = gui.get("bossLevelPanel")
+		if blp is Control and blp.visible:
+			return false
+		var dp = gui.get("deathPanel")
+		if dp is Control and dp.visible:
+			return false
+	return true
+
+func _emit_stance_if_changed() -> void:
+	var hit_edge := (bastion_charge == 0.0 and _last_emitted_bastion_charge != 0.0) or (bastion_charge == 1.0 and _last_emitted_bastion_charge != 1.0)
+	if is_anchored != _last_emitted_anchored or absf(bastion_charge - _last_emitted_bastion_charge) >= 0.01 or hit_edge:
+		_last_emitted_anchored = is_anchored
+		_last_emitted_bastion_charge = bastion_charge
+		stance_changed.emit(is_anchored, bastion_charge)
+
+func trigger_mobility(dir_override: Vector2 = Vector2.ZERO) -> bool:
+	if not GlobalEvents.is_movement_coupled():
+		return false
+	match mobility_type:
+		"sidestep":
+			if mobility_cooldown > 0.0 or sidestep_timer > 0.0 or forward_dash_timer > 0.0:
+				return false
+			var dir := dir_override.normalized() if dir_override.length_squared() > 0.0001 else (current_move_dir if current_move_dir.length_squared() > 0.0001 else last_movement.normalized())
+			if dir == Vector2.ZERO:
+				dir = Vector2.RIGHT
+			var dur := maxf(0.01, float(GlobalEvents.MOVEMENT_CONFIG.get("sidestep_duration", 0.12)))
+			sidestep_dir = dir
+			sidestep_timer = dur
+			sidestep_iframe_timer = dur
+			mobility_cooldown = float(GlobalEvents.MOVEMENT_CONFIG.get("sidestep_cooldown", 2.5))
+			is_anchored = false
+			mobility_triggered.emit("sidestep", sidestep_dir)
+			return true
+		"forward_dash":
+			if mobility_cooldown > 0.0 or forward_dash_timer > 0.0 or sidestep_timer > 0.0:
+				return false
+			var dir := dir_override.normalized() if dir_override.length_squared() > 0.0001 else (current_move_dir if current_move_dir.length_squared() > 0.0001 else last_movement.normalized())
+			if dir == Vector2.ZERO:
+				dir = Vector2.RIGHT
+			var dur := maxf(0.01, float(GlobalEvents.MOVEMENT_CONFIG.get("forward_dash_duration", 0.14)))
+			forward_dash_dir = dir
+			forward_dash_timer = dur
+			forward_dash_distance_credited = false
+			mobility_cooldown = float(GlobalEvents.MOVEMENT_CONFIG.get("forward_dash_cooldown", 3.5))
+			is_anchored = false
+			mobility_triggered.emit("forward_dash", forward_dash_dir)
+			return true
+		"rock_stance":
+			set_rock_stance_held(true, dir_override)
+			return true
+	return false
+
+func set_rock_stance_held(held: bool, aim_dir: Vector2 = Vector2.ZERO) -> void:
+	if held and GlobalEvents.is_movement_coupled() and mobility_type == "rock_stance":
+		if aim_dir.length_squared() > 0.0001:
+			var norm_aim := aim_dir.normalized()
+			last_movement = norm_aim
+			if sprite != null:
+				if norm_aim.x > 0.0:
+					sprite.flip_h = true
+				elif norm_aim.x < 0.0:
+					sprite.flip_h = false
+		if not rock_stance_active:
+			rock_stance_active = true
+			velocity = Vector2.ZERO
+			is_anchored = true
+			apply_stat_modifiers()
+			var face_dir := last_movement.normalized() if last_movement.length_squared() > 0.0001 else Vector2.RIGHT
+			mobility_triggered.emit("rock_stance", face_dir)
+			if rock_stance_burst_icd <= 0.0:
+				var burst_dur := float(GlobalEvents.MOVEMENT_CONFIG.get("rock_stance_burst_duration", 1.35))
+				rock_stance_burst_timer = burst_dur
+				rock_stance_burst_icd = float(GlobalEvents.MOVEMENT_CONFIG.get("rock_stance_icd", 4.0))
+				attack()
+				rock_stance_burst_started.emit(burst_dur)
+	elif not held and rock_stance_active:
+		rock_stance_active = false
+		_rock_stance_from_input = false
+		apply_stat_modifiers()
+
+func _cancel_active_mobility() -> void:
+	mobility_cooldown = 0.0
+	sidestep_timer = 0.0
+	sidestep_iframe_timer = 0.0
+	forward_dash_timer = 0.0
+	forward_dash_distance_credited = false
+	impulse_primed = false
+	impulse_prime_timer = 0.0
+	rock_stance_burst_timer = 0.0
+	rock_stance_burst_icd = 0.0
+	_rock_stance_from_input = false
+	if rock_stance_active:
+		set_rock_stance_held(false)
+
+func movement(delta: float = 1.0 / 60.0):
+	if mobility_cooldown > 0.0:
+		mobility_cooldown = maxf(0.0, mobility_cooldown - delta)
+	if rock_stance_burst_icd > 0.0:
+		rock_stance_burst_icd = maxf(0.0, rock_stance_burst_icd - delta)
+	if impulse_prime_timer > 0.0:
+		impulse_prime_timer = maxf(0.0, impulse_prime_timer - delta)
+		if impulse_prime_timer <= 0.0:
+			impulse_primed = false
+	if rock_stance_burst_timer > 0.0:
+		rock_stance_burst_timer = maxf(0.0, rock_stance_burst_timer - delta)
+		if rock_stance_burst_timer <= 0.0:
+			attack()
+
+	var mov := Vector2.ZERO
+	var mouse_brake := false
 	if SettingsManager.mouse_control:
 		var target_pos = get_global_mouse_position()
 		var diff = target_pos - global_position
-		if diff.length() > 15 and not Input.is_action_pressed("click"): # Stop if close to player or holding LMB
+		mouse_brake = Input.is_action_pressed("click")
+		if diff.length() > 15 and not mouse_brake: # Stop if close to player or holding LMB
 			mov = diff.normalized()
 	else:
 		var x_mov = Input.get_action_strength("right") - Input.get_action_strength("left")
 		var y_mov = Input.get_action_strength("down") - Input.get_action_strength("up")
-		mov = Vector2(x_mov,y_mov)
-		
+		mov = Vector2(x_mov, y_mov)
 		# Overlay joystick movement if no keyboard input is present
 		if mov == Vector2.ZERO and joystick_vector != Vector2.ZERO:
 			mov = joystick_vector
 
-	if mov.x > 0:
-		sprite.flip_h = true
-	elif mov.x < 0:
-		sprite.flip_h = false
+	if InputMap.has_action("mobility") and _can_process_mobility_input():
+		if mobility_type == "rock_stance":
+			var aim_dir := (get_global_mouse_position() - global_position) if SettingsManager.mouse_control else mov
+			if Input.is_action_pressed("mobility"):
+				_rock_stance_from_input = true
+				set_rock_stance_held(true, aim_dir)
+			elif _rock_stance_from_input:
+				_rock_stance_from_input = false
+				set_rock_stance_held(false)
+		elif Input.is_action_just_pressed("mobility"):
+			trigger_mobility(mov)
+	elif rock_stance_active:
+		set_rock_stance_held(false)
 
-	if mov != Vector2.ZERO:
-		last_movement = mov
-		if walkTimer.is_stopped():
-			if sprite.frame >= sprite.hframes - 1:
-				sprite.frame = 0
-			else:
-				sprite.frame += 1
-			walkTimer.start()
-	
-	velocity = mov.normalized()*movement_speed
-	move_and_slide()
+	if sidestep_iframe_timer > 0.0:
+		sidestep_iframe_timer = maxf(0.0, sidestep_iframe_timer - delta)
+
+	if sidestep_timer > 0.0:
+		sidestep_timer = maxf(0.0, sidestep_timer - delta)
+		var sidestep_dist := float(GlobalEvents.MOVEMENT_CONFIG.get("sidestep_distance", 84.0))
+		var sidestep_dur := maxf(0.01, float(GlobalEvents.MOVEMENT_CONFIG.get("sidestep_duration", 0.12)))
+		velocity = sidestep_dir * (sidestep_dist / sidestep_dur)
+		current_move_dir = sidestep_dir
+		is_anchored = false
+	elif forward_dash_timer > 0.0:
+		forward_dash_timer = maxf(0.0, forward_dash_timer - delta)
+		var dash_dist := float(GlobalEvents.MOVEMENT_CONFIG.get("forward_dash_distance", 140.0))
+		var dash_dur := maxf(0.01, float(GlobalEvents.MOVEMENT_CONFIG.get("forward_dash_duration", 0.14)))
+		velocity = forward_dash_dir * (dash_dist / dash_dur)
+		current_move_dir = forward_dash_dir
+		is_anchored = false
+		if forward_dash_timer <= 0.0 and not forward_dash_distance_credited:
+			forward_dash_distance_credited = true
+			add_stride_distance(dash_dist)
+			impulse_primed = true
+			impulse_prime_timer = float(GlobalEvents.MOVEMENT_CONFIG.get("impulse_prime_duration", 1.5))
+			movement_prime_ready.emit("impulse")
+	elif rock_stance_active:
+		velocity = Vector2.ZERO
+		current_move_dir = Vector2.ZERO
+		is_anchored = true
+	else:
+		current_move_dir = mov.normalized() if mov != Vector2.ZERO else Vector2.ZERO
+		if mov.x > 0:
+			sprite.flip_h = true
+		elif mov.x < 0:
+			sprite.flip_h = false
+
+		if mov != Vector2.ZERO:
+			last_movement = current_move_dir
+			if walkTimer.is_stopped():
+				if sprite.frame >= sprite.hframes - 1:
+					sprite.frame = 0
+				else:
+					sprite.frame += 1
+				walkTimer.start()
+
+		velocity = current_move_dir * movement_speed
+		is_anchored = GlobalEvents.is_movement_coupled() and (mouse_brake or mov == Vector2.ZERO)
+
+	if is_inside_tree():
+		move_and_slide()
+
+	var rv := get_real_velocity() if is_inside_tree() else Vector2.ZERO
+	var real_dist := rv.length() * delta if (is_inside_tree() and GlobalEvents.is_movement_coupled() and rv.is_finite()) else 0.0
+	stride_step_delta = real_dist
+	if real_dist > 0.0:
+		stride_distance_total += real_dist
+		stride_distance_gained.emit(real_dist)
+
+	if GlobalEvents.is_movement_coupled():
+		var in_time := maxf(0.01, float(GlobalEvents.MOVEMENT_CONFIG.get("bastion_in_time", 0.45)))
+		var out_time := maxf(0.01, float(GlobalEvents.MOVEMENT_CONFIG.get("bastion_out_time", 0.20)))
+		if is_anchored:
+			bastion_charge = minf(1.0, bastion_charge + delta / in_time)
+		else:
+			bastion_charge = maxf(0.0, bastion_charge - delta / out_time)
+	else:
+		is_anchored = false
+		bastion_charge = 0.0
+
+	_emit_stance_if_changed()
 
 func attack():
+	if weapons == null:
+		return
+	var cd_floor := maxf(0.05, float(GlobalEvents.MOVEMENT_CONFIG.get("cooldown_floor", 0.05)))
 	for weapon in weapons.get_children():
 		if weapon.has_method("attack"):
 			weapon.attack()
 		var timer = weapon.get("timer")
-		if timer != null and timer is Timer:
-			if timer.wait_time < 0.05:
-				timer.wait_time = 0.05
+		if timer != null and timer is Timer and timer.wait_time < cd_floor:
+			timer.wait_time = cd_floor
+		var atk_timer = weapon.get("attackTimer")
+		if atk_timer != null and atk_timer is Timer and atk_timer.wait_time < cd_floor:
+			atk_timer.wait_time = cd_floor
 
 func _on_regen_timer_timeout(): #regens regenPerSecond percent of maxHp every regenTimer timeout
 	if hp < maxhp:
@@ -377,6 +662,8 @@ func _on_regen_timer_timeout(): #regens regenPerSecond percent of maxHp every re
 
 
 func _on_hurt_box_hurt(damage, _angle, _knockback, _killer_source = "", attacker_node = null, _proc_coefficient = 1.0):
+	if sidestep_iframe_timer > 0.0:
+		return
 	if damage > 0:
 		GlobalEvents.player_took_damage.emit(damage, attacker_node)
 		
@@ -788,6 +1075,9 @@ func apply_stat_modifiers():
 	# Apply movement speed percent bonus
 	movement_speed = base_movement_speed * (1.0 + movement_speed_percent_total)
 	
+	if GlobalEvents.is_movement_coupled() and rock_stance_active:
+		armor += int(GlobalEvents.MOVEMENT_CONFIG.get("rock_stance_armor_bonus", 4))
+	
 	# Apply armor multiplier
 	armor = int(armor * (1.0 + armor_multiplier))
 	
@@ -847,6 +1137,10 @@ func upgrade_character(upgrade):
 			frenzy_charm_level = int(upgrade.replace("frenzycharm", ""))
 		elif upgrade.begins_with("impactbuckler"):
 			impact_buckler_level = int(upgrade.replace("impactbuckler", ""))
+		elif upgrade.begins_with("speed"):
+			speed_tier = int(upgrade.replace("speed", ""))
+		elif upgrade.begins_with("scroll"):
+			scroll_tier = int(upgrade.replace("scroll", ""))
 		
 		if upgrade_data.has("stat_modifiers"):
 			if type == "item" and upgrade == "food":
@@ -1137,6 +1431,8 @@ func _sync_special_passive_levels() -> void:
 	warding_brooch_level = _get_highest_owned_tier("wardingbrooch")
 	frenzy_charm_level = _get_highest_owned_tier("frenzycharm")
 	impact_buckler_level = _get_highest_owned_tier("impactbuckler")
+	speed_tier = _get_highest_owned_tier("speed")
+	scroll_tier = _get_highest_owned_tier("scroll")
 	javelin_level = _get_highest_owned_tier("javelin")
 	javelin_endless_level = collected_endless.get("javelin", 0)
 	lightningrod_level = _get_highest_owned_tier("lightningrod")
@@ -1365,8 +1661,10 @@ func reset_all_upgrades() -> void:
 func switch_character_mid_run(char_id: String, grant_starter: bool = true) -> void:
 	if not GlobalEvents.CHARACTERS.has(char_id):
 		return
+	_cancel_active_mobility()
 	GlobalEvents.selected_character = char_id
 	var char_data: Dictionary = GlobalEvents.CHARACTERS[char_id]
+	mobility_type = str(char_data.get("mobility_type", "sidestep"))
 	var prev_ratio := float(hp) / float(maxhp) if maxhp > 0 else 1.0
 	base_maxhp = char_data.get("base_stats", {}).get("maxhp", 80)
 	

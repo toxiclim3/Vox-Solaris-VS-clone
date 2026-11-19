@@ -10,6 +10,7 @@ var rolling_hits: Array[Dictionary] = []
 var header_label: Label
 var world_label: Label
 var stats_label: Label
+var movement_label: Label
 var items_label: Label
 var dps_label: Label
 
@@ -30,13 +31,6 @@ func _init() -> void:
 	offset_bottom = 24.0
 	grow_horizontal = Control.GROW_DIRECTION_BEGIN
 
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.05, 0.06, 0.09, 0.80)
-	sb.border_color = Color(0.28, 0.34, 0.45, 0.90)
-	sb.set_border_width_all(1)
-	sb.set_content_margin_all(4)
-	add_theme_stylebox_override("panel", sb)
-
 	var vbox := VBoxContainer.new()
 	vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_theme_constant_override("separation", 2)
@@ -45,12 +39,14 @@ func _init() -> void:
 	header_label = _make_label(Color(0.95, 0.95, 0.65))
 	world_label = _make_label(Color(0.80, 0.92, 1.0))
 	stats_label = _make_label(Color(0.85, 1.0, 0.85))
+	movement_label = _make_label(Color(0.70, 0.95, 1.0))
 	items_label = _make_label(Color(1.0, 0.82, 0.60))
 	dps_label = _make_label(Color(0.95, 0.95, 0.95))
 
 	vbox.add_child(header_label)
 	vbox.add_child(world_label)
 	vbox.add_child(stats_label)
+	vbox.add_child(movement_label)
 	vbox.add_child(items_label)
 	vbox.add_child(dps_label)
 
@@ -203,6 +199,18 @@ func refresh_now() -> void:
 			cur_hp, cur_maxhp, hp_pct, int(arm), dr_pct, spd, cdr_pct, sz_pct, extra, dmg_mult, ls_pct, refl
 		]
 
+		var mode_str := "COUPLED" if GlobalEvents.is_movement_coupled() else "VANILLA"
+		var mob_type := str(p.get("mobility_type") if p.get("mobility_type") != null else "none")
+		var mob_cd := float(p.get("mobility_cooldown") if p.get("mobility_cooldown") != null else 0.0)
+		var cd_str := "RDY" if mob_cd <= 0.0 else "%.1fs" % mob_cd
+		var rock_str := " [ROCK]" if bool(p.get("rock_stance_active")) else ""
+		var anc_str := " [ANC]" if bool(p.get("is_anchored")) else ""
+		var stride_px := float(p.get("stride_distance_total") if p.get("stride_distance_total") != null else 0.0)
+		var bast_pct := float(p.get("bastion_charge") if p.get("bastion_charge") != null else 0.0) * 100.0
+		movement_label.text = "Move:%s | %s:%s%s\nStride:%.0fpx | Bastion:%.0f%%%s" % [
+			mode_str, mob_type, cd_str, rock_str, stride_px, bast_pct, anc_str
+		]
+
 		var item_parts: PackedStringArray = []
 		if int(p.get("warding_brooch_level") if p.get("warding_brooch_level") != null else 0) > 0:
 			var b_txt := "READY" if bool(p.get("warding_brooch_charge")) else "%.1fs" % float(p.get("warding_brooch_timer") if p.get("warding_brooch_timer") != null else 0.0)
@@ -223,6 +231,8 @@ func refresh_now() -> void:
 			items_label.visible = false
 	else:
 		stats_label.text = "Player: N/A"
+		var mode_str := "COUPLED" if GlobalEvents.is_movement_coupled() else "VANILLA"
+		movement_label.text = "Move:%s | Player: N/A" % mode_str
 		items_label.visible = false
 
 	var ranked := get_ranked_sources()

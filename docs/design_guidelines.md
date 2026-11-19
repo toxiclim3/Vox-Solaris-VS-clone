@@ -33,7 +33,7 @@ Every character has:
 ### Canonical Character Profiles & The Punished Resolution
 | Character | Starting Weapon | Base Stats (`base_stats`) | Scaling Passive (`scaling_stats` @ Lvl 20) | Archetype / Tactical Niche |
 |---|---|---|---|---|
-| **Mage** | `icespear1` | `{}` | `spell_cooldown: -0.15` (-15% CDR) | High-cadence spellcaster, rapid projectile barrage. |
+| **Mage** | `icespear1` | `{}` | `spell_cooldown: +0.15` (15% CDR; currently `-0.15` in `global_events.gd:43` — inverted sign bug) | High-cadence spellcaster, rapid projectile barrage. |
 | **Plague Doctor** | `poisonbottle1` | `{}` | `spell_size: +0.50` (+50% Size) | Massive zone denial, lingering area control. |
 | **Occultist** | `ritualcircle1` | `{}` | `lifesteal: +0.02` (+2% Lifesteal) | Active offensive sustain, aggressive close-range presence. |
 | **The Punished** | `whip1` | `{"armor": 3, "maxhp": 100}` | `reflected_damage: +40` (+40 Flat Retaliation) | Tanky counter-attacker; converts incoming aggression into lethal retaliatory strikes. |
@@ -75,7 +75,7 @@ $$\text{active\_bonus} = \text{scaling\_stats}[\text{stat}] \times \text{progres
 ### Character Stat Budgets (Levels 1 $\to$ 20)
 | Stat Target | Safe Range | Benchmark Example | Notes |
 |---|---|---|---|
-| **Spell Cooldown (CDR)** | `-0.15` to `-0.20` | Mage (`-0.15`) | Multiplies weapon timers; too high breaks attack cycles. |
+| **Spell Cooldown (CDR)** | `+0.15` to `+0.20` | Mage (`+0.15` intended; currently `-0.15` bug in `global_events.gd:43`) | Subtracted in `t_base * (1.0 - spell_cooldown)`; too high pushes toward the `0.05s` floor. |
 | **Spell Size** | `+0.40` to `+0.50` | Plague Doctor (`+0.50`) | Multiplies projectile/AOE scale. |
 | **Lifesteal** | `+0.015` to `+0.02` (1.5–2%) | Occultist (`+0.02`) | Proc coefficients dampen multi-hit weapons. |
 | **Armor** | `+2` to `+4` | Defense archetype | Subject to diminishing returns formula. |
@@ -247,9 +247,9 @@ Conditional buffs and threshold-based accessories (e.g., Glass Talisman dealt da
 1. **The Anti-Pattern (Centralized Polling):**  
    Never implement central state machines, polling loops in `_process` or `_physics_process`, or monolithic `if/elif` ladders in `player.gd` checking health thresholds every frame. Polling consumes unnecessary CPU cycles and tightly couples unrelated item mechanics to the player core script.
 2. **The Decentralized Contract:**  
-   `Player` exposes a dedicated signal:
+   `Player` (`Player/player.gd:119`) exposes a dedicated signal:
    ```gdscript
-   signal health_ratio_changed(current_ratio: float, old_ratio: float)
+   signal health_ratio_changed(current_ratio: float, previous_ratio: float)
    ```
    - Emitted whenever `hp` or `maxhp` changes (clamped to $[0.0, 1.0]$).
    - Items or upgrade handlers listen to `player.health_ratio_changed`.
@@ -257,8 +257,16 @@ Conditional buffs and threshold-based accessories (e.g., Glass Talisman dealt da
    Each conditional item maintains its own local state (`is_active: bool`, `cooldown_ready: bool`):
    - **Glass Talisman ($\ge 95\%$ HP):** Toggles active state when crossing 0.95.
    - **Frenzy Charm ($< 30\%$ HP):** Toggles active state when crossing 0.30.
-   - **Impact Buckler ($< 20\%$ HP Emergency Trigger):** Fires when `current < 0.20 and old >= 0.20` and cooldown is ready.
-   - *State Transition Integrity:* By checking boundary transitions (`current < threshold and old >= threshold`), audio cues, shockwaves, and particle triggers fire exactly once upon crossing the threshold rather than every damage tick.
+   - **Impact Buckler ($< 20\%$ HP Emergency Trigger):** Fires when `current_ratio < 0.20 and previous_ratio >= 0.20` and cooldown is ready.
+   - *State Transition Integrity:* By checking boundary transitions (`current_ratio < threshold and previous_ratio >= threshold`), audio cues, shockwaves, and particle triggers fire exactly once upon crossing the threshold rather than every damage tick.
+
+#### Canonical Health-Based Items Specification (v2):
+| Item (`ID`) | Working Name | Condition & Mechanics | Progression & Endless Policy |
+|---|---|---|---|
+| **Glass Talisman** (`glasstalisman`) | *Pristine Focus* | Active while HP $\ge 95\%$. Boosts player damage multiplier. | **4 Tiers + Endless:** `+5% / +10% / +15% / +25%` Damage (`+2%` per endless stack). |
+| **Warding Brooch** (`wardingbrooch`) | *Aegis Ward* | While HP $\ge 90\%$, generates a protection charge after $10\text{s}$ without taking damage. Absorbs 1 hit up to $5\%$ of max HP (excess spills over). | **2 Tiers (Hard-Capped, No Endless):** Tier 1 absorbs up to $5\%$ max HP; Tier 2 adds `+15%` Movement Speed for $3\text{s}$ on break. |
+| **Frenzy Charm** (`frenzycharm`) | *Desperation* | Active while HP $< 30\%$. Increases attack speed via `spell_cooldown`. | **3 Tiers (No Endless):** `+10% / +20% / +30%` Attack Speed (Wait time $\times 0.90 / 0.80 / 0.70$, clamped to $0.05\text{s}$ floor). |
+| **Impact Buckler** (`impactbuckler`) | *Repulsion Core* | Triggers when HP crosses below $20\%$. Releases a radial kinetic shockwave knocking back swarms and staggering elites (bosses immune to displacement), and triggers the `0.5s` Tier 1 Shared Defensive Buffer (`i_frames`). | **3 Tiers (Hard-Capped, No Endless):** `60s / 40s / 20s` local cooldown. |
 
 ---
 
@@ -330,22 +338,28 @@ When creating new items or weapons, select the appropriate established pattern:
 
 ---
 
-## 6. Technical Contracts (Engine Rules)
+## 6. Technical Contracts & Schema Guardrails (Engine Rules)
 
-Any agent implementing weapons or items must follow these non-negotiable rules:
+Any agent implementing weapons, hazards, or items must follow these non-negotiable rules:
 
-1. **Collision Layer 3 (Bit 2, Value 4):**  
-   All attack scenes must set `collision_layer = 4` and `collision_mask = 0`. Swarms ignore nodes not on Layer 3.
+1. **Collision Layer 3 (Bit 2, Value 4) & Dual-Layer Hazard Routing:**  
+   All player-to-enemy attack scenes must set `collision_layer = 4` and `collision_mask = 0`. Swarms ignore nodes not on Layer 3.  
+   - *Environmental Hazard Rule:* Player `HurtBox` operates on Layer 2 (`collision_mask = 2`). Pure Layer 3 (`4`) areas cannot damage the player (`4 & 2 == 0`). Any world hazard intended to hit **both** swarms and the player must set `collision_layer = 6` (`4 | 2`) and discriminate target damage (see `Enemy/Base/franklin_telegraph_rect.gd:158-161`) so enemy-sized damage does not instakill the player.
 2. **Node Group `"attack"`:**  
    The root `Area2D` must belong to the `"attack"` group.
-3. **Child Node Name `"CollisionShape2D"`:**  
-   `SwarmManager` manually inspects shapes by searching for a child explicitly named `"CollisionShape2D"`.
+3. **Child Node Name `"CollisionShape2D"` & Supported Shape Types:**  
+   `SwarmManager` manually inspects shapes by searching for a child explicitly named `"CollisionShape2D"`. Its `.shape` **MUST** be a `CircleShape2D` (`shape_type = 1`) or `RectangleShape2D` (`shape_type = 2`). `CapsuleShape2D`, `ConvexPolygonShape2D`, and `SegmentShape2D` resolve to `shape_type = 0` and are silently ignored by `SwarmManager`.
 4. **Exposed Properties:**  
    Every damaging area must expose `damage: float` and `knockback_amount: float`.
-5. **Sprite Padding Standards:**  
+5. **Sprite Padding Standards (Rule 12):**  
    UI icons must have zero transparent padding (trimmed tightly to 32x32) to prevent misalignment in the upgrade selection cards.
 6. **RFC 4180 Localization (Rule 5):**  
    Every item key must be added to `translations/translations.csv` with exactly 4 columns: `keys,en,ru,ua`. No empty cells, no missing keys.
+7. **`UpgradeDb` & `test_upgrade_db.gd` Schema Invariants:**  
+   - **Mandatory Keys:** Every entry in `UpgradeDb.UPGRADES` must define `["icon", "displayname", "details", "level", "prerequisite", "type"]`.
+   - **Allowed Values:** `"type"` in `["weapon", "upgrade", "bossitem", "item", "endless"]`; `"level"` in `["item_level1", "item_level2", "item_level3", "item_level4", "item_levelNA", "item_level_endless"]`.
+   - **Core Weapon Families:** Keys `<prefix>1` through `<prefix>4` must remain present for all 7 core weapons (`icespear`, `javelin`, `tornado`, `poisonbottle`, `ritualcircle`, `lightningrod`, `whip`).
+   - **Non-Numeric Key & Multi-Prereq Guardrail:** `player.gd` resolves spawner folders via `upgrade.rstrip("0123456789")`, tracks equipped slot caps (`unique_weapons` / `gui.adjust_gui_collection`) via `displayname`, and evaluates `prerequisite` with strict `AND` logic. Any future items using non-numeric suffixes (e.g., `_b`), distinct branch display names, or `OR` prerequisites must resolve `base_weapon` first and support `"prerequisite_mode": "any"` in `player.gd` and `gui.gd`.
 
 ---
 

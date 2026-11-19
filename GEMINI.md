@@ -93,4 +93,4 @@ Key signals to be aware of:
     - **Dead Code Discipline**: Remove obsolete, backup, or placeholder code (e.g., test characters, dead functions, unused dictionaries) rather than keeping them in production dictionaries or scripts.
     - **Pragmatic Testing**: Unit tests must validate actual runtime calculations (stat formulas, prerequisite logic, difficulty multipliers), not verify speculative edge cases or test frameworks for non-existent components.
     - **Direct Solutions Over Factory Patterns**: For weapons, items, and UI elements, follow established, direct node-instantiation patterns rather than introducing speculative factory or reflection mechanisms.
-20. **Subagent Model Selection**: When invoking subagents or orchestrating multi-agent workflows, orchestrators must use the `pro` model, while worker subagents must use the `flash` or `flash_lite` models depending on task complexity.
+20. **Subagent Model Selection**: When invoking subagents or orchestrating multi-agent workflows, orchestrators must use `inherit` or `pro`, while worker subagents must use the `flash` or `flash_lite` models depending on task complexity.

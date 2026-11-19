@@ -30,6 +30,13 @@ This file tracks known bugs, mathematical quirks, architectural compromises, or 
 - **Why it was deferred:** Implemented as a humorous in-team Easter egg during development.
 - **Current Mitigation:** Retained as an Easter egg, but documented here to prevent QA testers and automated performance benchmarks from flagging the intentional 10 FPS cap as an engine crash or rendering pipeline stall. A future UI pass should append a comedic disclaimer to the toggle button.
 
+### Lightning Rod Global Transform Distortion & Freed Target Crash
+- **Status:** Resolved
+- **Location:** `Player/Attack/lightningrod/lightningrod.gd`, `Player/player.gd`
+- **Description:** Lightning Rod strike paths previously suffered from global transform scaling distortion away from the world origin, used a 20px spatial exclusion cutoff that prematurely blocked dense swarm chains, and risked `<Freed Object>` runtime crashes on typed target validity helpers when targets were freed mid-frame.
+- **Why it was deferred:** Initially surfaced as an intermittent targeting and visual misalignment artifact under dense swarm packs.
+- **Current Mitigation:** Resolved. `lightningrod.gd` now converts `_draw()` points via `to_local()`, chains use `hit_targets` instance tracking instead of spatial exclusion, and `_is_enemy_valid_target(body)` / `_is_target_valid(body)` use untyped parameters with `is_instance_valid(body)` guards (verified by the `test_weapon_fixes.gd` suite).
+
 ---
 
 ## Performance & Engine Workarounds
@@ -50,6 +57,13 @@ This file tracks known bugs, mathematical quirks, architectural compromises, or 
 - **Description:** In Godot 4.6 (Mobile renderer), MultiMesh materials exhibit a bug where uniform updates passed via `material.set_shader_parameter()` fail to propagate cleanly across instance pools or trigger shader pipeline recompilations during intense combat. To work around this, `swarm_manager.gd` dynamically constructs raw shader code as a string, injecting sprite atlas dimensions and frame counts directly into the GLSL string (`shader.code = """..."""`) at runtime initialization.
 - **Why it was deferred:** Fixing this upstream requires an engine fix in Godot's Vulkan/Mobile uniform buffer binding. Standard uniform setting causes MultiMesh enemy animation frames to desync or freeze under heavy load.
 - **Current Mitigation:** Shader code is generated and compiled once upon SwarmManager instantiation. While this incurs a minor startup compilation overhead, it completely avoids uniform caching desynchronization at runtime.
+
+### Synchronous Disk I/O in `StatsManager.register_kill()`
+- **Status:** Resolved
+- **Location:** `Utility/StatsManager.gd:51-58`
+- **Description:** `StatsManager.register_kill()` previously invoked `save_stats()` (`config.save("user://statistics.cfg")`) synchronously on every individual enemy kill, causing 50–100 synchronous main-thread disk writes per second during AoE swarm clears.
+- **Why it was deferred:** Originally implemented for simplicity when enemy counts were low before `SwarmManager` scaled hordes to thousands of enemies.
+- **Current Mitigation:** Resolved. `save_stats()` was removed from `register_kill()` and deferred to `register_end_run()`, with `is_run_tainted` sandbox protection preventing debug runs from corrupting saved stats.
 
 ---
 
@@ -84,11 +98,11 @@ This file tracks known bugs, mathematical quirks, architectural compromises, or 
 - **Current Mitigation:** Resolved. Purged `punished_backup` and unused `INACTIVE_CHARACTERS` from `Utility/global_events.gd`, along with orphan translation keys, adhering to Rule 19 Dead Code Discipline.
 
 ### Malformed CSV Row in `translations.csv`
-- **Status:** Data Integrity Risk
-- **Location:** `translations/translations.csv:30` (and `translations/restore_translations.py:30`)
-- **Description:** Line 30 of `translations.csv` contains `"ui_gameTitle","Inritus"`, providing only 2 columns instead of the required 4 (`keys,en,ru,ua`).
-- **Why it was deferred:** Godot's built-in CSV translation importer treats missing trailing comma fields as empty strings without crashing. However, any strict RFC-4180 CSV parser or automated Antigravity localization validator fails with an index-out-of-range error when parsing this line.
-- **Current Mitigation:** Line 30 works leniently in Godot, but must be normalized to `"ui_gameTitle","Inritus","Inritus","Inritus"` for strict toolchain and validation compliance.
+- **Status:** Resolved
+- **Location:** `translations/translations.csv:30`
+- **Description:** Line 30 of `translations.csv` previously contained `"ui_gameTitle","Inritus"`, providing only 2 columns instead of the required 4 (`keys,en,ru,ua`), failing strict RFC 4180 localization validation.
+- **Why it was deferred:** Godot's built-in CSV importer treated missing trailing fields as empty strings without crashing.
+- **Current Mitigation:** Resolved. Normalized line 30 to `"ui_gameTitle","Inritus","Inritus","Inritus"` for full 4-column RFC 4180 compliance.
 
 ---
 
@@ -96,10 +110,17 @@ This file tracks known bugs, mathematical quirks, architectural compromises, or 
 
 ### Hardcoded Boss Weapons Array in `player.gd`
 - **Status:** Architecture Debt / Code Duplication
-- **Location:** `Player/player.gd:538`, `Player/player.gd:849`
-- **Description:** The array `var boss_weapons_with_spawner = ["glasslash", "vampireknives"]` is hardcoded verbatim in two separate functions (`upgrade_character` and `remove_upgrade`).
+- **Location:** `Player/player.gd:814`, `Player/player.gd:1132`
+- **Description:** The array `var boss_weapons_with_spawner = ["glasslash", "vampireknives"]` is hardcoded verbatim in two separate functions (`upgrade_character` and `_is_spawner_item`).
 - **Why it was deferred:** `UpgradeDb` classifies both passive boss items (like rings) and active weapons as `type: "bossitem"`. Because the database schema lacks a flag differentiating passive relics from weapons that require weapon spawner instantiation, `player.gd` was forced to maintain a hardcoded whitelist.
 - **Current Mitigation:** The local string arrays are duplicated in both functions. Adding new boss weapons requires updating both arrays manually. The proper architectural solution is adding `"has_spawner": true` or `"is_weapon": true` directly to item entries in `UpgradeDb.gd`.
+
+### Detached Boss Telegraph Node in Dr. Franklin
+- **Status:** Known Issue
+- **Location:** `Enemy/Boss/dr_franklin.gd`, `Enemy/Base/franklin_telegraph_rect.gd`
+- **Description:** `_start_attack()` instantiates `franklin_telegraph_rect.tscn` into `get_parent()` (`World`) without parenting it to Dr. Franklin's pivot or storing a node reference on the boss script, and the telegraph manages its own independent countdown timer (`current_time`) to call `execute_attack()`.
+- **Why it was deferred:** Under current Boss 100% displacement immunity (`design_guidelines.md`), Dr. Franklin cannot be knocked back or stunned while charging a beam, so the detached telegraph remains aligned with his standing position.
+- **Current Mitigation:** Boss displacement immunity prevents desynchronization today. Must be refactored (parented/synced to pivot + tracked via reference) before adding boss stuns or map-hazard displacement interactions (`docs/todo.md`).
 
 ---
 
@@ -114,6 +135,15 @@ This file tracks known bugs, mathematical quirks, architectural compromises, or 
   - Consequently, at the exact 3-minute threshold, spawn intensity suddenly plunges from 9.75 to 9.0 before resuming linear growth.
 - **Why it was deferred:** The momentary dip in spawn pressure was not noticeable enough during casual playtesting to halt development before the difficulty system balance pass.
 - **Current Mitigation:** Currently accepted as part of legacy wave pacing. The proposed fix is setting `val_at_3 = base_enemy_intensity + (A * 9.0)` (9.75) and adding `(minutes - 3.0) * enemy_intensity_time_multiplier` to achieve a seamless $C^0$ transition.
+
+### Inverted Mage Cooldown Scaling Sign & Stale Rejuvenation Endless Metadata
+- **Status:** Known Issue
+- **Location:** `Utility/global_events.gd:43`, `Utility/upgrade_db.gd:866`
+- **Description:** Two metadata sign/display mismatches exist in current definitions:
+  1. `GlobalEvents.CHARACTERS["mage"]["scaling_stats"]` sets `{"spell_cooldown": -0.15}`. Because weapon spawners compute `t_wait = t_base * (1.0 - player.spell_cooldown)` and `Scroll` / `Frenzy Charm` add positive values to `spell_cooldown`, `-0.15` increases Mage's weapon cooldowns by 15% instead of reducing them.
+  2. `UpgradeDb.UPGRADES["ringofrejuvenation_endless"]` defines `"stat_modifiers": {"hp": 5}`, causing `item_option.gd` to render `"+5 Health"` on endless level-up cards even though `Player/player.gd:773` actually applies `max_hp_percent_total += 0.05 * count` (`+5% Max HP`).
+- **Why it was deferred:** Surfaced during the Nov 19 movement/combat audit (`docs/movement_combat_ponderings.md`) after earlier unit tests focused on schema integrity rather than sign polarity.
+- **Current Mitigation:** Documented for the upcoming balance and metadata pass (`"spell_cooldown": 0.15` for Mage; `"stat_modifiers": {"max_hp_percent": 0.05}` for `ringofrejuvenation_endless`).
 
 ---
 

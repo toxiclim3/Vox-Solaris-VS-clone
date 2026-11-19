@@ -62,9 +62,16 @@ func _process(_delta: float) -> void:
 			telemetry.refresh_now()
 
 func _get_player() -> Node:
+	if world_ref and is_instance_valid(world_ref) and not world_ref.is_queued_for_deletion():
+		var wp := world_ref.get_node_or_null("Player")
+		if wp and is_instance_valid(wp) and not wp.is_queued_for_deletion():
+			return wp
 	if not get_tree():
 		return null
-	return get_tree().get_first_node_in_group("player")
+	for p in get_tree().get_nodes_in_group("player"):
+		if p and is_instance_valid(p) and not p.is_queued_for_deletion():
+			return p
+	return null
 
 func _get_spawner() -> Node:
 	if not get_tree():
@@ -97,6 +104,23 @@ func _get_world_root() -> Node:
 func _taint() -> void:
 	StatsManager.mark_run_tainted()
 
+static func get_effective_keycode(kev: InputEventKey) -> int:
+	var code: int = kev.physical_keycode if kev.physical_keycode != 0 else kev.keycode
+	match code:
+		KEY_KP_0: return KEY_0
+		KEY_KP_1: return KEY_1
+		KEY_KP_2: return KEY_2
+		KEY_KP_3: return KEY_3
+		KEY_KP_4: return KEY_4
+		KEY_KP_5: return KEY_5
+		KEY_KP_6: return KEY_6
+		KEY_KP_7: return KEY_7
+		KEY_KP_8: return KEY_8
+		KEY_KP_9: return KEY_9
+		KEY_KP_ADD: return KEY_EQUAL
+		KEY_KP_SUBTRACT: return KEY_MINUS
+	return code
+
 func handle_key_event(event: InputEvent) -> bool:
 	if not SettingsManager.is_debug_enabled():
 		return false
@@ -112,7 +136,7 @@ func handle_key_event(event: InputEvent) -> bool:
 	if not kev.pressed or kev.echo:
 		return false
 
-	match kev.keycode:
+	match get_effective_keycode(kev):
 		KEY_F1:
 			toggle_workbench()
 			return true
@@ -330,6 +354,10 @@ func reset_item_cooldowns() -> void:
 		p.set("warding_brooch_charge", true)
 	p.set("impact_buckler_cooldown", 0.0)
 	p.set("buckler_triggered", false)
+	if p.get("mobility_cooldown") != null:
+		p.set("mobility_cooldown", 0.0)
+	if p.get("rock_stance_burst_icd") != null:
+		p.set("rock_stance_burst_icd", 0.0)
 
 	var hurt_box := p.get_node_or_null("HurtBox")
 	if hurt_box:
@@ -392,6 +420,35 @@ func set_camera_zoom(zoom_val: float) -> void:
 		var cam := p.get_node_or_null("Camera2D") as Camera2D
 		if cam:
 			cam.zoom = Vector2(zoom_val, zoom_val)
+
+func set_movement_coupled(enabled: bool) -> void:
+	_taint()
+	GlobalEvents.set_movement_coupled(enabled)
+	if telemetry and telemetry.visible:
+		telemetry.refresh_now()
+
+func set_movement_config_value(key: String, value: Variant) -> void:
+	_taint()
+	GlobalEvents.set_movement_config_value(key, value)
+	if key == "base_movement_speed":
+		var p := _get_player()
+		if p and is_instance_valid(p):
+			p.set("base_movement_speed", float(value))
+			if p.has_method("apply_stat_modifiers"):
+				p.apply_stat_modifiers()
+	if telemetry and telemetry.visible:
+		telemetry.refresh_now()
+
+func reset_movement_config() -> void:
+	_taint()
+	GlobalEvents.reset_movement_config()
+	var p := _get_player()
+	if p and is_instance_valid(p):
+		p.set("base_movement_speed", float(GlobalEvents.MOVEMENT_CONFIG.get("base_movement_speed", 85.0)))
+		if p.has_method("apply_stat_modifiers"):
+			p.apply_stat_modifiers()
+	if telemetry and telemetry.visible:
+		telemetry.refresh_now()
 
 # --- Sandbox Entities & World Actions ---
 

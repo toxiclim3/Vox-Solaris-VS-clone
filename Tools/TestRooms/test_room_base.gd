@@ -18,6 +18,17 @@ var draw_range_rings: bool = true
 var ring_centers: Array[Vector2] = [Vector2.ZERO]
 var ring_radii: Array[float] = [50.0, 100.0, 180.0, 250.0]
 
+class _RoomInputRelay extends Node:
+	var room: TestRoomBase = null
+	func _init(r: TestRoomBase) -> void:
+		room = r
+		process_mode = Node.PROCESS_MODE_ALWAYS
+	func _unhandled_input(event: InputEvent) -> void:
+		if room and is_instance_valid(room):
+			room._unhandled_input(event)
+
+var _input_relay: Node = null
+
 func _ready() -> void:
 	# Ensure time scale and unpaused
 	get_tree().paused = false
@@ -28,6 +39,18 @@ func _ready() -> void:
 	_setup_ui()
 	_setup_debug_controller()
 	_setup_room()
+	_disable_focus_recursive(top_bar)
+
+	# Route live unhandled_input through an ALWAYS-processing relay so F4/F1/Esc work while paused
+	set_process_unhandled_input(false)
+	_input_relay = _RoomInputRelay.new(self)
+	add_child(_input_relay)
+
+func _disable_focus_recursive(node: Node) -> void:
+	if node is BaseButton:
+		(node as BaseButton).focus_mode = Control.FOCUS_NONE
+	for ch in node.get_children():
+		_disable_focus_recursive(ch)
 
 func _setup_camera() -> void:
 	if camera == null:
@@ -74,6 +97,7 @@ func _setup_ui() -> void:
 	ui_layer = CanvasLayer.new()
 	ui_layer.name = "TestRoomUI"
 	ui_layer.layer = 90
+	ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
 	add_child(ui_layer)
 
 	# Top bar
@@ -82,13 +106,6 @@ func _setup_ui() -> void:
 	top_bar.theme = load("res://Themes/DebugButtons.tres")
 	top_bar.set_anchors_preset(Control.PRESET_TOP_WIDE)
 	top_bar.custom_minimum_size = Vector2(0, 22)
-
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.06, 0.07, 0.10, 0.92)
-	sb.border_color = Color(0.25, 0.35, 0.5, 0.8)
-	sb.set_border_width_all(1)
-	sb.set_content_margin_all(3)
-	top_bar.add_theme_stylebox_override("panel", sb)
 	ui_layer.add_child(top_bar)
 
 	var hbox := HBoxContainer.new()
@@ -149,13 +166,6 @@ func _build_legend_panel() -> void:
 	legend_panel.offset_top = 26.0
 	legend_panel.offset_right = -6.0
 	legend_panel.offset_bottom = 260.0
-
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.07, 0.08, 0.12, 0.94)
-	sb.border_color = Color(0.3, 0.6, 0.9, 0.9)
-	sb.set_border_width_all(1)
-	sb.set_content_margin_all(6)
-	legend_panel.add_theme_stylebox_override("panel", sb)
 	ui_layer.add_child(legend_panel)
 
 	var scroll := ScrollContainer.new()
@@ -274,20 +284,27 @@ func _has_open_modal() -> bool:
 		return true
 	return false
 
+func _close_room_modals() -> void:
+	pass
+
 func _unhandled_input(event: InputEvent) -> void:
 	var focus := get_viewport().gui_get_focus_owner() if get_viewport() else null
 	if focus is LineEdit or focus is TextEdit:
 		return
 
 	if _has_open_modal():
-		var is_f5 := bool(event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F5)
-		if _is_esc(event) or _is_backspace(event) or (is_f5 and switcher and switcher.visible):
+		var eff_modal_key := DebugController.get_effective_keycode(event as InputEventKey) if event is InputEventKey and event.pressed and not event.echo else 0
+		var is_f5 := (eff_modal_key == KEY_F5)
+		var is_f1 := (eff_modal_key == KEY_F1)
+		var is_h := (eff_modal_key == KEY_H)
+		if _is_esc(event) or _is_backspace(event) or (is_f5 and switcher and switcher.visible) or (is_f1 and debug_controller and debug_controller.workbench and debug_controller.workbench.visible) or (is_h and legend_panel and legend_panel.visible):
 			if switcher and switcher.visible:
 				switcher.close_modal()
 			if legend_panel and legend_panel.visible:
 				legend_panel.visible = false
 			if debug_controller and debug_controller.workbench and debug_controller.workbench.visible:
 				debug_controller.workbench.close_modal()
+			_close_room_modals()
 			get_viewport().set_input_as_handled()
 			return
 		return
@@ -311,7 +328,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not kev.pressed or kev.echo:
 		return
 
-	match kev.keycode:
+	match DebugController.get_effective_keycode(kev):
 		KEY_F5:
 			toggle_switcher()
 			get_viewport().set_input_as_handled()

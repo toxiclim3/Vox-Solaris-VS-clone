@@ -332,6 +332,7 @@ func enemy_hit(charge = 1):
 	
 	test_root.free()
 
+
 func test_swarm_circle_collision_cross_term() -> void:
 	var sm_scene = load("res://Utility/swarm_manager.tscn")
 	var sm = sm_scene.instantiate()
@@ -380,6 +381,7 @@ var hit_once_array = []
 	assert_almost_eq(enemy.hp, 85.0, 0.01, "Enemy at distance 25 with radii (20+10) must be hit by corrected circle collision formula (got HP %s)" % enemy.hp)
 	
 	test_root.free()
+
 
 func test_swarm_on_hit_enemy_and_killer_source() -> void:
 	var sm_scene = load("res://Utility/swarm_manager.tscn")
@@ -438,6 +440,7 @@ func on_hit_enemy(e):
 	
 	test_root.free()
 
+
 func test_lightning_rod_visual_coordinate_alignment() -> void:
 	var tree = Engine.get_main_loop() as SceneTree
 	var test_root = Node2D.new()
@@ -477,6 +480,7 @@ func test_lightning_rod_visual_coordinate_alignment() -> void:
 		rod.free()
 
 	test_root.free()
+
 
 func test_player_target_validity_filters_invalid_enemies() -> void:
 	var tree = Engine.get_main_loop() as SceneTree
@@ -577,6 +581,7 @@ var is_dying: bool = false
 
 	test_root.free()
 
+
 func test_lightning_rod_dense_swarm_chaining() -> void:
 	var tree = Engine.get_main_loop() as SceneTree
 	var test_root = Node2D.new()
@@ -634,6 +639,7 @@ func test_lightning_rod_dense_swarm_chaining() -> void:
 	assert_eq(rod.hit_targets.size(), 4, "All 4 distinct swarm enemies must be tracked in hit_targets")
 
 	test_root.free()
+
 
 func test_freed_enemy_handling_in_player_and_lightning_rod() -> void:
 	var tree = Engine.get_main_loop() as SceneTree
@@ -718,6 +724,7 @@ var is_dying: bool = false
 	assert_eq(rod.get_next_target(Vector2.ZERO), valid_enemy.global_position, "rod.get_next_target must return valid enemy position even when enemy_close has freed object")
 
 	test_root.free()
+
 
 func _setup_targeting_context() -> Dictionary:
 	var tree = Engine.get_main_loop() as SceneTree
@@ -894,6 +901,14 @@ func upgrade_character(_u): pass
 	assert_true(whip_opt.lblTargeting.visible, "Weapon card whip1 must show targeting badge")
 	assert_eq(whip_opt.lblTargeting.text, "[Closest]",
 		"whip1 badge text must resolve to [Closest]")
+	assert_not_null(whip_opt.targetingBadge, "ItemOption must expose targetingBadge")
+	assert_true(whip_opt.badgeRow.visible, "Weapon card whip1 must show BadgeRow")
+	assert_true(whip_opt.targetingBadge.visible, "Weapon card whip1 must show TargetingBadge icon")
+	assert_not_null(whip_opt.targetingBadge.texture, "whip1 TargetingBadge must have texture")
+	assert_eq(whip_opt.targetingBadge.tooltip_text, "Closest",
+		"whip1 TargetingBadge tooltip must resolve to Closest")
+	assert_eq(whip_opt.targetingBadge.mouse_filter, Control.MOUSE_FILTER_PASS,
+		"TargetingBadge must use MOUSE_FILTER_PASS for tooltip + click passthrough")
 
 	var spear_opt = option_scene.instantiate()
 	spear_opt.item = "icespear1"
@@ -901,6 +916,11 @@ func upgrade_character(_u): pass
 	assert_true(spear_opt.lblTargeting.visible, "Weapon card icespear1 must show targeting badge")
 	assert_eq(spear_opt.lblTargeting.text, "[Frontal]",
 		"icespear1 badge text must resolve to [Frontal]")
+	assert_true(spear_opt.badgeRow.visible, "Weapon card icespear1 must show BadgeRow")
+	assert_true(spear_opt.targetingBadge.visible, "Weapon card icespear1 must show TargetingBadge icon")
+	assert_not_null(spear_opt.targetingBadge.texture, "icespear1 TargetingBadge must have texture")
+	assert_eq(spear_opt.targetingBadge.tooltip_text, "Frontal",
+		"icespear1 TargetingBadge tooltip must resolve to Frontal")
 
 	var rod_endless_opt = option_scene.instantiate()
 	rod_endless_opt.item = "lightningrod_endless"
@@ -908,13 +928,218 @@ func upgrade_character(_u): pass
 	assert_true(rod_endless_opt.lblTargeting.visible, "Endless weapon card must show targeting badge")
 	assert_eq(rod_endless_opt.lblTargeting.text, "[Strongest]",
 		"lightningrod_endless badge text must resolve to [Strongest]")
+	assert_true(rod_endless_opt.badgeRow.visible, "Endless weapon card must show BadgeRow")
+	assert_true(rod_endless_opt.targetingBadge.visible, "Endless weapon card must show TargetingBadge icon")
+	assert_not_null(rod_endless_opt.targetingBadge.texture, "lightningrod_endless TargetingBadge must have texture")
+	assert_eq(rod_endless_opt.targetingBadge.tooltip_text, "Strongest",
+		"lightningrod_endless TargetingBadge tooltip must resolve to Strongest")
 
 	var armor_opt = option_scene.instantiate()
 	armor_opt.item = "armor1"
 	test_root.add_child(armor_opt)
 	assert_false(armor_opt.lblTargeting.visible, "Passive upgrade card armor1 must hide targeting badge")
 	assert_eq(armor_opt.lblTargeting.text, "", "Passive upgrade badge text must be empty")
+	assert_false(armor_opt.targetingBadge.visible, "Passive upgrade card armor1 must hide TargetingBadge icon")
+	assert_null(armor_opt.targetingBadge.texture, "Passive upgrade card armor1 must clear TargetingBadge texture")
+	assert_eq(armor_opt.targetingBadge.tooltip_text, "", "Passive upgrade TargetingBadge tooltip must be empty")
+	assert_false(armor_opt.badgeRow.visible, "Passive upgrade card armor1 must hide BadgeRow")
 
 	TranslationServer.set_locale(prev_locale)
 	test_root.free()
+
+
+func test_vertical_item_selection_layout_and_focus() -> void:
+	var tree = Engine.get_main_loop() as SceneTree
+	var test_root = Node.new()
+	tree.root.add_child(test_root)
+
+	var option_scene: PackedScene = load("res://Utility/item_option.tscn")
+	assert_not_null(option_scene, "item_option.tscn must load")
+	var card_inst := option_scene.instantiate() as PanelContainer
+	test_root.add_child(card_inst)
+	assert_gt(card_inst.custom_minimum_size.y, card_inst.custom_minimum_size.x,
+		"ItemOption must use vertical proportions (height > width)")
+
+	var vbox := card_inst.get_node_or_null("MarginContainer/VBoxContainer")
+	assert_not_null(vbox, "ItemOption must contain MarginContainer/VBoxContainer")
+	var icon_idx := vbox.get_node("IconPanel").get_index()
+	var name_idx := vbox.get_node("lbl_name").get_index()
+	var level_idx := vbox.get_node("lbl_level").get_index()
+	var desc_idx := vbox.get_node("lbl_description").get_index()
+	var badge_idx := vbox.get_node("BadgeRow").get_index()
+	assert_lt(icon_idx, name_idx, "IconPanel must appear above lbl_name")
+	assert_lt(name_idx, level_idx, "lbl_name must appear above lbl_level")
+	assert_lt(level_idx, desc_idx, "lbl_level must appear above lbl_description")
+	assert_lt(desc_idx, badge_idx, "lbl_description must appear above BadgeRow")
+
+	var world_scene: PackedScene = load("res://World/world.tscn")
+	assert_not_null(world_scene, "World/world.tscn must load")
+	var world_inst := world_scene.instantiate()
+	test_root.add_child(world_inst)
+
+	var gui := world_inst.get_node_or_null("GUILayer/GUI")
+	assert_not_null(gui, "World must expose GUILayer/GUI")
+	assert_true(gui.upgradeOptions is HBoxContainer, "UpgradeOptions must be an HBoxContainer")
+	assert_true(gui.bossUpgradeOptions is HBoxContainer, "BossUpgradeOptions must be an HBoxContainer")
+
+	gui.show_levelup(["icespear1", "whip1", "armor1"], 2)
+	assert_eq(gui.upgradeOptions.get_child_count(), 3, "show_levelup must populate 3 option cards")
+	var c0 := gui.upgradeOptions.get_child(0) as Control
+	var c1 := gui.upgradeOptions.get_child(1) as Control
+	var c2 := gui.upgradeOptions.get_child(2) as Control
+
+	var focus_owner := gui.get_viewport().gui_get_focus_owner()
+	assert_true(focus_owner != c0 and focus_owner != c1 and focus_owner != c2,
+		"Rule 14: level-up cards must not be auto-focused on open")
+
+	assert_eq(c0.get_node_or_null(c0.focus_neighbor_right), c1, "Card 0 right neighbor must be Card 1")
+	assert_eq(c1.get_node_or_null(c1.focus_neighbor_left), c0, "Card 1 left neighbor must be Card 0")
+	assert_eq(c1.get_node_or_null(c1.focus_neighbor_right), c2, "Card 1 right neighbor must be Card 2")
+	assert_eq(c2.get_node_or_null(c2.focus_neighbor_left), c1, "Card 2 left neighbor must be Card 1")
+	assert_eq(c0.get_node_or_null(c0.focus_neighbor_top), c0, "Card 0 top neighbor must lock to self")
+	assert_eq(c0.get_node_or_null(c0.focus_neighbor_bottom), c0, "Card 0 bottom neighbor must lock to self")
+
+	var width_three: float = gui.levelPanel.custom_minimum_size.x
+	gui.show_levelup(["food"], 2)
+	var width_one: float = gui.levelPanel.custom_minimum_size.x
+	assert_gt(width_three, width_one, "3-card LevelUp panel must be wider than 1-card LevelUp panel")
+
+	gui.show_boss_levelup(["glasslash1", "vampireknives1"])
+	assert_eq(gui.bossUpgradeOptions.get_child_count(), 2, "show_boss_levelup must populate 2 option cards")
+	var b0 := gui.bossUpgradeOptions.get_child(0) as Control
+	var b1 := gui.bossUpgradeOptions.get_child(1) as Control
+	assert_eq(b0.get_node_or_null(b0.focus_neighbor_right), b1, "Boss card 0 right neighbor must be Card 1")
+	assert_eq(b1.get_node_or_null(b1.focus_neighbor_left), b0, "Boss card 1 left neighbor must be Card 0")
+
+	var left_keys: Array[int] = []
+	for ev in InputMap.action_get_events("ui_left"):
+		if ev is InputEventKey:
+			left_keys.append(ev.physical_keycode)
+	assert_has(left_keys, KEY_A, "ui_left must include KEY_A")
+	assert_has(left_keys, KEY_LEFT, "ui_left must include KEY_LEFT")
+
+	var right_keys: Array[int] = []
+	for ev in InputMap.action_get_events("ui_right"):
+		if ev is InputEventKey:
+			right_keys.append(ev.physical_keycode)
+	assert_has(right_keys, KEY_D, "ui_right must include KEY_D")
+	assert_has(right_keys, KEY_RIGHT, "ui_right must include KEY_RIGHT")
+
+	test_root.free()
+
+func test_item_option_category_styles() -> void:
+	var tree = Engine.get_main_loop() as SceneTree
+	var test_root = Control.new()
+	tree.root.add_child(test_root)
+
+	var dummy_player_script = GDScript.new()
+	dummy_player_script.source_code = """extends Node
+var collected_endless: Dictionary = {}
+func upgrade_character(_u): pass
+"""
+	dummy_player_script.reload()
+	var dummy_player = dummy_player_script.new()
+	dummy_player.add_to_group("player")
+	test_root.add_child(dummy_player)
+
+	var option_scene: PackedScene = load("res://Utility/item_option.tscn")
+	assert_not_null(option_scene, "item_option.tscn must load")
+
+	var expected_categories: Dictionary = {
+		"icespear1": "weapon",
+		"armor1": "upgrade",
+		"glasslash1": "boss_weapon",
+		"vampireknives1": "boss_weapon",
+		"ring1": "boss_accessory",
+		"relicdrone1": "boss_accessory",
+		"food": "item"
+	}
+
+	var applied_panels: Dictionary = {}
+	for item_id in expected_categories:
+		var expected_cat: String = expected_categories[item_id]
+		var opt := option_scene.instantiate() as PanelContainer
+		opt.item = item_id
+		test_root.add_child(opt)
+		assert_eq(opt.card_category, expected_cat,
+			"%s must resolve card_category to %s" % [item_id, expected_cat])
+		assert_false(opt.is_endless_card, "%s must not be marked endless" % item_id)
+		var resolved_style: ItemCardStyle = opt.resolve_card_style(item_id)
+		assert_not_null(resolved_style, "%s must resolve an ItemCardStyle" % item_id)
+		var panel_sb: StyleBox = opt.get_theme_stylebox("panel")
+		assert_eq(panel_sb, resolved_style.card_panel,
+			"%s must apply its resolved style's card_panel" % item_id)
+		assert_eq(opt.iconPanel.self_modulate, resolved_style.icon_frame_modulate,
+			"%s must apply icon_frame_modulate to iconPanel.self_modulate" % item_id)
+		assert_eq(opt.itemIcon.modulate, Color.WHITE,
+			"%s must not tint child itemIcon.modulate" % item_id)
+		if not applied_panels.has(expected_cat):
+			applied_panels[expected_cat] = panel_sb
+
+	var unique_panels: Array = []
+	for cat in ["weapon", "upgrade", "boss_weapon", "boss_accessory", "item"]:
+		var sb = applied_panels[cat]
+		assert_false(unique_panels.has(sb),
+			"Category '%s' must have a distinct card_panel StyleBox" % cat)
+		unique_panels.append(sb)
+
+	var weapon_shared_border: Color = (applied_panels["weapon"] as StyleBoxFlat).border_color
+	var upgrade_shared_border: Color = (applied_panels["upgrade"] as StyleBoxFlat).border_color
+	var boss_weapon_shared_border: Color = (applied_panels["boss_weapon"] as StyleBoxFlat).border_color
+	var boss_acc_shared_border: Color = (applied_panels["boss_accessory"] as StyleBoxFlat).border_color
+
+	var endless_cases: Dictionary = {
+		"icespear_endless": "weapon",
+		"armor_endless": "upgrade",
+		"glasslash_endless": "boss_weapon",
+		"ring_endless": "boss_accessory"
+	}
+	for endless_id in endless_cases:
+		var base_cat: String = endless_cases[endless_id]
+		var e_opt := option_scene.instantiate() as PanelContainer
+		e_opt.item = endless_id
+		test_root.add_child(e_opt)
+		assert_eq(e_opt.card_category, base_cat,
+			"%s must inherit base category '%s'" % [endless_id, base_cat])
+		assert_true(e_opt.is_endless_card, "%s must be marked endless" % endless_id)
+		assert_eq(e_opt.lblLevel.get_theme_color("font_color"), e_opt.endless_level_color,
+			"%s must apply endless_level_color to lblLevel" % endless_id)
+		var e_panel: StyleBoxFlat = e_opt.get_theme_stylebox("panel") as StyleBoxFlat
+		assert_not_null(e_panel, "%s must have a StyleBoxFlat panel override" % endless_id)
+		assert_eq(e_panel.border_color, e_opt.endless_border_color,
+			"%s must apply endless_border_color to duplicated StyleBoxFlat" % endless_id)
+		assert_ne(e_panel, applied_panels[base_cat],
+			"%s must duplicate StyleBoxFlat rather than sharing category resource" % endless_id)
+
+	assert_eq((applied_panels["weapon"] as StyleBoxFlat).border_color, weapon_shared_border,
+		"Shared weapon card_panel resource must remain unmutated")
+	assert_eq((applied_panels["upgrade"] as StyleBoxFlat).border_color, upgrade_shared_border,
+		"Shared upgrade card_panel resource must remain unmutated")
+	assert_eq((applied_panels["boss_weapon"] as StyleBoxFlat).border_color, boss_weapon_shared_border,
+		"Shared boss_weapon card_panel resource must remain unmutated")
+	assert_eq((applied_panels["boss_accessory"] as StyleBoxFlat).border_color, boss_acc_shared_border,
+		"Shared boss_accessory card_panel resource must remain unmutated")
+
+	# Custom style assignment & fallback chain verification
+	var fallback_opt := option_scene.instantiate()
+	test_root.add_child(fallback_opt)
+	var custom_style := ItemCardStyle.new()
+	var custom_dict: Dictionary = fallback_opt.category_styles.duplicate()
+	custom_dict["weapon"] = custom_style
+	custom_dict.erase("item")
+	custom_dict.erase("boss_weapon")
+	custom_dict["bossitem"] = custom_style
+	fallback_opt.category_styles = custom_dict
+
+	assert_eq(fallback_opt.resolve_card_style("icespear1"), custom_style,
+		"Assigned custom ItemCardStyle in category_styles must take precedence")
+	assert_eq(fallback_opt.resolve_card_style("glasslash1"), custom_style,
+		"boss_weapon without dedicated style must fall back to bossitem style when present")
+	assert_eq(fallback_opt.resolve_card_style("food"), fallback_opt.default_style,
+		"Unstyled category must fall back cleanly to default_style")
+	assert_eq(fallback_opt.resolve_card_style("nonexistent_item_id"), fallback_opt.default_style,
+		"Unknown item ID must fall back cleanly to default_style without error")
+
+	test_root.free()
+
 

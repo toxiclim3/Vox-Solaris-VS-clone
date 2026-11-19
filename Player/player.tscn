@@ -13,32 +13,35 @@
 
 [sub_resource type="Animation" id="Animation_x3vf3"]
 length = 0.001
-tracks/0/type = "bezier"
+tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/path = NodePath("SubViewportContainer/SubViewport/banana2:rotation:y")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
 }
 
 [sub_resource type="Animation" id="Animation_apopc"]
 resource_name = "bananaSpin"
-length = 2.0000017
+length = 2.0
+loop_mode = 1
 step = 0.016666668
-tracks/0/type = "bezier"
+tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/path = NodePath("SubViewportContainer/SubViewport/banana2:rotation:y")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"handle_modes": PackedInt32Array(0, 2, 0),
-"points": PackedFloat32Array(0, 0, 0, 0.25, 0, 180, 0, 0, 0, 0, 360, 0, 0, 0, 0),
-"times": PackedFloat32Array(0, 1.0000001, 2)
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 6.2831855]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_5htga"]
@@ -49,7 +52,7 @@ _data = {
 
 [sub_resource type="Environment" id="Environment_x3vf3"]
 ambient_light_source = 3
-ambient_light_color = Color(1, 0.8555461, 0.30635422, 1)
+ambient_light_color = Color(0.9999998, 0.99177796, 0.96212536, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_recolor"]
 shader = ExtResource("recolor_shader")
@@ -83,6 +86,7 @@ offset_right = 16.0
 offset_bottom = -24.0
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer" unique_id=1360068543]
+transparent_bg = true
 handle_input_locally = false
 size = Vector2i(32, 32)
 size_2d_override = Vector2i(16, 16)
@@ -92,6 +96,7 @@ render_target_update_mode = 0
 [node name="AnimationPlayer" type="AnimationPlayer" parent="SubViewportContainer/SubViewport" unique_id=547940069]
 root_node = NodePath("../../..")
 libraries/ = SubResource("AnimationLibrary_5htga")
+autoplay = &"bananaSpin"
 
 [node name="banana2" parent="SubViewportContainer/SubViewport" unique_id=2125886481 instance=ExtResource("6_x3vf3")]
 
@@ -101,6 +106,10 @@ fov = 66.1647
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewportContainer/SubViewport" unique_id=1327959967]
 environment = SubResource("Environment_x3vf3")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport" unique_id=2015285636]
+transform = Transform3D(-0.5832196, 0, 0.81231457, 0.54912025, 0.7369066, 0.39425328, -0.5986, 0.6759946, -0.42977837, 1.3648049, 0.80516076, -0.9262754)
+light_color = Color(0.85522497, 0.8266834, 0.50256795, 1)
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1264366194]
 z_index = 1

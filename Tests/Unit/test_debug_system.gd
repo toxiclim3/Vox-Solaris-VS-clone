@@ -93,6 +93,7 @@ func after_each() -> void:
 	GlobalEvents.current_difficulty = _orig_difficulty
 	GlobalEvents.selected_character = _orig_char
 	GlobalEvents.time = _orig_time
+	GlobalEvents.reset_movement_config()
 	Engine.time_scale = _orig_time_scale
 	StatsManager.clear_run_taint()
 	StatsManager.allow_tainted_stats = false
@@ -387,4 +388,52 @@ func test_world_scene_loads_cleanly() -> void:
 	assert_null(inst.get_node_or_null("GUILayer/GUI/GiveItemMenu"), "Legacy GiveItemMenu removed")
 	assert_null(inst.get_node_or_null("GUILayer/GUI/RemoveItemMenu"), "Legacy RemoveItemMenu removed")
 	assert_null(inst.get_node_or_null("GUILayer/GUI/SpawnBossMenu"), "Legacy SpawnBossMenu removed")
+	var warn_btn := inst.get_node_or_null("GUILayer/GUI/BossWarning/btn_warning_dismiss") as Control
+	var pause_mob := inst.get_node_or_null("GUILayer/MarginContainerMobile/btn_pause_mobile") as Control
+	assert_not_null(warn_btn)
+	assert_not_null(pause_mob)
+	assert_eq(warn_btn.focus_mode, Control.FOCUS_NONE, "Boss warning dismiss button must not steal focus")
+	assert_eq(pause_mob.focus_mode, Control.FOCUS_NONE, "Mobile pause button must not steal focus")
 	inst.free()
+
+func test_debug_movement_config_and_telemetry() -> void:
+	var env := _create_attached_env()
+	var player = env["player"]
+	var ctrl = env["ctrl"]
+
+	var sig_count := [0]
+	var cb := func(): sig_count[0] += 1
+	GlobalEvents.movement_config_changed.connect(cb)
+
+	ctrl.set_movement_coupled(false)
+	assert_false(GlobalEvents.is_movement_coupled(), "Controller should toggle movement coupling off")
+	assert_true(StatsManager.is_run_tainted, "Movement A/B toggle must taint run")
+	assert_gte(sig_count[0], 1, "movement_config_changed should emit")
+
+	ctrl.set_movement_config_value("base_movement_speed", 110.0)
+	assert_almost_eq(float(GlobalEvents.MOVEMENT_CONFIG["base_movement_speed"]), 110.0, 0.001)
+	assert_almost_eq(float(player.base_movement_speed), 110.0, 0.001)
+	assert_almost_eq(float(player.movement_speed), 110.0, 0.001)
+
+	ctrl.workbench.switch_tab(4)
+	assert_eq(ctrl.workbench.tab_containers.size(), 5, "Workbench should have 5 tabs including Move")
+	assert_has(ctrl.workbench.move_mode_badge_label.text, "Vanilla Timers", "Workbench Move tab shows Vanilla mode")
+	for key in ctrl.workbench.move_sliders.keys():
+		var slider: HSlider = ctrl.workbench.move_sliders[key]
+		assert_almost_eq(slider.value, float(GlobalEvents.MOVEMENT_CONFIG[key]), 0.0001, "Slider %s must match MOVEMENT_CONFIG without step snap drift" % key)
+
+	ctrl.telemetry.refresh_now()
+	assert_has(ctrl.telemetry.movement_label.text, "Move:VANILLA", "Telemetry movement_label shows VANILLA mode")
+
+	ctrl.reset_movement_config()
+	ctrl.workbench.switch_tab(4)
+	assert_true(GlobalEvents.is_movement_coupled(), "Reset restores Movement-Coupled mode")
+	assert_almost_eq(float(GlobalEvents.MOVEMENT_CONFIG["base_movement_speed"]), 85.0, 0.001)
+	assert_almost_eq(float(player.base_movement_speed), 85.0, 0.001)
+	for key in ctrl.workbench.move_sliders.keys():
+		var slider: HSlider = ctrl.workbench.move_sliders[key]
+		assert_almost_eq(slider.value, float(GlobalEvents.MOVEMENT_CONFIG[key]), 0.0001, "Default slider %s must match DEFAULT_MOVEMENT_CONFIG" % key)
+	ctrl.telemetry.refresh_now()
+	assert_has(ctrl.telemetry.movement_label.text, "Move:COUPLED", "Telemetry movement_label shows COUPLED mode")
+
+	GlobalEvents.movement_config_changed.disconnect(cb)
